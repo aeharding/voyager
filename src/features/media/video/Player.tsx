@@ -36,6 +36,8 @@ export interface PlayerProps extends React.HTMLProps<HTMLElement> {
 
   ref?: React.RefObject<HTMLVideoElement>;
   videoRef?: React.RefObject<HTMLVideoElement | undefined>;
+
+  disableInlineInteraction?: boolean;
 }
 
 export default function Player({
@@ -49,6 +51,7 @@ export default function Player({
   allowShowPlayButton = true,
   ref,
   videoRef: _videoRef,
+  disableInlineInteraction,
   ...rest
 }: PlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(undefined);
@@ -183,6 +186,19 @@ export default function Player({
           setProgress(e.target.currentTime / e.target.duration);
         }}
         aria-label={rest.alt}
+        onClick={(e) => {
+          if (showBigPlayButton) videoRef.current?.play();
+
+          if (showBigPlayButton) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+
+          if (showBigPlayButton && !disableInlineInteraction) return;
+
+          // Allow click to play video inline (without opening gallery) if not blurred in feed
+          rest.onClick?.(e);
+        }}
       />
       {showProgress && progress !== undefined && (
         <progress className={styles.progress} value={progress} />
@@ -208,15 +224,7 @@ export default function Player({
             </button>
           )}
           {showBigPlayButton && (
-            <span
-              className={styles.playOverlay}
-              onClick={(e) => {
-                e.preventDefault(); // reverse-portal
-                e.stopPropagation(); // video in comments
-
-                videoRef.current?.play();
-              }}
-            >
+            <span className={styles.playOverlay}>
               <IonIcon icon={play} />
             </span>
           )}

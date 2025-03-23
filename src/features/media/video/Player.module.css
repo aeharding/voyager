@@ -79,4 +79,6 @@
   color: #fff;
 
   background: rgba(0, 0, 0, 0.1);
+
+  pointer-events: none;
 }

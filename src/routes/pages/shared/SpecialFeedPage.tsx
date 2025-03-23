@@ -17,6 +17,7 @@ import PostFabs from "#/features/feed/postFabs/PostFabs";
 import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import SpecialFeedMoreActions from "#/features/feed/SpecialFeedMoreActions";
+import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import { ShowSubscribedIconContext } from "#/features/labels/links/CommunityLink";
 import PostAppearanceProvider, {
@@ -41,6 +42,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
+  const commonPostFeedParams = useCommonPostFeedParams();
 
   const postFeed = { listingType: type };
   const [sort, setSort] = useFeedSort("posts", postFeed);
@@ -66,6 +68,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     const { posts, next_page } = await client.getPosts(
       {
         ...pageData,
+        ...commonPostFeedParams,
         limit: LIMIT,
         sort,
         type_: type,

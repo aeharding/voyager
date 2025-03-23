@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { clientSelector } from "#/features/auth/authSelectors";
+import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppSelector } from "#/store";
@@ -26,12 +27,14 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const [communities, setCommunities] = useState<Community[] | undefined>();
   const client = useAppSelector(clientSelector);
   const [isListAtTop, setIsListAtTop] = useState(true);
+  const commonPostFeedParams = useCommonPostFeedParams();
 
   async function update() {
     let communities;
 
     try {
       ({ communities } = await client.listCommunities({
+        ...commonPostFeedParams,
         type_: SHOW_LOCAL_ONLY.includes(actor) ? "Local" : "All",
         sort: "TopAll",
         limit: 50,

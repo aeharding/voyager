@@ -34,6 +34,10 @@ interface PortaledPlayerProps {}
  * but also need props to be set on <Player />
  */
 export default function PortaledPlayer(props: PortaledPlayerProps) {
+  // If OutPortal isn't mounted to dom, PortaledPlayer won't receive props
+  // bail to prevent error
+  if (!("src" in props)) return null;
+
   return (
     <OutPortalEventDispatcher
       eventsToPropagateViaOutPortal={eventsToPropagateViaOutPortal}

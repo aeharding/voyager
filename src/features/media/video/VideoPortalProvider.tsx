@@ -17,8 +17,13 @@ import PortaledPlayer from "./PortaledPlayer";
 export default function VideoPortalProvider({
   children,
 }: React.PropsWithChildren) {
-  const [videoRefs, setVideoRefs] = useState<VideoRefs>({});
+  const [videoRefs, _setVideoRefs] = useState<VideoRefs>({});
   const videoRefsRef = useRef(videoRefs); // yodawg
+
+  function setVideoRefs(videoRefs: VideoRefs) {
+    videoRefsRef.current = videoRefs;
+    _setVideoRefs(videoRefs);
+  }
 
   useEffect(() => {
     videoRefsRef.current = videoRefs;
@@ -32,7 +37,7 @@ export default function VideoPortalProvider({
 
     const potentialExisting = videoRefs[mediaId];
     if (potentialExisting) {
-      setVideoRefs((videoRefs) => ({
+      setVideoRefs({
         ...videoRefs,
         [mediaId]: {
           ...potentialExisting,
@@ -42,7 +47,7 @@ export default function VideoPortalProvider({
             outPortalUid,
           ],
         },
-      }));
+      });
 
       return potentialExisting.portalNode;
     }
@@ -54,10 +59,10 @@ export default function VideoPortalProvider({
       }),
     };
 
-    setVideoRefs((videoRefs) => ({
+    setVideoRefs({
       ...videoRefs,
       [mediaId]: newRef,
-    }));
+    });
 
     return newRef.portalNode;
   };
@@ -76,19 +81,18 @@ export default function VideoPortalProvider({
       videoRef.outPortalUids.length === 1 &&
       videoRef.outPortalUids[0] === sourceUid
     ) {
-      setVideoRefs((videoRefs) => {
-        const updatedVideoRefs = { ...videoRefs };
-        delete updatedVideoRefs[mediaId];
-        return updatedVideoRefs;
-      });
+      const updatedVideoRefs = { ...videoRefs };
+      delete updatedVideoRefs[mediaId];
+
+      setVideoRefs(updatedVideoRefs);
     } else {
-      setVideoRefs((videoRefs) => ({
+      setVideoRefs({
         ...videoRefs,
         [mediaId]: {
           ...videoRef,
           outPortalUids: without(videoRef.outPortalUids, sourceUid),
         },
-      }));
+      });
     }
   }
 

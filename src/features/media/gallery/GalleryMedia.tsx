@@ -33,6 +33,7 @@ export default function GalleryMedia({
   portalWithMediaId,
   volume,
   progress,
+  disableInlineInteraction,
   ...props
 }: GalleryMediaProps) {
   const isVideo =
@@ -82,6 +83,7 @@ export default function GalleryMedia({
         src={props.src!}
         controls={controls}
         portalWithMediaId={portalWithMediaId}
+        disableInlineInteraction={disableInlineInteraction}
         volume={volume}
         progress={progress}
         ref={props.ref as ComponentProps<typeof Video>["ref"]}
