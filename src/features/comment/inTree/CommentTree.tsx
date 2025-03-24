@@ -32,14 +32,27 @@ export default function CommentTree({
   baseDepth,
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
+  const commentId = comment.comment_view.comment.id;
+  const hasUserCollapsed = useAppSelector((state) =>
+    Object.hasOwn(state.comment.commentCollapsedById, commentId),
+  );
   const collapsed = useAppSelector(
-    (state) =>
-      state.comment.commentCollapsedById[comment.comment_view.comment.id],
+    (state) => state.comment.commentCollapsedById[commentId],
   );
   const tapToCollapse = useAppSelector(
     (state) => state.settings.general.comments.tapToCollapse,
   );
   const { activePageRef } = use(AppContext);
+
+  const downvotedCollapsedByDefault = useAppSelector(
+    (state) => state.settings.general.comments.downvotedCollapsedByDefault,
+  );
+
+  const isDownvoted =
+    comment.comment_view.counts.upvotes < comment.comment_view.counts.downvotes;
+  const shouldBeCollapsed = hasUserCollapsed
+    ? collapsed
+    : downvotedCollapsedByDefault && isDownvoted;
 
   // Comment context chains don't show missing for parents
   const showMissing = (() => {
@@ -68,7 +81,7 @@ export default function CommentTree({
         depth={comment.absoluteDepth - baseDepth}
         absoluteDepth={comment.absoluteDepth}
         key={comment.comment_view.comment.id}
-        collapsed={collapsed || fullyCollapsed}
+        collapsed={shouldBeCollapsed || fullyCollapsed}
         comment={comment}
       />
     );
@@ -101,7 +114,7 @@ export default function CommentTree({
 
           scrollCommentIntoViewIfNeeded(e.target, activePageRef);
         }}
-        collapsed={collapsed}
+        collapsed={shouldBeCollapsed}
         fullyCollapsed={!!fullyCollapsed}
         rootIndex={rootIndex}
       />
@@ -111,7 +124,7 @@ export default function CommentTree({
         key={comment.comment_view.comment.id}
         highlightedCommentId={highlightedCommentId}
         comment={comment}
-        fullyCollapsed={collapsed || fullyCollapsed}
+        fullyCollapsed={shouldBeCollapsed || fullyCollapsed}
         rootIndex={rootIndex}
         baseDepth={baseDepth}
       />
@@ -126,7 +139,7 @@ export default function CommentTree({
         depth={comment.absoluteDepth - baseDepth}
         absoluteDepth={comment.absoluteDepth}
         missing={comment.missing}
-        collapsed={collapsed || fullyCollapsed}
+        collapsed={shouldBeCollapsed || fullyCollapsed}
       />,
     );
   }

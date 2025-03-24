@@ -121,6 +121,7 @@ export interface SettingsState {
   };
   general: {
     comments: {
+      downvotedCollapsedByDefault: boolean;
       collapseCommentThreads: CommentThreadCollapse;
       tapToCollapse: TapToCollapseType;
       sort: CommentDefaultSort;
@@ -228,6 +229,7 @@ const baseState: SettingsState = {
   general: {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
+      downvotedCollapsedByDefault: false,
       highlightNewAccount: true,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       rememberCommunitySort: false,
@@ -379,6 +381,10 @@ export const settingsSlice = createSlice({
     setDisableMarkingPostsRead(state, action: PayloadAction<boolean>) {
       state.general.posts.disableMarkingRead = action.payload;
       db.setSetting("disable_marking_posts_read", action.payload);
+    },
+    setDownvotedCollapsedByDefault(state, action: PayloadAction<boolean>) {
+      state.general.comments.downvotedCollapsedByDefault = action.payload;
+      db.setSetting("downvoted_collapsed_by_default", action.payload);
     },
     setEmbedCrossposts(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedCrossposts = action.payload;
@@ -795,6 +801,7 @@ export const {
   setDeviceMode,
   setDisableAutoHideInCommunities,
   setDisableMarkingPostsRead,
+  setDownvotedCollapsedByDefault,
   setEmbedCrossposts,
   setEmbedExternalMedia,
   setEnableHapticFeedback,
@@ -901,6 +908,7 @@ function hydrateStateWithGlobalSettings(
     general: {
       comments: {
         collapseCommentThreads: settings.collapse_comment_threads,
+        downvotedCollapsedByDefault: settings.downvoted_collapsed_by_default,
         highlightNewAccount: settings.highlight_new_account,
         jumpButtonPosition: settings.jump_button_position,
         rememberCommunitySort: settings.remember_community_comment_sort,
