@@ -27,6 +27,7 @@ jobs:
 
   build_web:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       id-token: write # aws
