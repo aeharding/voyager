@@ -19,7 +19,7 @@ import {
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
-import { Post } from "lemmy-js-client";
+import { CreatePost, EditPost } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
@@ -240,7 +240,8 @@ export default function PostEditorRoot({
 
     let postResponse;
 
-    const payload: Pick<Post, "name" | "url" | "body" | "nsfw" | "alt_text"> = {
+    const payload: Omit<CreatePost & EditPost, "post_id" | "community_id"> = {
+      custom_thumbnail: existingPost?.post.thumbnail_url,
       name: title,
       url: postUrl,
       body: text || undefined,
