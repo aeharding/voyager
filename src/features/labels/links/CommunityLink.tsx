@@ -69,14 +69,6 @@ export default function CommunityLink({
       cssClass: "left-align-buttons",
       buttons: [
         {
-          text: `${isBlocked ? "Unblock" : "Block"} Community`,
-          icon: removeCircleOutline,
-          role: "destructive",
-          handler: () => {
-            block();
-          },
-        },
-        {
           text: !isSubscribed ? "Subscribe" : "Unsubscribe",
           icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           handler: () => {
@@ -89,6 +81,14 @@ export default function CommunityLink({
           icon: tabletPortraitOutline,
           handler: () => {
             sidebar();
+          },
+        },
+        {
+          text: `${isBlocked ? "Unblock" : "Block"} Community`,
+          icon: removeCircleOutline,
+          role: "destructive",
+          handler: () => {
+            block();
           },
         },
         {
