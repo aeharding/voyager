@@ -22,6 +22,7 @@ import { blockUser } from "./userSlice";
 
 export interface PresentUserActionsOptions {
   prependButtons?: ActionSheetButton[];
+  appendButtons?: ActionSheetButton[];
   hideMessageButton?: boolean;
 
   /**
@@ -78,6 +79,17 @@ export default function usePresentUserActions() {
               );
             },
           },
+        userTagsEnabled && {
+          text: "Edit Tag",
+          icon: pricetagOutline,
+          handler: async () => {
+            if (!user) return;
+
+            presentUserTag(user, options?.sourceUrl);
+          },
+        },
+        // Block user is a destructive button, so it should be after other appended buttons
+        ...(options?.appendButtons ?? []),
         !isCurrentUser && {
           text: !isBlocked ? "Block User" : "Unblock User",
           data: "block",
@@ -101,15 +113,6 @@ export default function usePresentUserActions() {
 
               presentToast(buildBlockedUser(!isBlocked));
             })();
-          },
-        },
-        userTagsEnabled && {
-          text: "Edit Tag",
-          icon: pricetagOutline,
-          handler: async () => {
-            if (!user) return;
-
-            presentUserTag(user, options?.sourceUrl);
           },
         },
         {

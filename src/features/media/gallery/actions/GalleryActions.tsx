@@ -208,7 +208,7 @@ export default function GalleryActions({
           },
         },
         post && {
-          text: "Save",
+          text: !mySaved ? "Save" : "Unsave",
           icon: bookmarkOutline,
           handler: () => {
             (async () => {
