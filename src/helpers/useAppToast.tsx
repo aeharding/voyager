@@ -37,6 +37,12 @@ export function AppToastProvider({ children }: React.PropsWithChildren) {
       return;
     }
 
+    if (document.querySelector(".pswp--open"))
+      options = {
+        ...options,
+        fullscreen: true,
+      };
+
     if (isNative())
       vibrate({
         type: (() => {
