@@ -104,8 +104,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2(@capacitor/core@7.1.0)
       capacitor-stash-media:
-        specifier: ^3.0.0
-        version: 3.0.0(@capacitor/core@7.1.0)
+        specifier: ^3.1.0
+        version: 3.1.0(@capacitor/core@7.1.0)
       capacitor-tips:
         specifier: ^2.0.0
         version: 2.0.0(@capacitor/core@7.1.0)
@@ -867,6 +867,10 @@ packages:
 
   '@babel/runtime@7.26.10':
     resolution: {integrity: sha512-2WJMeRQPHKSPemqk/awGrAiuFfzBmOIPXKizAsVhWH9YJqLZ0H+HS4c8loHGgW6utJ3E/ejXQUsiGaQy2NZ9Fw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.27.0':
+    resolution: {integrity: sha512-VtPOkrdPHZsKc/clNqyi9WUA8TINkZ4cGk63UUE3u4pmB2k+ZMQRDuIOagv8UVd6j7k0T3+RRIb7beKTebNbcw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.26.9':
@@ -2505,8 +2509,8 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
-  capacitor-stash-media@3.0.0:
-    resolution: {integrity: sha512-/awoQlvM1wH2MwqDEEhtNjLNaJE2s/Ne1r1NS285THfaTkeJCK3NmlOkUhAUTzRrWhN17gcfrGSA3/Qehd8tHg==}
+  capacitor-stash-media@3.1.0:
+    resolution: {integrity: sha512-2Qodv3wfrPCvCtvwAcY3hYGVcNtGwa0gpqyskVlw8war+o8QLFVarasFvxn/AxRyi/NHYAI7diblp+yNGisnZQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -3751,8 +3755,8 @@ packages:
   immer@10.1.1:
     resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
 
-  immutable@5.0.3:
-    resolution: {integrity: sha512-P8IdPQHq3lA1xVeBRi5VPqUm5HDgKnx0Ru51wZz5mjxHr5n3RWhjIpOFU7ybkUxfB+5IToy+OLaHYDBIWsv+uw==}
+  immutable@5.1.1:
+    resolution: {integrity: sha512-3jatXi9ObIsPGr3N5hGw/vWWcTkq6hUYhpQz4k0wLC+owqWi/LiugIw9x0EdNZ2yGedKN/HzePiBvaJRXa0Ujg==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -7409,6 +7413,10 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
+  '@babel/runtime@7.27.0':
+    dependencies:
+      regenerator-runtime: 0.14.1
+
   '@babel/template@7.26.9':
     dependencies:
       '@babel/code-frame': 7.26.2
@@ -9184,7 +9192,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.1.0
 
-  capacitor-stash-media@3.0.0(@capacitor/core@7.1.0):
+  capacitor-stash-media@3.1.0(@capacitor/core@7.1.0):
     dependencies:
       '@capacitor/core': 7.1.0
 
@@ -10720,7 +10728,7 @@ snapshots:
 
   immer@10.1.1: {}
 
-  immutable@5.0.3:
+  immutable@5.1.1:
     optional: true
 
   import-fresh@3.3.1:
@@ -12841,7 +12849,7 @@ snapshots:
   sass@1.81.0:
     dependencies:
       chokidar: 4.0.3
-      immutable: 5.0.3
+      immutable: 5.1.1
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
@@ -13843,7 +13851,7 @@ snapshots:
       '@apideck/better-ajv-errors': 0.3.6(ajv@8.17.1)
       '@babel/core': 7.26.10
       '@babel/preset-env': 7.26.9(@babel/core@7.26.10)
-      '@babel/runtime': 7.26.10
+      '@babel/runtime': 7.27.0
       '@rollup/plugin-babel': 5.3.1(@babel/core@7.26.10)(@types/babel__core@7.20.5)(rollup@2.79.2)
       '@rollup/plugin-node-resolve': 15.3.1(rollup@2.79.2)
       '@rollup/plugin-replace': 2.4.2(rollup@2.79.2)
