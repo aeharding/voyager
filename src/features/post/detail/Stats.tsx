@@ -1,4 +1,3 @@
-import { happyOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 
 import Ago from "#/features/labels/Ago";
@@ -6,7 +5,7 @@ import Edited from "#/features/labels/Edited";
 import Vote from "#/features/labels/Vote";
 import { cx } from "#/helpers/css";
 
-import Stat from "./Stat";
+import HappyStat from "./HappyStat";
 import TimeStat from "./TimeStat";
 
 import styles from "./Stats.module.css";
@@ -19,15 +18,7 @@ export default function Stats({ post }: StatsProps) {
   return (
     <div className={cx(styles.container, styles.sharedStatsClass)}>
       <Vote item={post} />
-      <Stat icon={happyOutline}>
-        {Math.round(
-          (post.counts.upvotes + post.counts.downvotes
-            ? post.counts.upvotes /
-              (post.counts.upvotes + post.counts.downvotes)
-            : 1) * 100,
-        )}
-        %
-      </Stat>
+      <HappyStat post={post} />
       <TimeStat>
         <Ago date={post.post.published} />
       </TimeStat>
