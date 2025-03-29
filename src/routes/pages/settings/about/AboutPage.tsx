@@ -26,8 +26,9 @@ import { useSetActivePage } from "#/features/auth/AppContext";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
-import { isAndroid, isNative } from "#/helpers/device";
+import { getShareIcon, isAndroid, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
 import { useAppSelector } from "#/store";
@@ -175,6 +176,25 @@ export default function AboutPage() {
               <IonIcon icon={happy} />
             </IconBg>
             <IonLabel>Get a Compliment</IonLabel>
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink
+            href="https://getvoyager.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey) return;
+              if (!("share" in navigator)) return;
+
+              e.preventDefault();
+              e.stopPropagation();
+
+              shareUrl("https://getvoyager.app");
+            }}
+          >
+            <IconBg color="color(display-p3 0.7 0 1)" size="1" slot="start">
+              <IonIcon icon={getShareIcon(true)} />
+            </IconBg>
+            <IonLabel>Share Voyager</IonLabel>
           </IonItemInAppExternalLink>
         </IonList>
       </AppContent>
