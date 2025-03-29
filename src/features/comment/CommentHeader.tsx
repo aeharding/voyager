@@ -6,7 +6,7 @@ import { RefObject } from "react";
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";
 import PersonLink from "#/features/labels/links/PersonLink";
-import Vote from "#/features/labels/Vote";
+import Vote from "#/features/labels/vote/Vote";
 import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
 import { ActionButton } from "#/features/post/actions/ActionButton";

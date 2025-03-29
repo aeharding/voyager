@@ -47,14 +47,15 @@ export default function InboxItem({ item }: InboxItemProps) {
     (state) => state.inbox.readByInboxItemId,
   );
   const presentToast = useAppToast();
-  const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById,
+  const storeVote = useAppSelector((state) =>
+    "comment" in item
+      ? state.comment.commentVotesById[item.comment.id]
+      : undefined,
   );
 
   const vote =
     "comment" in item
-      ? (commentVotesById[item.comment.id] ??
-        (item.my_vote as 1 | 0 | -1 | undefined))
+      ? (storeVote ?? (item.my_vote as 1 | 0 | -1 | undefined))
       : undefined;
 
   function renderHeader() {

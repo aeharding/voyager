@@ -2,7 +2,7 @@ import { chatbubbleOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 
 import Ago from "#/features/labels/Ago";
-import Vote from "#/features/labels/Vote";
+import Vote from "#/features/labels/vote/Vote";
 import Stat from "#/features/post/detail/Stat";
 import TimeStat from "#/features/post/detail/TimeStat";
 import { formatNumber } from "#/helpers/number";
