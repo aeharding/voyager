@@ -2,7 +2,12 @@ import { Capacitor } from "@capacitor/core";
 import { Mode } from "@ionic/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "es-toolkit";
-import { shareOutline, shareSocialOutline } from "ionicons/icons";
+import {
+  share,
+  shareOutline,
+  shareSocial,
+  shareSocialOutline,
+} from "ionicons/icons";
 import { UAParser } from "ua-parser-js";
 
 import { get, LOCALSTORAGE_KEYS } from "#/features/settings/syncStorage";
@@ -87,6 +92,8 @@ export function getAndroidNavMode() {
 
 export const isIosTheme = memoize(() => getDeviceMode() === "ios");
 
-export const getShareIcon = memoize(() =>
-  isIosTheme() ? shareOutline : shareSocialOutline,
-);
+export const getShareIcon = memoize((filled = false) => {
+  if (filled) return isIosTheme() ? share : shareSocial;
+
+  return isIosTheme() ? shareOutline : shareSocialOutline;
+});
