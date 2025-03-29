@@ -25,6 +25,6 @@ export function getDeviceModeLabel(mode: Mode): string {
     case "ios":
       return "Apple";
     case "md":
-      return "Android (beta)";
+      return "Android";
   }
 }

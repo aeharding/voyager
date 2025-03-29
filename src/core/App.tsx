@@ -42,11 +42,8 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import { AppContextProvider } from "#/features/auth/AppContext";
 import BeforeInstallPromptProvider from "#/features/pwa/BeforeInstallPromptProvider";
-import {
-  getAndroidNavMode,
-  getDeviceMode,
-  isInstalled,
-} from "#/helpers/device";
+import { getDeviceMode } from "#/features/settings/syncStorage";
+import { getAndroidNavMode, isInstalled } from "#/helpers/device";
 import { AppToastProvider } from "#/helpers/useAppToast";
 import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
 import Router from "#/routes/common/Router";

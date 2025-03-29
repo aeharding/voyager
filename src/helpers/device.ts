@@ -1,5 +1,4 @@
 import { Capacitor } from "@capacitor/core";
-import { Mode } from "@ionic/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "es-toolkit";
 import {
@@ -10,12 +9,7 @@ import {
 } from "ionicons/icons";
 import { UAParser } from "ua-parser-js";
 
-import { get, LOCALSTORAGE_KEYS } from "#/features/settings/syncStorage";
-
-export function getDeviceMode(): Mode {
-  // md mode is beta, so default ios for all devices
-  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
-}
+import { getDeviceMode } from "#/features/settings/syncStorage";
 
 export const isNative = memoize(() => {
   return Capacitor.isNativePlatform();
