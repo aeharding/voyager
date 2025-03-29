@@ -7,26 +7,24 @@ import { useLocation } from "react-router";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import MoreActions from "#/features/post/shared/MoreActions";
-import { VoteButton } from "#/features/post/shared/VoteButton";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
-import { calculateSeparateScore, calculateTotalScore } from "#/helpers/vote";
-import { OVoteDisplayMode } from "#/services/db";
-import { useAppSelector } from "#/store";
 
 import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
 import VideoActions from "./VideoActions";
+import Vote from "./vote/Vote";
 
 import styles from "./GalleryPostActions.module.css";
 
-interface GalleryPostActionsProps extends React.ComponentProps<typeof AltText> {
+export interface GalleryPostActionsProps
+  extends React.ComponentProps<typeof AltText> {
   post: PostView;
   src: string;
   alt?: string;
@@ -75,7 +73,7 @@ export default function GalleryPostActions({
       {videoRef && <VideoActions videoRef={videoRef} />}
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-          <Voting post={post} />
+          <Vote post={post} />
           <div
             onClick={() => {
               close();
@@ -104,50 +102,4 @@ export default function GalleryPostActions({
       </BottomContainerActions>
     </BottomContainer>
   );
-}
-
-function Voting({
-  post,
-}: Pick<GalleryPostActionsProps, "post">): React.ReactElement {
-  const postVotesById = useAppSelector((state) => state.post.postVotesById);
-
-  const voteDisplayMode = useAppSelector(
-    (state) => state.settings.appearance.voting.voteDisplayMode,
-  );
-
-  switch (voteDisplayMode) {
-    case OVoteDisplayMode.Total: {
-      const score = calculateTotalScore(post, postVotesById);
-
-      return (
-        <div className={styles.section}>
-          <VoteButton type="up" post={post} />
-          <div className={styles.amount}>{score}</div>
-          <VoteButton type="down" post={post} />
-        </div>
-      );
-    }
-    case OVoteDisplayMode.Separate: {
-      const { upvotes, downvotes } = calculateSeparateScore(
-        post,
-        postVotesById,
-      );
-
-      return (
-        <div className={styles.section}>
-          <VoteButton type="up" post={post} />
-          <div className={styles.amount}>{upvotes}</div>
-          <VoteButton type="down" post={post} />
-          <div className={styles.amount}>{downvotes}</div>
-        </div>
-      );
-    }
-    case OVoteDisplayMode.Hide:
-      return (
-        <div className={styles.section}>
-          <VoteButton type="up" post={post} />
-          <VoteButton type="down" post={post} />
-        </div>
-      );
-  }
 }

@@ -2,7 +2,7 @@ import { PostView } from "lemmy-js-client";
 
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";
-import Vote from "#/features/labels/Vote";
+import Vote from "#/features/labels/vote/Vote";
 import { cx } from "#/helpers/css";
 
 import HappyStat from "./HappyStat";
