@@ -1,8 +1,9 @@
 import { IonNavCustomEvent } from "@ionic/core";
 import { IonNav } from "@ionic/react";
-import { use, useState } from "react";
+import { use, useRef, useState } from "react";
 
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import useIonNavBackButtonListener from "#/helpers/useIonNavBackButtonListener";
 
 import Welcome from "./welcome/Welcome";
 
@@ -26,11 +27,16 @@ export default function LoginNav() {
     }
   }
 
+  const navRef = useRef<HTMLIonNavElement>(null);
+
+  useIonNavBackButtonListener(navRef);
+
   return (
     <IonNav
       root={root}
       onIonNavWillChange={blurDocument}
       onIonNavDidChange={onIonNavDidChange}
+      ref={navRef}
     />
   );
 }
