@@ -683,8 +683,11 @@ export class WefwefDB extends Dexie {
     this.version(10).upgrade(async () => {
       // Existing installations on Android should default to "ios"
       // to maintain old behavior
-      if (isAndroid() && !get(LOCALSTORAGE_KEYS.DEVICE_MODE))
+      if (isAndroid() && !get(LOCALSTORAGE_KEYS.DEVICE_MODE)) {
         set(LOCALSTORAGE_KEYS.DEVICE_MODE, "ios");
+
+        location.reload();
+      }
     });
   }
 
