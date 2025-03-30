@@ -13,9 +13,6 @@ on:
 env:
   BUILD_LABEL: ${{ inputs.is_main_build && github.sha || github.ref_name }}
 
-concurrency:
-  group: release
-
 jobs:
   build_docker:
     uses: ./.github/workflows/docker.yml
@@ -26,6 +23,8 @@ jobs:
       packages: write
 
   build_web:
+    concurrency:
+      group: web-release
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -74,6 +73,8 @@ jobs:
           path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
 
   build_ios:
+    concurrency:
+      group: ios-release
     environment: deploy
     runs-on: macos-15
     steps:
@@ -180,6 +181,8 @@ jobs:
           path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
   build_android_play:
+    concurrency:
+      group: android-release
     environment: deploy
     runs-on: ubuntu-latest
     steps:
