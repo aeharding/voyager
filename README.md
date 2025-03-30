@@ -52,7 +52,7 @@ Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [L
 - Swipe to hide posts
 - Saving/bookmarking
 - Favorites
-- Android theme (beta)
+- iOS and Android themes
 
 **What is on the roadmap?**
 
