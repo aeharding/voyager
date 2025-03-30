@@ -21,7 +21,12 @@ describe("formatRelativeToNow Function", () => {
 
       // off by one, TZ=UTC @ 2025-03-29T00:17:41.637Z
       // https://github.com/date-fns/date-fns/issues/3506
-      verbose: ["1 month", "1 month, 1 day"],
+      verbose: [
+        "1 month",
+        "1 month, 1 day",
+        "1 month, 2 days",
+        "1 month, 3 days",
+      ],
     },
   };
 
