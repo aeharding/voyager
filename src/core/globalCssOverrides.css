@@ -78,11 +78,6 @@ ion-router-outlet ion-list.list-inset ion-item {
   white-space: pre;
 }
 
-/* https://github.com/ionic-team/ionic-framework/issues/27777#issuecomment-1631522283 */
-.action-sheet-height-fix {
-  --height: 100%;
-}
-
 ion-modal.small {
   --height: 50%;
   --width: 85%;
