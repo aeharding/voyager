@@ -20,7 +20,7 @@ let package = Package(
         .package(name: "CapacitorNetwork", path: "../../../node_modules/.pnpm/@capacitor+network@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/network"),
         .package(name: "CapacitorShare", path: "../../../node_modules/.pnpm/@capacitor+share@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/share"),
         .package(name: "CapacitorSplashScreen", path: "../../../node_modules/.pnpm/@capacitor+splash-screen@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/splash-screen"),
-        .package(name: "CapacitorStatusBar", path: "../../../node_modules/.pnpm/@capacitor+status-bar@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/status-bar"),
+        .package(name: "CapacitorStatusBar", path: "../../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@7.1.0/node_modules/@capacitor/status-bar"),
         .package(name: "CapacitorAndroidNavMode", path: "../../../node_modules/.pnpm/capacitor-android-nav-mode@2.0.0_@capacitor+core@7.1.0/node_modules/capacitor-android-nav-mode"),
         .package(name: "CapacitorApplicationContext", path: "../../../node_modules/.pnpm/capacitor-application-context@2.0.0_@capacitor+core@7.1.0/node_modules/capacitor-application-context"),
         .package(name: "CapacitorBiometricLock", path: "../../../node_modules/.pnpm/capacitor-biometric-lock@2.0.0_@capacitor+core@7.1.0/node_modules/capacitor-biometric-lock"),
