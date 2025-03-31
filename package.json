@@ -61,7 +61,7 @@
     "@capacitor/network": "^7.0.0",
     "@capacitor/share": "^7.0.0",
     "@capacitor/splash-screen": "^7.0.0",
-    "@capacitor/status-bar": "^7.0.0",
+    "@capacitor/status-bar": "^6.0.0",
     "@github/markdown-toolbar-element": "^2.2.3",
     "@ionic/core": "npm:voyager-ionic-core@8.5.0",
     "@ionic/react": "8.5.0",

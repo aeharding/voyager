@@ -59,8 +59,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0(@capacitor/core@7.1.0)
       '@capacitor/status-bar':
-        specifier: ^7.0.0
-        version: 7.0.0(@capacitor/core@7.1.0)
+        specifier: ^6.0.0
+        version: 6.0.2(@capacitor/core@7.1.0)
       '@github/markdown-toolbar-element':
         specifier: ^2.2.3
         version: 2.2.3
@@ -943,10 +943,10 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
-  '@capacitor/status-bar@7.0.0':
-    resolution: {integrity: sha512-wsvPkWkoSOXMIgVHu4c6P1sOuDSZ1ClUo5OpLRwj7u8DYzlV4jlmNzztQn2Lvsiqx1z4kfukSaqe40k1Lo4c9g==}
+  '@capacitor/status-bar@6.0.2':
+    resolution: {integrity: sha512-AmRIX6QvFemItlY7/69ARkIAqitRQqJ2qwgZmD1KqgFb78pH+XFXm1guvS/a8CuOOm/IqZ4ddDbl20yxtBqzGA==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': ^6.0.0
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -7506,7 +7506,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.1.0
 
-  '@capacitor/status-bar@7.0.0(@capacitor/core@7.1.0)':
+  '@capacitor/status-bar@6.0.2(@capacitor/core@7.1.0)':
     dependencies:
       '@capacitor/core': 7.1.0
 
