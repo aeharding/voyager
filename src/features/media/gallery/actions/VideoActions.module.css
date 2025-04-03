@@ -19,6 +19,13 @@
 
 .playerButton {
   composes: plainButton from "#/features/shared/shared.module.css";
+  z-index: 1;
+
+  && {
+    /* Additional touch target */
+    margin: -10px;
+    padding: 10px;
+  }
 
   ion-icon {
     font-size: 26px;
