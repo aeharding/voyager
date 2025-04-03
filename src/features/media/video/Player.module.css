@@ -55,7 +55,7 @@
   top: 0;
   right: 0;
 
-  &.volumeButton {
+  && {
     padding: 14px;
     font-size: 26px;
     color: #aaa;
