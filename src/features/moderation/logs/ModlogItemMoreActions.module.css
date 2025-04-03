@@ -1,7 +1,7 @@
 .button {
   composes: plainButton from "#/features/shared/shared.module.css";
 
-  &.button {
+  && {
     margin: -6px 0; /* prevent size from breaking line height */
   }
 }
