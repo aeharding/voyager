@@ -6,24 +6,26 @@ import { duplicateOutline, earthOutline } from "ionicons/icons";
 import { use } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
-import CuratedCommunitiesModal from "./CuratedCommunitiesModal";
-import { default as seedlingSvg } from "./seedling.svg";
-
-import styles from "./EmptyHomeFeed.module.css";
+import StarterPacksModal from "./StarterPacksModal";
 
 export default function EmptyHomeFeed() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const router = useOptimizedIonRouter();
 
   const { pageRef } = use(PageContext);
-  const [presentCuratedCommunitiesModal, onDismissCuratedCommunities] =
-    useIonModal(CuratedCommunitiesModal, {
-      onDismiss: () => onDismissCuratedCommunities(),
-    });
+  const [presentStarterPacksModal, onDismissStarterPacks] = useIonModal(
+    StarterPacksModal,
+    {
+      onDismiss: () => onDismissStarterPacks(),
+    },
+  );
 
   return (
-    <>
+    <MaxWidthContainer>
       <div className="ion-padding">
         <p>
           This is your{" "}
@@ -35,21 +37,26 @@ export default function EmptyHomeFeed() {
         </p>
         <p>
           <strong>Follow some communities to get started.</strong> Then,{" "}
-          <strong>pull to refresh.</strong> Or browse the{" "}
+          <strong>pull to refresh.</strong> Or browse{" "}
           <IonText color="primary">
-            <strong>all feed</strong>
+            <strong>all posts</strong>
           </IonText>{" "}
           to see everything.
         </p>
       </div>
       <IonList inset>
-        <IonItem routerLink={buildGeneralBrowseLink("/all")} button>
+        <IonItem
+          onClick={() =>
+            router.push(buildGeneralBrowseLink("/all"), "none", "replace")
+          }
+          button
+        >
           <IonIcon icon={earthOutline} slot="start" color="primary" /> All Posts
         </IonItem>
         <IonItem
           button
           onClick={() =>
-            presentCuratedCommunitiesModal({
+            presentStarterPacksModal({
               presentingElement:
                 pageRef?.current?.closest("ion-tabs") ?? undefined,
             })
@@ -59,7 +66,6 @@ export default function EmptyHomeFeed() {
           Starter Community Packs
         </IonItem>
       </IonList>
-      <img src={seedlingSvg} className={styles.seedling} />
-    </>
+    </MaxWidthContainer>
   );
 }

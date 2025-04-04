@@ -98,10 +98,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (filterSubscribed && !site) return <CenteredSpinner />;
     if (!sort) return <CenteredSpinner />;
 
-    if (type === "Subscribed" && followIds.length === 0) {
-      return <EmptyHomeFeed />;
-    }
-
     return (
       <ShowSubscribedIconContext value={type === "All" || type === "Local"}>
         <PageTypeContext value="special-feed">
@@ -110,6 +106,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               fetchFn={fetchFn}
               sortDuration={getSortDuration(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+              renderCustomEmptyContent={
+                type === "Subscribed" ? () => <EmptyHomeFeed /> : undefined
+              }
             />
           </WaitUntilPostAppearanceResolved>
         </PageTypeContext>

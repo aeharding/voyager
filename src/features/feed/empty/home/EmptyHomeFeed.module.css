@@ -1,9 +1,0 @@
-.seedling {
-  position: absolute;
-  bottom: 0;
-  left: calc(85% - 150px);
-  opacity: 0.5;
-  pointer-events: none;
-
-  width: 150px;
-}

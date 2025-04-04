@@ -219,7 +219,6 @@ export default function TitleSearchResults() {
                   onSelect(c);
                 }}
                 key={typeof c === "string" ? c : c.id}
-                routerDirection="none"
               >
                 {renderTitle(c)}
               </IonItem>
