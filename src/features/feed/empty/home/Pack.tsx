@@ -49,7 +49,12 @@ export default function Pack({ pack, onSelect }: PackProps) {
       key={pack.title}
       className={cx(completelySubscribed && styles.disabled)}
     >
-      <IonIcon icon={pack.icon} slot="start" color="medium" />
+      <IonIcon
+        icon={pack.icon}
+        slot="start"
+        color="medium"
+        className={styles.disabled}
+      />
       <IonCheckbox
         justify="space-between"
         color={completelySubscribed ? "medium" : "primary"}
