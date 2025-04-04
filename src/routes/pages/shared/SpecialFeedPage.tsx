@@ -1,5 +1,6 @@
 import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
 import { ListingType } from "lemmy-js-client";
+import { useState } from "react";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
 import ModActions from "#/features/community/mod/ModActions";
@@ -55,6 +56,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const noSubscribedInFeed = useAppSelector(
     (state) => state.settings.general.noSubscribedInFeed,
   );
+  const [showHiddenPosts, setShowHiddenPosts] = useState(false);
 
   const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
 
@@ -62,7 +64,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- fetchFn relies on fetchFnLastUpdated for updates
     fetchFnLastUpdated;
 
     const { posts, next_page } = await client.getPosts(
@@ -105,6 +106,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               fetchFn={fetchFn}
               sortDuration={getSortDuration(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+              filterHiddenPosts={!showHiddenPosts}
             />
           </WaitUntilPostAppearanceResolved>
         </PageTypeContext>
@@ -141,7 +143,11 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             <FeedContent>
               {feed}
               <TitleSearchResults />
-              <PostFabs forceRefresh={notifyFeedUpdated} />
+              <PostFabs
+                forceRefresh={notifyFeedUpdated}
+                setShowHiddenPosts={setShowHiddenPosts}
+                showHiddenPosts={showHiddenPosts}
+              />
             </FeedContent>
           </IonPage>
         </FeedContextProvider>
