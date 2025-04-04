@@ -7,11 +7,9 @@ import nativeFetch from "./nativeFetch";
 
 const usingNativeFetch = isNative();
 
-const BASE_HEADERS = usingNativeFetch
-  ? {
-      ["User-Agent"]: "VoyagerApp/1.0",
-    }
-  : undefined;
+const BASE_HEADERS = {
+  ["User-Agent"]: "VoyagerApp/1.0",
+} as const;
 
 export function buildBaseLemmyUrl(url: string): string {
   if (import.meta.env.VITE_FORCE_LEMMY_INSECURE) {
