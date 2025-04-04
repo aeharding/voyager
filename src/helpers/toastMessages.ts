@@ -323,3 +323,8 @@ export const privateMessageSendFailed: AppToastOptions = {
   message: "Message failed to send. Please try again",
   color: "danger",
 };
+
+export const subscribedStarterPacks: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Subscribed! Pull to refresh",
+};

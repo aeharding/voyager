@@ -58,6 +58,21 @@ export function getRemoteHandle(
   return `${item.name}@${getItemActorName(item)}`;
 }
 
+export function getCommunityHandleFromActorId(
+  actorId: string,
+  connectedInstance: string,
+) {
+  const url = parseUrl(actorId);
+  if (!url) return;
+
+  const { hostname, pathname } = url;
+  const name = pathname.split("/").pop();
+
+  if (hostname === connectedInstance) return name;
+
+  return `${name}@${hostname}`;
+}
+
 export function getRemoteHandleFromHandle(
   handle: string,
   connectedInstance: string,

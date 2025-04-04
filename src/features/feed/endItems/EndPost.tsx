@@ -13,12 +13,15 @@ export interface EndPostProps {
    * Examples: `"1 hour"` `"6 months"` `"1 week"`
    */
   sortDuration: string | undefined;
+
+  renderCustomEmptyContent?: () => React.ReactNode;
 }
 
 export default function EndPost({
   empty,
   communityName,
   sortDuration,
+  renderCustomEmptyContent,
 }: EndPostProps) {
   const feedName = communityName ? `c/${communityName}` : "this feed";
 
@@ -26,18 +29,24 @@ export default function EndPost({
     if (empty) {
       if (sortDuration)
         return (
-          <>
+          <div className={styles.container}>
             No posts in {feedName} for last {sortDuration}.
-          </>
+          </div>
         );
 
-      return <>Nothing to see here — {feedName} is completely empty.</>;
+      if (renderCustomEmptyContent) return renderCustomEmptyContent();
+
+      return (
+        <div className={styles.container}>
+          <>Nothing to see here — {feedName} is completely empty.</>
+        </div>
+      );
     }
 
-    return <>You&apos;ve reached the end!</>;
+    return <div className={styles.container}>You&apos;ve reached the end!</div>;
   }
 
-  return <div className={styles.container}>{renderError()}</div>;
+  return renderError();
 }
 
 export function getSortDuration(
