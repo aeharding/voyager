@@ -6,6 +6,7 @@ import ModActions from "#/features/community/mod/ModActions";
 import TitleSearch from "#/features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
+import EmptyHomeFeed from "#/features/feed/empty/home/EmptyHomeFeed";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
@@ -62,7 +63,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- fetchFn relies on fetchFnLastUpdated for updates
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
 
     const { posts, next_page } = await client.getPosts(
@@ -105,6 +106,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               fetchFn={fetchFn}
               sortDuration={getSortDuration(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+              renderCustomEmptyContent={
+                type === "Subscribed" ? () => <EmptyHomeFeed /> : undefined
+              }
             />
           </WaitUntilPostAppearanceResolved>
         </PageTypeContext>

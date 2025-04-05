@@ -47,7 +47,9 @@ export type FetchFn<I> = (
 type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
 export interface FeedProps<I>
-  extends Partial<Pick<EndPostProps, "sortDuration">> {
+  extends Partial<
+    Pick<EndPostProps, "sortDuration" | "renderCustomEmptyContent">
+  > {
   itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
@@ -103,6 +105,7 @@ export default function Feed<I>({
   getIndex,
   limit = DEFAULT_LIMIT,
   sortDuration,
+  renderCustomEmptyContent,
   onRemovedFromTop,
   onPull,
 }: FeedProps<I>) {
@@ -125,6 +128,8 @@ export default function Feed<I>({
   const { setScrolledPastSearch } = use(FeedSearchContext);
 
   const startRangeRef = useRef(0);
+
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const infiniteScrolling = useAppSelector(
     (state) => state.settings.general.posts.infiniteScrolling,
@@ -208,6 +213,7 @@ export default function Feed<I>({
         : newPageItems;
 
       setLoadFailed(false);
+      setInitialLoad(false);
 
       if (refresh) {
         setAtEnd(false);
@@ -313,6 +319,7 @@ export default function Feed<I>({
           empty={!items.length}
           communityName={communityName}
           sortDuration={sortDuration}
+          renderCustomEmptyContent={renderCustomEmptyContent}
           key="footer"
         />
       );
@@ -338,7 +345,7 @@ export default function Feed<I>({
     }
   }
 
-  if ((loading && !filteredItems.length) || loading === undefined)
+  if ((loading && initialLoad) || loading === undefined)
     return <CenteredSpinner />;
 
   return (
