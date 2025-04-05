@@ -22,7 +22,7 @@ jobs:
         env:
           VITE_FORCE_LEMMY_INSECURE: 1
           VITE_CUSTOM_LEMMY_SERVERS: localhost:8536
-          VITE__TEST_MODE: 1
+          MODE: test
 
       - name: Install Playwright dependencies
         run: npx playwright install --with-deps

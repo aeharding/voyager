@@ -56,7 +56,7 @@ interface AuthState {
 }
 
 const initialState: (connectedInstance?: string) => AuthState = (
-  connectedInstance = "",
+  connectedInstance = import.meta.env.MODE === "test" ? getDefaultServer() : "",
 ) => ({
   accountData: getCredentialsFromStorage(),
   connectedInstance,
@@ -136,10 +136,6 @@ export const authSlice = createSlice({
       updateCredentialsStorage(state.accountData);
     },
     updateConnectedInstance(state, action: PayloadAction<string>) {
-      if (import.meta.env.VITE__TEST_MODE) {
-        state.connectedInstance = getDefaultServer();
-        return;
-      }
       state.connectedInstance = action.payload;
     },
     reset: (state) => {
