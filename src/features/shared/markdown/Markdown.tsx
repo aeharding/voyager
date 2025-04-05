@@ -1,7 +1,7 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
+import superSub from "@aeharding/remark-lemmy-supersub";
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
-import superSub from "remark-supersub-lemmy";
 
 import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
@@ -64,8 +64,8 @@ export default function Markdown({
           ...props.components,
         }}
         remarkPlugins={[
-          [customRemarkGfm, { connectedInstance }],
           superSub,
+          [customRemarkGfm, { connectedInstance }],
           spoiler,
         ]}
         rehypePlugins={[[rehypeHighlight, { detect: true }]]}

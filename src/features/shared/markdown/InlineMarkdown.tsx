@@ -1,6 +1,6 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
+import superSub from "@aeharding/remark-lemmy-supersub";
 import ReactMarkdown from "react-markdown";
-import superSub from "remark-supersub-lemmy";
 
 import inlinifySpoiler from "./components/spoiler/inlinifySpoiler";
 import { customRemarkStrikethrough } from "./customRemarkGfm";
