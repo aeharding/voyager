@@ -51,8 +51,6 @@ export const instanceSelector = createSelector([handleSelector], (handle) => {
 });
 
 export const urlSelector = (state: RootState) => {
-  if (import.meta.env.MODE === "test") return state.auth.connectedInstance;
-
   return instanceSelector(state) ?? state.auth.connectedInstance;
 };
 
