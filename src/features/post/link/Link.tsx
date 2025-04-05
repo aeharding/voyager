@@ -3,8 +3,8 @@ import { chevronForward } from "ionicons/icons";
 import { MouseEvent, useEffect, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
+import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
-import PlaintextMarkdown from "#/features/shared/markdown/PlaintextMarkdown";
 import Url from "#/features/shared/Url";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { cx } from "#/helpers/css";
@@ -158,7 +158,7 @@ export default function Link({
         {buildCompactIcon()}
         <div className={styles.urlContainer}>
           <div className={styles.text}>
-            <PlaintextMarkdown>{text}</PlaintextMarkdown>
+            <InlineMarkdown>{text ?? ""}</InlineMarkdown>
           </div>
           <Url>{url}</Url>
         </div>
