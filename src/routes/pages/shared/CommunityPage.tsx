@@ -66,6 +66,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const router = useOptimizedIonRouter();
   const getRandomCommunity = useGetRandomCommunity();
   const commonPostFeedParams = useCommonPostFeedParams();
+  const [showHiddenPosts, setShowHiddenPosts] = useState(false);
 
   const appTitleRef = useRef<AppTitleHandle>(undefined);
 
@@ -96,7 +97,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- fetchFn relies on fetchFnLastUpdated for updates
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
 
     const { posts, next_page } = await client.getPosts(
@@ -162,7 +163,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
               communityName={community}
               sortDuration={getSortDuration(sort)}
               header={header}
-              filterHiddenPosts={!showHiddenInCommunities}
+              filterHiddenPosts={!showHiddenInCommunities && !showHiddenPosts}
               onPull={onPull}
             />
           </WaitUntilPostAppearanceResolved>
@@ -250,7 +251,10 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
               {renderFeed()}
               <TitleSearchResults />
               {!showHiddenInCommunities && (
-                <PostFabs forceRefresh={notifyFeedUpdated} />
+                <PostFabs
+                  forceRefresh={notifyFeedUpdated}
+                  setShowHiddenPosts={setShowHiddenPosts}
+                />
               )}
               <div className={styles.fixedBg} slot="fixed" />
             </FeedContent>
