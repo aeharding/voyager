@@ -1,6 +1,5 @@
 import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
 import { ListingType } from "lemmy-js-client";
-import { useState } from "react";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
 import ModActions from "#/features/community/mod/ModActions";
@@ -15,6 +14,7 @@ import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
+import { ShowHiddenPostsProvider } from "#/features/feed/postFabs/HidePostsFab";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
 import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
@@ -57,8 +57,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const noSubscribedInFeed = useAppSelector(
     (state) => state.settings.general.noSubscribedInFeed,
   );
-  const [showHiddenPosts, setShowHiddenPosts] = useState(false);
-
   const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
 
   const filterSubscribed =
@@ -108,7 +106,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               fetchFn={fetchFn}
               sortDuration={getSortDuration(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
-              filterHiddenPosts={!showHiddenPosts}
               renderCustomEmptyContent={
                 type === "Subscribed" ? () => <EmptyHomeFeed /> : undefined
               }
@@ -121,42 +118,40 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
   return (
     <TitleSearchProvider>
-      <PostAppearanceProvider feed={postFeed}>
-        <FeedContextProvider>
-          <IonPage>
-            <AppHeader>
-              <IonToolbar>
-                <IonButtons slot="start">
-                  <IonBackButton
-                    text="Communities"
-                    defaultHref={buildGeneralBrowseLink("")}
-                  />
-                </IonButtons>
-
-                {site && (
-                  <DocumentTitle>{site.site_view.site.name}</DocumentTitle>
-                )}
-                <TitleSearch name={listingTypeTitle(type)}>
-                  <IonButtons slot="end">
-                    {type === "ModeratorView" && <ModActions type={type} />}
-                    <PostSort sort={sort} setSort={setSort} />
-                    <SpecialFeedMoreActions type={type} />
+      <ShowHiddenPostsProvider>
+        <PostAppearanceProvider feed={postFeed}>
+          <FeedContextProvider>
+            <IonPage>
+              <AppHeader>
+                <IonToolbar>
+                  <IonButtons slot="start">
+                    <IonBackButton
+                      text="Communities"
+                      defaultHref={buildGeneralBrowseLink("")}
+                    />
                   </IonButtons>
-                </TitleSearch>
-              </IonToolbar>
-            </AppHeader>
-            <FeedContent>
-              {feed}
-              <TitleSearchResults />
-              <PostFabs
-                forceRefresh={notifyFeedUpdated}
-                setShowHiddenPosts={setShowHiddenPosts}
-                showHiddenPosts={showHiddenPosts}
-              />
-            </FeedContent>
-          </IonPage>
-        </FeedContextProvider>
-      </PostAppearanceProvider>
+
+                  {site && (
+                    <DocumentTitle>{site.site_view.site.name}</DocumentTitle>
+                  )}
+                  <TitleSearch name={listingTypeTitle(type)}>
+                    <IonButtons slot="end">
+                      {type === "ModeratorView" && <ModActions type={type} />}
+                      <PostSort sort={sort} setSort={setSort} />
+                      <SpecialFeedMoreActions type={type} />
+                    </IonButtons>
+                  </TitleSearch>
+                </IonToolbar>
+              </AppHeader>
+              <FeedContent>
+                {feed}
+                <TitleSearchResults />
+                <PostFabs forceRefresh={notifyFeedUpdated} />
+              </FeedContent>
+            </IonPage>
+          </FeedContextProvider>
+        </PostAppearanceProvider>
+      </ShowHiddenPostsProvider>
     </TitleSearchProvider>
   );
 }

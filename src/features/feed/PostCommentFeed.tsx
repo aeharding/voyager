@@ -22,6 +22,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import { FeedContext } from "./FeedContext";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
+import { useShowHiddenPosts } from "./postFabs/HidePostsFab";
 
 import styles from "./PostCommentFeed.module.css";
 
@@ -38,7 +39,7 @@ interface PostCommentFeed
 
 export default function PostCommentFeed({
   fetchFn: _fetchFn,
-  filterHiddenPosts = true,
+  filterHiddenPosts: filterHiddenPostsProp = true,
   filterKeywordsAndWebsites = true,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
@@ -67,6 +68,10 @@ export default function PostCommentFeed({
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
   const itemsRef = useRef<PostCommentItem[]>(undefined);
+
+  const { showHiddenPosts } = useShowHiddenPosts();
+
+  const filterHiddenPosts = !showHiddenPosts && filterHiddenPostsProp;
 
   const { setItemsRef } = use(FeedContext);
 

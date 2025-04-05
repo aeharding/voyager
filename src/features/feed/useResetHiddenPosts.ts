@@ -1,4 +1,4 @@
-import { useIonActionSheet } from "@ionic/react";
+import { ActionSheetButton, useIonActionSheet } from "@ionic/react";
 import { compact } from "es-toolkit";
 
 import { clearHidden } from "#/features/post/postSlice";
@@ -11,27 +11,23 @@ export default function useResetHiddenPosts() {
     (state) => state.settings.general.posts.neverShowReadPosts,
   );
 
-  return function (cb?: () => void, onUpdateHideDbCb?: () => void) {
+  return function (options?: {
+    onFinishReset?: () => void;
+    prependButtons?: ActionSheetButton[];
+  }) {
     presentActionSheet({
       header: neverShowReadPosts
         ? 'Note: You have "Never Show Previously Read" turned on, so read posts will remain hidden'
         : undefined,
       buttons: compact([
-        onUpdateHideDbCb && {
-          text: "Show hidden temporarily",
-          handler: () => {
-            (async () => {
-              onUpdateHideDbCb?.();
-            })();
-          },
-        },
+        ...(options?.prependButtons ?? []),
         {
           text: "Reset hidden posts",
           role: "destructive",
           handler: () => {
             (async () => {
               await dispatch(clearHidden());
-              cb?.();
+              options?.onFinishReset?.();
             })();
           },
         },

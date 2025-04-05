@@ -24,6 +24,7 @@ import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
+import { ShowHiddenPostsProvider } from "#/features/feed/postFabs/HidePostsFab";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
 import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
@@ -183,84 +184,86 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
   return (
     <FeedContextProvider>
-      <PostAppearanceProvider feed={postFeed}>
-        <TitleSearchProvider>
-          <IonPage className={searchOpen ? "grey-bg" : ""}>
-            <AppHeader>
-              <IonToolbar
-                className={cx(
-                  styles.toolbar,
-                  !searchOpen && !scrolledPastSearch
-                    ? styles.toolbarHideBorder
-                    : undefined,
-                )}
-              >
-                {!searchOpen && (
-                  <>
-                    <IonButtons slot="start">
-                      <IonBackButton
-                        defaultHref={buildGeneralBrowseLink("/")}
-                      />
-                    </IonButtons>
-                    {communityView && (
-                      <DocumentTitle>
-                        {communityView.community.title}
-                      </DocumentTitle>
-                    )}
-                    <TitleSearch name={community} ref={appTitleRef}>
-                      <IonButtons slot="end">
-                        <ModActions
-                          community={communityView}
-                          communityHandle={community}
-                        />
-                        <PostSort sort={sort} setSort={setSort} />
-                        <MoreActions community={communityView} />
-                      </IonButtons>
-                    </TitleSearch>
-                  </>
-                )}
-
-                <IonSearchbar
-                  placeholder={`Search c/${community}`}
-                  ref={searchbarRef}
-                  onBlur={() => setSearchOpen(false)}
+      <ShowHiddenPostsProvider>
+        <PostAppearanceProvider feed={postFeed}>
+          <TitleSearchProvider>
+            <IonPage className={searchOpen ? "grey-bg" : ""}>
+              <AppHeader>
+                <IonToolbar
                   className={cx(
-                    styles.headerSearchbar,
-                    !searchOpen ? styles.searchbarHide : undefined,
+                    styles.toolbar,
+                    !searchOpen && !scrolledPastSearch
+                      ? styles.toolbarHideBorder
+                      : undefined,
                   )}
-                  showCancelButton="always"
-                  showClearButton="never"
-                  autocapitalize="on"
-                  onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
-                  value={searchQuery}
-                  enterkeyhint="search"
-                  onKeyDown={(e) => {
-                    if (!searchQuery.trim()) return;
-                    if (e.key !== "Enter") return;
+                >
+                  {!searchOpen && (
+                    <>
+                      <IonButtons slot="start">
+                        <IonBackButton
+                          defaultHref={buildGeneralBrowseLink("/")}
+                        />
+                      </IonButtons>
+                      {communityView && (
+                        <DocumentTitle>
+                          {communityView.community.title}
+                        </DocumentTitle>
+                      )}
+                      <TitleSearch name={community} ref={appTitleRef}>
+                        <IonButtons slot="end">
+                          <ModActions
+                            community={communityView}
+                            communityHandle={community}
+                          />
+                          <PostSort sort={sort} setSort={setSort} />
+                          <MoreActions community={communityView} />
+                        </IonButtons>
+                      </TitleSearch>
+                    </>
+                  )}
 
-                    router.push(
-                      buildGeneralBrowseLink(
-                        `/c/${community}/search/posts/${searchQuery}`,
-                      ),
-                    );
-                  }}
-                />
-              </IonToolbar>
-            </AppHeader>
-            <FeedContent className={styles.feedContent}>
-              {renderFeed()}
-              <TitleSearchResults />
-              {!showHiddenInCommunities && (
-                <PostFabs
-                  forceRefresh={notifyFeedUpdated}
-                  setShowHiddenPosts={setShowHiddenPosts}
-                />
-              )}
-              <div className={styles.fixedBg} slot="fixed" />
-            </FeedContent>
-          </IonPage>
-        </TitleSearchProvider>
-      </PostAppearanceProvider>
+                  <IonSearchbar
+                    placeholder={`Search c/${community}`}
+                    ref={searchbarRef}
+                    onBlur={() => setSearchOpen(false)}
+                    className={cx(
+                      styles.headerSearchbar,
+                      !searchOpen ? styles.searchbarHide : undefined,
+                    )}
+                    showCancelButton="always"
+                    showClearButton="never"
+                    autocapitalize="on"
+                    onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
+                    value={searchQuery}
+                    enterkeyhint="search"
+                    onKeyDown={(e) => {
+                      if (!searchQuery.trim()) return;
+                      if (e.key !== "Enter") return;
+
+                      router.push(
+                        buildGeneralBrowseLink(
+                          `/c/${community}/search/posts/${searchQuery}`,
+                        ),
+                      );
+                    }}
+                  />
+                </IonToolbar>
+              </AppHeader>
+              <FeedContent className={styles.feedContent}>
+                {renderFeed()}
+                <TitleSearchResults />
+                {!showHiddenInCommunities && (
+                  <PostFabs
+                    forceRefresh={notifyFeedUpdated}
+                    setShowHiddenPosts={setShowHiddenPosts}
+                  />
+                )}
+                <div className={styles.fixedBg} slot="fixed" />
+              </FeedContent>
+            </IonPage>
+          </TitleSearchProvider>
+        </PostAppearanceProvider>
+      </ShowHiddenPostsProvider>
     </FeedContextProvider>
   );
 }
