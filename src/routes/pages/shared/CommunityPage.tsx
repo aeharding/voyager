@@ -67,7 +67,6 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const router = useOptimizedIonRouter();
   const getRandomCommunity = useGetRandomCommunity();
   const commonPostFeedParams = useCommonPostFeedParams();
-  const [showHiddenPosts, setShowHiddenPosts] = useState(false);
 
   const appTitleRef = useRef<AppTitleHandle>(undefined);
 
@@ -164,7 +163,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
               communityName={community}
               sortDuration={getSortDuration(sort)}
               header={header}
-              filterHiddenPosts={!showHiddenInCommunities && !showHiddenPosts}
+              filterHiddenPosts={!showHiddenInCommunities}
               onPull={onPull}
             />
           </WaitUntilPostAppearanceResolved>
@@ -253,10 +252,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
                 {renderFeed()}
                 <TitleSearchResults />
                 {!showHiddenInCommunities && (
-                  <PostFabs
-                    forceRefresh={notifyFeedUpdated}
-                    setShowHiddenPosts={setShowHiddenPosts}
-                  />
+                  <PostFabs forceRefresh={notifyFeedUpdated} />
                 )}
                 <div className={styles.fixedBg} slot="fixed" />
               </FeedContent>
