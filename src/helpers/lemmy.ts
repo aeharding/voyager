@@ -10,7 +10,7 @@ import {
 } from "lemmy-js-client";
 
 import { parseJWT } from "./jwt";
-import { getApId } from "./lemmyCompat";
+import { getApId, getCounts } from "./lemmyCompat";
 import { quote } from "./markdown";
 import { escapeStringForRegex } from "./regex";
 import { parseUrl } from "./url";
@@ -159,14 +159,14 @@ export function buildCommentsTreeWithMissing(
 }
 
 function childHasMissing(node: CommentNodeI) {
-  let missing = node.comment_view.counts.child_count;
+  let missing = getCounts(node.comment_view).child_count;
 
   for (const child of node.children) {
     missing--;
 
     // the child is responsible for showing missing indicator
     // if the child has missing comments
-    missing -= child.comment_view.counts.child_count;
+    missing -= getCounts(child.comment_view).child_count;
 
     childHasMissing(child);
   }

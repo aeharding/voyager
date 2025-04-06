@@ -20,6 +20,7 @@ import {
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
 import { useSharePostComment } from "#/features/shared/useSharePostComment";
+import { isPost as _isPost } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,
@@ -50,7 +51,7 @@ export function VotableActionsImpl({
   const shared = useSharedInboxActions(item);
   const { share } = useSharePostComment(item);
 
-  const isPost = "unread_comments" in item;
+  const isPost = _isPost(item);
 
   const storeVote = useAppSelector((state) =>
     isPost
