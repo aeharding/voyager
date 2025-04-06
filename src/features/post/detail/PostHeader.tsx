@@ -182,7 +182,9 @@ export default function PostHeader({
             <ModeratableItemBannerOutlet />
             <div>
               <div className={styles.title} ref={titleRef}>
-                <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+                <InlineMarkdown parseBlocks={false}>
+                  {post.post.name}
+                </InlineMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
               </div>
               {showPostText && text && (

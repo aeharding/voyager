@@ -7,9 +7,20 @@ import { customRemarkStrikethrough } from "./customRemarkGfm";
 
 interface InlineMarkdownProps {
   children: string;
+
+  /**
+   * If true, will inlineify block elements.
+   *
+   * If false, lists, blockquotes, etc. will NOT be parsed.
+   * ("#" and ">" will still be shown raw in output)
+   */
+  parseBlocks?: boolean;
 }
 
-export default function InlineMarkdown({ children }: InlineMarkdownProps) {
+export default function InlineMarkdown({
+  children,
+  parseBlocks = true,
+}: InlineMarkdownProps) {
   return (
     <ReactMarkdown
       skipHtml
@@ -24,7 +35,7 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
         sup: "sup",
       }}
       remarkPlugins={[
-        disableBlockTokens,
+        ...(!parseBlocks ? [disableBlockTokens] : []),
         customRemarkStrikethrough,
         superSub,
         spoiler,
