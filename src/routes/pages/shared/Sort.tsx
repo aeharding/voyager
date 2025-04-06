@@ -10,19 +10,20 @@ import {
   chatbubbleEllipsesOutline,
   chatbubblesOutline,
   flameOutline,
-  helpCircleOutline,
   peopleCircleOutline,
   personCircleOutline,
+  playBackOutline,
   skullOutline,
   timeOutline,
   trendingUpOutline,
   trophyOutline,
 } from "ionicons/icons";
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { use } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
-import { SearchSortType } from "#/features/feed/sort/SearchSort";
+import { VgerCommentSortType } from "#/features/comment/CommentSort";
+import { VgerPostSortType } from "#/features/feed/sort/PostSort";
+import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
 import {
   alphabeticalAsc,
   alphabeticalDesc,
@@ -37,7 +38,7 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
-import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
 export type SortOptions<S> = readonly (ChildrenSortOption<S, S> | S)[];
 
@@ -60,7 +61,7 @@ interface UseSortOptions {
   title?: string;
 }
 
-export default function buildSort<S extends AnySort>(
+export default function buildSort<S extends AnyVgerSort>(
   _sortOptions: SortOptions<S>,
 ) {
   const sortOptions = hydrateSortOptions(_sortOptions);
@@ -177,13 +178,13 @@ function findSortOption<S>(sort: S, sortOptions: HydratedSortOptions<S>) {
   }
 }
 
-type AnySort =
-  | PostSortType
-  | CommentSortType
-  | SearchSortType
-  | CommunitySortType;
+type AnyVgerSort =
+  | VgerPostSortType
+  | VgerCommentSortType
+  | VgerSearchSortType
+  | VgerCommunitySortType;
 
-function hydrateSortOptions<S extends AnySort>(
+function hydrateSortOptions<S extends AnyVgerSort>(
   _sortOptions: SortOptions<S>,
 ): HydratedSortOptions<S> {
   return _sortOptions.map((option) => {
@@ -191,21 +192,23 @@ function hydrateSortOptions<S extends AnySort>(
 
     return {
       ...option,
-      icon: option.icon ?? getSortIcon(option.label as AnySort),
+      icon: option.icon ?? getSortIcon(option.label as AnyVgerSort),
       children: option.children.map(hydrateSortOption),
     };
   }) as HydratedSortOptions<S>;
 }
 
-function hydrateSortOption(option: AnySort): SelectableSortOption<AnySort> {
+function hydrateSortOption(
+  option: AnyVgerSort,
+): SelectableSortOption<AnyVgerSort> {
   return {
     label: formatSortLabel(option),
     icon: getSortIcon(option),
     value: option,
-  } as SelectableSortOption<AnySort>;
+  } as SelectableSortOption<AnyVgerSort>;
 }
 
-export function getSortIcon(sort: AnySort): string {
+export function getSortIcon(sort: AnyVgerSort): string {
   switch (sort) {
     case "Hot":
       return flameOutline;
@@ -250,7 +253,7 @@ export function getSortIcon(sort: AnySort): string {
     case "Top":
       return barChartOutline;
     case "Old":
-      return helpCircleOutline;
+      return playBackOutline;
     case "Controversial":
       return skullOutline;
     case "Scaled":
@@ -265,7 +268,7 @@ export function getSortIcon(sort: AnySort): string {
   }
 }
 
-export function formatSortLabel(sort: AnySort): string {
+export function formatSortLabel(sort: AnyVgerSort): string {
   switch (sort) {
     case "TopHour":
       return "Hour";
@@ -296,4 +299,22 @@ export function formatSortLabel(sort: AnySort): string {
     default:
       return startCase(sort);
   }
+}
+
+// Solution using recursive type
+type FlattenSortOptions<T> = T extends readonly [infer First, ...infer Rest]
+  ? First extends { children: readonly unknown[] }
+    ? [...FlattenSortOptions<First["children"]>, ...FlattenSortOptions<Rest>]
+    : [First, ...FlattenSortOptions<Rest>]
+  : [];
+
+export function flattenSortOptions<T extends SortOptions<unknown>>(
+  options: T,
+): FlattenSortOptions<T> {
+  return options.flatMap((option) => {
+    if (typeof option === "object" && option !== null && "children" in option) {
+      return option.children;
+    }
+    return option;
+  }) as FlattenSortOptions<T>;
 }

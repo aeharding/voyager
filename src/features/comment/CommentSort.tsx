@@ -1,12 +1,17 @@
-import buildSort from "#/routes/pages/shared/Sort";
+import { CommentSortType } from "lemmy-js-client";
 
-export const COMMENT_SORTS = [
+import { arrayOfAll } from "#/helpers/array";
+import buildSort, { SortOptions } from "#/routes/pages/shared/Sort";
+
+export type VgerCommentSortType = CommentSortType;
+
+export const ALL_COMMENT_SORTS = arrayOfAll<VgerCommentSortType>()([
   "Hot",
   "Top",
   "New",
   "Controversial",
   "Old",
-] as const;
+] as const satisfies SortOptions<VgerCommentSortType>);
 
 export const { Sort: CommentSort, useSelectSort: useSelectCommentSort } =
-  buildSort(COMMENT_SORTS);
+  buildSort(ALL_COMMENT_SORTS);

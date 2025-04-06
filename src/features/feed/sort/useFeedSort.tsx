@@ -1,8 +1,12 @@
 import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { useCallback, useEffect, useState } from "react";
 
+import { VgerCommentSortType } from "#/features/comment/CommentSort";
 import useSupported from "#/helpers/useSupported";
-import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+import {
+  LemmyCommunitySortType,
+  VgerCommunitySortType,
+} from "#/routes/pages/search/results/CommunitySort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
@@ -12,19 +16,32 @@ import {
   setFeedSort,
   SetSortActionPayload,
 } from "./feedSortSlice";
-import { SearchSortType } from "./SearchSort";
+import { VgerPostSortType } from "./PostSort";
+import { LemmySearchSortType, VgerSearchSortType } from "./SearchSort";
+import { VgerTopSort } from "./topSorts";
 
-interface Sorts {
+interface VgerSorts {
+  posts: VgerPostSortType;
+  comments: VgerCommentSortType;
+  search: VgerSearchSortType;
+  communities: VgerCommunitySortType;
+}
+
+interface LemmySorts {
   posts: PostSortType;
   comments: CommentSortType;
-  search: SearchSortType;
-  communities: CommunitySortType;
+  search: LemmySearchSortType;
+  communities: LemmyCommunitySortType;
 }
 
 export default function useFeedSort<
   Context extends "posts" | "comments" | "search" | "communities",
->(context: Context, feed?: AnyFeed | undefined, overrideSort?: Sorts[Context]) {
-  type Sort = Sorts[Context];
+>(
+  context: Context,
+  feed?: AnyFeed | undefined,
+  overrideSort?: VgerSorts[Context],
+) {
+  type Sort = VgerSorts[Context];
 
   const dispatch = useAppDispatch();
 
@@ -91,9 +108,9 @@ export function useFeedSortParams<
   Context extends "posts" | "comments" | "search" | "communities",
 >(
   context: Context,
-  sort: Sorts[Context] | undefined,
+  sort: VgerSorts[Context] | undefined,
   compatibleOldSortType?: "posts" | "comments",
-): { sort: Sorts[Context]; time?: Time } | undefined {
+): { sort: LemmySorts[Context]; time?: Time } | undefined {
   const isModern = useSupported("New Sorting");
 
   if (!sort) return;
@@ -104,39 +121,43 @@ export function useFeedSortParams<
 
     const actualSort = convertSearchSortToOldSortType(
       compatibleOldSortType,
-      sort as SearchSortType,
+      sort as VgerSearchSortType,
     );
 
     return convertSortToLemmyParams(
       "search",
-      actualSort as SearchSortType,
+      actualSort as VgerSearchSortType,
       isModern,
-    );
+    ) as { sort: LemmySorts[Context]; time?: Time };
   }
 
-  return convertSortToLemmyParams(context, sort, isModern);
+  return convertSortToLemmyParams(context, sort, isModern) as {
+    sort: LemmySorts[Context];
+    time?: Time;
+  };
 }
 
 function convertSortToLemmyParams<
   Context extends "posts" | "comments" | "search" | "communities",
->(context: Context, sort: Sorts[Context], isModern: boolean) {
+>(context: Context, sort: VgerSorts[Context], isModern: boolean) {
   if (!isModern) return { sort };
 
   switch (context) {
     case "posts":
-      return convertPostSortToLemmyParams(sort as PostSortType);
+      return convertPostSortToLemmyParams(sort as VgerPostSortType);
     case "comments":
-      return convertCommentSortToLemmyParams(sort as CommentSortType);
+      return convertCommentSortToLemmyParams(sort as VgerCommentSortType);
     case "search":
-      return convertSearchSortToLemmyParams(sort as SearchSortType);
+      return convertSearchSortToLemmyParams(sort as VgerSearchSortType);
     case "communities":
-      return convertCommunitySortToLemmyParams(sort as CommunitySortType);
+      return convertCommunitySortToLemmyParams(sort as VgerCommunitySortType);
   }
 }
 
-function convertSearchSortToOldSortType<
-  OldContext extends "posts" | "comments",
->(oldSortType: OldContext, sort: SearchSortType): Sorts[OldContext] {
+function convertSearchSortToOldSortType(
+  oldSortType: "posts" | "comments",
+  sort: VgerSearchSortType,
+): LemmySorts["posts"] | LemmySorts["comments"] {
   switch (oldSortType) {
     case "posts":
       switch (sort) {
@@ -144,9 +165,28 @@ function convertSearchSortToOldSortType<
           return "New";
         case "Old":
           return "Old";
-        case "Top":
-          // @ts-expect-error TS bug?
-          return "TopAll";
+        case "TopAll":
+          return "Top";
+        case "TopDay":
+          return "TopDay";
+        case "TopWeek":
+          return "TopWeek";
+        case "TopMonth":
+          return "TopMonth";
+        case "TopYear":
+          return "TopYear";
+        case "TopHour":
+          return "TopHour";
+        case "TopSixHour":
+          return "TopSixHour";
+        case "TopNineMonths":
+          return "TopNineMonths";
+        case "TopSixMonths":
+          return "TopSixMonths";
+        case "TopThreeMonths":
+          return "TopThreeMonths";
+        case "TopTwelveHour":
+          return "TopTwelveHour";
       }
 
       break;
@@ -157,9 +197,6 @@ function convertSearchSortToOldSortType<
           return "New";
         case "Old":
           return "Old";
-        case "Top":
-          // @ts-expect-error TS bug?
-          return "Top";
       }
   }
   throw new Error(`Invalid sort: ${sort}`);
@@ -189,7 +226,7 @@ type LemmyPostSortType =
   | "Scaled"
   | "Top";
 
-function convertPostSortToLemmyParams(sort: PostSortType): {
+function convertPostSortToLemmyParams(sort: VgerPostSortType): {
   sort: LemmyPostSortType;
   time?: Time;
 } {
@@ -197,7 +234,6 @@ function convertPostSortToLemmyParams(sort: PostSortType): {
     case "Active":
     case "Hot":
     case "New":
-    case "Old":
     case "MostComments":
     case "NewComments":
     case "Controversial":
@@ -208,36 +244,34 @@ function convertPostSortToLemmyParams(sort: PostSortType): {
   }
 }
 
-function convertCommentSortToLemmyParams(sort: CommentSortType): {
+function convertCommentSortToLemmyParams(sort: VgerCommentSortType): {
   sort: CommentSortType;
 } {
   return { sort };
 }
 
-function convertSearchSortToLemmyParams(sort: SearchSortType): {
-  sort: SearchSortType;
+function convertSearchSortToLemmyParams(sort: VgerSearchSortType): {
+  // TODO: Replace this with lemmy search sort types from v1
+  sort: LemmySearchSortType;
+  time_range_seconds?: number;
 } {
-  return { sort };
+  switch (sort) {
+    case "New":
+    case "Old":
+      return { sort };
+    default:
+      return convertTopToLemmyParams(sort);
+  }
 }
 
-type TopTime =
-  | "Day"
-  | "Week"
-  | "Month"
-  | "Year"
-  | "All"
-  | "Hour"
-  | "SixHour"
-  | "TwelveHour"
-  | "SixMonths"
-  | "NineMonths"
-  | "ThreeMonths";
-
-function convertTopToLemmyParams(sort: `Top${TopTime}`): {
+function convertTopToLemmyParams(sort: VgerTopSort): {
   sort: "Top";
   time_range_seconds?: number;
 } {
   if (sort === "TopAll") return { sort: "Top" };
+
+  // @ts-expect-error TODO lemmy v1 this should not be necessary anymore
+  if (sort === "Top") return { sort: "Top" };
 
   let seconds: number; // in seconds
 
@@ -279,8 +313,8 @@ function convertTopToLemmyParams(sort: `Top${TopTime}`): {
   return { sort: "Top", time_range_seconds: seconds };
 }
 
-function convertCommunitySortToLemmyParams(sort: CommunitySortType): {
-  sort: CommunitySortType;
+function convertCommunitySortToLemmyParams(sort: VgerCommunitySortType): {
+  sort: VgerCommunitySortType;
 } {
   return { sort };
 }

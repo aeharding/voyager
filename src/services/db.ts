@@ -3,19 +3,21 @@
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
 import { zipObject } from "es-toolkit";
-import {
-  CommentSortType,
-  FederatedInstances,
-  PostSortType,
-} from "lemmy-js-client";
+import { FederatedInstances } from "lemmy-js-client";
 
-import { COMMENT_SORTS } from "#/features/comment/CommentSort.js";
-import { ALL_POST_SORTS } from "#/features/feed/sort/PostSort.js";
-import { SearchSortType } from "#/features/feed/sort/SearchSort";
+import {
+  ALL_COMMENT_SORTS,
+  VgerCommentSortType,
+} from "#/features/comment/CommentSort";
+import {
+  ALL_POST_SORTS,
+  VgerPostSortType,
+} from "#/features/feed/sort/PostSort";
+import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
 import { get, LOCALSTORAGE_KEYS, set } from "#/features/settings/syncStorage";
 import { arrayOfAll } from "#/helpers/array.js";
 import { isAndroid } from "#/helpers/device";
-import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
 export interface IPostMetadata {
   post_id: number;
@@ -113,8 +115,11 @@ export const OPostBlurNsfw = {
   Never: "never",
 } as const;
 
-export type CommentDefaultSort = CommentSortType;
-export const OCommentDefaultSort = zipObject(COMMENT_SORTS, COMMENT_SORTS);
+export type CommentDefaultSort = VgerCommentSortType;
+export const OCommentDefaultSort = zipObject(
+  ALL_COMMENT_SORTS,
+  ALL_COMMENT_SORTS,
+);
 
 export const OSortType = zipObject(ALL_POST_SORTS, ALL_POST_SORTS);
 
@@ -354,9 +359,9 @@ export interface GlobalSettingValueTypes {
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_thumbnail_size: CompactThumbnailSizeType;
   default_comment_sort: CommentDefaultSort;
-  default_community_sort_by_feed: CommunitySortType;
-  default_post_sort: PostSortType;
-  default_search_sort_by_feed: SearchSortType;
+  default_community_sort_by_feed: VgerCommunitySortType;
+  default_post_sort: VgerPostSortType;
+  default_search_sort_by_feed: VgerSearchSortType;
   default_share: PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
   disable_marking_posts_read: boolean;
@@ -406,9 +411,9 @@ export interface GlobalSettingValueTypes {
  * Dynamic settings, can change per community and/or user
  */
 interface DynamicSettingValueTypes {
-  default_comment_sort_by_feed: CommentDefaultSort;
+  default_comment_sort_by_feed: VgerCommentSortType;
   default_feed: DefaultFeedType;
-  default_post_sort_by_feed: PostSortType;
+  default_post_sort_by_feed: VgerPostSortType;
   disable_left_swipes: boolean;
   disable_right_swipes: boolean;
   favorite_communities: string[];

@@ -65,6 +65,7 @@ export default function SearchFeedResultsPage({
       const posts: PostView[] = [];
       const comments: CommentView[] = [];
 
+      // @ts-expect-error Fix with lemmy-js-client v1
       for (const item of response.results) {
         if (isPost(item)) posts.push(item);
         else comments.push(item);
@@ -73,7 +74,7 @@ export default function SearchFeedResultsPage({
       dispatch(receivedPosts(posts));
       dispatch(receivedComments(comments));
 
-      return response.results;
+      return response.results as PostCommentItem[];
     }
 
     dispatch(receivedPosts(response.posts));

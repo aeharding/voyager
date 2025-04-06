@@ -1,6 +1,6 @@
 import buildSort, { SortOptions } from "#/routes/pages/shared/Sort";
 
-export type CommunitySortType =
+export type LemmyCommunitySortType =
   | "ActiveSixMonths"
   | "ActiveMonthly"
   | "ActiveWeekly"
@@ -15,7 +15,9 @@ export type CommunitySortType =
   | "Subscribers"
   | "SubscribersLocal";
 
-const sortOptions: SortOptions<CommunitySortType> = [
+export type VgerCommunitySortType = LemmyCommunitySortType;
+
+const sortOptions: SortOptions<VgerCommunitySortType> = [
   {
     label: "Active",
     children: [

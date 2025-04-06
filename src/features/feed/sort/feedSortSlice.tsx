@@ -1,22 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 
-import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+import { VgerCommentSortType } from "#/features/comment/CommentSort";
+import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 import { db } from "#/services/db";
 import { RootState } from "#/store";
 
 import { AnyFeed, serializeFeedName } from "../helpers";
-import { SearchSortType } from "./SearchSort";
+import { VgerPostSortType } from "./PostSort";
+import { VgerSearchSortType } from "./SearchSort";
 
 interface PostSortState {
   /**
    * `null`: Loaded from database, but nothing there
    */
   sortByContextByFeedName: {
-    posts: Record<string, PostSortType | null>;
-    comments: Record<string, CommentSortType | null>;
-    search: Record<string, SearchSortType | null>;
-    communities: Record<string, CommunitySortType | null>;
+    posts: Record<string, VgerPostSortType | null>;
+    comments: Record<string, VgerCommentSortType | null>;
+    search: Record<string, VgerSearchSortType | null>;
+    communities: Record<string, VgerCommunitySortType | null>;
   };
 }
 
@@ -32,17 +33,17 @@ const initialState: PostSortState = {
 export type SetSortActionPayload =
   | {
       feed: AnyFeed;
-      sort: PostSortType;
+      sort: VgerPostSortType;
       context: "posts";
     }
   | {
       feed: AnyFeed;
-      sort: CommentSortType;
+      sort: VgerCommentSortType;
       context: "comments";
     }
   | {
       feed: AnyFeed;
-      sort: SearchSortType;
+      sort: VgerSearchSortType;
       context: "search";
     };
 

@@ -5,19 +5,16 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { compact } from "es-toolkit";
-import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
+import { CommunityView, ListingType } from "lemmy-js-client";
 import { useState } from "react";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
-import { FetchFn, isFirstPage } from "#/features/feed/Feed";
+import { FetchFn } from "#/features/feed/Feed";
 import ListingTypeFilter from "#/features/feed/ListingType";
-import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
   useFeedSortParams,
 } from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -31,7 +28,7 @@ export default function CommunitiesExplorePage() {
   const [sort, setSort] = useFeedSort(
     "communities",
     { internal: "CommunitiesExplore" },
-    "TopAll",
+    "Subscribers",
   );
   const sortParams = useFeedSortParams("communities", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
@@ -42,12 +39,14 @@ export default function CommunitiesExplorePage() {
         limit: LIMIT,
         type_: listingType,
         ...pageData,
-        ...sortParams,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fix with lemmy-js-client v1
+        ...(sortParams as any),
       },
       ...rest,
     );
 
-    if ("results" in response) return response.results;
+    // TODO Remove `as` once upgraded to lemmy-js-client v1
+    if ("results" in response) return response.results as CommunityView[];
 
     return response.communities;
   };

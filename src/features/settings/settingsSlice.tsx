@@ -11,13 +11,13 @@ import {
 import Dexie from "dexie";
 import { merge, zipObject } from "es-toolkit";
 import { produce } from "immer";
-import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
-import { SearchSortType } from "#/features/feed/sort/SearchSort";
+import { VgerPostSortType } from "#/features/feed/sort/PostSort";
+import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
-import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 import {
   ALL_GLOBAL_SETTINGS,
   AppThemeType,
@@ -135,7 +135,7 @@ export interface SettingsState {
       rememberCommunitySort: boolean;
     };
     posts: {
-      sort: PostSortType;
+      sort: VgerPostSortType;
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
@@ -149,11 +149,11 @@ export interface SettingsState {
       autoplayMedia: AutoplayMediaType;
     };
     search: {
-      sort: SearchSortType;
+      sort: VgerSearchSortType;
       rememberCommunitySort: boolean;
     };
     communities: {
-      sort: CommunitySortType;
+      sort: VgerCommunitySortType;
       rememberCommunitySort: boolean;
     };
     safari: {
@@ -250,7 +250,7 @@ const baseState: SettingsState = {
     },
     communities: {
       rememberCommunitySort: false,
-      sort: "Active",
+      sort: "ActiveSixMonths",
     },
     defaultFeed: undefined,
     defaultShare: OPostCommentShareType.Local,
@@ -281,7 +281,7 @@ const baseState: SettingsState = {
     },
     search: {
       rememberCommunitySort: false,
-      sort: "Top",
+      sort: "TopAll",
     },
     thumbnailinatorEnabled: true,
   },
@@ -376,7 +376,7 @@ export const settingsSlice = createSlice({
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
-    setDefaultPostSort(state, action: PayloadAction<PostSortType>) {
+    setDefaultPostSort(state, action: PayloadAction<VgerPostSortType>) {
       state.general.posts.sort = action.payload;
       db.setSetting("default_post_sort", action.payload);
     },

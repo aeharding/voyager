@@ -1,11 +1,20 @@
 import buildSort from "#/routes/pages/shared/Sort";
 import { SortOptions } from "#/routes/pages/shared/Sort";
 
-export type SearchSortType = "Top" | "Old" | "New";
+import { TOP_SORTS } from "./topSorts";
 
-export const SEARCH_SORTS = ["Top", "Old", "New"] as const;
+export type LemmySearchSortType = "Old" | "New" | "Top";
 
-const sortOptions: SortOptions<SearchSortType> = SEARCH_SORTS;
+export type VgerSearchSortType =
+  // TODO: Replace these with lemmy search sorts from v1
+  | "Old"
+  | "New"
+  // Voyager top sorts
+  | (typeof TOP_SORTS)["children"][number];
+
+export const SEARCH_SORTS = [TOP_SORTS, "New", "Old"] as const;
+
+const sortOptions: SortOptions<VgerSearchSortType> = SEARCH_SORTS;
 
 export const { Sort: SearchSort, useSelectSort: useSelectSearchSort } =
   buildSort(sortOptions);
