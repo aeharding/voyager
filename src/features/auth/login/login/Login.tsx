@@ -14,7 +14,7 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 import { HelperText } from "#/features/settings/shared/formatting";
 import AppHeader from "#/features/shared/AppHeader";
@@ -42,7 +42,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
-  const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const { dismiss, setCanDismiss } = use(DynamicDismissableModalContext);
 
   const usernameRef = useRef<HTMLIonInputElement>(null);
 

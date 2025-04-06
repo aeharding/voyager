@@ -9,7 +9,7 @@ import {
   useIonModal,
 } from "@ionic/react";
 import { CommunityView, PostView } from "lemmy-js-client";
-import { useContext, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
@@ -40,7 +40,7 @@ export default function CreateCrosspostDialog({
 }: CreateCrosspostDialogProps) {
   const [title, setTitle] = useState("");
   const [community, setCommunity] = useState<CommunityView | undefined>();
-  const { pageRef } = useContext(PageContext);
+  const { pageRef } = use(PageContext);
   const client = useClient();
   const dispatch = useAppDispatch();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();

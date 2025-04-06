@@ -7,7 +7,7 @@ import {
   textOutline,
 } from "ionicons/icons";
 import { PrivateMessageView } from "lemmy-js-client";
-import { useCallback, useContext, useImperativeHandle } from "react";
+import { use, useCallback, useImperativeHandle } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
@@ -27,7 +27,7 @@ interface PrivateMessageMoreActionsProps {
   item: PrivateMessageView;
   markReadAction: ActionSheetButton;
 
-  ref: React.RefObject<PrivateMessageMoreActionsHandle>;
+  ref: React.RefObject<PrivateMessageMoreActionsHandle | undefined>;
 }
 
 export default function PrivateMessageMoreActions({
@@ -37,7 +37,7 @@ export default function PrivateMessageMoreActions({
 }: PrivateMessageMoreActionsProps) {
   const dispatch = useAppDispatch();
   const { presentReport, presentSelectText, presentPrivateMessageCompose } =
-    useContext(PageContext);
+    use(PageContext);
 
   const presentUserActions = usePresentUserActions();
   const { navigateToUser } = useAppNavigation();

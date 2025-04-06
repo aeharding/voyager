@@ -20,7 +20,7 @@ import {
   trophyOutline,
 } from "ionicons/icons";
 import { PostSortType } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { arrayOfAll } from "#/helpers/array";
@@ -109,7 +109,7 @@ interface PostSortProps {
 }
 
 export default function PostSort({ sort, setSort }: PostSortProps) {
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   const present = useSelectPostSort((newValue) => {
     setSort(newValue);

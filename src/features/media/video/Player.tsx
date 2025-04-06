@@ -19,10 +19,10 @@ import { getVideoSrcForUrl } from "#/helpers/url";
 
 import styles from "./Player.module.css";
 
-export interface PlayerProps {
+export interface PlayerProps extends React.HTMLProps<HTMLElement> {
   src: string;
 
-  nativeControls?: boolean;
+  controls?: boolean;
   progress?: boolean;
   volume?: boolean;
   autoPlay?: boolean;
@@ -31,23 +31,34 @@ export interface PlayerProps {
   style?: CSSProperties;
   alt?: string;
 
+  pauseWhenNotInView?: boolean;
+  allowShowPlayButton?: boolean;
+
   ref?: React.RefObject<HTMLVideoElement>;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
+
+  disableInlineInteraction?: boolean;
 }
 
 export default function Player({
   src: potentialSrc,
-  nativeControls,
+  controls,
   className,
-  progress: showProgress = !nativeControls,
+  progress: showProgress = !controls,
   volume = true,
   autoPlay: videoAllowedToAutoplay = true,
+  pauseWhenNotInView = true,
+  allowShowPlayButton = true,
   ref,
+  videoRef: _videoRef,
+  disableInlineInteraction,
   ...rest
 }: PlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>();
+  const videoRef = useRef<HTMLVideoElement>(undefined);
 
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const isInPipRef = useRef(false);
 
   const shouldAppAutoplay = useShouldAutoplay();
   const autoPlay = shouldAppAutoplay && videoAllowedToAutoplay;
@@ -59,12 +70,19 @@ export default function Player({
 
   useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement, []);
 
+  // When portaled, need a way to access the player ref
+  useImperativeHandle(
+    _videoRef,
+    () => videoRef.current as HTMLVideoElement,
+    [],
+  );
+
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
   });
   const [progress, setProgress] = useState<number | undefined>(undefined);
 
-  const showBigPlayButton = userPaused && !playing;
+  const showBigPlayButton = userPaused && !playing && allowShowPlayButton;
 
   const setRefs = useCallback(
     (node: HTMLVideoElement) => {
@@ -79,6 +97,7 @@ export default function Player({
   const pause = useCallback(() => {
     if (!videoRef.current) return;
     if (userPaused) return;
+    if (isInPipRef.current) return;
 
     wantedToPlayRef.current = false;
 
@@ -94,6 +113,7 @@ export default function Player({
   const resume = useCallback(() => {
     if (!videoRef.current) return;
     if (userPaused) return;
+    if (isInPipRef.current) return;
 
     videoRef.current.play();
     wantedToPlayRef.current = true;
@@ -102,13 +122,36 @@ export default function Player({
 
   useEffect(() => {
     if (!videoRef.current) return;
+    if (!pauseWhenNotInView) {
+      if (autoPlay) resume();
+
+      return;
+    }
 
     if (inView) {
       resume();
     } else {
       pause();
     }
-  }, [inView, pause, resume]);
+  }, [inView, pause, resume, pauseWhenNotInView, autoPlay]);
+
+  useEffect(() => {
+    function enterPip() {
+      isInPipRef.current = true;
+    }
+
+    function leavePip() {
+      isInPipRef.current = false;
+    }
+
+    videoRef.current?.addEventListener("enterpictureinpicture", enterPip);
+    videoRef.current?.addEventListener("leavepictureinpicture", leavePip);
+
+    return () => {
+      videoRef.current?.removeEventListener("enterpictureinpicture", enterPip);
+      videoRef.current?.removeEventListener("leavepictureinpicture", leavePip);
+    };
+  }, []);
 
   return (
     <span className={cx(styles.container, className)}>
@@ -137,17 +180,30 @@ export default function Player({
           setMuted(!!videoRef.current?.muted);
         }}
         autoPlay={false}
-        controls={nativeControls}
+        controls={controls}
         onTimeUpdate={(e: ChangeEvent<HTMLVideoElement>) => {
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
         }}
         aria-label={rest.alt}
+        onClick={(e) => {
+          if (showBigPlayButton) videoRef.current?.play();
+
+          if (showBigPlayButton) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+
+          if (showBigPlayButton && !disableInlineInteraction) return;
+
+          // Allow click to play video inline (without opening gallery) if not blurred in feed
+          rest.onClick?.(e);
+        }}
       />
       {showProgress && progress !== undefined && (
         <progress className={styles.progress} value={progress} />
       )}
-      {!nativeControls && (
+      {!controls && (
         <>
           {!showBigPlayButton && volume && (
             <button
@@ -168,15 +224,7 @@ export default function Player({
             </button>
           )}
           {showBigPlayButton && (
-            <span
-              className={styles.playOverlay}
-              onClick={(e) => {
-                e.preventDefault(); // reverse-portal
-                e.stopPropagation(); // video in comments
-
-                videoRef.current?.play();
-              }}
-            >
+            <span className={styles.playOverlay}>
               <IonIcon icon={play} />
             </span>
           )}

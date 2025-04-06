@@ -34,7 +34,7 @@ export interface EditorProps {
 
   children?: React.ReactNode;
 
-  ref?: React.RefObject<HTMLTextAreaElement>;
+  ref?: React.RefObject<HTMLTextAreaElement | null>;
 }
 
 export default function Editor({
@@ -47,11 +47,11 @@ export default function Editor({
   ref,
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(undefined);
 
   const { insertBlock } = useEditorHelpers(textareaRef);
 
-  const { uploadImage, jsx: uploadImageJsx } = useUploadImage();
+  const { uploadImage, jsx: uploadImageJsx } = useUploadImage("body");
 
   useTextRecovery(text, setText, !canRecoverText);
 
@@ -106,7 +106,7 @@ export default function Editor({
   }
 
   async function onReceivedImage(image: File) {
-    const markdown = await uploadImage(image);
+    const markdown = await uploadImage(image, true);
 
     textareaRef.current?.focus();
     insertBlock(markdown);

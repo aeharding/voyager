@@ -1,7 +1,7 @@
 import { SplashScreen } from "@capacitor/splash-screen";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { use, useEffect, useMemo, useRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
@@ -48,13 +48,15 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   return (
     <PageContextProvider value={pageContextValue}>
       {children}
-      <GalleryProvider>
-        <InnerTabbedRoutes
-          ref={pageRef}
-          // Rebuild routing on instance change
-          key={selectedInstance ?? getDefaultServer()}
-        />
-      </GalleryProvider>
+      <VideoPortalProvider>
+        <GalleryProvider>
+          <InnerTabbedRoutes
+            ref={pageRef}
+            // Rebuild routing on instance change
+            key={selectedInstance ?? getDefaultServer()}
+          />
+        </GalleryProvider>
+      </VideoPortalProvider>
     </PageContextProvider>
   );
 }
@@ -62,7 +64,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
 function InnerTabbedRoutes({
   ref: pageRef,
 }: {
-  ref: React.RefObject<RouterOutletRef>;
+  ref: React.RefObject<RouterOutletRef | null>;
 }) {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
@@ -70,7 +72,7 @@ function InnerTabbedRoutes({
   const selectedInstance = useAppSelector(instanceSelector);
 
   const router = useOptimizedIonRouter();
-  const { tabRef } = useContext(TabContext);
+  const { tabRef } = use(TabContext);
 
   // Reset route on initialize, if needed
   // (reset when it doesn't make sense breaks ionic react router)
@@ -119,42 +121,40 @@ function InnerTabbedRoutes({
   })();
 
   return (
-    <VideoPortalProvider>
-      <IonTabs>
-        <IonRouterOutlet ref={pageRef}>
-          <Route exact path="/">
-            {defaultFeed ? (
-              <Redirect
-                to={`/posts/${
-                  selectedInstance ?? getDefaultServer()
-                }${redirectRoute}`}
-                push={false}
-              />
-            ) : (
-              ""
-            )}
-          </Route>
+    <IonTabs>
+      <IonRouterOutlet ref={pageRef}>
+        <Route exact path="/">
+          {defaultFeed ? (
+            <Redirect
+              to={`/posts/${
+                selectedInstance ?? getDefaultServer()
+              }${redirectRoute}`}
+              push={false}
+            />
+          ) : (
+            ""
+          )}
+        </Route>
 
-          {...buildPostsRoutes({
-            defaultFeed,
-            redirectRoute,
-            selectedInstance,
-          })}
+        {...buildPostsRoutes({
+          defaultFeed,
+          redirectRoute,
+          selectedInstance,
+        })}
 
-          {...inbox}
+        {...inbox}
 
-          {...profile}
+        {...profile}
 
-          {...search}
+        {...search}
 
-          {...settings}
+        {...settings}
 
-          {...general}
-        </IonRouterOutlet>
+        {...general}
+      </IonRouterOutlet>
 
-        <TabBar slot="bottom" />
-      </IonTabs>
-    </VideoPortalProvider>
+      <TabBar slot="bottom" />
+    </IonTabs>
   );
 }
 

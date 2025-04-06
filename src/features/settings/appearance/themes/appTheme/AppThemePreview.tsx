@@ -1,6 +1,6 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, use } from "react";
 
-import { useIsDark } from "#/core/GlobalStyles";
+import { DarkContext } from "#/core/GlobalStyles";
 import { getThemeByStyle } from "#/core/theme/AppThemes";
 import { sv } from "#/helpers/css";
 import { AppThemeType } from "#/services/db";
@@ -16,7 +16,7 @@ export default function AppThemePreview({
   appTheme,
   ...rest
 }: AppThemePreviewProps) {
-  const isDark = useIsDark();
+  const isDark = use(DarkContext);
   const main = getThemeByStyle(appTheme, isDark ? "dark" : "light").primary;
   const second = getThemeByStyle(
     appTheme,

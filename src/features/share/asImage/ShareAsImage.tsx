@@ -59,6 +59,9 @@ const domToBlobOptions: DomToBlobOptions = {
           // if pictrs, convert large gifs to jpg
           url: getImageSrc(url, { format: "jpg" }),
           responseType: "blob",
+          headers: {
+            ["User-Agent"]: "VoyagerApp/1.0",
+          },
         });
 
         // Workaround that will probably break in a future capacitor upgrade
@@ -302,7 +305,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
       {createPortal(
         <div className={cx(styles.commentSnapshotContainer, "inner")}>
-          <ShareImageContext.Provider
+          <ShareImageContext
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
             {includePostDetails && (
@@ -327,7 +330,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                 />
               </>
             )}
-          </ShareImageContext.Provider>
+          </ShareImageContext>
           {watermark && <Watermark />}
         </div>,
         shareAsImageRenderRoot,

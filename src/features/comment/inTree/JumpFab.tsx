@@ -1,7 +1,7 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
-import { useContext } from "react";
+import { use } from "react";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -11,7 +11,7 @@ import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppSelector } from "#/store";
 
 export default function JumpFab() {
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
   const vibrate = useHapticFeedback();
   const jumpButtonPosition = useAppSelector(
     (state) => state.settings.general.comments.jumpButtonPosition,

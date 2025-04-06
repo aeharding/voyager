@@ -1,6 +1,6 @@
 import { IonIcon, IonLabel } from "@ionic/react";
 import { personCircleOutline } from "ionicons/icons";
-import { useContext } from "react";
+import { use } from "react";
 
 import {
   accountsListEmptySelector,
@@ -17,8 +17,7 @@ import styles from "./ProfileTabButton.module.css";
 
 function ProfileTabButton(props: TabButtonProps) {
   const router = useOptimizedIonRouter();
-  const { presentAccountSwitcher, presentLoginIfNeeded } =
-    useContext(PageContext);
+  const { presentAccountSwitcher, presentLoginIfNeeded } = use(PageContext);
 
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
 

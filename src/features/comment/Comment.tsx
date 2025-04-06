@@ -67,7 +67,7 @@ export default function Comment({
 
   const canModerate = useCanModerate(commentView.community);
 
-  const commentEllipsisHandleRef = useRef<CommentEllipsisHandle>(null);
+  const commentEllipsisHandleRef = useRef<CommentEllipsisHandle>(undefined);
 
   const stub = isStubComment(comment, canModerate);
 

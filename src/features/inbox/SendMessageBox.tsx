@@ -1,7 +1,7 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { resize, send as sendIcon } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, use, useEffect, useRef, useState } from "react";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
@@ -35,7 +35,7 @@ export default function SendMessageBox({
   const [value, setValue] = useState("");
   const client = useClient();
   const presentToast = useAppToast();
-  const { presentPrivateMessageCompose } = useContext(PageContext);
+  const { presentPrivateMessageCompose } = use(PageContext);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 

@@ -1,5 +1,5 @@
 import { PostView } from "lemmy-js-client";
-import { useContext, useMemo } from "react";
+import { use, useMemo } from "react";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
@@ -23,7 +23,7 @@ interface LargePostContentsProps {
 }
 
 export default function LargePostContents({ post }: LargePostContentsProps) {
-  const inFeed = useContext(InFeedContext);
+  const inFeed = use(InFeedContext);
 
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||

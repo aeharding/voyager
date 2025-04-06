@@ -3,8 +3,9 @@ import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
 
 import { isNative } from "#/helpers/device";
 import { OLinkHandlerType } from "#/services/db";
-import { useAppSelector } from "#/store";
+import store from "#/store";
 
+import useLinkLongPress from "./useLinkLongPress";
 import useNativeBrowser from "./useNativeBrowser";
 
 export interface AdditionalLinkProps {
@@ -28,14 +29,15 @@ export default function InAppExternalLink({
   ...rest
 }: InAppExternalLinkProps) {
   const onClick = useOnClick(href, _onClick, onClickCompleted);
+  const bind = useLinkLongPress(href);
 
   if ("el" in rest && rest.el) {
     const El = rest.el;
 
-    return <El onClick={onClick} {...rest} />;
+    return <El onClick={onClick} {...bind()} {...rest} />;
   }
 
-  return <a href={href} onClick={onClick} {...rest} />;
+  return <a href={href} onClick={onClick} {...bind()} {...rest} />;
 }
 
 export function IonItemInAppExternalLink({
@@ -45,8 +47,9 @@ export function IonItemInAppExternalLink({
   ...rest
 }: React.ComponentProps<typeof IonItem> & AdditionalLinkProps) {
   const onClick = useOnClick(href, _onClick, onClickCompleted);
+  const bind = useLinkLongPress(href);
 
-  return <IonItem href={href} onClick={onClick} {...rest} />;
+  return <IonItem href={href} onClick={onClick} {...bind()} {...rest} />;
 }
 
 function useOnClick(
@@ -65,9 +68,6 @@ function useOnClick(
 }
 
 export function useInterceptHrefWithInAppBrowserIfNeeded() {
-  const linkHandler = useAppSelector(
-    (state) => state.settings.general.linkHandler,
-  );
   const openNativeBrowser = useNativeBrowser();
 
   async function handler(
@@ -79,12 +79,7 @@ export function useInterceptHrefWithInAppBrowserIfNeeded() {
 
     if (e.defaultPrevented) return;
 
-    if (!href) return;
-
-    // mailto should be handled directly by web view to launch mail app
-    if (href.toLowerCase().startsWith("mailto:")) return;
-
-    if (isNative() && linkHandler === OLinkHandlerType.InApp) {
+    if (href && shouldOpenWithInAppBrowser(href)) {
       e.preventDefault();
       e.stopPropagation();
       await openNativeBrowser(href);
@@ -99,4 +94,15 @@ export function useInterceptHrefWithInAppBrowserIfNeeded() {
     (e: MouseEvent) => {
       handler(e, href, onClick).finally(onClickCompleted);
     };
+}
+
+export function shouldOpenWithInAppBrowser(url: string | undefined) {
+  if (!url) return false;
+
+  // mailto should be handled directly by web view to launch mail app
+  if (url.toLowerCase().startsWith("mailto:")) return false;
+
+  const linkHandler = store.getState().settings.general.linkHandler;
+
+  return isNative() && linkHandler === OLinkHandlerType.InApp;
 }

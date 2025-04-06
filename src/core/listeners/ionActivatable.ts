@@ -6,7 +6,7 @@ import { stopIonicTapClick } from "#/helpers/ionic";
  **/
 function onPreventIonicTapClick(e: MouseEvent | TouchEvent) {
   if (!(e.target instanceof HTMLElement)) return;
-  if (!e.target.closest("ion-button,a,img,input,button")) return;
+  if (!e.target.closest("ion-button,a,img,canvas,video,input,button")) return;
 
   stopIonicTapClick();
 }

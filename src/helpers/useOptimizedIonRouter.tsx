@@ -2,7 +2,7 @@ import { useIonRouter, UseIonRouterResult } from "@ionic/react";
 import {
   createContext,
   MutableRefObject,
-  useContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -22,7 +22,7 @@ const OptimizedRouterContext = createContext<IOptimizedRouterContext>({
 });
 
 export function useOptimizedIonRouter() {
-  const context = useContext(OptimizedRouterContext);
+  const context = use(OptimizedRouterContext);
 
   return useMemo(
     () => ({
@@ -40,7 +40,7 @@ export function useOptimizedIonRouter() {
 
 export function OptimizedRouterProvider({ children }: React.PropsWithChildren) {
   const router = useIonRouter();
-  const routerRef = useRef<UseIonRouterResult>();
+  const routerRef = useRef<UseIonRouterResult>(undefined);
 
   useEffect(() => {
     routerRef.current = router;
@@ -49,8 +49,6 @@ export function OptimizedRouterProvider({ children }: React.PropsWithChildren) {
   const value = useMemo(() => ({ routerRef }), []);
 
   return (
-    <OptimizedRouterContext.Provider value={value}>
-      {children}
-    </OptimizedRouterContext.Provider>
+    <OptimizedRouterContext value={value}>{children}</OptimizedRouterContext>
   );
 }

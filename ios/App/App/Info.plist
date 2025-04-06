@@ -16,6 +16,8 @@
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -29,6 +31,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -37,6 +41,8 @@
 	<string>Attach photo to a new post</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Optional setting to check face ID when opening app</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Attach video to a new post</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Save photos to device</string>
 	<key>UILaunchStoryboardName</key>
@@ -62,9 +68,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
 </dict>
 </plist>

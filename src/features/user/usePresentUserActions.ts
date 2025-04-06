@@ -6,7 +6,7 @@ import {
   removeCircleOutline,
 } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { usernameSelector } from "#/features/auth/authSelectors";
 import { PageContext } from "#/features/auth/PageContext";
@@ -22,6 +22,7 @@ import { blockUser } from "./userSlice";
 
 export interface PresentUserActionsOptions {
   prependButtons?: ActionSheetButton[];
+  appendButtons?: ActionSheetButton[];
   hideMessageButton?: boolean;
 
   /**
@@ -34,11 +35,11 @@ export interface PresentUserActionsOptions {
 export default function usePresentUserActions() {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentUserTag } = useContext(PageContext);
+  const { presentUserTag } = use(PageContext);
   const userTagsEnabled = useAppSelector(
     (state) => state.settings.tags.enabled,
   );
@@ -78,6 +79,17 @@ export default function usePresentUserActions() {
               );
             },
           },
+        userTagsEnabled && {
+          text: "Edit Tag",
+          icon: pricetagOutline,
+          handler: async () => {
+            if (!user) return;
+
+            presentUserTag(user, options?.sourceUrl);
+          },
+        },
+        // Block user is a destructive button, so it should be after other appended buttons
+        ...(options?.appendButtons ?? []),
         !isCurrentUser && {
           text: !isBlocked ? "Block User" : "Unblock User",
           data: "block",
@@ -101,15 +113,6 @@ export default function usePresentUserActions() {
 
               presentToast(buildBlockedUser(!isBlocked));
             })();
-          },
-        },
-        userTagsEnabled && {
-          text: "Edit Tag",
-          icon: pricetagOutline,
-          handler: async () => {
-            if (!user) return;
-
-            presentUserTag(user, options?.sourceUrl);
           },
         },
         {

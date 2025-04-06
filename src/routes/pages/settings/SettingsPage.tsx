@@ -21,7 +21,7 @@ import {
   pricetag,
   reloadCircle,
 } from "ionicons/icons";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { use, useEffect, useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
@@ -66,7 +66,7 @@ export function IconBg({ color, size, children, slot }: IconBgProps) {
 
 export default function SettingsPage() {
   const databaseError = useAppSelector((state) => state.settings.databaseError);
-  const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
+  const { status: updateStatus, checkForUpdates } = use(UpdateContext);
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(userHandleSelector);
   const icon = useAppSelector((state) => state.appIcon.icon);

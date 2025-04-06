@@ -11,7 +11,9 @@ import {
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort.js";
 import { ALL_POST_SORTS } from "#/features/feed/PostSort.js";
+import { get, LOCALSTORAGE_KEYS, set } from "#/features/settings/syncStorage";
 import { arrayOfAll } from "#/helpers/array.js";
+import { isAndroid } from "#/helpers/device";
 
 export interface IPostMetadata {
   post_id: number;
@@ -676,6 +678,16 @@ export class WefwefDB extends Dexie {
         ++,
         &handle
       `,
+    });
+
+    this.version(10).upgrade(async () => {
+      // Existing installations on Android should default to "ios"
+      // to maintain old behavior
+      if (isAndroid() && !get(LOCALSTORAGE_KEYS.DEVICE_MODE)) {
+        set(LOCALSTORAGE_KEYS.DEVICE_MODE, "ios");
+
+        location.reload();
+      }
     });
   }
 

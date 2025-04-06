@@ -13,7 +13,7 @@ export default function hideCommunity(
   return {
     icon: item.mod_hide_community.hidden ? eyeOff : eye,
     title: `${item.mod_hide_community.hidden ? "Hid" : "Unhid"} Community`,
-    by: item.admin ? getHandle(item.admin) : undefined,
+    by: item.admin,
     role: getAdminRole(item.admin),
     message: getHandle(item.community),
     link: buildCommunityLink(item.community),

@@ -26,7 +26,7 @@
 .pillIonList {
   width: 100%;
 
-  &.pillIonList {
+  && {
     margin: 0;
   }
 }

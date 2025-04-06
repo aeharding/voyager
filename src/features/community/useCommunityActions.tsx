@@ -1,6 +1,6 @@
 import { useIonActionSheet } from "@ionic/react";
 import { Community, SubscribedType } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import {
@@ -59,8 +59,8 @@ export default function useCommunityActions(
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
-  const { presentPostEditor } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentPostEditor } = use(PageContext);
 
   const site = useAppSelector((state) => state.site.response);
   const isAdmin = useAppSelector(isAdminSelector);

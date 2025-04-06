@@ -13,9 +13,6 @@ on:
 env:
   BUILD_LABEL: ${{ inputs.is_main_build && github.sha || github.ref_name }}
 
-concurrency:
-  group: release
-
 jobs:
   build_docker:
     uses: ./.github/workflows/docker.yml
@@ -26,7 +23,13 @@ jobs:
       packages: write
 
   build_web:
+    concurrency:
+      group: web-release
     runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write # aws
     steps:
       - uses: actions/checkout@v4
 
@@ -36,12 +39,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
-      - run: corepack enable
+          cache: pnpm
 
       - name: 📦 Install dependencies
         run: pnpm install  --frozen-lockfile
@@ -49,15 +52,15 @@ jobs:
       - name: Build dist bundle
         run: pnpm build
 
-      - name: Upload dist bundle to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          SOURCE_DIR: dist
-          AWS_S3_BUCKET: ${{ inputs.is_main_build && 'beta.vger.app' || 'vger.app'}}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-1
+
+      - name: Upload dist bundle to S3
+        run: |
+          aws s3 sync dist/ s3://${{ inputs.is_main_build && 'beta.vger.app' || 'vger.app'}}/ --delete
 
       - name: Compress artifacts
         run: |
@@ -70,6 +73,8 @@ jobs:
           path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
 
   build_ios:
+    concurrency:
+      group: ios-release
     environment: deploy
     runs-on: macos-15
     steps:
@@ -81,9 +86,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
       - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
@@ -98,9 +106,6 @@ jobs:
         run: |
           gem install bundler
           bundle install
-
-      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
-      - run: corepack enable
 
       - run: pnpm i --frozen-lockfile
 
@@ -137,12 +142,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
-      - run: corepack enable
+          cache: pnpm
 
       - run: pnpm i --frozen-lockfile
 
@@ -176,6 +181,8 @@ jobs:
           path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
   build_android_play:
+    concurrency:
+      group: android-release
     environment: deploy
     runs-on: ubuntu-latest
     steps:
@@ -187,9 +194,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -200,9 +210,6 @@ jobs:
         run: |
           gem install bundler
           bundle install
-
-      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
-      - run: corepack enable
 
       - run: pnpm i --frozen-lockfile
 

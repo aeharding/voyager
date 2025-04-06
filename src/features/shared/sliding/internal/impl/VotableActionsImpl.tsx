@@ -1,5 +1,5 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import { ComponentProps, useCallback, useContext, useMemo } from "react";
+import { ComponentProps, use, useCallback, useMemo } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
@@ -39,10 +39,10 @@ export function VotableActionsImpl({
   rootIndex,
   ...rest
 }: ComponentProps<typeof BaseSlidingVote>) {
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
-  const { prependComments } = useContext(CommentsContext);
+  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
+  const { prependComments } = use(CommentsContext);
 
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -50,15 +50,15 @@ export function VotableActionsImpl({
   const shared = useSharedInboxActions(item);
   const { share } = useSharePostComment(item);
 
-  const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById,
+  const isPost = "unread_comments" in item;
+
+  const storeVote = useAppSelector((state) =>
+    isPost
+      ? state.post.postVotesById[item.post.id]
+      : state.comment.commentVotesById[item.comment.id],
   );
   const typedMyVote = item.my_vote as 1 | -1 | 0 | undefined;
-  const isPost = "unread_comments" in item;
-  const currentVote = isPost
-    ? (postVotesById[item.post.id] ?? typedMyVote)
-    : (commentVotesById[item.comment.id] ?? typedMyVote);
+  const currentVote = storeVote ?? typedMyVote;
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
   const commentSavedById = useAppSelector(

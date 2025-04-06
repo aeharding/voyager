@@ -43,16 +43,16 @@ export default function AutoResolvePostComment({
 
   if (object.post)
     return (
-      <InFeedContext.Provider value={true}>
+      <InFeedContext value={true}>
         <Post post={object.post} />
-      </InFeedContext.Provider>
+      </InFeedContext>
     );
 
   if (object.comment)
     return (
-      <InFeedContext.Provider value={true}>
+      <InFeedContext value={true}>
         <FeedComment comment={object.comment} />
-      </InFeedContext.Provider>
+      </InFeedContext>
     );
 
   return null;

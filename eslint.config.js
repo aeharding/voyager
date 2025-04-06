@@ -13,22 +13,13 @@ import compilerOptions from "./compilerOptions.js";
 
 export default tseslint.config(
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
   eslintConfigPrettier,
-  // @ts-expect-error Malformed types
   reactPlugin.configs.flat.recommended,
-  // @ts-expect-error Malformed types
   reactPlugin.configs.flat["jsx-runtime"],
+  reactHooksPlugin.configs.recommended,
   {
-    // TODO replace with https://github.com/facebook/react/pull/30774
-    name: "react-hooks/recommended",
-    plugins: { "react-hooks": reactHooksPlugin },
-    rules: reactHooksPlugin.configs.recommended.rules,
-  },
-  {
-    plugins: {
-      "react-compiler": pluginReactCompiler,
-    },
+    ...pluginReactCompiler.configs.recommended,
     rules: {
       "react-compiler/react-compiler": ["error", compilerOptions],
     },
@@ -36,6 +27,35 @@ export default tseslint.config(
   {
     plugins: {
       perfectionist: perfectionistPlugin,
+    },
+    rules: {
+      "perfectionist/sort-named-imports": [
+        "warn",
+        { ignoreCase: false, type: "natural", ignoreAlias: false },
+      ],
+      "perfectionist/sort-imports": [
+        "warn",
+        {
+          newlinesBetween: "always",
+          partitionByComment: true,
+          type: "natural",
+          ignoreCase: false,
+          tsconfigRootDir: ".",
+          sortSideEffects: true,
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling", "index"],
+            "css-modules",
+          ],
+          customGroups: {
+            value: {
+              ["css-modules"]: ["\\.module\\.css$"],
+            },
+          },
+        },
+      ],
     },
   },
   {
@@ -79,6 +99,11 @@ export default tseslint.config(
               importNames: ["forwardRef"],
               message: "Please use ref prop directly.",
             },
+            {
+              name: "react",
+              importNames: ["useContext"],
+              message: "Please use use() instead.",
+            },
           ],
           patterns: [
             {
@@ -99,34 +124,6 @@ export default tseslint.config(
         },
       ],
 
-      "perfectionist/sort-named-imports": [
-        "warn",
-        { ignoreCase: false, type: "natural", ignoreAlias: false },
-      ],
-      "perfectionist/sort-imports": [
-        "warn",
-        {
-          newlinesBetween: "always",
-          partitionByComment: true,
-          type: "natural",
-          ignoreCase: false,
-          tsconfigRootDir: ".",
-          sortSideEffects: true,
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            ["parent", "sibling", "index"],
-            "css-modules",
-          ],
-          customGroups: {
-            value: {
-              ["css-modules"]: ["\\.module\\.css$"],
-            },
-          },
-        },
-      ],
-
       "react/prop-types": "off",
       "react/jsx-fragments": ["warn", "syntax"],
       "react/jsx-curly-brace-presence": ["warn", "never"],
@@ -143,12 +140,7 @@ export default tseslint.config(
     },
   },
   {
+    ...vitestPlugin.configs.recommended,
     files: ["**/*.test.ts", "**/*.test.tsx"],
-    plugins: {
-      vitest: vitestPlugin,
-    },
-    rules: {
-      ...vitestPlugin.configs.recommended.rules,
-    },
   },
 );

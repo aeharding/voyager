@@ -5,7 +5,7 @@ import { MouseEvent } from "react";
 
 import Stat from "#/features/post/detail/Stat";
 
-import { formatRelative } from "./Ago";
+import { formatRelativeToNow } from "./Ago";
 
 import styles from "./Edited.module.css";
 
@@ -24,8 +24,8 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     if (!edited) return;
     if (!showDate) return;
 
-    const createdLabel = formatRelative(new Date(item.counts.published));
-    const editedLabel = formatRelative(new Date(edited));
+    const createdLabel = formatRelativeToNow(new Date(item.counts.published));
+    const editedLabel = formatRelativeToNow(new Date(edited));
 
     if (createdLabel === editedLabel) return;
 
@@ -42,7 +42,7 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     const date = new Date(edited);
 
     present({
-      header: `Edited ${formatRelative(date)} Ago`,
+      header: `Edited ${formatRelativeToNow(date)} Ago`,
       message: `Last edited on ${date.toDateString()} at ${date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
       buttons: ["OK"],
     });

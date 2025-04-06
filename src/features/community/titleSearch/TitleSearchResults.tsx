@@ -3,7 +3,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { compact, sortBy, uniqBy } from "es-toolkit";
 import { Community, CommunityView } from "lemmy-js-client";
 import {
-  useContext,
+  use,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useMemo,
@@ -51,7 +51,7 @@ type Result = Community | SpecialFeed | string;
 export default function TitleSearchResults() {
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
-    useContext(TitleSearchContext);
+    use(TitleSearchContext);
   const [debouncedSearch] = useDebouncedValue(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
@@ -219,7 +219,6 @@ export default function TitleSearchResults() {
                   onSelect(c);
                 }}
                 key={typeof c === "string" ? c : c.id}
-                routerDirection="none"
               >
                 {renderTitle(c)}
               </IonItem>

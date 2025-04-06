@@ -23,14 +23,7 @@ import {
   ellipsisVertical,
 } from "ionicons/icons";
 import { GetSiteResponse } from "lemmy-js-client";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VList } from "virtua";
 
 import {
@@ -61,7 +54,7 @@ import styles from "./PickJoinServer.module.css";
 export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();
 
-  const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const { dismiss, setCanDismiss } = use(DynamicDismissableModalContext);
 
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
@@ -243,28 +236,43 @@ export default function PickJoinServer() {
   const content = (() => {
     if (allInstances.length) {
       return (
-        <VList count={allInstances.length} className="ion-content-scroll-host">
-          {(i) => {
-            const { url, icon, description } = allInstances[i]!;
+        <IonRadioGroup
+          value={selection}
+          onIonChange={(e) => setSelection(e.detail.value)}
+          allowEmptySelection
+        >
+          <VList
+            count={allInstances.length}
+            className="ion-content-scroll-host"
+          >
+            {(i) => {
+              const instance = allInstances[i];
 
-            return (
-              <IonItem className={styles.serverItem} key={url}>
-                <IonThumbnail className={styles.serverThumbnail} slot="start">
-                  <img
-                    className={styles.serverImg}
-                    src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
-                  />
-                </IonThumbnail>
-                <IonRadio value={url}>
-                  <IonLabel>
-                    <h2>{url}</h2>
-                    <p className="ion-text-wrap">{description}</p>
-                  </IonLabel>
-                </IonRadio>
-              </IonItem>
-            );
-          }}
-        </VList>
+              // Edge case/race with refreshing instances
+              // https://github.com/aeharding/voyager/issues/1854
+              if (!instance) return <div />;
+
+              const { url, icon, description } = instance;
+
+              return (
+                <IonItem className={styles.serverItem} key={url}>
+                  <IonThumbnail className={styles.serverThumbnail} slot="start">
+                    <img
+                      className={styles.serverImg}
+                      src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
+                    />
+                  </IonThumbnail>
+                  <IonRadio value={url}>
+                    <IonLabel>
+                      <h2>{url}</h2>
+                      <p className="ion-text-wrap">{description}</p>
+                    </IonLabel>
+                  </IonRadio>
+                </IonItem>
+              );
+            }}
+          </VList>
+        </IonRadioGroup>
       );
     }
 
@@ -316,13 +324,7 @@ export default function PickJoinServer() {
         </IonToolbar>
       </AppHeader>
       <IonContent ref={contentRef} scrollY={false}>
-        <IonRadioGroup
-          value={selection}
-          onIonChange={(e) => setSelection(e.detail.value)}
-          allowEmptySelection
-        >
-          {content}
-        </IonRadioGroup>
+        {content}
       </IonContent>
       <IonFooter>
         <IonToolbar>

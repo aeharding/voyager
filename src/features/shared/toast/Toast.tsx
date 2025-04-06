@@ -7,6 +7,7 @@ import {
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -21,7 +22,7 @@ export interface ToastHandler {
 }
 
 interface ToastProps extends React.PropsWithChildren {
-  ref: React.RefObject<ToastHandler>;
+  ref: React.RefObject<ToastHandler | undefined>;
   onClose?: () => void;
 }
 
@@ -45,6 +46,13 @@ export default function Toast({ ref, onClose }: ToastProps) {
   const onCloseEvent = useEffectEvent(onClose ?? noop);
   const isBottom = options?.position === "bottom";
 
+  // Bug where isBottom is stale (false) in handleClose
+  const isBottomRef = useRef(isBottom);
+
+  useEffect(() => {
+    isBottomRef.current = isBottom;
+  }, [isBottom]);
+
   useEffect(() => {
     if (open) {
       start();
@@ -63,7 +71,7 @@ export default function Toast({ ref, onClose }: ToastProps) {
 
     const yStart = typeof y.get() === "number" ? y.get() : 0;
 
-    const yEnd = isBottom
+    const yEnd = isBottomRef.current
       ? scope.current.clientHeight
       : -scope.current.clientHeight;
 

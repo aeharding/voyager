@@ -48,11 +48,11 @@ export default function BeforeInstallPromptProvider({
   }
 
   return (
-    <BeforeInstallPromptContext.Provider
+    <BeforeInstallPromptContext
       value={{ event: beforeInstallPromptEvent, clearEvent }}
     >
       {children}
-    </BeforeInstallPromptContext.Provider>
+    </BeforeInstallPromptContext>
   );
 }
 

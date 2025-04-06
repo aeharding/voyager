@@ -1,7 +1,7 @@
 import { NotificationType } from "@capacitor/haptics";
 import { Color } from "@ionic/core";
 import { IonIcon } from "@ionic/react";
-import { createContext, MouseEvent, useContext, useRef } from "react";
+import { createContext, MouseEvent, use, useRef } from "react";
 
 import Toast, { ToastHandler } from "#/features/shared/toast/Toast";
 
@@ -21,14 +21,14 @@ export interface AppToastOptions {
 }
 
 export default function useAppToast() {
-  return useContext(AppToastContext);
+  return use(AppToastContext);
 }
 
 export function AppToastProvider({ children }: React.PropsWithChildren) {
   const vibrate = useHapticFeedback();
-  const toastRef = useRef<ToastHandler>(null);
+  const toastRef = useRef<ToastHandler>(undefined);
   const openRef = useRef(false);
-  const queuedOptionsRef = useRef<AppToastOptions>();
+  const queuedOptionsRef = useRef<AppToastOptions>(undefined);
 
   async function present(options: AppToastOptions) {
     if (openRef.current) {
@@ -36,6 +36,12 @@ export function AppToastProvider({ children }: React.PropsWithChildren) {
       closeHandler();
       return;
     }
+
+    if (document.querySelector(".pswp--open"))
+      options = {
+        ...options,
+        fullscreen: true,
+      };
 
     if (isNative())
       vibrate({
@@ -86,10 +92,10 @@ export function AppToastProvider({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <AppToastContext.Provider value={present}>
+    <AppToastContext value={present}>
       <Toast ref={toastRef} onClose={onClose} />
       {children}
-    </AppToastContext.Provider>
+    </AppToastContext>
   );
 }
 

@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
 import { chevronDown, close } from "ionicons/icons";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { use, useEffect, useRef } from "react";
 
 import AppTitle, { AppTitleHandle } from "#/features/shared/AppTitle";
 import { cx } from "#/helpers/css";
@@ -23,12 +23,12 @@ export function openTitleSearch() {
 interface TitleSearchProps extends React.PropsWithChildren {
   name: string;
 
-  ref?: React.RefObject<AppTitleHandle>;
+  ref?: React.RefObject<AppTitleHandle | undefined>;
 }
 
 export default function TitleSearch({ name, children, ref }: TitleSearchProps) {
   const { setSearch, searching, setSearching, onSubmit } =
-    useContext(TitleSearchContext);
+    use(TitleSearchContext);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

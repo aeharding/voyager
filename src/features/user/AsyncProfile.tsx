@@ -1,4 +1,5 @@
 import {
+  IonContent,
   IonRefresher,
   IonRefresherContent,
   IonSpinner,
@@ -17,6 +18,7 @@ import { getUser } from "#/features/user/userSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch } from "#/store";
 
 import sharedStyles from "#/features/shared/shared.module.css";
@@ -69,11 +71,16 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     if (handle) loadEvent();
   }, [handle]);
 
-  if (!person) return <IonSpinner className={sharedStyles.pageSpinner} />;
+  if (!person)
+    return (
+      <FeedContent>
+        <IonSpinner className={sharedStyles.pageSpinner} />
+      </FeedContent>
+    );
 
   if (person === "failed")
     return (
-      <>
+      <IonContent scrollY>
         <IonRefresher
           slot="fixed"
           onIonRefresh={async (e) => {
@@ -89,8 +96,12 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
         <div className={sharedStyles.pageFailedMessage}>
           failed to load user profile 😢
         </div>
-      </>
+      </IonContent>
     );
 
-  return <Profile person={person} onPull={load} />;
+  return (
+    <FeedContent>
+      <Profile person={person} onPull={load} />
+    </FeedContent>
+  );
 }

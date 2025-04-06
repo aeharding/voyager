@@ -25,7 +25,7 @@ export default function PostContext({ post, community }: PostContextProps) {
       )}
     >
       <div className={styles.name}>
-        <InlineMarkdown>{post.name}</InlineMarkdown>
+        <InlineMarkdown parseBlocks={false}>{post.name}</InlineMarkdown>
       </div>
       <div className={styles.communityName}>{getHandle(community)}</div>
     </Link>

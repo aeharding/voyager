@@ -18,7 +18,9 @@
 .markdown {
   margin: 0 0 15px 0;
 
-  img {
+  img,
+  canvas,
+  video {
     display: block;
     max-width: 100%;
     max-height: 50vh;
@@ -26,8 +28,12 @@
     object-position: 0%;
   }
 
-  table img {
-    display: inline-block;
+  table {
+    img,
+    canvas,
+    video {
+      display: inline-block;
+    }
   }
 }
 

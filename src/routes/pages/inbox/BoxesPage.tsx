@@ -16,7 +16,7 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
-import { MouseEvent, useContext, useRef } from "react";
+import { MouseEvent, use, useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
@@ -30,7 +30,7 @@ export default function BoxesPage() {
   const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
 
   useSetActivePage(pageRef);
 
