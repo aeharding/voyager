@@ -76,7 +76,9 @@ export default function CompactPost({ post }: PostProps) {
               </div>
             )}
             <span className={styles.title}>
-              <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+              <InlineMarkdown parseBlocks={false}>
+                {post.post.name}
+              </InlineMarkdown>{" "}
               {domain && (
                 <>
                   <span className={styles.domain}>

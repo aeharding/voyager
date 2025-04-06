@@ -158,7 +158,7 @@ export default function Link({
         {buildCompactIcon()}
         <div className={styles.urlContainer}>
           <div className={styles.text}>
-            <InlineMarkdown>{text ?? ""}</InlineMarkdown>
+            <InlineMarkdown parseBlocks={false}>{text ?? ""}</InlineMarkdown>
           </div>
           <Url>{url}</Url>
         </div>
