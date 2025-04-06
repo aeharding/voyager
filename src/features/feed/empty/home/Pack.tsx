@@ -5,7 +5,8 @@ import { IonItem } from "@ionic/react";
 import { useState } from "react";
 
 import { cx } from "#/helpers/css";
-import { getApId, getCommunityHandleFromActorId } from "#/helpers/lemmy";
+import { getCommunityHandleFromActorId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useAppSelector } from "#/store";
 
 import { PackType } from "./StarterPacksModal";

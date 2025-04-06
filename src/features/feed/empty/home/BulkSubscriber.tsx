@@ -2,7 +2,8 @@ import { IonLoading } from "@ionic/react";
 import { useImperativeHandle, useRef, useState } from "react";
 
 import { followCommunity } from "#/features/community/communitySlice";
-import { getApId, getCommunityHandleFromActorId } from "#/helpers/lemmy";
+import { getCommunityHandleFromActorId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { subscribedStarterPacks } from "#/helpers/toastMessages";
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";

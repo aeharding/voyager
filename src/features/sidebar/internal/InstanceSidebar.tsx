@@ -2,7 +2,7 @@ import { IonBadge, IonRefresher, IonRefresherContent } from "@ionic/react";
 
 import { getSite, lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
-import { getApId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GenericSidebar from "./GenericSidebar";

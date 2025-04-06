@@ -2,7 +2,7 @@ import { IonButton } from "@ionic/react";
 
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
-import { getApId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { shareUrl } from "#/helpers/share";
 
 import { useAppSelector } from "../../store";

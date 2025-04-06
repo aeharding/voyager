@@ -8,11 +8,8 @@ import {
   localUserSelector,
   showNsfw,
 } from "#/features/auth/siteSlice";
-import {
-  checkIsMod,
-  getApId,
-  getHandle as useGetHandle,
-} from "#/helpers/lemmy";
+import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { shareUrl } from "#/helpers/share";
 import {

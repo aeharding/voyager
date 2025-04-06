@@ -6,9 +6,9 @@ import { isNative } from "#/helpers/device";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
-  getApId,
   isPost,
 } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { shareUrl } from "#/helpers/share";
 import {
   buildResolveCommentFailed,

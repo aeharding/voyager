@@ -13,7 +13,7 @@ import {
   POST_PATH,
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
-import { getApId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { getClient } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";

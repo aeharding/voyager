@@ -1,6 +1,7 @@
 import { Person } from "lemmy-js-client";
 
-import { getApId, getRemoteHandle } from "#/helpers/lemmy";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import useClient from "#/helpers/useClient";
 
 import GenericAutocompleteMode, {

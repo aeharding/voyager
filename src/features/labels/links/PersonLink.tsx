@@ -14,7 +14,8 @@ import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
-import { getApId, getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { OInstanceUrlDisplayMode } from "#/services/db";
 import { useAppSelector } from "#/store";

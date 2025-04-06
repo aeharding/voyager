@@ -16,7 +16,7 @@ import { use, useState } from "react";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import Markdown from "#/features/shared/markdown/Markdown";
-import { getApId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useAppSelector } from "#/store";
 
 import Join from "./Join";

@@ -14,7 +14,7 @@ import {
 import AppHeader from "#/features/shared/AppHeader";
 import { useInterceptHrefWithInAppBrowserIfNeeded } from "#/features/shared/InAppExternalLink";
 import Markdown from "#/features/shared/markdown/Markdown";
-import { getApId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
 import { useAppSelector } from "#/store";
 

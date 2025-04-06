@@ -2,7 +2,8 @@ import { IonRefresher, IonRefresherContent } from "@ionic/react";
 import { CommunityView } from "lemmy-js-client";
 
 import { getCommunity } from "#/features/community/communitySlice";
-import { getApId, getHandle } from "#/helpers/lemmy";
+import { getHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GenericSidebar from "./GenericSidebar";
