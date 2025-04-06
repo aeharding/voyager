@@ -14,7 +14,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
@@ -32,8 +32,7 @@ export default function UpdateAppPage() {
   const pageRef = useRef<HTMLElement>(null);
 
   const [loading, setLoading] = useState(false);
-  const { status, checkForUpdates, updateServiceWorker } =
-    useContext(UpdateContext);
+  const { status, checkForUpdates, updateServiceWorker } = use(UpdateContext);
 
   useSetActivePage(pageRef);
 

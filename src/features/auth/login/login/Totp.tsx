@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
@@ -30,7 +30,7 @@ interface TotpProps {
 export default function Totp({ url, username, password }: TotpProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
-  const { setCanDismiss, dismiss } = useContext(DynamicDismissableModalContext);
+  const { setCanDismiss, dismiss } = use(DynamicDismissableModalContext);
 
   const totpRef = useRef<HTMLIonInputElement>(null);
 

@@ -24,6 +24,7 @@ import {
   buildCommentsTreeWithMissing,
   getDepthFromCommentPath,
 } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
@@ -54,7 +55,7 @@ interface CommentsProps {
   sort: CommentSortType;
   bottomPadding?: number;
 
-  ref: React.RefObject<CommentsHandle>;
+  ref: React.RefObject<CommentsHandle | undefined>;
 }
 
 export default function Comments({
@@ -343,7 +344,7 @@ export default function Comments({
               ...parent,
               counts: {
                 ...parent.counts,
-                child_count: parent.counts.child_count + 1,
+                child_count: getCounts(parent).child_count + 1,
               },
             });
           }
@@ -472,7 +473,7 @@ export default function Comments({
   });
 
   return (
-    <CommentsContext.Provider value={commentsContextValue}>
+    <CommentsContext value={commentsContextValue}>
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
@@ -503,7 +504,7 @@ export default function Comments({
           <>{...content}</>
         )}
       </div>
-    </CommentsContext.Provider>
+    </CommentsContext>
   );
 }
 

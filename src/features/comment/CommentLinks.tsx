@@ -1,5 +1,8 @@
+/// <reference types="mdast-util-lemmy-supersub" />
+
 import spoiler from "@aeharding/remark-lemmy-spoiler";
-import { Text } from "mdast";
+import superSub from "@aeharding/remark-lemmy-supersub";
+import { Image, Link, PhrasingContent } from "mdast";
 import { defaultUrlTransform } from "react-markdown";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
@@ -12,7 +15,6 @@ import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import styles from "./CommentLinks.module.css";
-
 export interface LinkData {
   type: "link" | "image";
   url: string;
@@ -38,6 +40,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     // and parse the Markdown content
     const processor = unified()
       .use(remarkParse)
+      .use(superSub) // needed for subscript links, e.g. ~https://google.com~ to prevent link ending in ~
       .use(customRemarkGfm, { connectedInstance })
       .use(spoiler);
 
@@ -69,12 +72,14 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
 
         urlMap.set(url, true);
 
+        // Capture the raw markdown content as link.text
+        const rawLinkLabel = markdown.slice(...getLinkLabelPosition(node));
+
         links.push({
           type: node.type,
           // normalize relative links
           url,
-          text:
-            "children" in node ? (node.children[0] as Text)?.value : undefined,
+          text: rawLinkLabel,
         });
 
         if (links.length === 4) return EXIT;
@@ -87,4 +92,31 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   if (!links.length) return;
 
   return <div className={styles.container}>{links}</div>;
+}
+
+/**
+ * Get the start and end positions of the link label, unwrapping
+ * sup and sub nodes if necessary
+ *
+ * @returns [start, end]
+ * (`[0, 0]` if not found)
+ */
+function getLinkLabelPosition(
+  node: Link | Image | PhrasingContent,
+): [number, number] {
+  if (!("children" in node)) return [0, 0];
+
+  // If the node has a single child that is a sup or sub, unwrap
+  if (
+    node.children.length === 1 &&
+    (node.children[0]!.type === "sup" || node.children[0]!.type === "sub")
+  ) {
+    return getLinkLabelPosition(node.children[0]);
+  }
+
+  const start = node.children[0]?.position?.start?.offset ?? 0;
+  const end =
+    node.children[node.children.length - 1]?.position?.end?.offset ?? 0;
+
+  return [start, end];
 }

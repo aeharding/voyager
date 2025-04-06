@@ -4,8 +4,8 @@ import { Community } from "lemmy-js-client";
 import {
   createContext,
   memo,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -188,7 +188,7 @@ function ResolvedCommunitiesList({
   }, [updateActiveIndex]);
 
   return (
-    <StickyIndexContext.Provider value={activeIndex}>
+    <StickyIndexContext value={activeIndex}>
       <div
         className={cx(
           styles.virtualizerScrollView,
@@ -240,7 +240,7 @@ function ResolvedCommunitiesList({
           ),
         )}
       />
-    </StickyIndexContext.Provider>
+    </StickyIndexContext>
   );
 }
 
@@ -248,7 +248,7 @@ export default memo(ResolvedCommunitiesList);
 
 const StickyIndexContext = createContext(-1);
 function StickyItem({ style, index, ...props }: CustomItemComponentProps) {
-  const activeIndex = useContext(StickyIndexContext);
+  const activeIndex = use(StickyIndexContext);
   return (
     <div
       {...props}

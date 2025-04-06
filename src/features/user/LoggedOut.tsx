@@ -1,5 +1,5 @@
 import { IonButton, IonText } from "@ionic/react";
-import { useContext } from "react";
+import { use } from "react";
 
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
 import { PageContext } from "#/features/auth/PageContext";
@@ -17,8 +17,7 @@ export default function LoggedOut() {
   );
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
 
-  const { presentLoginIfNeeded, presentAccountSwitcher } =
-    useContext(PageContext);
+  const { presentLoginIfNeeded, presentAccountSwitcher } = use(PageContext);
 
   return (
     <AppContent className={styles.content}>

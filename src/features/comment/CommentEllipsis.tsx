@@ -1,6 +1,6 @@
 import { IonIcon, IonLoading } from "@ionic/react";
 import { ellipsisHorizontal } from "ionicons/icons";
-import { useContext, useImperativeHandle } from "react";
+import { use, useImperativeHandle } from "react";
 
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 
@@ -14,7 +14,7 @@ export type CommentEllipsisHandle = Pick<
 >;
 
 interface CommentEllipsisProps extends CommentActionsProps {
-  ref: React.RefObject<CommentEllipsisHandle>;
+  ref: React.RefObject<CommentEllipsisHandle | undefined>;
 }
 
 export default function CommentEllipsis({
@@ -22,7 +22,7 @@ export default function CommentEllipsis({
   ...props
 }: CommentEllipsisProps) {
   const { present, loading } = useCommentActions(props);
-  const { capturing } = useContext(ShareImageContext);
+  const { capturing } = use(ShareImageContext);
 
   useImperativeHandle(
     ref,

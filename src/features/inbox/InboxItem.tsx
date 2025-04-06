@@ -17,6 +17,7 @@ import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { filterEvents } from "#/helpers/longPress";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppToast from "#/helpers/useAppToast";
@@ -47,14 +48,15 @@ export default function InboxItem({ item }: InboxItemProps) {
     (state) => state.inbox.readByInboxItemId,
   );
   const presentToast = useAppToast();
-  const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById,
+  const storeVote = useAppSelector((state) =>
+    "comment" in item
+      ? state.comment.commentVotesById[item.comment.id]
+      : undefined,
   );
 
   const vote =
     "comment" in item
-      ? (commentVotesById[item.comment.id] ??
-        (item.my_vote as 1 | 0 | -1 | undefined))
+      ? (storeVote ?? (item.my_vote as 1 | 0 | -1 | undefined))
       : undefined;
 
   function renderHeader() {
@@ -135,7 +137,7 @@ export default function InboxItem({ item }: InboxItemProps) {
   }
 
   function getDate() {
-    if ("comment" in item) return item.counts.published;
+    if ("comment" in item) return getCounts(item).published;
 
     return item.private_message.published;
   }
@@ -168,7 +170,7 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   const read = !!readByInboxItemId[getInboxItemId(item)];
 
-  const ellipsisHandleRef = useRef<InboxItemMoreActionsHandle>(null);
+  const ellipsisHandleRef = useRef<InboxItemMoreActionsHandle>(undefined);
 
   const onCommentLongPress = useCallback(() => {
     ellipsisHandleRef.current?.present();

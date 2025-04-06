@@ -2,7 +2,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useContext, useEffect } from "react";
+import { use, useEffect } from "react";
 import { useTransition } from "react-transition-state";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -31,7 +31,7 @@ export function VoteButton({ type, post }: VoteButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);

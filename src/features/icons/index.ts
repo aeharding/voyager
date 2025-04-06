@@ -20,3 +20,5 @@ export { default as strikethrough } from "./svg/strikethrough.svg";
 export { default as trashEllipse } from "./svg/trashEllipse.svg";
 export { default as alphabeticalAsc } from "./svg/alphabeticalAsc.svg";
 export { default as alphabeticalDesc } from "./svg/alphabeticalDesc.svg";
+export { default as pip } from "./svg/pip.svg";
+export { default as airplay } from "./svg/airplay.svg";

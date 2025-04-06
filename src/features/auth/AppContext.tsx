@@ -1,15 +1,9 @@
 import { useIonViewDidEnter } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, {
-  createContext,
-  RefObject,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, RefObject, use, useEffect, useRef } from "react";
 import { VListHandle } from "virtua";
 
-export type Page = RefObject<VListHandle | HTMLElement>;
+export type Page = RefObject<VListHandle | HTMLElement | null>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first
@@ -23,22 +17,22 @@ export const AppContext = createContext<IAppContext>({
 });
 
 export function AppContextProvider({ children }: React.PropsWithChildren) {
-  const activePageRef = useRef<Page>();
+  const activePageRef = useRef<Page>(undefined);
 
   return (
-    <AppContext.Provider
+    <AppContext
       value={{
         activePageRef,
         setActivePage: (page: Page) => (activePageRef.current = page),
       }}
     >
       {children}
-    </AppContext.Provider>
+    </AppContext>
   );
 }
 
 export function useSetActivePage(page?: Page, enabled = true) {
-  const { activePageRef, setActivePage } = useContext(AppContext);
+  const { activePageRef, setActivePage } = use(AppContext);
 
   useEffect(() => {
     if (!enabled) return;

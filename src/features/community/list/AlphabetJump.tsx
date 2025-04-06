@@ -67,7 +67,7 @@ function mapSeparatorsToJumpSections(
 }
 
 interface AlphabetJumpProps {
-  virtuaRef: RefObject<VListHandle>;
+  virtuaRef: RefObject<VListHandle | null>;
   separators: { label: string; index: number }[];
 }
 
@@ -75,8 +75,8 @@ export default function AlphabetJump({
   virtuaRef,
   separators,
 }: AlphabetJumpProps) {
-  const containerElTopRef = useRef<DOMRect | undefined>();
-  const scrollViewRef = useRef<HTMLElement | undefined>();
+  const containerElTopRef = useRef<DOMRect>(undefined);
+  const scrollViewRef = useRef<HTMLElement>(undefined);
 
   const jumpTableLookup = useMemo(
     () =>

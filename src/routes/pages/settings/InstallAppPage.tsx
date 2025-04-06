@@ -12,7 +12,7 @@ import {
   checkmarkCircleOutline,
   chevronBack,
 } from "ionicons/icons";
-import { useContext, useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { BeforeInstallPromptContext } from "#/features/pwa/BeforeInstallPromptProvider";
@@ -56,7 +56,7 @@ export default function InstallAppPage() {
 
   useSetActivePage(pageRef);
 
-  const beforeInstallPrompt = useContext(BeforeInstallPromptContext);
+  const beforeInstallPrompt = use(BeforeInstallPromptContext);
 
   const relevantBadges = (() => {
     if (isAppleDeviceInstallable()) return IOS_APP_BADGES;

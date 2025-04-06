@@ -5,7 +5,7 @@ import { CommentView, PostView } from "lemmy-js-client";
 import CommentContent from "#/features/comment/CommentContent";
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";
-import Vote from "#/features/labels/Vote";
+import Vote from "#/features/labels/vote/Vote";
 import useCanModerate from "#/features/moderation/useCanModerate";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";

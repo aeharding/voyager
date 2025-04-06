@@ -1,8 +1,9 @@
-import React, { RefObject, useContext } from "react";
+import React, { RefObject, use } from "react";
 
 import { AppContext, Page } from "#/features/auth/AppContext";
 import { getOffsetTop, scrollIntoView } from "#/helpers/dom";
 import { CommentNodeI } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { OTapToCollapseType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -39,7 +40,7 @@ export default function CommentTree({
   const tapToCollapse = useAppSelector(
     (state) => state.settings.general.comments.tapToCollapse,
   );
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   // Comment context chains don't show missing for parents
   const showMissing = (() => {
@@ -61,7 +62,7 @@ export default function CommentTree({
 
   if (
     comment.absoluteDepth - baseDepth > MAX_COMMENT_DEPTH &&
-    comment.comment_view.counts.child_count >= 2
+    getCounts(comment.comment_view).child_count >= 2
   ) {
     return (
       <ContinueThread

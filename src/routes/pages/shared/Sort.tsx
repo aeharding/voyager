@@ -19,7 +19,7 @@ import {
   trophyOutline,
 } from "ionicons/icons";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { SearchSortType } from "#/features/feed/sort/SearchSort";
@@ -73,7 +73,7 @@ export default function buildSort<S extends AnySort>(
   }
 
   function Sort({ sort, setSort }: SortProps<S>) {
-    const { activePageRef } = useContext(AppContext);
+    const { activePageRef } = use(AppContext);
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);
@@ -165,13 +165,16 @@ export default function buildSort<S extends AnySort>(
 }
 
 function findSortOption<S>(sort: S, sortOptions: HydratedSortOptions<S>) {
-  return sortOptions.find((option) => {
-    if ("children" in option) {
-      return option.children.find((child) => child.value === sort);
+  for (const option of sortOptions) {
+    if ("value" in option) {
+      if (option.value === sort) return option;
+    } else if ("children" in option) {
+      const matchingChild = option.children.find(
+        (child) => child.value === sort,
+      );
+      if (matchingChild) return matchingChild;
     }
-
-    return option.value === sort;
-  });
+  }
 }
 
 type AnySort =

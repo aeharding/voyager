@@ -1,5 +1,5 @@
 import { Person } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { use, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
@@ -15,6 +15,7 @@ import {
   stopIonicTapClick,
 } from "#/helpers/ionic";
 import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { OInstanceUrlDisplayMode } from "#/services/db";
 import { useAppSelector } from "#/store";
@@ -27,10 +28,11 @@ import sharedStyles from "./shared.module.css";
 
 interface PersonLinkProps extends Pick<PresentUserActionsOptions, "sourceUrl"> {
   person: Person;
+  color?: string;
   opId?: number;
   distinguished?: boolean;
   showInstanceWhenRemote?: boolean;
-  prefix?: string;
+  prefix?: React.ReactNode;
   showBadge?: boolean;
   disableInstanceClick?: boolean;
   showTag?: boolean;
@@ -43,6 +45,7 @@ export default function PersonLink({
   opId,
   distinguished,
   className,
+  color: _color,
   showInstanceWhenRemote,
   prefix,
   showBadge = true,
@@ -52,9 +55,9 @@ export default function PersonLink({
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
-    (admin) => admin.person.actor_id === person.actor_id,
+    (admin) => getApId(admin.person) === getApId(person),
   );
-  const { hideUsernames } = useContext(ShareImageContext);
+  const { hideUsernames } = use(ShareImageContext);
   const presentUserActions = usePresentUserActions();
 
   const tag = useAppSelector(
@@ -86,11 +89,12 @@ export default function PersonLink({
 
   let color: string | undefined;
 
-  if (isAdmin) color = "var(--ion-color-danger)";
+  if (_color) color = _color;
+  else if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (
-    person.actor_id === "https://lemmy.world/u/aeharding" ||
-    person.actor_id === "https://vger.social/u/aeharding"
+    getApId(person) === "https://lemmy.world/u/aeharding" ||
+    getApId(person) === "https://vger.social/u/aeharding"
   )
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
@@ -108,9 +112,8 @@ export default function PersonLink({
     item: person,
   });
 
-  const end = (
+  const suffix = (
     <>
-      {instance}
       {showBadge && (
         <>
           {person.bot_account && " 🤖"}
@@ -150,10 +153,24 @@ export default function PersonLink({
             <span className={styles.prefix}>{prefix}</span>{" "}
           </>
         ) : undefined}
-        {handle}
-        {!disableInstanceClick && end}
+        {!disableInstanceClick ? (
+          <>
+            <span className={styles.shrinkable}>
+              {handle}
+              {instance}
+            </span>
+            {suffix}
+          </>
+        ) : (
+          handle
+        )}
       </Link>
-      {disableInstanceClick && end}
+      {disableInstanceClick && (
+        <span className={styles.shrinkable}>
+          {instance}
+          {suffix}
+        </span>
+      )}
     </span>
   );
 }

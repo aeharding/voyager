@@ -29,7 +29,7 @@ export default function PostDetail({
     (state) => state.settings.general.comments,
   );
   const [ionViewEntered, setIonViewEntered] = useState(false);
-  const commentsRef = useRef<CommentsHandle>(null);
+  const commentsRef = useRef<CommentsHandle>(undefined);
 
   const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(0);
 

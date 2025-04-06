@@ -13,7 +13,7 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import { useParams } from "react-router";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
@@ -137,13 +137,13 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
           </IonToolbar>
         </AppHeader>
         <FeedContent>
-          <ModqueueContext.Provider value={true}>
+          <ModqueueContext value={true}>
             <PostCommentFeed
               fetchFn={fetchFn}
               filterHiddenPosts={false}
               filterKeywordsAndWebsites={false}
             />
-          </ModqueueContext.Provider>
+          </ModqueueContext>
         </FeedContent>
       </IonPage>
     </FeedContextProvider>
@@ -189,5 +189,5 @@ function convertCommentReportToComment(
 const ModqueueContext = createContext(false);
 
 export function useInModqueue() {
-  return useContext(ModqueueContext);
+  return use(ModqueueContext);
 }

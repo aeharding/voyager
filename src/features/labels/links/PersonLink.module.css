@@ -1,3 +1,9 @@
 .prefix {
   font-weight: normal;
 }
+
+.shrinkable {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

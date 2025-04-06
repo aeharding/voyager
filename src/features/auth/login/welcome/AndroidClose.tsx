@@ -1,13 +1,13 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
 import { arrowBackSharp } from "ionicons/icons";
-import { useContext } from "react";
+import { use } from "react";
 
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 
 import styles from "./AndroidClose.module.css";
 
 export default function AndroidClose() {
-  const { dismiss } = useContext(DynamicDismissableModalContext);
+  const { dismiss } = use(DynamicDismissableModalContext);
 
   return (
     <IonButtons className={styles.androidIonButtons} slot="start">

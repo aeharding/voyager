@@ -1,9 +1,9 @@
 import { subDays, subMinutes, subMonths, subSeconds, subYears } from "date-fns";
 import { describe, expect, it } from "vitest";
 
-import { formatRelative } from "./Ago";
+import { formatRelativeToNow } from "./Ago";
 
-describe("formatRelative Function", () => {
+describe("formatRelativeToNow Function", () => {
   const currentTime = {
     date: new Date(),
     expected: {
@@ -18,7 +18,15 @@ describe("formatRelative Function", () => {
     expected: {
       ultrashort: "1mo",
       short: "1mo",
-      verbose: "1 month",
+
+      // off by one, TZ=UTC @ 2025-03-29T00:17:41.637Z
+      // https://github.com/date-fns/date-fns/issues/3506
+      verbose: [
+        "1 month",
+        "1 month, 1 day",
+        "1 month, 2 days",
+        "1 month, 3 days",
+      ],
     },
   };
 
@@ -82,18 +90,23 @@ describe("formatRelative Function", () => {
 
   testCases.forEach(({ name, date, expected }) => {
     it(`should format ${name} correctly in ultrashort format`, () => {
-      const result = formatRelative(date, "ultrashort");
+      const result = formatRelativeToNow(date, "ultrashort");
       expect(result).toBe(expected.ultrashort);
     });
 
     it(`should format ${name} correctly in short format`, () => {
-      const result = formatRelative(date, "short");
+      const result = formatRelativeToNow(date, "short");
       expect(result).toBe(expected.short);
     });
 
     it(`should format ${name} correctly in verbose format`, () => {
-      const result = formatRelative(date, "verbose");
-      expect(result).toBe(expected.verbose);
+      const result = formatRelativeToNow(date, "verbose");
+
+      if (typeof expected.verbose === "string") {
+        expect(result).toBe(expected.verbose);
+      } else {
+        expect(result).toBeOneOf(expected.verbose);
+      }
     });
   });
 });

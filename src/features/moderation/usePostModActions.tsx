@@ -9,7 +9,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { use, useCallback } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { trashEllipse } from "#/features/icons";
@@ -39,7 +39,7 @@ export default function usePostModActions(post: PostView) {
   const presentToast = useAppToast();
   const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentBanUser } = useContext(PageContext);
+  const { presentBanUser } = use(PageContext);
 
   return useCallback(() => {
     const state = store.getState();

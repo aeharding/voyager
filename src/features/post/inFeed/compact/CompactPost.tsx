@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { use } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
@@ -46,7 +46,7 @@ export default function CompactPost({ post }: PostProps) {
 
   const inModqueue = useInModqueue();
 
-  const inCommunityFeed = useContext(PageTypeContext) === "community";
+  const inCommunityFeed = use(PageTypeContext) === "community";
 
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
@@ -76,7 +76,9 @@ export default function CompactPost({ post }: PostProps) {
               </div>
             )}
             <span className={styles.title}>
-              <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+              <InlineMarkdown parseBlocks={false}>
+                {post.post.name}
+              </InlineMarkdown>{" "}
               {domain && (
                 <>
                   <span className={styles.domain}>

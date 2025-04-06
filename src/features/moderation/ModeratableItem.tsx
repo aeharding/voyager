@@ -1,5 +1,5 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, use } from "react";
 
 import { isPost } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";
@@ -83,11 +83,11 @@ export default function ModeratableItem({
   );
 
   return (
-    <ModeratableItemContext.Provider value={{ banner }}>
+    <ModeratableItemContext value={{ banner }}>
       <ModeratableItemContainer modState={modState}>
         {children}
       </ModeratableItemContainer>
-    </ModeratableItemContext.Provider>
+    </ModeratableItemContext>
   );
 }
 
@@ -100,7 +100,7 @@ const ModeratableItemContext = createContext<IModeratableItemContext>({
 });
 
 export function ModeratableItemBannerOutlet() {
-  const { banner } = useContext(ModeratableItemContext);
+  const { banner } = use(ModeratableItemContext);
 
   return banner;
 }

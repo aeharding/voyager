@@ -7,8 +7,8 @@ import { differenceBy } from "es-toolkit";
 import React, {
   createContext,
   Fragment,
+  use,
   useCallback,
-  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useMemo,
@@ -47,7 +47,9 @@ export type FetchFn<I> = (
 type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
 export interface FeedProps<I>
-  extends Partial<Pick<EndPostProps, "sortDuration">> {
+  extends Partial<
+    Pick<EndPostProps, "sortDuration" | "renderCustomEmptyContent">
+  > {
   itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
@@ -103,6 +105,7 @@ export default function Feed<I>({
   getIndex,
   limit = DEFAULT_LIMIT,
   sortDuration,
+  renderCustomEmptyContent,
   onRemovedFromTop,
   onPull,
 }: FeedProps<I>) {
@@ -122,9 +125,11 @@ export default function Feed<I>({
 
   const [loadFailed, setLoadFailed] = useState(false);
 
-  const { setScrolledPastSearch } = useContext(FeedSearchContext);
+  const { setScrolledPastSearch } = use(FeedSearchContext);
 
   const startRangeRef = useRef(0);
+
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const infiniteScrolling = useAppSelector(
     (state) => state.settings.general.posts.infiniteScrolling,
@@ -143,7 +148,7 @@ export default function Feed<I>({
     atEndRef.current = atEnd;
   }
 
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController>(undefined);
 
   const fetchMore = useCallback(
     async (refresh = false) => {
@@ -208,6 +213,7 @@ export default function Feed<I>({
         : newPageItems;
 
       setLoadFailed(false);
+      setInitialLoad(false);
 
       if (refresh) {
         setAtEnd(false);
@@ -313,6 +319,7 @@ export default function Feed<I>({
           empty={!items.length}
           communityName={communityName}
           sortDuration={sortDuration}
+          renderCustomEmptyContent={renderCustomEmptyContent}
           key="footer"
         />
       );
@@ -338,7 +345,7 @@ export default function Feed<I>({
     }
   }
 
-  if ((loading && !filteredItems.length) || loading === undefined)
+  if ((loading && initialLoad) || loading === undefined)
     return <CenteredSpinner />;
 
   return (
@@ -351,7 +358,7 @@ export default function Feed<I>({
         <IonRefresherContent />
       </IonRefresher>
 
-      <InFeedContext.Provider value={true}>
+      <InFeedContext value={true}>
         <VList
           className={
             isSafariFeedHackEnabled
@@ -377,7 +384,7 @@ export default function Feed<I>({
           ))}
           {footer}
         </VList>
-      </InFeedContext.Provider>
+      </InFeedContext>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { IonBadge, IonIcon, IonLabel } from "@ionic/react";
 import { cog } from "ionicons/icons";
-import { useContext } from "react";
+import { use } from "react";
 
 import useShouldInstall from "#/features/pwa/useShouldInstall";
 import { UpdateContext } from "#/routes/pages/settings/update/UpdateContext";
@@ -11,7 +11,7 @@ import SharedTabButton, { TabButtonProps } from "./shared";
 function SettingsTabButton(props: TabButtonProps) {
   const databaseError = useAppSelector((state) => state.settings.databaseError);
 
-  const { status: updateStatus } = useContext(UpdateContext);
+  const { status: updateStatus } = use(UpdateContext);
   const shouldInstall = useShouldInstall();
 
   const settingsNotificationCount =

@@ -4,32 +4,39 @@ import { useAppSelector } from "#/store";
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
+import VideoActions from "./VideoActions";
 
 import styles from "./ImageMoreActions.module.css";
 
-interface ImageMoreActionsProps {
-  imgSrc: string;
-  alt?: string;
+interface MediaMoreActionsProps extends React.ComponentProps<typeof AltText> {
+  src: string;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
-export default function ImageMoreActions({
-  imgSrc,
+export default function MediaMoreActions({
+  src,
   alt,
-}: ImageMoreActionsProps) {
+  videoRef,
+  title,
+}: MediaMoreActionsProps) {
   const hideAltText = useAppSelector(
     (state) => state.settings.general.media.hideAltText,
   );
+
+  const hasAlt = !!alt && !hideAltText;
+  const hasVideo = !!videoRef;
 
   return (
     <>
       {isNative() && (
         <div className={styles.topContainer}>
-          <GalleryActions imgSrc={imgSrc} />
+          <GalleryActions src={src} videoRef={videoRef} />
         </div>
       )}
-      {alt && !hideAltText && (
+      {(hasAlt || hasVideo) && (
         <BottomContainer>
-          <AltText alt={alt} />
+          {hasAlt && <AltText alt={alt} title={title} />}
+          {hasVideo && <VideoActions videoRef={videoRef} />}
           <BottomContainerActions withBg />
         </BottomContainer>
       )}

@@ -1,7 +1,7 @@
 import { IonIcon, IonItem, IonSpinner } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { use, useState } from "react";
 import AnimateHeight from "react-animate-height";
 
 import CommentContainer from "#/features/comment/elements/CommentContainer";
@@ -39,7 +39,7 @@ export default function CommentExpander({
   collapsed,
 }: CommentExpanderProps) {
   const presentToast = useAppToast();
-  const { appendComments } = useContext(CommentsContext);
+  const { appendComments } = use(CommentsContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();

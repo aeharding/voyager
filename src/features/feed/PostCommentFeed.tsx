@@ -1,15 +1,10 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import {
-  ReactElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import { ReactElement, use, useCallback, useEffect, useRef } from "react";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import FeedComment from "#/features/comment/inFeed/FeedComment";
 import CommentHr from "#/features/comment/inTree/CommentHr";
+import { usePostAppearance } from "#/features/post/appearance/PostAppearanceProvider";
 import Post from "#/features/post/inFeed/Post";
 import {
   postHiddenByIdSelector,
@@ -27,6 +22,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import { FeedContext } from "./FeedContext";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
+import { useShowHiddenPosts } from "./postFabs/HidePostsFab";
 
 import styles from "./PostCommentFeed.module.css";
 
@@ -43,16 +39,14 @@ interface PostCommentFeed
 
 export default function PostCommentFeed({
   fetchFn: _fetchFn,
-  filterHiddenPosts = true,
+  filterHiddenPosts: filterHiddenPostsProp = true,
   filterKeywordsAndWebsites = true,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
-  const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type,
-  );
+  const postAppearance = usePostAppearance();
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
   const filteredKeywords = useAppSelector(
@@ -73,9 +67,13 @@ export default function PostCommentFeed({
   );
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const itemsRef = useRef<PostCommentItem[]>();
+  const itemsRef = useRef<PostCommentItem[]>(undefined);
 
-  const { setItemsRef } = useContext(FeedContext);
+  const { showHiddenPosts } = useShowHiddenPosts();
+
+  const filterHiddenPosts = !showHiddenPosts && filterHiddenPostsProp;
+
+  const { setItemsRef } = use(FeedContext);
 
   useEffect(() => {
     setItemsRef(itemsRef);
@@ -86,7 +84,7 @@ export default function PostCommentFeed({
   }, [setItemsRef]);
 
   const borderCss = (() => {
-    switch (postAppearanceType) {
+    switch (postAppearance) {
       case "compact":
         return undefined;
       case "large":
@@ -105,7 +103,7 @@ export default function PostCommentFeed({
 
   const renderItemContent = useCallback(
     (item: PostCommentItem) => {
-      if (postAppearanceType === "compact")
+      if (postAppearance === "compact")
         return (
           <>
             {renderItem(item)}
@@ -115,7 +113,7 @@ export default function PostCommentFeed({
 
       return renderItem(item);
     },
-    [postAppearanceType, renderItem],
+    [postAppearance, renderItem],
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(

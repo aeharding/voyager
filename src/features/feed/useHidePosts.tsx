@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { use } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { hidePosts } from "#/features/post/postSlice";
@@ -8,8 +8,8 @@ import { FeedContext } from "./FeedContext";
 
 export default function useHidePosts() {
   const dispatch = useAppDispatch();
-  const { itemsRefRef } = useContext(FeedContext);
-  const { activePageRef } = useContext(AppContext);
+  const { itemsRefRef } = use(FeedContext);
+  const { activePageRef } = use(AppContext);
   const postReadById = useAppSelector((state) => state.post.postReadById);
 
   return async function onHide() {

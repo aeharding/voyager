@@ -47,7 +47,7 @@ export interface BanUserPayload {
 
 interface IPageContext {
   // used for ion presentingElement
-  pageRef: RefObject<HTMLElement | undefined> | undefined;
+  pageRef: RefObject<HTMLElement | null> | undefined;
 
   /**
    * @returns true if login dialog was presented
@@ -124,7 +124,7 @@ interface PageContextProvider extends React.PropsWithChildren {
 export function PageContextProvider({ value, children }: PageContextProvider) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const reportRef = useRef<ReportHandle>(null);
+  const reportRef = useRef<ReportHandle>(undefined);
   const shareAsImageDataRef = useRef<ShareAsImageData | null>(null);
 
   const [presentShareAsImageModal, onDismissShareAsImageModal] = useIonModal(
@@ -304,7 +304,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   };
 
   return (
-    <PageContext.Provider
+    <PageContext
       value={{
         ...value,
         presentLoginIfNeeded,
@@ -352,6 +352,6 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         isOpen={isUserTagOpen}
         setIsOpen={setIsUserTagOpen}
       />
-    </PageContext.Provider>
+    </PageContext>
   );
 }

@@ -1,7 +1,7 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
+import superSub from "@aeharding/remark-lemmy-supersub";
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
-import superSub from "remark-supersub-lemmy";
 
 import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
@@ -34,6 +34,7 @@ export interface MarkdownProps
 export default function Markdown({
   id,
   disableInternalLinkRouting,
+  className,
   ...props
 }: MarkdownProps) {
   const connectedInstance = useAppSelector(
@@ -41,33 +42,34 @@ export default function Markdown({
   );
 
   return (
-    <ReactMarkdown
-      {...props}
-      className={cx(props.className, styles.markdown)}
-      components={{
-        img: (props) => (
-          <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
-        ),
-        table: Table,
-        a: disableInternalLinkRouting
-          ? (props) => (
-              <InAppExternalLink
-                {...props}
-                target="_blank"
-                rel="noopener noreferrer"
-              />
-            )
-          : (props) => <LinkInterceptor {...props} />,
-        summary: Summary,
-        details: (props) => <Details {...props} id={id} />,
-        ...props.components,
-      }}
-      remarkPlugins={[
-        [customRemarkGfm, { connectedInstance }],
-        superSub,
-        spoiler,
-      ]}
-      rehypePlugins={[[rehypeHighlight, { detect: true }]]}
-    />
+    <div className={cx(className, styles.markdown)}>
+      <ReactMarkdown
+        {...props}
+        components={{
+          img: (props) => (
+            <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
+          ),
+          table: Table,
+          a: disableInternalLinkRouting
+            ? (props) => (
+                <InAppExternalLink
+                  {...props}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              )
+            : (props) => <LinkInterceptor {...props} />,
+          summary: Summary,
+          details: (props) => <Details {...props} id={id} />,
+          ...props.components,
+        }}
+        remarkPlugins={[
+          superSub,
+          [customRemarkGfm, { connectedInstance }],
+          spoiler,
+        ]}
+        rehypePlugins={[[rehypeHighlight, { detect: true }]]}
+      />
+    </div>
   );
 }

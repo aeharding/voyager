@@ -42,7 +42,7 @@ import styles from "./DefaultMode.module.css";
 export interface SharedModeProps {
   type: "comment" | "post";
   text: string;
-  textareaRef: RefObject<HTMLTextAreaElement>;
+  textareaRef: RefObject<HTMLTextAreaElement | undefined>;
 }
 
 interface DefaultModeProps extends SharedModeProps {
@@ -65,7 +65,7 @@ export default function DefaultMode({
     text,
   });
 
-  const { uploadImage, jsx } = useUploadImage();
+  const { uploadImage, jsx } = useUploadImage("body");
 
   const {
     insertBlock,
@@ -353,13 +353,13 @@ export default function DefaultMode({
           <input
             className="ion-hide"
             type="file"
-            accept="image/*"
+            accept="image/*,video/webm"
             id="photo-upload-toolbar"
             onInput={async (e) => {
               const image = (e.target as HTMLInputElement).files?.[0];
               if (!image) return;
 
-              const markdown = await uploadImage(image);
+              const markdown = await uploadImage(image, true);
 
               insertBlock(markdown);
             }}
