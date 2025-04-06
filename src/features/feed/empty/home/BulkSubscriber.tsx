@@ -3,6 +3,7 @@ import { useImperativeHandle, useRef, useState } from "react";
 
 import { followCommunity } from "#/features/community/communitySlice";
 import { getCommunityHandleFromActorId } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { subscribedStarterPacks } from "#/helpers/toastMessages";
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
@@ -52,15 +53,14 @@ export default function BulkSubscriber({
 
     for (const pack of packs) {
       pendingRef.current.push(...pack.communities);
-      pendingRef.current = pendingRef.current.filter((actor_id) => {
+      pendingRef.current = pendingRef.current.filter((ap_id) => {
         const community =
           communityByHandle[
-            getCommunityHandleFromActorId(actor_id, connectedInstance)!
+            getCommunityHandleFromActorId(ap_id, connectedInstance)!
           ];
 
         if (community) return community.subscribed === "NotSubscribed";
-        if (follows?.find((f) => f.community.actor_id === actor_id))
-          return false;
+        if (follows?.find((f) => getApId(f.community) === ap_id)) return false;
 
         return true;
       });

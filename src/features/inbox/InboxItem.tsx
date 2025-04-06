@@ -17,6 +17,7 @@ import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { filterEvents } from "#/helpers/longPress";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppToast from "#/helpers/useAppToast";
@@ -136,7 +137,7 @@ export default function InboxItem({ item }: InboxItemProps) {
   }
 
   function getDate() {
-    if ("comment" in item) return item.counts.published;
+    if ("comment" in item) return getCounts(item).published;
 
     return item.private_message.published;
   }

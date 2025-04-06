@@ -3,6 +3,7 @@ import { sample, sortBy } from "es-toolkit";
 import { clientSelector } from "#/features/auth/authSelectors";
 import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { randomCommunityFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -34,8 +35,9 @@ export default function useGetRandomCommunity() {
 
       chosenRandomCommunity = response.community_view.community;
     } else {
-      const totalCommunitiesCount =
-        store.getState().site.response?.site_view.counts.communities;
+      const totalCommunitiesCount = getCounts(
+        store.getState().site.response?.site_view,
+      )?.communities;
       if (!totalCommunitiesCount) return;
 
       let response;
@@ -55,11 +57,11 @@ export default function useGetRandomCommunity() {
       }
 
       const randomCommunitiesByPosts = sortBy(response.communities, [
-        (c) => -c.counts.posts,
+        (c) => -getCounts(c).posts,
       ]);
 
       const eligibleRandomCommunities = randomCommunitiesByPosts.filter(
-        (c) => c.counts.posts > 10,
+        (c) => getCounts(c).posts > 10,
       );
 
       chosenRandomCommunity =

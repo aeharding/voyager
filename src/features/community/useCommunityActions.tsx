@@ -9,6 +9,7 @@ import {
   showNsfw,
 } from "#/features/auth/siteSlice";
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { shareUrl } from "#/helpers/share";
 import {
@@ -192,7 +193,7 @@ export default function useCommunityActions(
   };
 
   const share = () => {
-    shareUrl(community.actor_id);
+    shareUrl(getApId(community));
   };
 
   return {

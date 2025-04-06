@@ -15,6 +15,7 @@ import {
   stopIonicTapClick,
 } from "#/helpers/ionic";
 import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { OInstanceUrlDisplayMode } from "#/services/db";
 import { useAppSelector } from "#/store";
@@ -54,7 +55,7 @@ export default function PersonLink({
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
-    (admin) => admin.person.actor_id === person.actor_id,
+    (admin) => getApId(admin.person) === getApId(person),
   );
   const { hideUsernames } = use(ShareImageContext);
   const presentUserActions = usePresentUserActions();
@@ -92,8 +93,8 @@ export default function PersonLink({
   else if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (
-    person.actor_id === "https://lemmy.world/u/aeharding" ||
-    person.actor_id === "https://vger.social/u/aeharding"
+    getApId(person) === "https://lemmy.world/u/aeharding" ||
+    getApId(person) === "https://vger.social/u/aeharding"
   )
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";

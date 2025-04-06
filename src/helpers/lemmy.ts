@@ -10,6 +10,7 @@ import {
 } from "lemmy-js-client";
 
 import { parseJWT } from "./jwt";
+import { getApId, getCounts } from "./lemmyCompat";
 import { quote } from "./markdown";
 import { escapeStringForRegex } from "./regex";
 import { parseUrl } from "./url";
@@ -34,7 +35,7 @@ export const MAX_DEFAULT_COMMENT_DEPTH = 6;
  * @param item Community, Person, etc
  */
 export function getItemActorName(item: Pick<Community, "actor_id">) {
-  return new URL(item.actor_id).hostname;
+  return new URL(getApId(item)).hostname;
 }
 
 export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
@@ -158,14 +159,14 @@ export function buildCommentsTreeWithMissing(
 }
 
 function childHasMissing(node: CommentNodeI) {
-  let missing = node.comment_view.counts.child_count;
+  let missing = getCounts(node.comment_view).child_count;
 
   for (const child of node.children) {
     missing--;
 
     // the child is responsible for showing missing indicator
     // if the child has missing comments
-    missing -= child.comment_view.counts.child_count;
+    missing -= getCounts(child.comment_view).child_count;
 
     childHasMissing(child);
   }

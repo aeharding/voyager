@@ -19,6 +19,7 @@ import {
 } from "#/features/comment/commentSlice";
 import { trashEllipse } from "#/features/icons";
 import { banUser } from "#/features/user/userSlice";
+import { getCounts } from "#/helpers/lemmyCompat";
 import {
   buildBanFailed,
   buildBanned,
@@ -153,7 +154,7 @@ export default function useCommentModActions(commentView: CommentView) {
           handler: () => {
             presentAlert({
               message: `Remove ${
-                commentView.counts.child_count + 1
+                getCounts(commentView).child_count + 1
               } comments in comment chain?`,
               buttons: [
                 {
