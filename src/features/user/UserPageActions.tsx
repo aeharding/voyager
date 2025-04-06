@@ -2,6 +2,7 @@ import { IonButton } from "@ionic/react";
 
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
+import { getApId } from "#/helpers/lemmy";
 import { shareUrl } from "#/helpers/share";
 
 import { useAppSelector } from "../../store";
@@ -31,7 +32,7 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
                 text: "Share",
                 icon: getShareIcon(),
                 handler: () => {
-                  shareUrl(user.actor_id);
+                  shareUrl(getApId(user));
                 },
               },
             ],

@@ -5,7 +5,7 @@ import { IonItem } from "@ionic/react";
 import { useState } from "react";
 
 import { cx } from "#/helpers/css";
-import { getCommunityHandleFromActorId } from "#/helpers/lemmy";
+import { getApId, getCommunityHandleFromActorId } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";
 
 import { PackType } from "./StarterPacksModal";
@@ -27,16 +27,16 @@ export default function Pack({ pack, onSelect }: PackProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const subscribedLength = pack.communities.filter((actor_id) => {
+  const subscribedLength = pack.communities.filter((ap_id) => {
     const community =
       communityByHandle[
-        getCommunityHandleFromActorId(actor_id, connectedInstance)!
+        getCommunityHandleFromActorId(ap_id, connectedInstance)!
       ];
 
     if (community) {
       return community.subscribed !== "NotSubscribed";
     }
-    if (follows?.find((f) => f.community.actor_id === actor_id)) return true;
+    if (follows?.find((f) => getApId(f.community) === ap_id)) return true;
     return false;
   }).length;
 
