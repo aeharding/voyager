@@ -37,7 +37,7 @@ export default function CommunitiesResultsPage({
     { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
     "TopAll",
   );
-  const sortParams = useFeedSortParams("search", sort);
+  const sortParams = useFeedSortParams("search", sort, "posts");
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {

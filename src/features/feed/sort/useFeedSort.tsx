@@ -104,13 +104,25 @@ export default function useFeedSort<
   return [sort, setSort] as const;
 }
 
+// TODO: After lemmy v1 is released, we can remove this CompatContext
+export function useFeedSortParams<CompatContext extends "posts" | "comments">(
+  context: "search",
+  sort: VgerSorts["search"] | undefined,
+  compatibleOldSortType?: CompatContext,
+): { sort: LemmySorts[CompatContext]; time?: Time } | undefined;
+export function useFeedSortParams<
+  Context extends "posts" | "comments" | "communities",
+>(
+  context: Context,
+  sort: VgerSorts[Context] | undefined,
+): { sort: LemmySorts[Context]; time?: Time } | undefined;
 export function useFeedSortParams<
   Context extends "posts" | "comments" | "search" | "communities",
 >(
   context: Context,
   sort: VgerSorts[Context] | undefined,
   compatibleOldSortType?: "posts" | "comments",
-): { sort: LemmySorts[Context]; time?: Time } | undefined {
+) {
   const isModern = useSupported("New Sorting");
 
   if (!sort) return;
@@ -128,13 +140,10 @@ export function useFeedSortParams<
       "search",
       actualSort as VgerSearchSortType,
       isModern,
-    ) as { sort: LemmySorts[Context]; time?: Time };
+    );
   }
 
-  return convertSortToLemmyParams(context, sort, isModern) as {
-    sort: LemmySorts[Context];
-    time?: Time;
-  };
+  return convertSortToLemmyParams(context, sort, isModern);
 }
 
 function convertSortToLemmyParams<

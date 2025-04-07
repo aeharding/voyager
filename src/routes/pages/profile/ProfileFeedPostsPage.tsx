@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
-import { PostSort } from "#/features/feed/sort/PostSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
   useFeedSortParams,
 } from "#/features/feed/sort/useFeedSort";
@@ -26,7 +26,6 @@ export default function ProfileFeedPostsPage() {
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     const { posts } = await client.getPersonDetails(
-      // @ts-expect-error This will be fixed when we fully support lemmy v1.0
       {
         ...pageData,
         limit: LIMIT,
@@ -43,7 +42,7 @@ export default function ProfileFeedPostsPage() {
     <BaseProfileFeedItemsPage
       label="Posts"
       fetchFn={fetchFn}
-      sortComponent={<PostSort sort={sort} setSort={setSort} />}
+      sortComponent={<SearchSort sort={sort} setSort={setSort} />}
     />
   );
 }
