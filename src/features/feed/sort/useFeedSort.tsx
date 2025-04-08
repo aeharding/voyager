@@ -11,6 +11,12 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
 import {
+  controversialSortToDuration,
+  isControversialSort,
+  VgerControversialSort,
+} from "./controversialSorts";
+import { convertDurationToSeconds } from "./durations";
+import {
   getFeedSort,
   getFeedSortSelectorBuilder,
   setFeedSort,
@@ -18,7 +24,7 @@ import {
 } from "./feedSortSlice";
 import { VgerPostSortType } from "./PostSort";
 import { LemmySearchSortType, VgerSearchSortType } from "./SearchSort";
-import { VgerTopSort } from "./topSorts";
+import { isTopSort, topSortToDuration, VgerTopSort } from "./topSorts";
 
 interface VgerSorts {
   posts: VgerPostSortType;
@@ -110,6 +116,11 @@ export function useFeedSortParams<CompatContext extends "posts" | "comments">(
   sort: VgerSorts["search"] | undefined,
   compatibleOldSortType?: CompatContext,
 ): { sort: LemmySorts[CompatContext]; time?: Time } | undefined;
+export function useFeedSortParams<CompatContext extends "posts">(
+  context: "communities",
+  sort: VgerSorts["communities"] | undefined,
+  compatibleOldSortType?: CompatContext,
+): { sort: LemmySorts[CompatContext]; time?: Time } | undefined;
 export function useFeedSortParams<
   Context extends "posts" | "comments" | "communities",
 >(
@@ -128,17 +139,30 @@ export function useFeedSortParams<
   if (!sort) return;
 
   if (compatibleOldSortType && !isModern) {
-    if (context !== "search")
-      throw new Error("Can only convert search sort to old sort type");
-
-    const actualSort = convertSearchSortToOldSortType(
-      compatibleOldSortType,
-      sort as VgerSearchSortType,
-    );
+    const oldSort = (() => {
+      switch (context) {
+        case "search":
+          return convertSearchSortToOldSortType(
+            compatibleOldSortType,
+            sort as VgerSearchSortType,
+          );
+        case "communities":
+          if (compatibleOldSortType === "comments")
+            throw new Error(
+              "Convert community sort to old comment sort not supported",
+            );
+          return convertCommunitySortToOldSortType(
+            compatibleOldSortType,
+            sort as VgerCommunitySortType,
+          );
+        default:
+          throw new Error("Can only convert search sort to old sort type");
+      }
+    })();
 
     return convertSortToLemmyParams(
       "search",
-      actualSort as VgerSearchSortType,
+      oldSort as VgerSearchSortType,
       isModern,
     );
   }
@@ -175,7 +199,7 @@ function convertSearchSortToOldSortType(
         case "Old":
           return "Old";
         case "TopAll":
-          return "Top";
+          return "TopAll";
         case "TopDay":
           return "TopDay";
         case "TopWeek":
@@ -206,6 +230,40 @@ function convertSearchSortToOldSortType(
           return "New";
         case "Old":
           return "Old";
+      }
+  }
+  throw new Error(`Invalid sort: ${sort}`);
+}
+
+function convertCommunitySortToOldSortType(
+  oldSortType: "posts",
+  sort: VgerCommunitySortType,
+): LemmySorts["posts"] | LemmySorts["comments"] {
+  switch (oldSortType) {
+    case "posts":
+      switch (sort) {
+        case "New":
+          return "New";
+        case "Old":
+          return "Old";
+        case "ActiveDaily":
+          return "TopDay";
+        case "ActiveMonthly":
+          return "TopMonth";
+        case "ActiveSixMonths":
+          return "TopSixMonths";
+        case "ActiveWeekly":
+          return "TopWeek";
+        case "Comments":
+          return "MostComments";
+        case "Hot":
+          return "Hot";
+        case "NameAsc":
+        case "NameDesc":
+        case "Subscribers":
+        case "SubscribersLocal":
+        case "Posts":
+          return "TopAll";
       }
   }
   throw new Error(`Invalid sort: ${sort}`);
@@ -245,11 +303,18 @@ function convertPostSortToLemmyParams(sort: VgerPostSortType): {
     case "New":
     case "MostComments":
     case "NewComments":
-    case "Controversial":
     case "Scaled":
       return { sort };
     default:
-      return convertTopToLemmyParams(sort);
+      if (isTopSort(sort)) {
+        return convertTopToLemmyParams(sort);
+      }
+
+      if (isControversialSort(sort)) {
+        return convertControversialToLemmyParams(sort);
+      }
+
+      throw new Error(`Invalid sort: ${sort}`);
   }
 }
 
@@ -268,8 +333,9 @@ function convertSearchSortToLemmyParams(sort: VgerSearchSortType): {
     case "New":
     case "Old":
       return { sort };
-    default:
+    default: {
       return convertTopToLemmyParams(sort);
+    }
   }
 }
 
@@ -277,53 +343,29 @@ function convertTopToLemmyParams(sort: VgerTopSort): {
   sort: "Top";
   time_range_seconds?: number;
 } {
-  if (sort === "TopAll") return { sort: "Top" };
-
   // @ts-expect-error TODO lemmy v1 this should not be necessary anymore
   if (sort === "Top") return { sort: "Top" };
 
-  let seconds: number; // in seconds
-
-  switch (sort) {
-    case "TopDay":
-      seconds = 86400;
-      break;
-    case "TopWeek":
-      seconds = 604800;
-      break;
-    case "TopMonth":
-      seconds = 2592000;
-      break;
-    case "TopYear":
-      seconds = 31536000;
-      break;
-    case "TopHour":
-      seconds = 3600;
-      break;
-    case "TopNineMonths":
-      seconds = 2147483647;
-      break;
-    case "TopSixHour":
-      seconds = 21600;
-      break;
-    case "TopSixMonths":
-      seconds = 15811200;
-      break;
-    case "TopThreeMonths":
-      seconds = 7776000;
-      break;
-    case "TopTwelveHour":
-      seconds = 43200;
-      break;
-    default:
-      throw new Error(`Invalid sort: ${sort}`);
-  }
-
-  return { sort: "Top", time_range_seconds: seconds };
+  return {
+    sort: "Top",
+    time_range_seconds: convertDurationToSeconds(topSortToDuration(sort)),
+  };
 }
 
 function convertCommunitySortToLemmyParams(sort: VgerCommunitySortType): {
   sort: VgerCommunitySortType;
 } {
   return { sort };
+}
+
+function convertControversialToLemmyParams(sort: VgerControversialSort): {
+  sort: "Controversial";
+  time_range_seconds?: number;
+} {
+  return {
+    sort: "Controversial",
+    time_range_seconds: convertDurationToSeconds(
+      controversialSortToDuration(sort),
+    ),
+  };
 }

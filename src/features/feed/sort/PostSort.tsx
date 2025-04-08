@@ -4,11 +4,13 @@ import buildSort, {
   SortOptions,
 } from "#/routes/pages/shared/Sort";
 
+import { CONTROVERSIAL_SORTS } from "./controversialSorts";
+import { TOP_SORTS } from "./topSorts";
+
 type LemmyPostSortType =
   | "Active"
   | "Hot"
   | "New"
-  | "Controversial"
   | "Scaled"
   | "Top"
   | "MostComments"
@@ -18,11 +20,22 @@ export type VgerPostSortType =
   // Desired vanilla lemmy sort types
   | Exclude<LemmyPostSortType, "Top" | "Old">
   // Plus voyager top sorts
-  | (typeof TOP_SORTS)["children"][number];
-
-import { TOP_SORTS } from "./topSorts";
+  | (typeof TOP_SORTS)["children"][number]
+  // Plus voyager controversial sorts
+  | (typeof CONTROVERSIAL_SORTS)["children"][number];
 
 const sortOptions = [
+  "Active",
+  "Hot",
+  TOP_SORTS,
+  "New",
+  CONTROVERSIAL_SORTS,
+  "Scaled",
+  "MostComments",
+  "NewComments",
+] as const satisfies SortOptions<VgerPostSortType>;
+
+const legacySortOptions = [
   "Active",
   "Hot",
   TOP_SORTS,
@@ -31,7 +44,7 @@ const sortOptions = [
   "Scaled",
   "MostComments",
   "NewComments",
-] as const satisfies SortOptions<VgerPostSortType>;
+];
 
 const flattenedSortOptions = flattenSortOptions(sortOptions);
 
@@ -42,4 +55,4 @@ export const {
   Sort: PostSort,
   useSelectSort: useSelectPostSort,
   formatSort: formatPostSort,
-} = buildSort(sortOptions);
+} = buildSort(sortOptions, legacySortOptions);

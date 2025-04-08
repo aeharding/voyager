@@ -27,15 +27,15 @@ const sortOptions: SortOptions<VgerCommunitySortType> = [
       "ActiveDaily",
     ] as const,
   },
+  "Subscribers",
   "Hot",
+  "Posts",
+  "Comments",
   "New",
   "Old",
   "NameAsc",
   "NameDesc",
-  "Comments",
-  "Posts",
-  "Subscribers",
-  "SubscribersLocal",
+  // "SubscribersLocal", // TODO decide to add this when lemmy v1 is released
 ] as const;
 
 export const { Sort: CommunitySort, useSelectSort: useSelectCommunitySort } =

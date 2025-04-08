@@ -10,9 +10,10 @@ import {
   chatbubbleEllipsesOutline,
   chatbubblesOutline,
   flameOutline,
+  helpCircleOutline,
+  hourglassOutline,
   peopleCircleOutline,
   personCircleOutline,
-  playBackOutline,
   skullOutline,
   timeOutline,
   trendingUpOutline,
@@ -22,6 +23,7 @@ import { use } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { VgerCommentSortType } from "#/features/comment/CommentSort";
+import { isControversialSort } from "#/features/feed/sort/controversialSorts";
 import { VgerPostSortType } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
 import {
@@ -38,6 +40,7 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useSupported from "#/helpers/useSupported";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
 export type SortOptions<S> = readonly (ChildrenSortOption<S, S> | S)[];
@@ -63,10 +66,23 @@ interface UseSortOptions {
 
 export default function buildSort<S extends AnyVgerSort>(
   _sortOptions: SortOptions<S>,
+  _legacySortOptions?: SortOptions<unknown>,
 ) {
-  const sortOptions = hydrateSortOptions(_sortOptions);
+  const newSortOptions = hydrateSortOptions(_sortOptions);
+  const legacySortOptions = _legacySortOptions
+    ? hydrateSortOptions(_legacySortOptions as SortOptions<AnyVgerSort>)
+    : undefined;
 
   return { Sort, useSelectSort, formatSort };
+
+  // TODO: Remove this once we've migrated to the new sort options
+  function useSortOptions() {
+    const newSort = useSupported("New Sorting");
+
+    if (!legacySortOptions) return newSortOptions;
+
+    return newSort ? newSortOptions : legacySortOptions;
+  }
 
   interface SortProps<S> {
     sort: S | undefined;
@@ -75,6 +91,7 @@ export default function buildSort<S extends AnyVgerSort>(
 
   function Sort({ sort, setSort }: SortProps<S>) {
     const { activePageRef } = use(AppContext);
+    const sortOptions = useSortOptions();
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);
@@ -85,7 +102,7 @@ export default function buildSort<S extends AnyVgerSort>(
 
     return (
       <IonButton onClick={() => sort && present(sort)}>
-        <IonIcon icon={sortIcon || " "} slot="icon-only" />
+        <IonIcon icon={sortIcon ?? helpCircleOutline} slot="icon-only" />
       </IonButton>
     );
   }
@@ -96,6 +113,8 @@ export default function buildSort<S extends AnyVgerSort>(
   ) {
     const [presentInitialSortActionSheet] = useIonActionSheet();
     const [presentTopSortActionSheet] = useIonActionSheet();
+
+    const sortOptions = useSortOptions();
 
     function present(sort: S) {
       presentInitialSortActionSheet({
@@ -154,7 +173,7 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   function formatSort(sort: S) {
-    for (const option of sortOptions) {
+    for (const option of newSortOptions) {
       if ("children" in option) {
         const child = option.children.find((child) => child.value === sort);
         if (child) return `${option.label}: ${child.label}`;
@@ -162,6 +181,9 @@ export default function buildSort<S extends AnyVgerSort>(
 
       if ("value" in option && option.value === sort) return option.label;
     }
+
+    // TODO: Return is only needed for legacy sort options
+    return sort;
   }
 }
 
@@ -253,7 +275,7 @@ export function getSortIcon(sort: AnyVgerSort): string {
     case "Top":
       return barChartOutline;
     case "Old":
-      return playBackOutline;
+      return hourglassOutline;
     case "Controversial":
       return skullOutline;
     case "Scaled":
@@ -266,11 +288,20 @@ export function getSortIcon(sort: AnyVgerSort): string {
     case "TopThreeMonths":
       return calendarThreeMonths;
   }
+
+  if (isControversialSort(sort)) {
+    return skullOutline;
+  }
+
+  sort satisfies never;
+
+  return helpCircleOutline;
 }
 
 export function formatSortLabel(sort: AnyVgerSort): string {
   switch (sort) {
     case "TopHour":
+    case "ControversialHour":
       return "Hour";
     case "TopSixHour":
       return "6 Hours";
@@ -278,11 +309,14 @@ export function formatSortLabel(sort: AnyVgerSort): string {
       return "12 Hours";
     case "TopDay":
     case "ActiveDaily":
+    case "ControversialDay":
       return "Day";
     case "TopWeek":
     case "ActiveWeekly":
+    case "ControversialWeek":
       return "Week";
     case "TopMonth":
+    case "ControversialMonth":
     case "ActiveMonthly":
       return "Month";
     case "TopThreeMonths":
@@ -293,15 +327,17 @@ export function formatSortLabel(sort: AnyVgerSort): string {
     case "TopNineMonths":
       return "9 Months";
     case "TopYear":
+    case "ControversialYear":
       return "Year";
     case "TopAll":
+    case "ControversialAll":
       return "All Time";
     default:
       return startCase(sort);
   }
 }
 
-// Solution using recursive type
+// Preserve explicit array tuple (ex: Arr[0] = specific string)
 type FlattenSortOptions<T> = T extends readonly [infer First, ...infer Rest]
   ? First extends { children: readonly unknown[] }
     ? [...FlattenSortOptions<First["children"]>, ...FlattenSortOptions<Rest>]
@@ -315,6 +351,7 @@ export function flattenSortOptions<T extends SortOptions<unknown>>(
     if (typeof option === "object" && option !== null && "children" in option) {
       return option.children;
     }
+
     return option;
   }) as FlattenSortOptions<T>;
 }

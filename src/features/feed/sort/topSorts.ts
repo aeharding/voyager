@@ -1,33 +1,26 @@
-import { SortOptions } from "#/routes/pages/shared/Sort";
+import {
+  ALL_DURATIONS,
+  createSortFromDurations,
+  VgerDuration,
+} from "./durations";
 
-type TopTime =
-  | "Day"
-  | "Week"
-  | "Month"
-  | "Year"
-  | "All"
-  | "Hour"
-  | "SixHour"
-  | "TwelveHour"
-  | "SixMonths"
-  | "NineMonths"
-  | "ThreeMonths";
+export const TOP_DURATIONS = ALL_DURATIONS satisfies readonly VgerDuration[];
 
-export type VgerTopSort = `Top${TopTime}`;
+const TOP_DURATION_SORTS = createSortFromDurations("Top", TOP_DURATIONS);
 
 export const TOP_SORTS = {
   label: "Top",
-  children: [
-    "TopHour",
-    "TopSixHour",
-    "TopTwelveHour",
-    "TopDay",
-    "TopWeek",
-    "TopMonth",
-    "TopThreeMonths",
-    "TopSixMonths",
-    "TopNineMonths",
-    "TopYear",
-    "TopAll",
-  ],
-} as const satisfies SortOptions<VgerTopSort>[number];
+  children: TOP_DURATION_SORTS,
+} as const;
+
+export type VgerTopSort = (typeof TOP_DURATION_SORTS)[number];
+
+type TopTime = (typeof TOP_DURATIONS)[number];
+
+export function topSortToDuration(sort: VgerTopSort) {
+  return sort.slice(3) as TopTime;
+}
+
+export function isTopSort(sort: string): sort is VgerTopSort {
+  return sort.startsWith("Top");
+}

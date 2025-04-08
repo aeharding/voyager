@@ -30,7 +30,7 @@ export default function CommunitiesExplorePage() {
     { internal: "CommunitiesExplore" },
     "Subscribers",
   );
-  const sortParams = useFeedSortParams("communities", sort);
+  const sortParams = useFeedSortParams("communities", sort, "posts");
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
