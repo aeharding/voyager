@@ -34,21 +34,24 @@ export function parseUrl(url: string, baseUrl?: string): URL | undefined {
   }
 }
 
-export function getPotentialImageProxyPathname(
-  url: string,
-): string | undefined {
+export function getImageProxyUrl(url: string): string | undefined {
   const parsedURL = parseUrl(url);
 
   if (!parsedURL) return;
 
   if (parsedURL.pathname === "/api/v3/image_proxy") {
-    const actualImageURL = parsedURL.searchParams.get("url");
-
-    if (!actualImageURL) return;
-    return getPathname(actualImageURL);
+    return parsedURL.searchParams.get("url") ?? undefined;
   }
+}
 
-  return parsedURL.pathname;
+export function getPotentialImageProxyPathname(
+  url: string,
+): string | undefined {
+  const proxiedUrl = getImageProxyUrl(url);
+
+  if (proxiedUrl) return getPathname(proxiedUrl);
+
+  return parseUrl(url)?.pathname;
 }
 
 const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl", "avif"];
