@@ -77,7 +77,7 @@
     "capacitor-plugin-safe-area": "^4.0.0",
     "capacitor-reader": "^1.0.0",
     "capacitor-share-safari": "^0.1.2",
-    "capacitor-stash-media": "^3.1.0",
+    "capacitor-stash-media": "^3.1.1",
     "capacitor-tips": "^2.0.0",
     "colorjs.io": "^0.5.2",
     "compare-versions": "^6.1.1",
