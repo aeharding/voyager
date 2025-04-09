@@ -87,7 +87,7 @@ export default function AboutPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -97,7 +97,7 @@ export default function AboutPage() {
           <IonTitle>About</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light">
         <AppDetails />
 
         <IonList inset color="primary">

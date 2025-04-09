@@ -63,7 +63,7 @@ export default function UpdateAppPage() {
   }
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -73,7 +73,7 @@ export default function UpdateAppPage() {
           <IonTitle>Updates</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         <IonLoading isOpen={loading} message="Updating" />
         <IonRefresher
           slot="fixed"

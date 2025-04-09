@@ -19,7 +19,7 @@ export default function BiometricPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -31,7 +31,7 @@ export default function BiometricPage() {
           </IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light">
         <BiometricSettings />
       </AppContent>
     </IonPage>

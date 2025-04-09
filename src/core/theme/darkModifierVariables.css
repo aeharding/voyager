@@ -26,12 +26,17 @@ html.ion-palette-dark {
 
         --ion-toolbar-background: #1f1f1f;
 
-        --ion-tab-bar-background: #1f1f1f;
+        --ion-tab-bar-background: rgba(0, 0, 0, 0.2);
 
         --ion-card-background: #1e1e1e;
+
+        ion-item {
+          --background-hover: rgba(255, 255, 255, 0.5) !important;
+        }
       }
 
       ion-tab-bar {
+        --ion-tab-bar-background: var(--ion-background-color);
         --ion-tab-bar-border-color: #222222;
       }
     }

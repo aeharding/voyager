@@ -18,7 +18,7 @@ export default function DeviceModeSettingsPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -31,7 +31,7 @@ export default function DeviceModeSettingsPage() {
           <IonTitle>Device Mode</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <SelectDeviceMode />
       </AppContent>
     </IonPage>

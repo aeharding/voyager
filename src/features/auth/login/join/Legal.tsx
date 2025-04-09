@@ -52,7 +52,7 @@ export default function Legal() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Privacy &amp; Terms</IonTitle>

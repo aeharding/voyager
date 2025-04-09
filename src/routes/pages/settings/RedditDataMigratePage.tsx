@@ -18,7 +18,7 @@ export default function RedditMigratePage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -28,7 +28,7 @@ export default function RedditMigratePage() {
           <IonTitle>Migrate</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <MigrateList />
       </AppContent>
     </IonPage>

@@ -20,7 +20,7 @@ export default function RedditMigrateSubsListPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -33,7 +33,7 @@ export default function RedditMigrateSubsListPage() {
           <IonTitle>Subreddits</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <MigrateSubsList link={link} />
       </AppContent>
     </IonPage>

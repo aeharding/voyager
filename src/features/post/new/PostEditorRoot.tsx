@@ -418,7 +418,7 @@ export default function PostEditorRoot({
           </IonSegment>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         <div className={styles.container}>
           <IonList>
             <IonItem>

@@ -41,7 +41,7 @@ export default function ProfilePage() {
   const title = handle ?? connectedInstance;
 
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           {!accountsListEmpty && (
