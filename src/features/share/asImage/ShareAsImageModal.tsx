@@ -47,7 +47,7 @@ export default function ShareAsImageModal({
         <ShareAsImage
           data={data}
           header={
-            <AppHeader>
+            <AppHeader className={styles.header}>
               <IonToolbar className={sharedStyles.transparentIonToolbar}>
                 <IonButtons slot="end">
                   <IonButton

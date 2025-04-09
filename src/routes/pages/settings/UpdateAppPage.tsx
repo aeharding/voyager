@@ -100,6 +100,7 @@ export default function UpdateAppPage() {
                 href="https://github.com/aeharding/voyager/releases"
                 target="_blank"
                 rel="noopener noreferrer"
+                detail
               >
                 <IonLabel>Release notes</IonLabel>
               </IonItem>

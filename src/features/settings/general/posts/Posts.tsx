@@ -15,7 +15,7 @@ export default function Posts() {
         <IonLabel>Posts</IonLabel>
       </ListHeader>
       <IonList inset>
-        <IonItem routerLink="/settings/general/hiding">
+        <IonItem routerLink="/settings/general/hiding" detail>
           <IonLabel className="ion-text-nowrap">
             Mark Read / Hiding Posts
           </IonLabel>

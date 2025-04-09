@@ -1,3 +1,15 @@
 .content {
   background: var(--ion-background-color-step-50, #f2f2f7);
 }
+
+.header {
+  box-shadow: none;
+}
+
+.title:global(.md) {
+  padding-inline: 0;
+}
+
+.buttons:global(.md) {
+  margin-inline-end: 0;
+}

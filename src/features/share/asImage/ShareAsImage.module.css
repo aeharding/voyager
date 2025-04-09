@@ -56,7 +56,7 @@
 }
 
 .list {
-  &:global(.list-ios.list-inset) {
+  &:global(.list-inset) {
     margin-inline-start: 0;
     margin-inline-end: 0;
   }
