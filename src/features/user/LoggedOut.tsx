@@ -20,7 +20,7 @@ export default function LoggedOut() {
   const { presentLoginIfNeeded, presentAccountSwitcher } = use(PageContext);
 
   return (
-    <AppContent className={styles.content}>
+    <AppContent className={styles.content} color="light">
       <div>
         <IonText color="medium">
           <p className={styles.message}>

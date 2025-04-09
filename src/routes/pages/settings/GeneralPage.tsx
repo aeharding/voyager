@@ -18,7 +18,7 @@ export default function GeneralPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -28,7 +28,7 @@ export default function GeneralPage() {
           <IonTitle>General</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <GeneralSettings />
       </AppContent>
     </IonPage>

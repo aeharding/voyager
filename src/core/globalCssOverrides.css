@@ -35,8 +35,8 @@ ion-router-outlet > .ion-page > ion-header {
   }
 }
 
-ion-router-outlet ion-list.list-inset ion-item {
-  --background: var(
+ion-list.list-inset {
+  --ion-item-background: var(
     --ion-tab-bar-background,
     var(--ion-background-color-step-50, #fff)
   );
@@ -352,3 +352,23 @@ ion-modal.save-as-image-modal {
   }
 }
 /* End: Landscape modal with open keyboard */
+
+/* Ionic bug with condensed header w/ light IonContent */
+.ios.toolbar-title-large {
+  --background: none;
+}
+
+/* Disable light ion-content in dark mode */
+.ion-palette-dark ion-content.ion-color-light {
+  --ion-color-base: none !important;
+  --ion-color-base-rgb: none !important;
+  --ion-color-contrast: none !important;
+  --ion-color-contrast-rgb: none !important;
+  --ion-color-shade: none !important;
+  --ion-color-tint: none !important;
+}
+
+.list-md:not(.ion-padding) {
+  padding-top: 0;
+  padding-bottom: 0;
+}

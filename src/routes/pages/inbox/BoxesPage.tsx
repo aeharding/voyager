@@ -45,13 +45,13 @@ export default function BoxesPage() {
   return (
     <>
       <BoxesRedirectBootstrapper />
-      <IonPage ref={pageRef} className="grey-bg">
+      <IonPage ref={pageRef}>
         <AppHeader>
           <IonToolbar>
             <IonTitle>Boxes</IonTitle>
           </IonToolbar>
         </AppHeader>
-        <AppContent scrollY fullscreen>
+        <AppContent scrollY fullscreen color="light">
           <AppHeader collapse="condense">
             <IonToolbar>
               <IonTitle size="large">Boxes</IonTitle>

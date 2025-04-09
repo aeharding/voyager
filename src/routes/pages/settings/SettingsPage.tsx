@@ -93,13 +93,13 @@ export default function SettingsPage() {
   }, [documentState, dispatch]);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Settings</IonTitle>

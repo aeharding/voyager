@@ -18,7 +18,7 @@ export default function HidingSettingsPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -28,7 +28,7 @@ export default function HidingSettingsPage() {
           <IonTitle>Marking Read / Hiding</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <HidingSettings />
       </AppContent>
     </IonPage>

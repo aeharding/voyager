@@ -45,13 +45,13 @@ export default function BlocksSettingsPage() {
   const content = (() => {
     if (!localUser)
       return (
-        <IonContent scrollY={false}>
+        <IonContent scrollY={false} color="light">
           <CenteredSpinner />
         </IonContent>
       );
 
     return (
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <FilterNsfw />
         <BlockedCommunities />
         <BlockedUsers />
@@ -63,7 +63,7 @@ export default function BlocksSettingsPage() {
   })();
 
   const page = (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">

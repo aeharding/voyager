@@ -18,7 +18,7 @@ export default function AppearanceThemePage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -28,7 +28,7 @@ export default function AppearanceThemePage() {
           <IonTitle>Theme</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <Theme />
       </AppContent>
     </IonPage>

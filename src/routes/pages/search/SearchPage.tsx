@@ -32,7 +32,7 @@ export default function SearchPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <form
@@ -67,7 +67,7 @@ export default function SearchPage() {
           </form>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         {!search ? <EmptySearch /> : <SearchOptions search={search} />}
       </AppContent>
     </IonPage>

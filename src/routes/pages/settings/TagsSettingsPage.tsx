@@ -18,7 +18,7 @@ export default function TagsSettingsPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -28,7 +28,7 @@ export default function TagsSettingsPage() {
           <IonTitle>User Tags</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light">
         <TagsSettings />
       </AppContent>
     </IonPage>

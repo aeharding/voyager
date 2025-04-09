@@ -143,7 +143,7 @@ export default function Join({ answer }: JoinProps) {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account Details</IonTitle>

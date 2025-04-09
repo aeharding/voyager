@@ -44,7 +44,7 @@ export default function Joined({ verifyEmailSent }: JoinedProps) {
           <IonTitle>✅ Success!</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         <AppHeader collapse="condense">
           <IonToolbar color=" ">
             <IonTitle size="large">✅ Success!</IonTitle>

@@ -24,7 +24,7 @@ export default function BrowseTagsPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -34,7 +34,7 @@ export default function BrowseTagsPage() {
           <IonTitle>View {startCase(filter)}</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <FeedContent>
+      <FeedContent color="light">
         <BrowseTags filter={filter} />
       </FeedContent>
     </IonPage>

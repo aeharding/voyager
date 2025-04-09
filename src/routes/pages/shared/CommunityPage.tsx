@@ -186,7 +186,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
       <ShowHiddenPostsProvider>
         <PostAppearanceProvider feed={postFeed}>
           <TitleSearchProvider>
-            <IonPage className={searchOpen ? "grey-bg" : ""}>
+            <IonPage>
               <AppHeader>
                 <IonToolbar
                   className={cx(
@@ -248,7 +248,10 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
                   />
                 </IonToolbar>
               </AppHeader>
-              <FeedContent className={styles.feedContent}>
+              <FeedContent
+                className={styles.feedContent}
+                color={searchOpen ? "light" : undefined}
+              >
                 {renderFeed()}
                 <TitleSearchResults />
                 {!showHiddenInCommunities && (

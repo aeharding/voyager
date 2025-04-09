@@ -122,7 +122,7 @@ function AccountSwitcherContents({
           )}
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         {!editing ? (
           <IonRadioGroup
             value={selectedAccount}

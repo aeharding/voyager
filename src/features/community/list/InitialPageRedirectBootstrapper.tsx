@@ -61,7 +61,7 @@ export default function InitialPageRedirectBootstrapper({
     }
 
     // requestAnimationFrame needed so Ionic can finish some calculations,
-    // like --offset-top for <ion-content> needed for grey-bg (full size header)
+    // like --offset-top for <ion-content> needed for IonContent[color="light"] full size header
     requestAnimationFrame(() => {
       router.push(
         to,

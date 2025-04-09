@@ -34,7 +34,7 @@ function UserPageContent({ handle }: UserPageProps) {
   const isSelf = handle === myUsername || handle === myHandle;
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">

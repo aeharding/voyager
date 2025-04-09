@@ -228,7 +228,7 @@ export default function InstallAppPage() {
   }
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -238,7 +238,7 @@ export default function InstallAppPage() {
           <IonTitle>Install</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light">
         <div className={styles.container}>
           <AppDetails />
 
