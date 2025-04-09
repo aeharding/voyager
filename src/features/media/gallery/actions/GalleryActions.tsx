@@ -29,6 +29,7 @@ import {
   saveSuccess,
   videoSaved,
 } from "#/helpers/toastMessages";
+import { getVideoSrcForUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -79,10 +80,10 @@ export default function GalleryActions({
               handler: () => {
                 (async () => {
                   try {
-                    await StashMedia.saveVideo({ url: src });
+                    await StashMedia.saveVideo({ url: getVideoSrcForUrl(src) });
                   } catch (error) {
                     presentToast({
-                      message: "Error saving video to device",
+                      message: "Error downloading video",
                       color: "danger",
                       position: "top",
                       fullscreen: true,

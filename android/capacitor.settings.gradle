@@ -54,7 +54,7 @@ include ':capacitor-share-safari'
 project(':capacitor-share-safari').projectDir = new File('../node_modules/.pnpm/capacitor-share-safari@0.1.2_@capacitor+core@7.2.0/node_modules/capacitor-share-safari/android')
 
 include ':capacitor-stash-media'
-project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@3.1.0_@capacitor+core@7.2.0/node_modules/capacitor-stash-media/android')
+project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@3.1.1_@capacitor+core@7.2.0/node_modules/capacitor-stash-media/android')
 
 include ':capacitor-tips'
 project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@2.0.0_@capacitor+core@7.2.0/node_modules/capacitor-tips/android')
