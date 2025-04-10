@@ -1,5 +1,7 @@
+import { Color } from "@ionic/core";
 import { IonContent } from "@ionic/react";
-import React from "react";
+import { noop } from "es-toolkit";
+import React, { createContext, useState } from "react";
 
 import {
   isAppleDeviceInstalledToHomescreen,
@@ -20,3 +22,23 @@ export default function FeedContent(
 ) {
   return <IonContent {...props} scrollY={isSafariFeedHackEnabled} />;
 }
+
+export function FeedContentWithColorContext(
+  props: React.ComponentProps<typeof IonContent>,
+) {
+  const [color, setColor] = useState<Color | undefined>(undefined);
+
+  return (
+    <FeedContentColorContext value={{ color, setColor }}>
+      <FeedContent {...props} color={color ?? props.color} />
+    </FeedContentColorContext>
+  );
+}
+
+export const FeedContentColorContext = createContext<{
+  color: Color | undefined;
+  setColor: (color: Color | undefined) => void;
+}>({
+  color: undefined,
+  setColor: noop,
+});

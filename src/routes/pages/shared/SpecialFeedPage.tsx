@@ -34,7 +34,7 @@ import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
-import FeedContent from "./FeedContent";
+import { FeedContentWithColorContext } from "./FeedContent";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -143,11 +143,11 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                   </TitleSearch>
                 </IonToolbar>
               </AppHeader>
-              <FeedContent>
+              <FeedContentWithColorContext>
                 {feed}
                 <TitleSearchResults />
                 <PostFabs forceRefresh={notifyFeedUpdated} />
-              </FeedContent>
+              </FeedContentWithColorContext>
             </IonPage>
           </FeedContextProvider>
         </PostAppearanceProvider>
