@@ -42,8 +42,8 @@ export default function SelectDeviceMode() {
 
       {selectedDeviceMode !== deviceMode && (
         <IonList inset>
-          <IonItem detail onClick={apply}>
-            <IonLabel>Tap to apply changes and reload app</IonLabel>
+          <IonItem detail button onClick={apply}>
+            <IonLabel>Apply changes and reload</IonLabel>
           </IonItem>
         </IonList>
       )}

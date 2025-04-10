@@ -35,7 +35,7 @@ ion-router-outlet > .ion-page > ion-header {
   }
 }
 
-ion-list.list-inset {
+ion-list.list-inset ion-item {
   --ion-item-background: var(
     --ion-tab-bar-background,
     var(--ion-background-color-step-50, #fff)

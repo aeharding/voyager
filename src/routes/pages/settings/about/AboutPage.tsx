@@ -105,6 +105,7 @@ export default function AboutPage() {
             href="https://github.com/aeharding/voyager/releases"
             target="_blank"
             rel="noopener noreferrer"
+            detail
           >
             <IconBg color="color(display-p3 0.7 0 1)" size="0.8" slot="start">
               <IonIcon icon={sparkles} />
@@ -114,6 +115,7 @@ export default function AboutPage() {
           <IonItemInAppExternalLink
             routerLink={buildGeneralBrowseLink(`/c/${appCommunityHandle}`)}
             detail
+            button
           >
             <IconBg color="color(display-p3 0 0.8 0.3)" slot="start">
               <IonIcon icon={people} />
@@ -154,7 +156,11 @@ export default function AboutPage() {
             <IonLabel>Terms of Use</IonLabel>
           </IonItemInAppExternalLink>
           {rateVoyager}
-          <IonItemInAppExternalLink detail routerLink="/settings/about/thanks">
+          <IonItemInAppExternalLink
+            detail
+            button
+            routerLink="/settings/about/thanks"
+          >
             <IconBg color="color(display-p3 0.1 0.6 0.1)" slot="start">
               <IonIcon icon={thumbsUp} />
             </IconBg>
@@ -171,7 +177,7 @@ export default function AboutPage() {
             </IconBg>
             <IonLabel>Bug Tracker</IonLabel>
           </IonItemInAppExternalLink>
-          <IonItemInAppExternalLink detail onClick={getCompliment}>
+          <IonItemInAppExternalLink detail button onClick={getCompliment}>
             <IconBg color="color(display-p3 1 0.1 0.6)" size="1.1" slot="start">
               <IonIcon icon={happy} />
             </IconBg>
@@ -181,6 +187,7 @@ export default function AboutPage() {
             href="https://getvoyager.app"
             target="_blank"
             rel="noopener noreferrer"
+            detail
             onClick={(e) => {
               if (e.metaKey || e.ctrlKey) return;
               if (!("share" in navigator)) return;

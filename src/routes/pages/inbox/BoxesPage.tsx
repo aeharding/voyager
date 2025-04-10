@@ -59,11 +59,19 @@ export default function BoxesPage() {
           </AppHeader>
 
           <IonList inset color="primary">
-            <IonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
+            <IonItem
+              routerLink="/inbox/all"
+              onClick={interceptIfLoggedOut}
+              detail
+            >
               <IonIcon icon={fileTray} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Inbox (All)</IonLabel>
             </IonItem>
-            <IonItem routerLink="/inbox/unread" onClick={interceptIfLoggedOut}>
+            <IonItem
+              routerLink="/inbox/unread"
+              onClick={interceptIfLoggedOut}
+              detail
+            >
               <IonIcon icon={ellipseOutline} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Unread</IonLabel>
             </IonItem>
@@ -73,6 +81,7 @@ export default function BoxesPage() {
             <IonItem
               routerLink="/inbox/post-replies"
               onClick={interceptIfLoggedOut}
+              detail
             >
               <IonIcon icon={albumsOutline} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Post Replies</IonLabel>
@@ -80,6 +89,7 @@ export default function BoxesPage() {
             <IonItem
               routerLink="/inbox/comment-replies"
               onClick={interceptIfLoggedOut}
+              detail
             >
               <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Comment Replies</IonLabel>
@@ -87,6 +97,7 @@ export default function BoxesPage() {
             <IonItem
               routerLink="/inbox/mentions"
               onClick={interceptIfLoggedOut}
+              detail
             >
               <IonIcon
                 icon={personCircleOutline}
@@ -101,6 +112,7 @@ export default function BoxesPage() {
             <IonItem
               routerLink="/inbox/messages"
               onClick={interceptIfLoggedOut}
+              detail
             >
               <IonIcon icon={mail} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Messages</IonLabel>
