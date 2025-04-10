@@ -211,7 +211,7 @@ export default function SettingsPage() {
             <IonLabel className="ion-text-nowrap">User Tags</IonLabel>
           </IonItem>
 
-          <IonItem routerLink="/settings/gestures">
+          <IonItem routerLink="/settings/gestures" button detail>
             <IconBg
               color="color(display-p3 0.55 0.15 1)"
               size="1.3"
