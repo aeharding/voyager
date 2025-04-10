@@ -28,7 +28,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
 import { getShareIcon, isAndroid, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
+import { canShare, shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
 import { useAppSelector } from "#/store";
@@ -190,7 +190,7 @@ export default function AboutPage() {
             detail
             onClick={(e) => {
               if (e.metaKey || e.ctrlKey) return;
-              if (!("share" in navigator)) return;
+              if (!canShare()) return;
 
               e.preventDefault();
               e.stopPropagation();
