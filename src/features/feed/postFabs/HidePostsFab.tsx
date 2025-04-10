@@ -81,7 +81,7 @@ export function ShowHiddenPostsProvider(props: React.PropsWithChildren) {
   const [showHiddenPosts, setShowHiddenPosts] = useState(false);
 
   return (
-    <ShowHiddenPostsContext.Provider
+    <ShowHiddenPostsContext
       value={{ showHiddenPosts, setShowHiddenPosts }}
       {...props}
     />

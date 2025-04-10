@@ -8,7 +8,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { arrowBackSharp, send } from "ionicons/icons";
+import { arrowBackSharp } from "ionicons/icons";
 import { useRef, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
@@ -63,17 +63,13 @@ export default function StarterPacksModal({
 
           <IonButtons slot="end">
             <IonButton strong type="submit" onClick={onSubmit}>
-              {isIosTheme() ? (
-                "Submit"
-              ) : (
-                <IonIcon icon={send} slot="icon-only" />
-              )}
+              Submit
             </IonButton>
           </IonButtons>
           <IonTitle>Starter Packs</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light">
         <BulkSubscriber ref={bulkSubscriberRef} onDismiss={onDismiss} />
         <IonList>
           {starterPackData.map((pack) => (

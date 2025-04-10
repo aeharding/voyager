@@ -3,19 +3,20 @@ import { IonItem } from "@ionic/react";
 import { IonList } from "@ionic/react";
 import { IonText } from "@ionic/react";
 import { duplicateOutline, earthOutline } from "ionicons/icons";
-import { use } from "react";
+import { use, useEffect } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { FeedContentColorContext } from "#/routes/pages/shared/FeedContent";
 
 import StarterPacksModal from "./StarterPacksModal";
 
 export default function EmptyHomeFeed() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
-
+  const { setColor } = use(FeedContentColorContext);
   const { pageRef } = use(PageContext);
   const [presentStarterPacksModal, onDismissStarterPacks] = useIonModal(
     StarterPacksModal,
@@ -23,6 +24,14 @@ export default function EmptyHomeFeed() {
       onDismiss: () => onDismissStarterPacks(),
     },
   );
+
+  useEffect(() => {
+    setColor("light");
+
+    return () => {
+      setColor(undefined);
+    };
+  }, [setColor]);
 
   return (
     <MaxWidthContainer>
