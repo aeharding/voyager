@@ -95,6 +95,10 @@ ion-modal.small ion-header ion-toolbar:first-of-type {
   padding-top: 0px;
 }
 
+ion-modal.modal-sheet {
+  --ion-safe-area-top: 0;
+}
+
 ion-modal.transparent-scroll {
   --background: none;
   --height: auto;
@@ -359,7 +363,8 @@ ion-modal.save-as-image-modal {
 }
 
 /* Disable light ion-content in dark mode */
-.ion-palette-dark ion-content.ion-color-light {
+/* Don't taget ion-content explicitly, we don't use ion-content for autoheight modals */
+.ion-palette-dark .ion-page > .ion-color-light {
   --ion-color-base: none !important;
   --ion-color-base-rgb: none !important;
   --ion-color-contrast: none !important;
