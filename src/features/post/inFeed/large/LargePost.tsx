@@ -46,6 +46,11 @@ export default function LargePost({ post }: PostProps) {
 
   const inCommunityFeed = use(PageTypeContext) === "community";
 
+  const isAnnouncement =
+    post.post.featured_community || post.post.featured_local;
+
+  const hasTopLabelContent = showCommunityAtTop && !inCommunityFeed;
+
   function renderPostBody() {
     if (crosspostUrl) {
       return <Crosspost post={post} url={crosspostUrl} />;
@@ -60,15 +65,18 @@ export default function LargePost({ post }: PostProps) {
         <ModeratableItemBannerOutlet />
 
         <div className={styles.header}>
-          {showCommunityAtTop && !inCommunityFeed && (
+          {hasTopLabelContent && (
             <div className={styles.details}>
               <div className={styles.leftDetails}>
-                <CommunityLink
-                  community={post.community}
-                  subscribed={post.subscribed}
-                  showInstanceWhenRemote
-                  tinyIcon
-                />
+                <span className={styles.communityName}>
+                  {isAnnouncement ? <AnnouncementIcon /> : undefined}
+                  <CommunityLink
+                    community={post.community}
+                    subscribed={post.subscribed}
+                    showInstanceWhenRemote
+                    tinyIcon
+                  />
+                </span>
               </div>
             </div>
           )}
@@ -86,7 +94,7 @@ export default function LargePost({ post }: PostProps) {
         <div className={styles.details}>
           <div className={styles.leftDetails}>
             <span className={styles.communityName}>
-              {post.post.featured_community || post.post.featured_local ? (
+              {isAnnouncement && !hasTopLabelContent ? (
                 <AnnouncementIcon />
               ) : undefined}
               {inCommunityFeed ? (
