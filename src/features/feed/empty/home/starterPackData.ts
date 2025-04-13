@@ -21,7 +21,7 @@ export default [
       "https://lemmy.ml/c/linux",
       "https://lemmy.world/c/linux",
       "https://lemmy.ml/c/privacy",
-      "https://lemmy.one/c/privacyguides",
+      "https://lemmy.ca/c/privacy",
       "https://lemmy.ml/c/opensource",
       "https://lemmy.world/c/selfhosted",
       "https://lemmy.ml/c/selfhost",

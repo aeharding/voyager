@@ -59,7 +59,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -138,7 +138,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -217,7 +217,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -296,7 +296,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -375,7 +375,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -454,7 +454,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -533,7 +533,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
@@ -612,7 +612,7 @@
                 <data android:host="lemmy.eco.br" />
                 <data android:host="lemmy.ml" />
                 <data android:host="lemmy.nz" />
-                <data android:host="lemmy.one" />
+                <data android:host="lemmy.wtf" />
                 <data android:host="lemmy.sdf.org" />
                 <data android:host="lemmy.today" />
                 <data android:host="lemmy.world" />
