@@ -31,6 +31,8 @@ export default [
       "https://lemmy.ml/c/programmerhumor",
       "https://programming.dev/c/programmer_humor",
       "https://lemmy.world/c/sysadmin",
+      "https://lemmy.world/c/hardware",
+      "https://programming.dev/c/raspberry_pi",
     ],
   },
   {
@@ -119,13 +121,16 @@ export default [
   },
   {
     title: "Movies, TV, & Pop Culture",
-    description: "movies, futurama, startrek, sciencefiction",
+    description: "movies, tv, trailers, sciencefiction",
     icon: filmOutline,
     communities: [
+      "https://lemm.ee/c/movies",
       "https://lemmy.ml/c/movies",
-      "https://lemmy.world/c/futurama",
-      "https://startrek.website/c/startrek",
+      "https://lemm.ee/c/television",
+      "https://lemmy.blahaj.zone/c/trailers",
+      "https://lemmy.world/c/filmsframes",
       "https://lemmy.world/c/sciencefiction",
+      "https://startrek.website/c/startrek",
     ],
   },
   {
