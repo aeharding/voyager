@@ -45,10 +45,10 @@ function PortaledVideo({
   );
 
   return (
-    <div style={props.style} className={props.className}>
+    <span style={props.style} className={props.className}>
       {portalNode ? (
         <OutPortalPlayer {...props} node={portalNode} />
       ) : undefined}
-    </div>
+    </span>
   );
 }
