@@ -106,7 +106,7 @@
     "react-intersection-observer": "^9.16.0",
     "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
-    "react-reverse-portal": "^2.2.0",
+    "react-reverse-portal": "^2.3.0",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-textarea-autosize": "^8.5.9",
