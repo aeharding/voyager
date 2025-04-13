@@ -94,6 +94,7 @@ export const WHITELISTED_SERVERS = uniq(
 
 const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.ml",
+  "lemmy.one",
   "lemmygrad.ml",
   "lemmynsfw.com",
   "hexbear.net",
