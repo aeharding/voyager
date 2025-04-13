@@ -26,7 +26,13 @@ export default function ItemIcon({
 
   if (typeof item === "string")
     return (
-      <FakeIcon seed={item} name={item} className={className} size={size} />
+      <FakeIcon
+        seed={item}
+        name={item}
+        className={className}
+        size={size}
+        slot={slot}
+      />
     );
 
   const icon = "posting_restricted_to_mods" in item ? item.icon : item.avatar;
