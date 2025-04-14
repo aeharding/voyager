@@ -96,7 +96,7 @@ ion-modal.small ion-header ion-toolbar:first-of-type {
 }
 
 ion-modal.modal-sheet {
-  --ion-safe-area-top: 0;
+  --ion-safe-area-top: 0px;
 }
 
 ion-modal.transparent-scroll {
