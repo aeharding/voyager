@@ -45,7 +45,7 @@ export default function Question() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent color="light">
+      <IonContent color="light-bg">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account application</IonTitle>

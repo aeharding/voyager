@@ -56,12 +56,7 @@
 }
 
 .contents {
-  composes:
-    ion-color from global,
-    ion-color-light from global;
-
-  background: var(--ion-color-base);
-  color: var(--ion-color-contrast);
+  composes: appLightColorContent from "#/features/shared/shared.module.css";
 
   /* can't use ion-content with auto height ion-modal */
   margin-bottom: var(--ion-safe-area-bottom);

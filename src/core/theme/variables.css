@@ -106,7 +106,7 @@
       --thick-separator-color: var(--app-inset-item-background);
     }
 
-    ion-router-outlet ion-list.list-inset ion-item {
+    ion-list.list-inset ion-item {
       --background: var(--app-inset-item-background);
     }
 

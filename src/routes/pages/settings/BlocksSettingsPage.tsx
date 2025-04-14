@@ -45,13 +45,13 @@ export default function BlocksSettingsPage() {
   const content = (() => {
     if (!localUser)
       return (
-        <IonContent scrollY={false} color="light">
+        <IonContent scrollY={false} color="light-bg">
           <CenteredSpinner />
         </IonContent>
       );
 
     return (
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <FilterNsfw />
         <BlockedCommunities />
         <BlockedUsers />

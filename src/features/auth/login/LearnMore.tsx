@@ -21,7 +21,10 @@ export default function LearnMore() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent className={cx("ion-padding", styles.content)} color="light">
+      <IonContent
+        className={cx("ion-padding", styles.content)}
+        color="light-bg"
+      >
         <h2>How does this app work?</h2>
         <p>
           Lemmy is a decentralized <strong>network of communities</strong> where

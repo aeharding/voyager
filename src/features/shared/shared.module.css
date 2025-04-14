@@ -66,3 +66,13 @@
 
   flex-shrink: 0;
 }
+
+/* Use when IonContent[color="light-bg"] can't be used */
+.appLightColorContent {
+  composes:
+    ion-color from global,
+    ion-color-light-bg from global;
+
+  background: var(--ion-color-base);
+  color: var(--ion-color-contrast);
+}

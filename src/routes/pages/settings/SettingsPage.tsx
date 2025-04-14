@@ -99,7 +99,7 @@ export default function SettingsPage() {
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen color="light">
+      <AppContent scrollY fullscreen color="light-bg">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Settings</IonTitle>

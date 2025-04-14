@@ -238,7 +238,7 @@ export default function InstallAppPage() {
           <IonTitle>Install</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <div className={styles.container}>
           <AppDetails />
 

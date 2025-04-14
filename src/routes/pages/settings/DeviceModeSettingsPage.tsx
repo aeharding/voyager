@@ -31,7 +31,7 @@ export default function DeviceModeSettingsPage() {
           <IonTitle>Device Mode</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <SelectDeviceMode />
       </AppContent>
     </IonPage>

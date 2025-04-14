@@ -34,7 +34,7 @@ export default function BrowseTagsPage() {
           <IonTitle>View {startCase(filter)}</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <FeedContent color="light">
+      <FeedContent color="light-bg">
         <BrowseTags filter={filter} />
       </FeedContent>
     </IonPage>

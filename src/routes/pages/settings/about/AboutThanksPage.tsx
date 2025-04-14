@@ -71,7 +71,7 @@ export default function AboutThanksPage() {
           <IonTitle>Thanks To</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen color="light">
+      <AppContent scrollY fullscreen color="light-bg">
         <IonList inset color="primary">
           {links.map(({ label, href }) => (
             <IonItemInAppExternalLink

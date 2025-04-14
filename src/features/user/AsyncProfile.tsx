@@ -73,14 +73,14 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
 
   if (!person)
     return (
-      <FeedContent color="light">
+      <FeedContent color="light-bg">
         <IonSpinner className={sharedStyles.pageSpinner} />
       </FeedContent>
     );
 
   if (person === "failed")
     return (
-      <IonContent scrollY color="light">
+      <IonContent scrollY color="light-bg">
         <IonRefresher
           slot="fixed"
           onIonRefresh={async (e) => {
@@ -100,7 +100,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     );
 
   return (
-    <FeedContent color="light">
+    <FeedContent color="light-bg">
       <Profile person={person} onPull={load} />
     </FeedContent>
   );

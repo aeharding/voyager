@@ -362,18 +362,28 @@ ion-modal.save-as-image-modal {
   --background: none;
 }
 
-/* Disable light ion-content in dark mode */
-/* Don't taget ion-content explicitly, we don't use ion-content for autoheight modals */
-.ion-palette-dark .ion-page > .ion-color-light {
-  --ion-color-base: none !important;
-  --ion-color-base-rgb: none !important;
-  --ion-color-contrast: none !important;
-  --ion-color-contrast-rgb: none !important;
-  --ion-color-shade: none !important;
-  --ion-color-tint: none !important;
-}
-
 .list-md:not(.ion-padding) {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+:root {
+  --ion-color-light-bg: var(--ion-color-light);
+  --ion-color-light-bg-rgb: var(--ion-color-light-rgb);
+  --ion-color-light-bg-contrast: var(--ion-color-light-contrast);
+  --ion-color-light-bg-contrast-rgb: var(--ion-color-light-contrast-rgb);
+  --ion-color-light-bg-shade: var(--ion-color-light-shade);
+  --ion-color-light-bg-tint: var(--ion-color-light-tint);
+}
+
+/* Only apply light color to light mode with no custom theme */
+html:not(.theme-has-custom-background):not(.ion-palette-dark) {
+  .ion-color-light-bg {
+    --ion-color-base: var(--ion-color-light-bg);
+    --ion-color-base-rgb: var(--ion-color-light-bg-rgb);
+    --ion-color-contrast: var(--ion-color-light-bg-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-light-bg-contrast-rgb);
+    --ion-color-shade: var(--ion-color-light-bg-shade);
+    --ion-color-tint: var(--ion-color-light-bg-tint);
+  }
 }

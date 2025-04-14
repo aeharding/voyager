@@ -28,7 +28,7 @@ export default function HidingSettingsPage() {
           <IonTitle>Marking Read / Hiding</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <HidingSettings />
       </AppContent>
     </IonPage>

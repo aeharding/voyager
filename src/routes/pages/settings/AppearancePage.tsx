@@ -28,7 +28,7 @@ export default function AppearancePage() {
           <IonTitle>Appearance</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <AppearanceSettings />
       </AppContent>
     </IonPage>
