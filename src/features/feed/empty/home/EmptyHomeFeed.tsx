@@ -26,7 +26,7 @@ export default function EmptyHomeFeed() {
   );
 
   useEffect(() => {
-    setColor("light");
+    setColor("light-bg");
 
     return () => {
       setColor(undefined);

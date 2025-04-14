@@ -69,7 +69,7 @@ export default function StarterPacksModal({
           <IonTitle>Starter Packs</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent color="light">
+      <IonContent color="light-bg">
         <BulkSubscriber ref={bulkSubscriberRef} onDismiss={onDismiss} />
         <IonList>
           {starterPackData.map((pack) => (

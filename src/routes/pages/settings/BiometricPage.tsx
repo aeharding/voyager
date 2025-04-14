@@ -31,7 +31,7 @@ export default function BiometricPage() {
           </IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen color="light">
+      <AppContent scrollY fullscreen color="light-bg">
         <BiometricSettings />
       </AppContent>
     </IonPage>

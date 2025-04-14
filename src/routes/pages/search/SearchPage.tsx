@@ -67,7 +67,7 @@ export default function SearchPage() {
           </form>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         {!search ? <EmptySearch /> : <SearchOptions search={search} />}
       </AppContent>
     </IonPage>

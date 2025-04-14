@@ -28,7 +28,7 @@ export default function AppIconPage() {
           <IonTitle>App Icon</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <AppIcon />
       </AppContent>
     </IonPage>

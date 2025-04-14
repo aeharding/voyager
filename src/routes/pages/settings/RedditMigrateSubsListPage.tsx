@@ -33,7 +33,7 @@ export default function RedditMigrateSubsListPage() {
           <IonTitle>Subreddits</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <MigrateSubsList link={link} />
       </AppContent>
     </IonPage>

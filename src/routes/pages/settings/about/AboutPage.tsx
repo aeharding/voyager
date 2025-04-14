@@ -97,7 +97,7 @@ export default function AboutPage() {
           <IonTitle>About</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen color="light">
+      <AppContent scrollY fullscreen color="light-bg">
         <AppDetails />
 
         <IonList inset color="primary">

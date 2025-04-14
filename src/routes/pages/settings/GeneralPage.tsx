@@ -28,7 +28,7 @@ export default function GeneralPage() {
           <IonTitle>General</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <GeneralSettings />
       </AppContent>
     </IonPage>

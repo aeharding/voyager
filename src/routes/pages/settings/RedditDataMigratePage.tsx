@@ -28,7 +28,7 @@ export default function RedditMigratePage() {
           <IonTitle>Migrate</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <MigrateList />
       </AppContent>
     </IonPage>

@@ -152,7 +152,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent color="light">
+      <IonContent color="light-bg">
         <div className="ion-padding">
           You are logging in to{" "}
           <InAppExternalLink

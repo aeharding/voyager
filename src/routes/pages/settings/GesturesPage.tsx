@@ -28,7 +28,7 @@ export default function GesturesPage() {
           <IonTitle>Gestures</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY color="light">
+      <AppContent scrollY color="light-bg">
         <SwipeSettings />
       </AppContent>
     </IonPage>

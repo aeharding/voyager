@@ -12,11 +12,13 @@ export default function FloatingDialog({
   children,
 }: FloatingDialogProps) {
   return (
-    <div className={styles.container}>
-      <button className={styles.closeButton} onClick={() => onDismiss()}>
-        <IonIcon icon={close} />
-      </button>
-      {children}
+    <div className={styles.containerBg}>
+      <div className={styles.container}>
+        <button className={styles.closeButton} onClick={() => onDismiss()}>
+          <IonIcon icon={close} />
+        </button>
+        {children}
+      </div>
     </div>
   );
 }

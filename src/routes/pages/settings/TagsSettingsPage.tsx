@@ -28,7 +28,7 @@ export default function TagsSettingsPage() {
           <IonTitle>User Tags</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen color="light">
+      <AppContent scrollY fullscreen color="light-bg">
         <TagsSettings />
       </AppContent>
     </IonPage>

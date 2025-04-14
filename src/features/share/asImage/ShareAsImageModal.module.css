@@ -1,5 +1,5 @@
 .content {
-  background: var(--ion-background-color-step-50, #f2f2f7);
+  composes: appLightColorContent from "#/features/shared/shared.module.css";
 }
 
 .header {

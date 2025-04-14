@@ -73,7 +73,7 @@ export default function UpdateAppPage() {
           <IonTitle>Updates</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent color="light">
+      <IonContent color="light-bg">
         <IonLoading isOpen={loading} message="Updating" />
         <IonRefresher
           slot="fixed"
