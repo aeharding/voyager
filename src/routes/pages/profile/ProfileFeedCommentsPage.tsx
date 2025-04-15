@@ -1,10 +1,11 @@
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { useParams } from "react-router-dom";
 
-import CommentSort from "#/features/comment/CommentSort";
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 
@@ -15,12 +16,13 @@ export default function ProfileFeedCommentsPage() {
   const { handle } = useParams<{ handle: string }>();
 
   const [sort, setSort] = useFeedSort(
-    "comments",
+    "search",
     {
       internal: `ProfileComments`,
     },
     "New",
   );
+  const sortParams = useFeedSortParams("search", sort, "posts");
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     const { comments } = await client.getPersonDetails(
@@ -28,7 +30,7 @@ export default function ProfileFeedCommentsPage() {
         ...pageData,
         limit: LIMIT,
         username: handle,
-        sort: sort ? convertCommentSortToPostSort(sort) : "New",
+        ...sortParams,
       },
       ...rest,
     );
@@ -40,19 +42,7 @@ export default function ProfileFeedCommentsPage() {
     <BaseProfileFeedItemsPage
       label="Comments"
       fetchFn={fetchFn}
-      sortComponent={<CommentSort sort={sort} setSort={setSort} />}
+      sortComponent={<SearchSort sort={sort} setSort={setSort} />}
     />
   );
-}
-
-function convertCommentSortToPostSort(sort: CommentSortType): PostSortType {
-  switch (sort) {
-    case "Controversial":
-    case "Hot":
-    case "New":
-    case "Old":
-      return sort;
-    case "Top":
-      return "TopAll";
-  }
 }

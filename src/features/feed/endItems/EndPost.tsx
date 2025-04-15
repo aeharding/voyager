@@ -1,4 +1,4 @@
-import { CommentSortType, PostSortType } from "lemmy-js-client";
+import { VgerTopSort } from "#/features/feed/sort/topSorts";
 
 import styles from "./EndPost.module.css";
 
@@ -50,9 +50,9 @@ export default function EndPost({
 }
 
 export function getSortDuration(
-  sort: PostSortType | CommentSortType | undefined,
+  sort: VgerTopSort | string | undefined,
 ): string | undefined {
-  switch (sort) {
+  switch (sort as VgerTopSort) {
     case "TopDay":
       return "day";
     case "TopHour":
@@ -73,5 +73,7 @@ export function getSortDuration(
       return "week";
     case "TopYear":
       return "year";
+    case "TopAll":
+      return "all time";
   }
 }

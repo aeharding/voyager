@@ -5,54 +5,42 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { compact } from "es-toolkit";
-import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
+import { CommunityView, ListingType } from "lemmy-js-client";
 import { useState } from "react";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
-import { FetchFn, isFirstPage } from "#/features/feed/Feed";
+import { FetchFn } from "#/features/feed/Feed";
 import ListingTypeFilter from "#/features/feed/ListingType";
-import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
   useFeedSortParams,
 } from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { LIMIT } from "#/services/lemmy";
 
-interface CommunitiesResultsPageProps {
-  search: string;
-}
+import { CommunitySort } from "./results/CommunitySort";
 
-export default function CommunitiesResultsPage({
-  search,
-}: CommunitiesResultsPageProps) {
+export default function CommunitiesExplorePage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const [sort, setSort] = useFeedSort(
-    "search",
-    { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
-    "TopAll",
+    "communities",
+    { internal: "CommunitiesExplore" },
+    "Subscribers",
   );
-  const sortParams = useFeedSortParams("search", sort, "posts");
+  const sortParams = useFeedSortParams("communities", sort, "posts");
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
-    if (isFirstPage(pageData) && search?.includes("@")) {
-      return compact([await findExactCommunity(search, client)]);
-    }
-
-    const response = await client.search(
+    const response = await client.listCommunities(
       {
         limit: LIMIT,
-        q: search,
-        type_: "Communities",
-        listing_type: listingType,
+        type_: listingType,
         ...pageData,
-        ...sortParams,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fix with lemmy-js-client v1
+        ...(sortParams as any),
       },
       ...rest,
     );
@@ -74,14 +62,14 @@ export default function CommunitiesResultsPage({
             />
           </IonButtons>
 
-          <IonTitle>{search ? <>“{search}”</> : "Communities"}</IonTitle>
+          <IonTitle>Communities</IonTitle>
 
           <IonButtons slot="end">
             <ListingTypeFilter
               listingType={listingType}
               setListingType={setListingType}
             />
-            <SearchSort sort={sort} setSort={setSort} />
+            <CommunitySort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>
@@ -90,23 +78,4 @@ export default function CommunitiesResultsPage({
       </FeedContent>
     </IonPage>
   );
-}
-
-async function findExactCommunity(
-  name: string,
-  client: LemmyHttp,
-): Promise<CommunityView | undefined> {
-  const sanitizedName = name.startsWith("!") ? name.slice(1) : name;
-
-  try {
-    return (await client.getCommunity({ name: sanitizedName })).community_view;
-  } catch (error) {
-    if (
-      isLemmyError(error, "couldnt_find_community" as never) || // TODO lemmy 0.19 and less support
-      isLemmyError(error, "not_found")
-    )
-      return;
-
-    throw error;
-  }
 }
