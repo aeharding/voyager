@@ -1,6 +1,5 @@
 import { compare, CompareOperator } from "compare-versions";
 import { memoize } from "es-toolkit";
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 
 import { lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
@@ -8,6 +7,7 @@ import { useAppSelector } from "#/store";
 /**
  * What version was support removed?
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SUPPORTED_ON_OLDER_EXCLUSIVE = ">";
 
 /**
@@ -26,11 +26,6 @@ const memoizedCompare = memoize(
  * Default: `SUPPORTED_ON_NEWER_INCLUSIVE` (what version was support added?)
  */
 const featureVersionSupported = {
-  /**
-   * https://github.com/LemmyNet/lemmy-ui/issues/2796
-   */
-  "Fullsize thumbnails": ["0.19.6", SUPPORTED_ON_OLDER_EXCLUSIVE],
-
   /**
    * https://github.com/LemmyNet/lemmy/issues/5183
    */
@@ -56,19 +51,4 @@ export default function useSupported(feature: Feature): boolean {
   }
 
   return memoizedCompare([version, lemmyVersion, comparator]);
-}
-
-export function is019Sort(
-  sort: PostSortType | CommentSortType | undefined,
-): boolean {
-  switch (sort) {
-    case "Controversial":
-    case "TopNineMonths":
-    case "TopThreeMonths":
-    case "TopSixMonths":
-    case "Scaled":
-      return true;
-    default:
-      return false;
-  }
 }
