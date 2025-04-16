@@ -250,7 +250,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
               </AppHeader>
               <FeedContent
                 className={styles.feedContent}
-                color={searchOpen ? "light" : undefined}
+                color={searchOpen ? "light-bg" : undefined}
               >
                 {renderFeed()}
                 <TitleSearchResults />
