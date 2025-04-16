@@ -1,7 +1,7 @@
-import { addHours, addMinutes, subMinutes, subYears } from "date-fns";
+import { addHours, addMinutes, subMinutes } from "date-fns";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { calculateIsCakeDay } from "./date";
+import { cakeDate, calculateIsCakeDay } from "./date";
 
 describe("cake cake", () => {
   beforeEach(() => {
@@ -15,36 +15,52 @@ describe("cake cake", () => {
   });
 
   it("not cake day when created", () => {
-    vi.setSystemTime(new Date("2024-11-01"));
+    vi.setSystemTime(cakeDate("2024-11-01"));
 
-    expect(calculateIsCakeDay(new Date())).toBe(false);
+    expect(calculateIsCakeDay(new Date().toISOString())).toBe(false);
   });
 
   it("not cake day soon after created", () => {
-    vi.setSystemTime(new Date("2024-11-01"));
+    vi.setSystemTime(cakeDate("2024-11-01"));
 
-    expect(calculateIsCakeDay(addHours(new Date(), 12))).toBe(false);
-  });
-
-  it("cake day soon one year after created", () => {
-    vi.setSystemTime(new Date("2024-11-01"));
-
-    expect(calculateIsCakeDay(subYears(new Date(), 1))).toBe(true);
+    expect(
+      calculateIsCakeDay(addHours(cakeDate("2024-11-01"), 12).toISOString()),
+    ).toBe(false);
   });
 
   it("cake day in a couple minutes", () => {
-    vi.setSystemTime(new Date("2024-11-01"));
+    vi.setSystemTime(subMinutes(cakeDate("2024-11-01"), 2));
 
-    expect(calculateIsCakeDay(addMinutes(subYears(new Date(), 1), 2))).toBe(
+    expect(calculateIsCakeDay(cakeDate("2023-11-01").toISOString())).toBe(
       false,
     );
   });
 
   it("cake day started a couple minutes ago", () => {
-    vi.setSystemTime(new Date("2024-11-01"));
+    vi.setSystemTime(cakeDate("2023-11-01"));
 
-    expect(calculateIsCakeDay(subMinutes(subYears(new Date(), 1), 2))).toBe(
-      true,
+    expect(
+      calculateIsCakeDay(addMinutes(cakeDate("2024-11-01"), 2).toISOString()),
+    ).toBe(true);
+  });
+
+  it("cake day from lemmy-ui", () => {
+    vi.setSystemTime(cakeDate("2025-04-15"));
+
+    expect(calculateIsCakeDay(cakeDate("2024-04-15").toISOString())).toBe(true);
+  });
+
+  it("one minute before cake day ends", () => {
+    vi.setSystemTime(subMinutes(cakeDate("2024-11-02"), 1));
+
+    expect(calculateIsCakeDay(cakeDate("2023-11-01").toISOString())).toBe(true);
+  });
+
+  it("cake day ended", () => {
+    vi.setSystemTime(addMinutes(cakeDate("2024-11-02"), 1));
+
+    expect(calculateIsCakeDay(cakeDate("2023-11-01").toISOString())).toBe(
+      false,
     );
   });
 });

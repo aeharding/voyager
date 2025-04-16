@@ -15,11 +15,9 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
   );
 
   const ageBadgeData = useMemo(() => {
-    const publishedDate = new Date(published);
+    if (calculateIsCakeDay(published)) return { type: "cake" } as const;
 
-    if (calculateIsCakeDay(publishedDate)) return { type: "cake" } as const;
-
-    const days = calculateNewAccount(publishedDate);
+    const days = calculateNewAccount(published);
 
     if (days !== undefined) {
       return { type: "new", days } as const;

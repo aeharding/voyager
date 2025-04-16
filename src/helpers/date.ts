@@ -1,35 +1,38 @@
-import { differenceInDays } from "date-fns";
+import {
+  differenceInDays,
+  getYear,
+  isSameDay,
+  isSameYear,
+  setYear,
+} from "date-fns";
+
+// Returns a date in local time with the same year, month and day. Ignores the
+// source timezone. The goal is to show the same date in all timezones.
+export function cakeDate(date: string): Date {
+  const year = +date.slice(0, 4);
+  const month = +date.slice(5, 7);
+  const day = +date.slice(8, 10);
+
+  return new Date(year, month - 1, day);
+}
 
 /**
  * User cake day happens annually, and starts the exact millisecond the user
  * signed up, and runs for exactly 24 hours
  *
+ * @author https://github.com/LemmyNet/lemmy-ui/blob/0307ec4834f61b8d843fd9d4022a8332159d70ae/src/shared/utils/helpers/is-cake-day.ts#L9
  * @param creationDate User created date
  * @returns True if cake day! 🍰
  */
-export function calculateIsCakeDay(creationDate: Date) {
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+export function calculateIsCakeDay(published: string): boolean {
+  const createDate = cakeDate(published);
+  const currentDate = new Date();
 
-  const currentUTCDate = new Date();
-  const userCreationUTCDate = new Date(creationDate);
-
-  if (
-    currentUTCDate.getTime() - userCreationUTCDate.getTime() <=
-    oneDayInMilliseconds
-  )
-    // User was just created
-    return false;
-
-  // Set the year of the Cake Day to the current year
-  userCreationUTCDate.setUTCFullYear(currentUTCDate.getUTCFullYear());
-
-  // Check if the current UTC date is within a 24-hour window from the user's creation date
-  const cakeDayStart = new Date(userCreationUTCDate);
-  const cakeDayEnd = new Date(
-    userCreationUTCDate.getTime() + oneDayInMilliseconds,
+  // The day-overflow of Date makes leap days become 03-01 in non leap years.
+  return (
+    isSameDay(currentDate, setYear(createDate, getYear(currentDate))) &&
+    !isSameYear(currentDate, createDate)
   );
-
-  return currentUTCDate >= cakeDayStart && currentUTCDate < cakeDayEnd;
 }
 
 /**
@@ -38,8 +41,9 @@ export function calculateIsCakeDay(creationDate: Date) {
  * @param creationDate User created date
  * @returns age of the account in days (if found)
  */
-export function calculateNewAccount(creationDate: Date): number | undefined {
-  const days = differenceInDays(new Date(), creationDate);
+export function calculateNewAccount(published: string): number | undefined {
+  const creation = cakeDate(published);
+  const days = differenceInDays(new Date(), creation);
 
   if (days < 0 || days > 30) return;
 
