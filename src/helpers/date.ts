@@ -24,7 +24,7 @@ export function cakeDate(date: string): Date {
  * @param creationDate User created date
  * @returns True if cake day! 🍰
  */
-export function calculateIsCakeDay(published: string): boolean {
+export function isCakeDay(published: string): boolean {
   const createDate = cakeDate(published);
   const currentDate = new Date();
 
@@ -41,9 +41,8 @@ export function calculateIsCakeDay(published: string): boolean {
  * @param creationDate User created date
  * @returns age of the account in days (if found)
  */
-export function calculateNewAccount(published: string): number | undefined {
-  const creation = cakeDate(published);
-  const days = differenceInDays(new Date(), creation);
+export function calculateNewAccountDays(published: string): number | undefined {
+  const days = differenceInDays(new Date(), new Date(published));
 
   if (days < 0 || days > 30) return;
 
