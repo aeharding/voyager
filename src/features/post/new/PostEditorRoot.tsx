@@ -464,7 +464,7 @@ export default function PostEditorRoot({
 
                     <input
                       type="file"
-                      accept="image/*,video/webm"
+                      accept="image/*,video/webm,video/mp4"
                       id="media-upload-post"
                       className={styles.hiddenInput}
                       onInput={(e) => {
