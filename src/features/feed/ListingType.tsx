@@ -14,10 +14,10 @@ import {
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { ListingType } from "lemmy-js-client";
-import { use, useState } from "react";
+import { useState } from "react";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 
 export const LISTING_TYPES = [
   "All",
@@ -44,7 +44,7 @@ export default function ListingTypeFilter({
   setListingType,
 }: CommentSortProps) {
   const [open, setOpen] = useState(false);
-  const { activePageRef } = use(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   if (!listingType) return;
 
@@ -63,7 +63,7 @@ export default function ListingTypeFilter({
           if (!e.detail.data) return;
 
           setListingType(e.detail.data);
-          scrollUpIfNeeded(activePageRef?.current, 1, "auto");
+          scrollUpIfNeeded(getAppScrollable(), 1, "auto");
         }}
         header="Filter by..."
         buttons={BUTTONS.map((b) => ({

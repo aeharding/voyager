@@ -1,4 +1,4 @@
-import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
+import { IonBackButton, IonButtons, IonToolbar } from "@ionic/react";
 import { ListingType } from "lemmy-js-client";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
@@ -28,6 +28,7 @@ import PostAppearanceProvider, {
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
+import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -121,7 +122,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
       <ShowHiddenPostsProvider>
         <PostAppearanceProvider feed={postFeed}>
           <FeedContextProvider>
-            <IonPage>
+            <AppPage>
               <AppHeader>
                 <IonToolbar>
                   <IonButtons slot="start">
@@ -148,7 +149,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                 <TitleSearchResults />
                 <PostFabs forceRefresh={notifyFeedUpdated} />
               </FeedContentWithColorContext>
-            </IonPage>
+            </AppPage>
           </FeedContextProvider>
         </PostAppearanceProvider>
       </ShowHiddenPostsProvider>

@@ -4,7 +4,6 @@ import {
   IonContent,
   IonIcon,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -12,6 +11,7 @@ import { arrowBackSharp } from "ionicons/icons";
 import { useRef, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { isIosTheme } from "#/helpers/device";
 
 import BulkSubscriber, { BulkSubscriberHandle } from "./BulkSubscriber";
@@ -48,7 +48,7 @@ export default function StarterPacksModal({
   }
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -77,6 +77,6 @@ export default function StarterPacksModal({
           ))}
         </IonList>
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

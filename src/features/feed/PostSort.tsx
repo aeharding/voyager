@@ -20,11 +20,10 @@ import {
   trophyOutline,
 } from "ionicons/icons";
 import { PostSortType } from "lemmy-js-client";
-import { use } from "react";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { arrayOfAll } from "#/helpers/array";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 
 import {
   calendarNineMonths,
@@ -109,11 +108,11 @@ interface PostSortProps {
 }
 
 export default function PostSort({ sort, setSort }: PostSortProps) {
-  const { activePageRef } = use(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   const present = useSelectPostSort((newValue) => {
     setSort(newValue);
-    scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+    scrollUpIfNeeded(getAppScrollable(), 0, "auto");
   });
 
   return (

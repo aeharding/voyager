@@ -2,12 +2,9 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonPage,
   IonToolbar,
 } from "@ionic/react";
-import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { localUserSelector } from "#/features/auth/siteSlice";
 import BlockedCommunities from "#/features/settings/blocks/BlockedCommunities";
@@ -24,11 +21,10 @@ import {
   ListEditorProvider,
 } from "#/features/shared/ListEditor";
 import MultilineTitle from "#/features/shared/MultilineTitle";
+import { AppPage } from "#/helpers/AppPage";
 import { useAppSelector } from "#/store";
 
 export default function BlocksSettingsPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
   const userHandle = useAppSelector(userHandleSelector);
   const localUser = useAppSelector(localUserSelector);
 
@@ -39,8 +35,6 @@ export default function BlocksSettingsPage() {
       state.site.response?.my_user?.instance_blocks.length ||
       state.settings.blocks.keywords.length,
   );
-
-  useSetActivePage(pageRef);
 
   const content = (() => {
     if (!localUser)
@@ -63,7 +57,7 @@ export default function BlocksSettingsPage() {
   })();
 
   const page = (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -81,7 +75,7 @@ export default function BlocksSettingsPage() {
       </AppHeader>
 
       {content}
-    </IonPage>
+    </AppPage>
   );
 
   if (hasBlocks) {

@@ -4,8 +4,8 @@ import { eyeOffOutline, eyeOutline } from "ionicons/icons";
 import { createContext, use, useState } from "react";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 
 import useHidePosts from "../useHidePosts";
 import useResetHiddenPosts from "../useResetHiddenPosts";
@@ -17,13 +17,13 @@ interface HidePostsFabProps {
 export default function HidePostsFab({ forceRefresh }: HidePostsFabProps) {
   const hidePosts = useHidePosts();
   const resetHiddenPosts = useResetHiddenPosts();
-  const { activePageRef } = use(AppContext);
+  const getAppScrollable = useGetAppScrollable();
   const { showHiddenPosts, setShowHiddenPosts } = useShowHiddenPosts();
 
   function onUpdateShowHiddenPosts(show: boolean) {
     setShowHiddenPosts(show);
     forceRefresh();
-    scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+    scrollUpIfNeeded(getAppScrollable(), 0, "auto");
   }
 
   const bind = useLongPress(
@@ -39,7 +39,7 @@ export default function HidePostsFab({ forceRefresh }: HidePostsFabProps) {
         ],
         onFinishReset: () => {
           forceRefresh();
-          scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+          scrollUpIfNeeded(getAppScrollable(), 0, "auto");
         },
       });
     },

@@ -1,24 +1,13 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import HidingSettings from "#/features/settings/general/hiding/HidingSettings";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 
 export default function HidingSettingsPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -31,6 +20,6 @@ export default function HidingSettingsPage() {
       <AppContent scrollY color="light-bg">
         <HidingSettings />
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

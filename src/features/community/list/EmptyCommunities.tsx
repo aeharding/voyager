@@ -11,11 +11,10 @@ import {
   earthOutline,
   helpCircleOutline,
 } from "ionicons/icons";
-import { use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import StarterPacksModal from "#/features/feed/empty/home/StarterPacksModal";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
+import { useAppPageRef } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
@@ -26,7 +25,7 @@ export default function EmptyCommunities() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentAlert] = useIonAlert();
 
-  const { pageRef } = use(PageContext);
+  const pageRef = useAppPageRef();
   const [presentStarterPacksModal, onDismissStarterPacks] = useIonModal(
     StarterPacksModal,
     {

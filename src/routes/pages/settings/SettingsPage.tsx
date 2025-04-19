@@ -4,7 +4,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
   useIonModal,
@@ -21,9 +20,8 @@ import {
   pricetag,
   reloadCircle,
 } from "ionicons/icons";
-import React, { use, useEffect, useRef } from "react";
+import React, { use, useEffect } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { gesture } from "#/features/icons";
 import useShouldInstall from "#/features/pwa/useShouldInstall";
@@ -38,6 +36,7 @@ import DatabaseErrorItem from "#/features/settings/root/DatabaseErrorItem";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import TipDialog from "#/features/tips/TipDialog";
+import { AppPage } from "#/helpers/AppPage";
 import { sv } from "#/helpers/css";
 import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -70,7 +69,6 @@ export default function SettingsPage() {
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(userHandleSelector);
   const icon = useAppSelector((state) => state.appIcon.icon);
-  const pageRef = useRef<HTMLElement>(null);
   const biometricSupported = useAppSelector(biometricSupportedSelector);
   const dispatch = useAppDispatch();
   const documentState = useDocumentVisibility();
@@ -78,8 +76,6 @@ export default function SettingsPage() {
   const [presentTip, onDismissTip] = useIonModal(TipDialog, {
     onDismiss: (data?: string, role?: string) => onDismissTip(data, role),
   });
-
-  useSetActivePage(pageRef);
 
   useEffect(() => {
     checkForUpdates();
@@ -93,7 +89,7 @@ export default function SettingsPage() {
   }, [documentState, dispatch]);
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
@@ -241,6 +237,6 @@ export default function SettingsPage() {
           </IonItem>
         </IonList>
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

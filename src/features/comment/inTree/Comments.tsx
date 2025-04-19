@@ -11,13 +11,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VList, VListHandle } from "virtua";
+import { VListHandle } from "virtua";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
+import AppVList from "#/helpers/AppVList";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
 import {
   buildCommentsTreeWithMissing,
@@ -98,8 +98,6 @@ export default function Comments({
     _setLoading(loading);
     loadingRef.current = loading;
   }
-
-  useSetActivePage(virtuaRef, virtualEnabled);
 
   const [maxContext, setMaxContext] = useState(
     getCommentContextDepthForPath(commentPath),
@@ -480,7 +478,7 @@ export default function Comments({
       </IonRefresher>
       <div className={styles.scrollViewContainer} ref={scrollViewContainerRef}>
         {virtualEnabled ? (
-          <VList
+          <AppVList
             className={
               isSafariFeedHackEnabled
                 ? "virtual-scroller"
@@ -496,7 +494,7 @@ export default function Comments({
             }}
           >
             {...content}
-          </VList>
+          </AppVList>
         ) : (
           <>{...content}</>
         )}

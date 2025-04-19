@@ -15,10 +15,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VList, VListHandle } from "virtua";
+import { VListHandle } from "virtua";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import AppVList from "#/helpers/AppVList";
 import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
@@ -267,8 +267,6 @@ export default function Feed<I>({
 
   const virtuaHandle = useRef<VListHandle>(null);
 
-  useSetActivePage(virtuaHandle);
-
   const onScroll = useRangeChange(
     virtuaHandle,
     function onRangeChange(start, end) {
@@ -359,7 +357,7 @@ export default function Feed<I>({
       </IonRefresher>
 
       <InFeedContext value={true}>
-        <VList
+        <AppVList
           className={
             isSafariFeedHackEnabled
               ? "virtual-scroller"
@@ -383,7 +381,7 @@ export default function Feed<I>({
             </Fragment>
           ))}
           {footer}
-        </VList>
+        </AppVList>
       </InFeedContext>
     </>
   );

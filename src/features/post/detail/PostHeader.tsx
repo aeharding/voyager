@@ -3,7 +3,6 @@ import { CommentView, PostView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useRef } from "react";
 import AnimateHeight from "react-animate-height";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
@@ -26,6 +25,7 @@ import { findIonContentScrollView } from "#/helpers/ionic";
 import { findLoneImage } from "#/helpers/markdown";
 import { postLocked } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import { OTapToCollapseType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -61,7 +61,7 @@ export default function PostHeader({
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
-  const { activePageRef } = use(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   const crosspostUrl = useCrosspostUrl(post);
 
@@ -90,18 +90,20 @@ export default function PostHeader({
       return top - 12 + 1; // extra 1 to prevent thin line of image showing
     })();
 
-    if (activePageRef?.current?.current) {
-      if ("querySelector" in activePageRef.current.current) {
-        findIonContentScrollView(activePageRef.current.current)?.scrollTo({
-          top: titleTop,
-          behavior: "smooth",
-        });
-      } else {
-        activePageRef.current.current.scrollToIndex(0, {
-          smooth: true,
-          offset: titleTop,
-        });
-      }
+    const appScrollable = getAppScrollable();
+
+    if (!appScrollable) return;
+
+    if ("querySelector" in appScrollable) {
+      findIonContentScrollView(appScrollable)?.scrollTo({
+        top: titleTop,
+        behavior: "smooth",
+      });
+    } else {
+      appScrollable.scrollToIndex(0, {
+        smooth: true,
+        offset: titleTop,
+      });
     }
   }
 
