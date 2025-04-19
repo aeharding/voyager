@@ -143,8 +143,8 @@ importers:
         specifier: 0.20.0-alpha.18
         version: 0.20.0-alpha.18
       mdast-util-gfm-autolink-literal-lemmy:
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.0.1
+        version: 3.0.1
       mdast-util-gfm-strikethrough:
         specifier: ^2.0.0
         version: 2.0.0
@@ -4534,8 +4534,8 @@ packages:
   mdast-util-from-markdown@2.0.2:
     resolution: {integrity: sha512-uZhTV/8NBuw0WHkPTrCqDOl0zVe1BIng5ZtHoDk49ME1qqcjYmmLmOf0gELgcRMxN4w2iuIeVso5/6QymSrgmA==}
 
-  mdast-util-gfm-autolink-literal-lemmy@3.0.0:
-    resolution: {integrity: sha512-+JA8WqF9QmbRvai1Aw3yPKRiBix1Q+ywmfnsjYP4NYqO20IiZTx6UDMx+eBx+h2ATukpZG77VfuIxFSfDp0G4Q==}
+  mdast-util-gfm-autolink-literal-lemmy@3.0.1:
+    resolution: {integrity: sha512-igitmK29TiBxQMxmZYNhQT1ZumYjVRCw2ZxxaxFHlR+hWQCxZmAVkni/X545+zO3/A4qkEn2XzGbPjl6gZtZFg==}
 
   mdast-util-gfm-strikethrough@2.0.0:
     resolution: {integrity: sha512-mKKb915TF+OC5ptj5bJ7WFRPdYtuHv0yTRxK2tJvi+BDqbkiG7h7u/9SI89nRAYcmap2xHQL9D+QG/6wSrTtXg==}
@@ -11532,7 +11532,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-autolink-literal-lemmy@3.0.0:
+  mdast-util-gfm-autolink-literal-lemmy@3.0.1:
     dependencies:
       '@types/mdast': 4.0.4
       ccount: 2.0.1
