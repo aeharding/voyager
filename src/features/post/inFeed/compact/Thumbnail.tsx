@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { MouseEvent, useCallback, useMemo } from "react";
+import { MouseEvent, useCallback, useMemo, useState } from "react";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
@@ -47,9 +47,10 @@ export default function Thumbnail({ post }: ImgProps) {
     [post],
   );
 
+  const [error, setError] = useState(false);
+
   const postImageSrc = useMemo(() => {
-    if (post.post.url && isUrlImage(post.post.url, post.post.url_content_type))
-      return post.post.url;
+    if (post.post.url) return post.post.url;
 
     if (markdownLoneImage) return markdownLoneImage.url;
   }, [markdownLoneImage, post.post]);
@@ -77,13 +78,14 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const renderContents = useCallback(() => {
     if (isLink) {
-      if (post.post.thumbnail_url)
+      if (post.post.thumbnail_url && !error)
         return (
           <>
             <img
               src={getImageSrc(forceSecureUrl(post.post.thumbnail_url), {
                 size: 100,
               })}
+              onError={() => setError(true)}
               className={cx(styles.img, nsfw && styles.blurImg)}
             />
             <IonIcon className={styles.linkIcon} icon={linkOutline} />
@@ -103,7 +105,7 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     return <SelfSvg />;
-  }, [isLink, nsfw, post, postImageSrc]);
+  }, [isLink, nsfw, post, postImageSrc, error]);
 
   if (thumbnailSize === OCompactThumbnailSizeType.Hidden) return;
 

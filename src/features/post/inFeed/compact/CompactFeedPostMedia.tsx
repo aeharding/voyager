@@ -13,5 +13,16 @@ export default function CompactFeedPostMedia(
   const src = usePostSrc(props.post);
 
   if (src)
-    return <GalleryMedia {...props} src={src} alt={props.post.post.alt_text} />;
+    return (
+      <GalleryMedia
+        {...props}
+        src={src}
+        alt={props.post.post.alt_text}
+        allowShowPlayButton={false}
+        disableInlineInteraction
+        controls={false}
+        volume={false}
+        autoPlay={false}
+      />
+    );
 }
