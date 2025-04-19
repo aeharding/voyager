@@ -133,8 +133,6 @@ export default function Toast({ ref, onClose }: ToastProps) {
         </div>
       </motion.div>
     </div>,
-    options?.fullscreen
-      ? document.body
-      : document.querySelector("ion-router-outlet")!,
+    options?.fullscreen ? document.body : document.querySelector("ion-app")!,
   );
 }

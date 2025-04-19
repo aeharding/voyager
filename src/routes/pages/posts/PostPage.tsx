@@ -52,7 +52,7 @@ export default function PostPage() {
   );
 }
 
-function PostPageContent({
+export function PostPageContent({
   id,
   commentPath,
   community,
