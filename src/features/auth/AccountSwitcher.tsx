@@ -5,7 +5,6 @@ import {
   IonIcon,
   IonList,
   IonLoading,
-  IonPage,
   IonRadioGroup,
   IonReorderGroup,
   IonTitle,
@@ -20,6 +19,7 @@ import {
   ListEditorContext,
   ListEditorProvider,
 } from "#/features/shared/ListEditor";
+import { AppPage } from "#/helpers/AppPage";
 import { moveItem } from "#/helpers/array";
 import { isPromiseResolvedByPaint } from "#/helpers/promise";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -101,7 +101,7 @@ function AccountSwitcherContents({
   ));
 
   return (
-    <IonPage>
+    <AppPage>
       <IonLoading isOpen={loading} />
       <AppHeader>
         <IonToolbar>
@@ -177,6 +177,6 @@ function AccountSwitcherContents({
           </IonList>
         )}
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

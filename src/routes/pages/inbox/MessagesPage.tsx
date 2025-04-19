@@ -3,15 +3,13 @@ import {
   IonButtons,
   IonContent,
   IonList,
-  IonPage,
   IonRefresher,
   IonRefresherContent,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import {
   conversationsByPersonIdSelector,
@@ -21,13 +19,13 @@ import ConversationItem from "#/features/inbox/messages/ConversationItem";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { AppPage } from "#/helpers/AppPage";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import ComposeButton from "./ComposeButton";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 
 export default function MessagesPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const messages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
@@ -40,8 +38,6 @@ export default function MessagesPage() {
     () => Object.values(conversationsByPersonId),
     [conversationsByPersonId],
   );
-
-  useSetActivePage(pageRef);
 
   const fetchItems = useCallback(async () => {
     setLoading(true);
@@ -71,7 +67,7 @@ export default function MessagesPage() {
   })();
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -102,6 +98,6 @@ export default function MessagesPage() {
 
         {content}
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

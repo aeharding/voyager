@@ -1,16 +1,9 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { startCase } from "es-toolkit";
-import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import BrowseTags from "#/features/settings/tags/browse/BrowseTags";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 
@@ -19,12 +12,8 @@ export default function BrowseTagsPage() {
   const searchParams = new URLSearchParams(router.getRouteInfo()?.search);
   const filter = searchParams.get("filter") as "all" | "tagged";
 
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -37,6 +26,6 @@ export default function BrowseTagsPage() {
       <FeedContent color="light-bg">
         <BrowseTags filter={filter} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonFooter,
-  IonPage,
   IonSpinner,
   IonTitle,
   IonToolbar,
@@ -19,10 +18,9 @@ import {
 } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { CustomItemComponent, VList, VListHandle } from "virtua";
+import { CustomItemComponent, VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import ConversationsMoreActions from "#/features/feed/ConversationsMoreActions";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
@@ -31,6 +29,8 @@ import Message from "#/features/inbox/messages/Message";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
 import AppHeader from "#/features/shared/AppHeader";
 import { getUser } from "#/features/user/userSlice";
+import { AppPage } from "#/helpers/AppPage";
+import AppVList from "#/helpers/AppVList";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
@@ -69,7 +69,6 @@ function useMessages(
 }
 
 export default function ConversationPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
@@ -86,7 +85,7 @@ export default function ConversationPage() {
 
   const keyboardOpen = useKeyboardOpen();
 
-  const ref = useRef<VListHandle>(null);
+  const virtuaRef = useRef<VListHandle>(null);
   const shouldStickToBottom = useRef(true);
 
   const messages = useMessages(allMessages, myUserId, handle);
@@ -94,8 +93,6 @@ export default function ConversationPage() {
   const them = userByHandle[handle.toLowerCase()];
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-
-  useSetActivePage(pageRef);
 
   const loadUser = useCallback(async () => {
     if (userByHandle[handle.toLowerCase()]) return;
@@ -129,9 +126,9 @@ export default function ConversationPage() {
   }, [dispatch, jwtPayload]);
 
   const scrollToBottom = useCallback(() => {
-    if (!ref.current) return;
+    if (!virtuaRef.current) return;
 
-    ref.current.scrollToIndex(messages.length - 1, { align: "end" });
+    virtuaRef.current.scrollToIndex(messages.length - 1, { align: "end" });
   }, [messages.length]);
 
   const scrollIfNeeded = useCallback(() => {
@@ -156,18 +153,20 @@ export default function ConversationPage() {
 
     if (typeof myUserId === "number" && them)
       return (
-        <VList
+        <AppVList
           className={styles.container}
-          ref={ref}
+          ref={virtuaRef}
           style={{ flex: 1 }}
           reverse
           onScroll={(offset) => {
             // Wait for viewport resize to settle (iOS keyboard open/close)
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {
-                if (!ref.current) return;
+                if (!virtuaRef.current) return;
                 shouldStickToBottom.current =
-                  offset - ref.current.scrollSize + ref.current.viewportSize >=
+                  offset -
+                    virtuaRef.current.scrollSize +
+                    virtuaRef.current.viewportSize >=
                   // FIXME: The sum may not be 0 because of sub-pixel value when browser's window.devicePixelRatio has decimal value
                   -1.5;
               });
@@ -182,7 +181,7 @@ export default function ConversationPage() {
               first={index === 0}
             />
           ))}
-        </VList>
+        </AppVList>
       );
 
     return <IonSpinner className={sharedStyles.pageSpinner} />;
@@ -200,7 +199,7 @@ export default function ConversationPage() {
   })();
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -231,6 +230,6 @@ export default function ConversationPage() {
           />
         </IonFooter>
       )}
-    </IonPage>
+    </AppPage>
   );
 }

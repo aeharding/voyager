@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { compact } from "es-toolkit";
 import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
 import { useState } from "react";
@@ -15,6 +9,7 @@ import ListingTypeFilter from "#/features/feed/ListingType";
 import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -68,7 +63,7 @@ export default function CommunitiesResultsPage({
   };
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -92,7 +87,7 @@ export default function CommunitiesResultsPage({
       <FeedContent>
         <CommunityFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }
 

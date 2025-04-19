@@ -1,7 +1,6 @@
 import { CommentView, PostView } from "lemmy-js-client";
 import { ComponentProps, use, useCallback, useMemo } from "react";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
 import { isStubComment } from "#/features/comment/CommentHeader";
 import {
@@ -28,6 +27,7 @@ import {
   saveSuccess,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import type { BaseSlidingVote } from "../../BaseSliding";
@@ -43,7 +43,7 @@ export function VotableActionsImpl({
   const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
   const { prependComments } = use(CommentsContext);
 
-  const { activePageRef } = use(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -169,9 +169,9 @@ export function VotableActionsImpl({
 
       dispatch(toggleCommentCollapseState(item.comment.id));
 
-      if (e.target) scrollCommentIntoViewIfNeeded(e.target, activePageRef);
+      if (e.target) scrollCommentIntoViewIfNeeded(e.target, getAppScrollable());
     },
-    [dispatch, isPost, item, activePageRef],
+    [dispatch, isPost, item, getAppScrollable],
   );
 
   return (

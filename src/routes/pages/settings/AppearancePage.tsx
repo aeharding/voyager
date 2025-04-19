@@ -1,24 +1,13 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import AppearanceSettings from "#/features/settings/appearance/AppearanceSettings";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 
 export default function AppearancePage() {
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -31,6 +20,6 @@ export default function AppearancePage() {
       <AppContent scrollY color="light-bg">
         <AppearanceSettings />
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

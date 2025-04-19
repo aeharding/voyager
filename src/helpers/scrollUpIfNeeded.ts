@@ -1,26 +1,23 @@
-import { Page } from "#/features/auth/AppContext";
-
 import { isAndroid } from "./device";
 import { findCurrentPage, findIonContentScrollView } from "./ionic";
+import { AppScrollable } from "./useGetAppScrollable";
 
 export function scrollUpIfNeeded(
-  activePage: Page | null | undefined,
+  activePage: AppScrollable | null | undefined,
   index: number | undefined = undefined,
   behavior: "auto" | "smooth" = "smooth",
 ) {
-  if (!activePage?.current) return false;
+  if (!activePage) return false;
 
-  const current = activePage.current;
-
-  if ("querySelector" in current) {
-    const scroll = findIonContentScrollView(current);
+  if ("querySelector" in activePage) {
+    const scroll = findIonContentScrollView(activePage);
 
     if (scroll?.scrollTop) {
       scroll.scrollTo({ top: 0, behavior });
       return true;
     }
   } else {
-    if (current.scrollOffset) {
+    if (activePage.scrollOffset) {
       if (!index && behavior === "smooth") {
         findCurrentPage()
           ?.querySelector(".virtual-scroller")
@@ -31,7 +28,7 @@ export function scrollUpIfNeeded(
             behavior: isAndroid() ? "auto" : "smooth",
           });
       } else {
-        current.scrollToIndex(index ?? 0, {
+        activePage.scrollToIndex(index ?? 0, {
           smooth: behavior === "smooth",
         });
       }

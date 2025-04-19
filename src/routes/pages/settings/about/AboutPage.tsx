@@ -4,7 +4,6 @@ import {
   IonIcon,
   IonLabel,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -22,10 +21,10 @@ import {
 } from "ionicons/icons";
 import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
+import { AppPage } from "#/helpers/AppPage";
 import { getShareIcon, isAndroid, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { canShare, shareUrl } from "#/helpers/share";
@@ -38,8 +37,6 @@ import AppDetails from "./AppDetails";
 import compliments from "./compliments.txt?raw";
 
 export default function AboutPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
@@ -84,10 +81,8 @@ export default function AboutPage() {
     );
   })();
 
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -205,6 +200,6 @@ export default function AboutPage() {
           </IonItemInAppExternalLink>
         </IonList>
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

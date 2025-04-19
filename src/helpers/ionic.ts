@@ -88,10 +88,15 @@ export function stopIonicTapClick() {
 }
 
 export function findIonContentScrollView(page: HTMLElement) {
-  return (
-    page.querySelector(".virtual-scroller") ??
-    page
-      .querySelector("ion-content")
-      ?.shadowRoot?.querySelector(".inner-scroll")
-  );
+  const vScroll = page.querySelector(".virtual-scroller");
+
+  if (vScroll) return vScroll;
+
+  let content: HTMLElement | null = page;
+
+  // If not an ion-content, probably on a page
+  if (content.tagName !== "ION-CONTENT")
+    content = content.querySelector("ion-content");
+
+  return content?.shadowRoot?.querySelector(".inner-scroll");
 }

@@ -1,13 +1,13 @@
-import { IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
-import { createRef, useRef, useState } from "react";
+import { IonSearchbar, IonToolbar } from "@ionic/react";
+import { createRef, useState } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import EmptySearch from "#/features/search/EmptySearch";
 import SearchOptions from "#/features/search/SearchOptions";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { buildSearchPostsLink } from "#/helpers/appLinkBuilder";
+import { AppPage } from "#/helpers/AppPage";
 import { findCurrentPage } from "#/helpers/ionic";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
@@ -23,16 +23,13 @@ export const focusSearchBar = () =>
     ?.setFocus();
 
 export default function SearchPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const [search, setSearch] = useState("");
   const router = useOptimizedIonRouter();
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
   const searchBarRef = createRef<HTMLIonSearchbarElement>();
 
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <form
@@ -70,6 +67,6 @@ export default function SearchPage() {
       <AppContent scrollY color="light-bg">
         {!search ? <EmptySearch /> : <SearchOptions search={search} />}
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

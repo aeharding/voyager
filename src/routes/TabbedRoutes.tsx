@@ -1,7 +1,6 @@
 import { SplashScreen } from "@capacitor/splash-screen";
-import { IonRouterOutletCustomEvent } from "@ionic/core";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
-import { use, useEffect, useMemo, useRef } from "react";
+import { use, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
@@ -25,17 +24,11 @@ import profile from "./tabs/profile";
 import search from "./tabs/search";
 import settings from "./tabs/settings";
 
-type RouterOutletRef = IonRouterOutletCustomEvent<unknown>["target"];
-
 export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const ready = useAppSelector((state) => state.settings.ready);
   const selectedInstance = useAppSelector(
     instanceSelector ?? ((state) => state.auth.connectedInstance),
   );
-
-  const pageRef = useRef<RouterOutletRef>(null);
-
-  const pageContextValue = useMemo(() => ({ pageRef }), []);
 
   useEffect(() => {
     if (!ready) return;
@@ -46,12 +39,11 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   if (!ready) return;
 
   return (
-    <PageContextProvider value={pageContextValue}>
+    <PageContextProvider>
       {children}
       <VideoPortalProvider>
         <GalleryProvider>
           <InnerTabbedRoutes
-            ref={pageRef}
             // Rebuild routing on instance change
             key={selectedInstance ?? getDefaultServer()}
           />
@@ -61,11 +53,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   );
 }
 
-function InnerTabbedRoutes({
-  ref: pageRef,
-}: {
-  ref: React.RefObject<RouterOutletRef | null>;
-}) {
+function InnerTabbedRoutes() {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
@@ -122,7 +110,7 @@ function InnerTabbedRoutes({
 
   return (
     <IonTabs>
-      <IonRouterOutlet ref={pageRef}>
+      <IonRouterOutlet>
         <Route exact path="/">
           {defaultFeed ? (
             <Redirect

@@ -3,7 +3,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter,
@@ -16,23 +15,20 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
-import { MouseEvent, use, useRef } from "react";
+import { MouseEvent, use } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
 import BoxesRedirectBootstrapper from "#/features/inbox/BoxesRedirectBootstrapper";
 import { getInboxCounts } from "#/features/inbox/inboxSlice";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { useAppDispatch } from "#/store";
 
 export default function BoxesPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
 
   const { presentLoginIfNeeded } = use(PageContext);
-
-  useSetActivePage(pageRef);
 
   useIonViewWillEnter(() => {
     dispatch(getInboxCounts());
@@ -45,7 +41,7 @@ export default function BoxesPage() {
   return (
     <>
       <BoxesRedirectBootstrapper />
-      <IonPage ref={pageRef}>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonTitle>Boxes</IonTitle>
@@ -119,7 +115,7 @@ export default function BoxesPage() {
             </IonItem>
           </IonList>
         </AppContent>
-      </IonPage>
+      </AppPage>
     </>
   );
 }

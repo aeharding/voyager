@@ -8,13 +8,7 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import React, {
-  createContext,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 
 import { changeAccount } from "#/features/auth/authSlice";
 import BanUserModal from "#/features/moderation/ban/BanUserModal";
@@ -46,9 +40,6 @@ export interface BanUserPayload {
 }
 
 interface IPageContext {
-  // used for ion presentingElement
-  pageRef: RefObject<HTMLElement | null> | undefined;
-
   /**
    * @returns true if login dialog was presented
    */
@@ -101,7 +92,6 @@ interface IPageContext {
 }
 
 export const PageContext = createContext<IPageContext>({
-  pageRef: undefined,
   presentLoginIfNeeded: () => false,
   presentCommentEdit: async () => undefined,
   presentCommentReply: async () => undefined,
@@ -117,11 +107,9 @@ export const PageContext = createContext<IPageContext>({
   presentDatabaseErrorModal: noop,
 });
 
-interface PageContextProvider extends React.PropsWithChildren {
-  value: Pick<IPageContext, "pageRef">;
-}
+interface PageContextProvider extends React.PropsWithChildren {}
 
-export function PageContextProvider({ value, children }: PageContextProvider) {
+export function PageContextProvider({ children }: PageContextProvider) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const reportRef = useRef<ReportHandle>(undefined);
@@ -306,7 +294,6 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   return (
     <PageContext
       value={{
-        ...value,
         presentLoginIfNeeded,
         presentPrivateMessageCompose,
         presentCommentEdit,

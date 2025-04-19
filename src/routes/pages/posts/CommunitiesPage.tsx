@@ -1,12 +1,12 @@
-import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import { memo, useRef } from "react";
+import { IonButtons, IonTitle, IonToolbar } from "@ionic/react";
+import { memo } from "react";
 import { useParams } from "react-router";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import CommunitiesList from "#/features/community/list/CommunitiesList";
 import CommunitiesListRedirectBootstrapper from "#/features/community/list/CommunitiesListRedirectBootstrapper";
 import CommunitiesMoreActions from "#/features/community/list/InstanceMoreActions";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 
 interface CommunitiesPageParams {
@@ -22,14 +22,10 @@ export default function CommunitiesPage() {
 const CommunitiesPageContent = memo(function CommunitiesPageContent({
   actor,
 }: CommunitiesPageParams) {
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
     <>
       <CommunitiesListRedirectBootstrapper />
-      <IonPage ref={pageRef}>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonTitle>Communities</IonTitle>
@@ -41,7 +37,7 @@ const CommunitiesPageContent = memo(function CommunitiesPageContent({
         <FeedContent>
           <CommunitiesList actor={actor} />
         </FeedContent>
-      </IonPage>
+      </AppPage>
     </>
   );
 });

@@ -1,5 +1,4 @@
 import { IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { IonPage } from "@ionic/react";
 import { IonBackButton } from "@ionic/react";
 import { useParams } from "react-router-dom";
 
@@ -8,6 +7,7 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 
@@ -26,7 +26,7 @@ export default function BaseProfileFeedItemsPage({
   const { handle } = useParams<{ handle: string }>();
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonTitle>{label}</IonTitle>
@@ -48,6 +48,6 @@ export default function BaseProfileFeedItemsPage({
           filterKeywordsAndWebsites={false}
         />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

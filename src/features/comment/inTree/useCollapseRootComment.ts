@@ -1,7 +1,6 @@
 import { CommentView } from "lemmy-js-client";
-import { use } from "react";
 
-import { AppContext } from "#/features/auth/AppContext";
+import { useAppPageVListHandleRef } from "#/helpers/AppPage";
 import { useAppDispatch } from "#/store";
 
 import { toggleCommentCollapseState } from "../commentSlice";
@@ -11,7 +10,7 @@ export default function useCollapseRootComment(
   rootIndex: number | undefined,
 ) {
   const dispatch = useAppDispatch();
-  const { activePageRef } = use(AppContext);
+  const virtuaHandleRef = useAppPageVListHandleRef();
 
   return function collapseRootComment() {
     if (!item || !rootIndex) return;
@@ -20,8 +19,8 @@ export default function useCollapseRootComment(
 
     dispatch(toggleCommentCollapseState(rootCommentId));
 
-    const currentActivePage = activePageRef?.current?.current;
-    if (!currentActivePage || !("scrollToIndex" in currentActivePage)) return;
+    const currentActivePage = virtuaHandleRef?.current;
+    if (!currentActivePage) return;
 
     currentActivePage.scrollToIndex(rootIndex, {
       smooth: true,
