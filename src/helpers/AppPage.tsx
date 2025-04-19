@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { IonPage } from "@ionic/react";
+import { useMergedRef } from "@mantine/hooks";
 import { createContext, RefObject, use, useRef } from "react";
 import { VListHandle } from "virtua";
 
@@ -9,7 +10,7 @@ export function AppPage(props: React.ComponentProps<typeof IonPage>) {
 
   return (
     <PageRefContext value={{ pageRef, virtuaRef }}>
-      <IonPage ref={pageRef} {...props} />
+      <IonPage {...props} ref={useMergedRef(pageRef, props.ref)} />
     </PageRefContext>
   );
 }
