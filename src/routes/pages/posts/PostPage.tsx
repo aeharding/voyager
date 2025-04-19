@@ -1,5 +1,4 @@
 import {
-  IonBackButton,
   IonButtons,
   IonContent,
   IonPage,
@@ -28,6 +27,7 @@ import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
+import { AppBackButton } from "#/routes/Outlet";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -147,7 +147,7 @@ export function PostPageContent({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
+            <AppBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
             />
           </IonButtons>

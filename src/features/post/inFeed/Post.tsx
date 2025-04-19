@@ -21,9 +21,7 @@ import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
-import { getHandle } from "#/helpers/lemmy";
 import { filterEvents } from "#/helpers/longPress";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOpenPostProps } from "#/routes/Outlet";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
@@ -123,7 +121,7 @@ function Post(props: PostProps) {
           mode="ios" // Use iOS style activatable tap highlight
           className={cx(styles.item, isTouchDevice() && "ion-activatable")}
           detail={false}
-          routerLink={openPostProps.routerLink}
+          {...openPostProps}
           onClick={(e) => {
             if (preventOnClickNavigationBug(e)) return;
 

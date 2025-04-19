@@ -1,6 +1,12 @@
 import { IonRouterOutletCustomEvent } from "@ionic/core";
-import { IonRouterOutlet } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButton,
+  IonIcon,
+  IonRouterOutlet,
+} from "@ionic/react";
 import { noop } from "es-toolkit";
+import { close, closeCircle, closeOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import React, { createContext, use, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
@@ -88,7 +94,7 @@ Outlet.isRouterOutlet = true;
 const OutletContext = createContext<{
   postDetail: React.ComponentProps<typeof PostPageContent> | undefined;
   setPostDetail: (
-    postDetail: React.ComponentProps<typeof PostPageContent>,
+    postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) => void;
   twoColumnLayoutEnabled: boolean;
 }>({
@@ -137,5 +143,31 @@ function SecondColumnPostPageContent() {
 
   if (!postDetail) return null;
 
-  return <PostPageContent {...postDetail} key={postDetail.id} />;
+  return (
+    <IsSecondColumnContext value={true}>
+      <PostPageContent {...postDetail} key={postDetail.id} />
+    </IsSecondColumnContext>
+  );
+}
+
+const IsSecondColumnContext = createContext<boolean>(false);
+
+function useIsSecondColumn() {
+  return use(IsSecondColumnContext);
+}
+
+export function AppBackButton(
+  props: React.ComponentProps<typeof IonBackButton>,
+) {
+  const isSecondColumn = useIsSecondColumn();
+  const { setPostDetail } = use(OutletContext);
+
+  if (isSecondColumn)
+    return (
+      <IonButton onClick={() => setPostDetail(undefined)}>
+        <IonIcon icon={close} /> Close
+      </IonButton>
+    );
+
+  return <IonBackButton {...props} />;
 }
