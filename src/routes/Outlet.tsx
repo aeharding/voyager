@@ -1,8 +1,13 @@
 import { IonRouterOutlet } from "@ionic/react";
+import { noop } from "es-toolkit";
+import { PostView } from "lemmy-js-client";
+import React, { createContext, use, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
 import { isInstalled } from "#/helpers/device";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { getDefaultServer } from "#/services/app";
 import { useAppSelector } from "#/store";
 
@@ -32,41 +37,98 @@ export default function Outlet() {
   })();
 
   return (
-    <div className={styles.routerOutletContents}>
-      <IonRouterOutlet className={styles.routerOutletLeftPane}>
-        <Route exact path="/">
-          {defaultFeed ? (
-            <Redirect
-              to={`/posts/${
-                selectedInstance ?? getDefaultServer()
-              }${redirectRoute}`}
-              push={false}
-            />
-          ) : (
-            ""
-          )}
-        </Route>
+    <OutletProvider>
+      <div className={styles.routerOutletContents}>
+        <IonRouterOutlet className={styles.routerOutletLeftPane}>
+          <Route exact path="/">
+            {defaultFeed ? (
+              <Redirect
+                to={`/posts/${
+                  selectedInstance ?? getDefaultServer()
+                }${redirectRoute}`}
+                push={false}
+              />
+            ) : (
+              ""
+            )}
+          </Route>
 
-        {...buildPostsRoutes({
-          defaultFeed,
-          redirectRoute,
-          selectedInstance,
-        })}
+          {...buildPostsRoutes({
+            defaultFeed,
+            redirectRoute,
+            selectedInstance,
+          })}
 
-        {...inbox}
+          {...inbox}
 
-        {...profile}
+          {...profile}
 
-        {...search}
+          {...search}
 
-        {...settings}
+          {...settings}
 
-        {...general}
-      </IonRouterOutlet>
+          {...general}
+        </IonRouterOutlet>
 
-      <PostPageContent id={"16213348"} community={"memes@lemmy.world"} />
-    </div>
+        <SecondColumnPostPageContent />
+      </div>
+    </OutletProvider>
   );
 }
 
 Outlet.isRouterOutlet = true;
+
+const OutletContext = createContext<{
+  postDetail: React.ComponentProps<typeof PostPageContent> | undefined;
+  setPostDetail: (
+    postDetail: React.ComponentProps<typeof PostPageContent>,
+  ) => void;
+  twoColumnLayoutEnabled: boolean;
+}>({
+  postDetail: undefined,
+  setPostDetail: noop,
+  twoColumnLayoutEnabled: false,
+});
+
+function OutletProvider({ children }: { children: React.ReactNode }) {
+  const [postDetail, setPostDetail] = useState<
+    React.ComponentProps<typeof PostPageContent> | undefined
+  >(undefined);
+
+  return (
+    <OutletContext
+      value={{ postDetail, setPostDetail, twoColumnLayoutEnabled: true }}
+    >
+      {children}
+    </OutletContext>
+  );
+}
+
+export function useOpenPostProps(postView: PostView) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const { setPostDetail, twoColumnLayoutEnabled } = use(OutletContext);
+
+  return {
+    routerLink: buildGeneralBrowseLink(
+      `/c/${getHandle(postView.community)}/comments/${postView.post.id}`,
+    ),
+    onClick: (e: React.MouseEvent<unknown>) => {
+      if (!twoColumnLayoutEnabled) return;
+
+      e.preventDefault();
+
+      setPostDetail({
+        id: `${postView.post.id}`,
+        community: getHandle(postView.community),
+      });
+    },
+  };
+}
+
+function SecondColumnPostPageContent() {
+  const { postDetail } = use(OutletContext);
+
+  if (!postDetail) return null;
+
+  return <PostPageContent {...postDetail} key={postDetail.id} />;
+}
