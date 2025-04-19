@@ -16,6 +16,8 @@
 
   font-size: 0.8em;
 
+  background: var(--lightroom-bg);
+
   color: var(--ion-color-text-aside);
 
   /* Special class applied by CrosspostContainer when contents is read */
