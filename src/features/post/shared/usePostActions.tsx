@@ -20,7 +20,7 @@ import { PostView } from "lemmy-js-client";
 import { use, useCallback } from "react";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { InFeedContext } from "#/features/feed/Feed";
 import {
@@ -70,7 +70,7 @@ export default function usePostActions(post: PostView) {
     presentSelectText,
     presentShareAsImage,
     presentCreateCrosspost,
-  } = use(PageContext);
+  } = use(SharedDialogContext);
 
   const presentPostModActions = usePostModActions(post);
 

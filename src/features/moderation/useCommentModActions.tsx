@@ -10,7 +10,7 @@ import {
 import { CommentView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useState } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { localUserSelector } from "#/features/auth/siteSlice";
 import {
   modDistinguishComment,
@@ -39,7 +39,7 @@ export default function useCommentModActions(commentView: CommentView) {
   const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
-  const { presentBanUser } = use(PageContext);
+  const { presentBanUser } = use(SharedDialogContext);
 
   const [loading, setLoading] = useState(false);
 

@@ -2,7 +2,7 @@ import { useIonActionSheet } from "@ionic/react";
 import { Community, SubscribedType } from "lemmy-js-client";
 import { use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import {
   isAdminSelector,
   localUserSelector,
@@ -56,8 +56,7 @@ export default function useCommunityActions(
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
 
-  const { presentLoginIfNeeded } = use(PageContext);
-  const { presentPostEditor } = use(PageContext);
+  const { presentLoginIfNeeded, presentPostEditor } = use(SharedDialogContext);
 
   const site = useAppSelector((state) => state.site.response);
   const isAdmin = useAppSelector(isAdminSelector);

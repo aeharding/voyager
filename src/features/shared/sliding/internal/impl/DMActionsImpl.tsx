@@ -1,7 +1,7 @@
 import { asyncNoop, noop } from "es-toolkit";
 import { ComponentProps, use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { markRead, syncMessages } from "#/features/inbox/inboxSlice";
 import { useSharedInboxActions } from "#/features/shared/sliding/internal/shared";
 import store, { useAppDispatch } from "#/store";
@@ -14,7 +14,7 @@ export default function DMActionsImpl({
   ...rest
 }: ComponentProps<typeof BaseSlidingDM>) {
   const dispatch = useAppDispatch();
-  const { presentPrivateMessageCompose } = use(PageContext);
+  const { presentPrivateMessageCompose } = use(SharedDialogContext);
 
   const shared = useSharedInboxActions(item);
 

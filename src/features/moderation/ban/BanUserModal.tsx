@@ -1,4 +1,4 @@
-import { BanUserPayload } from "#/features/auth/PageContext";
+import { BanUserPayload } from "#/features/auth/SharedDialogContext";
 import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
 
 import BanUser from "./BanUser";

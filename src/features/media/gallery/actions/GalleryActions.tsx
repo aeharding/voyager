@@ -13,7 +13,7 @@ import {
 import { PostView } from "lemmy-js-client";
 import { use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { airplay, pip } from "#/features/icons";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { savePost } from "#/features/post/postSlice";
@@ -53,7 +53,7 @@ export default function GalleryActions({
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
