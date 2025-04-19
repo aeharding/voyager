@@ -9,7 +9,7 @@ import { Person } from "lemmy-js-client";
 import { use } from "react";
 
 import { usernameSelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { getHandle } from "#/helpers/lemmy";
 import { getBlockUserErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -35,11 +35,10 @@ export interface PresentUserActionsOptions {
 export default function usePresentUserActions() {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded, presentUserTag } = use(SharedDialogContext);
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentUserTag } = use(PageContext);
   const userTagsEnabled = useAppSelector(
     (state) => state.settings.tags.enabled,
   );

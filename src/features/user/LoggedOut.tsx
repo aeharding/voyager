@@ -2,7 +2,7 @@ import { IonButton, IonText } from "@ionic/react";
 import { use } from "react";
 
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import AppContent from "#/features/shared/AppContent";
 import { useAppSelector } from "#/store";
 
@@ -17,7 +17,8 @@ export default function LoggedOut() {
   );
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
 
-  const { presentLoginIfNeeded, presentAccountSwitcher } = use(PageContext);
+  const { presentLoginIfNeeded, presentAccountSwitcher } =
+    use(SharedDialogContext);
 
   return (
     <AppContent className={styles.content} color="light-bg">

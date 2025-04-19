@@ -5,7 +5,7 @@ import { PostView } from "lemmy-js-client";
 import { use, useEffect } from "react";
 import { useTransition } from "react-transition-state";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import {
@@ -31,7 +31,7 @@ export function VoteButton({ type, post }: VoteButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);

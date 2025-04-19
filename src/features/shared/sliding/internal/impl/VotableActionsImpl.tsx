@@ -1,7 +1,7 @@
 import { CommentView, PostView } from "lemmy-js-client";
 import { ComponentProps, use, useCallback, useMemo } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isStubComment } from "#/features/comment/CommentHeader";
 import {
   saveComment,
@@ -40,7 +40,8 @@ export function VotableActionsImpl({
   rootIndex,
   ...rest
 }: ComponentProps<typeof BaseSlidingVote>) {
-  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } =
+    use(SharedDialogContext);
   const { prependComments } = use(CommentsContext);
 
   const getAppScrollable = useGetAppScrollable();

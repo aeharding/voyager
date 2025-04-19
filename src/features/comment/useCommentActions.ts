@@ -21,7 +21,7 @@ import {
 import { use, useCallback, useMemo } from "react";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import {
   getCanModerate,
@@ -82,7 +82,7 @@ export default function useCommentActions({
     presentReport,
     presentSelectText,
     presentShareAsImage,
-  } = use(PageContext);
+  } = use(SharedDialogContext);
 
   const { loading, present: presentCommentModActions } =
     useCommentModActions(commentView);

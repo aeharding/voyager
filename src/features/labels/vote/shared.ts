@@ -3,7 +3,7 @@ import { CommentView } from "lemmy-js-client";
 import { PostView } from "lemmy-js-client";
 import { use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { voteOnComment } from "#/features/comment/commentSlice";
 import { voteOnPost } from "#/features/post/postSlice";
@@ -24,7 +24,7 @@ export function useVote(item: PostView | CommentView) {
   const dispatch = useAppDispatch();
   const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
   const vibrate = useHapticFeedback();
 
   const storeVote = useAppSelector((state) =>

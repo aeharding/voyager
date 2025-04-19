@@ -1,12 +1,12 @@
 import Dexie from "dexie";
 import { use, useEffect } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { setDatabaseError } from "#/features/settings/settingsSlice";
 import { useAppDispatch } from "#/store";
 
 export default function DatabaseErrorListener() {
-  const { presentDatabaseErrorModal } = use(PageContext);
+  const { presentDatabaseErrorModal } = use(SharedDialogContext);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

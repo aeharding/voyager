@@ -6,7 +6,7 @@ import {
   accountsListEmptySelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { getProfileTabLabel } from "#/features/settings/general/other/ProfileTabLabel";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
@@ -17,7 +17,8 @@ import styles from "./ProfileTabButton.module.css";
 
 function ProfileTabButton(props: TabButtonProps) {
   const router = useOptimizedIonRouter();
-  const { presentAccountSwitcher, presentLoginIfNeeded } = use(PageContext);
+  const { presentAccountSwitcher, presentLoginIfNeeded } =
+    use(SharedDialogContext);
 
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
 

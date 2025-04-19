@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
-import { PageContextProvider } from "#/features/auth/PageContext";
+import { SharedDialogContextProvider } from "#/features/auth/SharedDialogContext";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { isInstalled } from "#/helpers/device";
@@ -39,7 +39,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   if (!ready) return;
 
   return (
-    <PageContextProvider>
+    <SharedDialogContextProvider>
       {children}
       <VideoPortalProvider>
         <GalleryProvider>
@@ -49,7 +49,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
           />
         </GalleryProvider>
       </VideoPortalProvider>
-    </PageContextProvider>
+    </SharedDialogContextProvider>
   );
 }
 

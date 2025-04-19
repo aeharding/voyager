@@ -13,7 +13,7 @@ import {
   loggedInSelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import AppHeader from "#/features/shared/AppHeader";
 import DocumentTitle from "#/features/shared/DocumentTitle";
 import AsyncProfile from "#/features/user/AsyncProfile";
@@ -31,7 +31,7 @@ export default function ProfilePage() {
   );
   const loggedIn = useAppSelector(loggedInSelector);
 
-  const { presentAccountSwitcher } = use(PageContext);
+  const { presentAccountSwitcher } = use(SharedDialogContext);
 
   const title = handle ?? connectedInstance;
 

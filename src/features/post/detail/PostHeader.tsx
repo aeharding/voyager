@@ -3,7 +3,7 @@ import { CommentView, PostView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useRef } from "react";
 import AnimateHeight from "react-animate-height";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
 import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
@@ -60,7 +60,8 @@ export default function PostHeader({
     (state) => !!state.post.postCollapsedById[post.post.id],
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } =
+    use(SharedDialogContext);
   const getAppScrollable = useGetAppScrollable();
 
   const crosspostUrl = useCrosspostUrl(post);

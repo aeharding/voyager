@@ -17,7 +17,7 @@ import {
 } from "ionicons/icons";
 import { MouseEvent, use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import BoxesRedirectBootstrapper from "#/features/inbox/BoxesRedirectBootstrapper";
 import { getInboxCounts } from "#/features/inbox/inboxSlice";
 import AppContent from "#/features/shared/AppContent";
@@ -28,7 +28,7 @@ import { useAppDispatch } from "#/store";
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
 
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
 
   useIonViewWillEnter(() => {
     dispatch(getInboxCounts());
