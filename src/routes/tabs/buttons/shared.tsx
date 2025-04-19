@@ -3,8 +3,8 @@ import { IonTabButton } from "@ionic/react";
 import { useCallback, useMemo } from "react";
 import { LongPressReactEvents, useLongPress } from "use-long-press";
 
+import { findCurrentPage } from "#/helpers/ionic";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
-import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
@@ -48,7 +48,6 @@ export default function SharedTabButton({
 }: TabButtonProps) {
   const vibrate = useHapticFeedback();
   const router = useOptimizedIonRouter();
-  const getAppScrollable = useGetAppScrollable();
 
   const defaultHref = `/${rest.tab}`;
 
@@ -63,7 +62,7 @@ export default function SharedTabButton({
         return;
       }
 
-      if (scrollUpIfNeeded(getAppScrollable())) return;
+      if (scrollUpIfNeeded(findCurrentPage())) return;
 
       if (customBackAction) {
         customBackAction();
@@ -81,7 +80,6 @@ export default function SharedTabButton({
       defaultHref,
       customBackAction,
       onBeforeBackAction,
-      getAppScrollable,
     ],
   );
 
