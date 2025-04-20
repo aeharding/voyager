@@ -277,6 +277,32 @@ jobs:
       - name: Changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@a57c1b7c90e56d9c8b26a6ed5d1eed159369e117 # v5.0.0
+        with:
+          configurationJson: |
+            {
+              "template": "#{{CHANGELOG}}",
+              "categories": [
+                {
+                  "title": "## 🚀 Features",
+                  "labels": ["feat"]
+                },
+                {
+                  "title": "## 🐛 Fixes",
+                  "labels": ["fix"]
+                },
+                {
+                  "title": "## 📝 Other Changes",
+                  "labels": ["build", "chore", "ci", "docs", "perf", "refactor", "revert", "style", "test"]
+                }
+              ],
+              "label_extractor": [
+                {
+                  "pattern": "^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
+                  "on_property": "title",
+                  "target": "$1"
+                }
+              ]
+            }
 
       - name: Release
         uses: softprops/action-gh-release@01570a1f39cb168c169c802c3bceb9e93fb10974 # v2.1.0
