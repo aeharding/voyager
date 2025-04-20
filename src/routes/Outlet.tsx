@@ -8,12 +8,14 @@ import { noop } from "es-toolkit";
 import { close } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import React, { createContext, use, useState } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, useLocation } from "react-router-dom";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
+import { cx } from "#/helpers/css";
 import { isInstalled } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { getDefaultServer } from "#/services/app";
 import { useAppSelector } from "#/store";
 
@@ -25,6 +27,7 @@ import buildPostsRoutes from "./tabs/posts";
 import profile from "./tabs/profile";
 import search from "./tabs/search";
 import settings from "./tabs/settings";
+import TwoColumnEmpty from "./twoColumn/TwoColumnEmpty";
 
 import styles from "./TabbedRoutes.module.css";
 
@@ -90,20 +93,42 @@ const OutletContext = createContext<{
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) => void;
   twoColumnLayoutEnabled: boolean;
+  _postDetailDictionary: Record<
+    string,
+    React.ComponentProps<typeof PostPageContent> | undefined
+  >;
 }>({
   postDetail: undefined,
   setPostDetail: noop,
   twoColumnLayoutEnabled: false,
+  _postDetailDictionary: {},
 });
 
 function OutletProvider({ children }: { children: React.ReactNode }) {
-  const [postDetail, setPostDetail] = useState<
-    React.ComponentProps<typeof PostPageContent> | undefined
-  >(undefined);
+  const [postDetailDictionary, setPostDetailDictionary] = useState<
+    Record<string, React.ComponentProps<typeof PostPageContent> | undefined>
+  >({});
+  const tab = useLocation().pathname.split("/")[1];
+
+  function setPostDetail(
+    postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
+  ) {
+    if (!tab) throw new Error("No tab");
+
+    setPostDetailDictionary({
+      ...postDetailDictionary,
+      [tab]: postDetail,
+    });
+  }
 
   return (
     <OutletContext
-      value={{ postDetail, setPostDetail, twoColumnLayoutEnabled: true }}
+      value={{
+        postDetail: tab ? postDetailDictionary[tab] : undefined,
+        setPostDetail,
+        twoColumnLayoutEnabled: true,
+        _postDetailDictionary: postDetailDictionary,
+      }}
     >
       {children}
     </OutletContext>
@@ -113,6 +138,7 @@ function OutletProvider({ children }: { children: React.ReactNode }) {
 export function useOpenPostProps(postView: PostView) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { setPostDetail, twoColumnLayoutEnabled } = use(OutletContext);
+  const router = useOptimizedIonRouter();
 
   return {
     routerLink: buildGeneralBrowseLink(
@@ -123,6 +149,10 @@ export function useOpenPostProps(postView: PostView) {
 
       e.preventDefault();
 
+      const existingPath = router.getRouteInfo()?.pathname;
+
+      if (!existingPath) throw new Error("No existing path");
+
       setPostDetail({
         id: `${postView.post.id}`,
         community: getHandle(postView.community),
@@ -132,13 +162,21 @@ export function useOpenPostProps(postView: PostView) {
 }
 
 function SecondColumnPostPageContent() {
-  const { postDetail } = use(OutletContext);
-
-  if (!postDetail) return null;
+  const { postDetail, _postDetailDictionary } = use(OutletContext);
 
   return (
     <IsSecondColumnContext value={true}>
-      <PostPageContent {...postDetail} key={postDetail.id} />
+      {Object.entries(_postDetailDictionary).map(
+        ([tab, currPostDetail]) =>
+          currPostDetail && (
+            <PostPageContent
+              {...currPostDetail}
+              key={`${tab}${currPostDetail.id}`}
+              className={cx(currPostDetail !== postDetail && "ion-hide")}
+            />
+          ),
+      )}
+      {!postDetail && <TwoColumnEmpty />}
     </IsSecondColumnContext>
   );
 }
@@ -150,7 +188,7 @@ function useIsSecondColumn() {
 }
 
 export function AppBackButton(
-  props: React.ComponentProps<typeof IonBackButton>,
+  props: Omit<React.ComponentProps<typeof IonBackButton>, "ref">,
 ) {
   const isSecondColumn = useIsSecondColumn();
   const { setPostDetail } = use(OutletContext);

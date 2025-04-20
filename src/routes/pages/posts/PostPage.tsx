@@ -55,7 +55,8 @@ export function PostPageContent({
   commentPath,
   community,
   threadCommentId,
-}: PostPageParams) {
+  className,
+}: PostPageParams & { className?: string }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const post = useAppSelector((state) => state.post.postById[id]);
   const client = useClient();
@@ -137,7 +138,7 @@ export function PostPageContent({
   })();
 
   return (
-    <AppPage>
+    <AppPage className={className}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
