@@ -20,7 +20,7 @@ import settings from "./tabs/settings";
 import SecondColumnContent from "./twoColumn/SecondColumnContent";
 import useIsViewportTwoColumnCapable from "./twoColumn/useIsViewportTwoColumnCapable";
 
-import styles from "./TabbedRoutes.module.css";
+import styles from "./Outlet.module.css";
 
 /**
  * Ionic will always rerender this component.

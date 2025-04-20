@@ -16,8 +16,6 @@ import { usingActorRedirect } from "./common/ActorRedirect";
 import Outlet from "./Outlet";
 import TabBar from "./TabBar";
 
-import styles from "./TabbedRoutes.module.css";
-
 export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const ready = useAppSelector((state) => state.settings.ready);
   const selectedInstance = useAppSelector(
@@ -90,7 +88,7 @@ function InnerTabbedRoutes() {
   }, [router, tabRef]);
 
   return (
-    <IonTabs className={styles.tabs}>
+    <IonTabs>
       <Outlet />
 
       <TabBar slot="bottom" />
