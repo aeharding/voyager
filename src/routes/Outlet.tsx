@@ -1,11 +1,11 @@
 import { IonRouterOutlet } from "@ionic/react";
-import { useViewportSize } from "@mantine/hooks";
 import { noop } from "es-toolkit";
-import React, { createContext, useEffect, useRef, useState } from "react";
-import { Redirect, Route, useLocation } from "react-router-dom";
+import React, { createContext, use, useState } from "react";
+import { Redirect, Route } from "react-router-dom";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
 import { isInstalled } from "#/helpers/device";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { getDefaultServer } from "#/services/app";
 import { useAppSelector } from "#/store";
 
@@ -18,10 +18,29 @@ import profile from "./tabs/profile";
 import search from "./tabs/search";
 import settings from "./tabs/settings";
 import SecondColumnContent from "./twoColumn/SecondColumnContent";
+import useIsViewportTwoColumnCapable from "./twoColumn/useIsViewportTwoColumnCapable";
 
 import styles from "./TabbedRoutes.module.css";
 
+/**
+ * Ionic will always rerender this component.
+ * So make it a dummy component for react-compiler to optimize
+ */
 export default function Outlet() {
+  return <AppOutlet />;
+}
+
+Outlet.isRouterOutlet = true;
+
+function AppOutlet() {
+  return (
+    <OutletProvider>
+      <AppRoutes />
+    </OutletProvider>
+  );
+}
+
+function AppRoutes() {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
@@ -35,77 +54,71 @@ export default function Outlet() {
     return getPathForFeed(defaultFeed);
   })();
 
+  const { twoColumnLayoutEnabled } = use(OutletContext);
+
   return (
-    <OutletProvider>
-      <div className={styles.routerOutletContents}>
-        <IonRouterOutlet className={styles.routerOutletLeftPane}>
-          <Route exact path="/">
-            {defaultFeed ? (
-              <Redirect
-                to={`/posts/${
-                  selectedInstance ?? getDefaultServer()
-                }${redirectRoute}`}
-                push={false}
-              />
-            ) : (
-              ""
-            )}
-          </Route>
+    <div className={styles.routerOutletContents}>
+      <IonRouterOutlet>
+        <Route exact path="/">
+          {defaultFeed ? (
+            <Redirect
+              to={`/posts/${
+                selectedInstance ?? getDefaultServer()
+              }${redirectRoute}`}
+              push={false}
+            />
+          ) : (
+            ""
+          )}
+        </Route>
 
-          {...buildPostsRoutes({
-            defaultFeed,
-            redirectRoute,
-            selectedInstance,
-          })}
+        {...buildPostsRoutes({
+          defaultFeed,
+          redirectRoute,
+          selectedInstance,
+        })}
 
-          {...inbox}
+        {...inbox}
 
-          {...profile}
+        {...profile}
 
-          {...search}
+        {...search}
 
-          {...settings}
+        {...settings}
 
-          {...general}
-        </IonRouterOutlet>
+        {...general}
+      </IonRouterOutlet>
 
-        <SecondColumnContent />
-      </div>
-    </OutletProvider>
+      {twoColumnLayoutEnabled && <SecondColumnContent />}
+    </div>
   );
 }
-
-Outlet.isRouterOutlet = true;
 
 function OutletProvider({ children }: { children: React.ReactNode }) {
   const [postDetailDictionary, setPostDetailDictionary] = useState<
     Record<string, React.ComponentProps<typeof PostPageContent> | undefined>
   >({});
-  const tab = useLocation().pathname.split("/")[1];
-
-  const tabRef = useRef(tab);
-
-  useEffect(() => {
-    tabRef.current = tab;
-  }, [tab]);
+  const router = useOptimizedIonRouter();
 
   function setPostDetail(
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) {
-    if (!tabRef.current) throw new Error("No tab");
+    const tab = router.getRouteInfo()?.pathname.split("/")[1];
+
+    if (!tab) throw new Error("No tab");
 
     setPostDetailDictionary({
       ...postDetailDictionary,
-      [tabRef.current]: postDetail,
+      [tab]: postDetail,
     });
   }
 
-  const twoColumnLayoutEnabled = useViewportSize().width > 768;
+  // TODO: Make this check setting too
+  const twoColumnLayoutEnabled = useIsViewportTwoColumnCapable();
 
   return (
     <OutletContext
       value={{
-        postDetail: tab ? postDetailDictionary[tab] : undefined,
         setPostDetail,
         twoColumnLayoutEnabled,
         _postDetailDictionary: postDetailDictionary,
@@ -117,7 +130,6 @@ function OutletProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const OutletContext = createContext<{
-  postDetail: React.ComponentProps<typeof PostPageContent> | undefined;
   setPostDetail: (
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) => void;
@@ -127,7 +139,6 @@ export const OutletContext = createContext<{
     React.ComponentProps<typeof PostPageContent> | undefined
   >;
 }>({
-  postDetail: undefined,
   setPostDetail: noop,
   twoColumnLayoutEnabled: false,
   _postDetailDictionary: {},

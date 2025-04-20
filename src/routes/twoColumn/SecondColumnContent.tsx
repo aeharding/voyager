@@ -1,4 +1,5 @@
 import { use } from "react";
+import { useLocation } from "react-router-dom";
 
 import { cx } from "#/helpers/css";
 import { PostPageContent } from "#/routes/pages/posts/PostPage";
@@ -8,10 +9,13 @@ import TwoColumnEmpty from "./TwoColumnEmpty";
 import { IsSecondColumnContext } from "./useIsSecondColumn";
 
 export default function SecondColumnContent() {
-  const { twoColumnLayoutEnabled, postDetail, _postDetailDictionary } =
-    use(OutletContext);
+  const { twoColumnLayoutEnabled, _postDetailDictionary } = use(OutletContext);
+
+  const tab = useLocation().pathname.split("/")[1];
 
   if (!twoColumnLayoutEnabled) return null;
+
+  const postDetail = tab ? _postDetailDictionary[tab] : undefined;
 
   return (
     <IsSecondColumnContext value={true}>

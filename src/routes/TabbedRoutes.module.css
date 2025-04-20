@@ -2,10 +2,6 @@
   display: flex;
 }
 
-.routerOutletLeftPane {
-  /* width: 30%; */
-}
-
 .routerOutletContents {
   display: flex;
   width: 100%;
@@ -18,5 +14,10 @@
 
   > *:first-child {
     max-width: 520px;
+  }
+
+  > *:last-child {
+    /* When only one child (one column mode), override first-child's max-width */
+    max-width: initial;
   }
 }
