@@ -25,8 +25,8 @@ import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
-import { AppBackButton } from "#/routes/Outlet";
 import FeedContent from "#/routes/pages/shared/FeedContent";
+import { PostBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 interface PostPageParams {
@@ -142,7 +142,7 @@ export function PostPageContent({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <AppBackButton
+            <PostBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
             />
           </IonButtons>

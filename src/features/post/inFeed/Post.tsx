@@ -22,7 +22,7 @@ import {
   stopIonicTapClick,
 } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
-import { useOpenPostProps } from "#/routes/Outlet";
+import { useOpenPostProps } from "#/routes/twoColumn/useOpenPostProps";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";

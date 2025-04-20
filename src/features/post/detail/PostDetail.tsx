@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import Comments, { CommentsHandle } from "#/features/comment/inTree/Comments";
 import JumpFab from "#/features/comment/inTree/JumpFab";
+import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../postSlice";
@@ -29,6 +30,7 @@ export default function PostDetail({
     (state) => state.settings.general.comments,
   );
   const [ionViewEntered, setIonViewEntered] = useState(false);
+  const isSecondColumn = useIsSecondColumn();
   const commentsRef = useRef<CommentsHandle>(undefined);
 
   const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(0);
@@ -37,10 +39,14 @@ export default function PostDetail({
   // has fully transitioned in.
   // This keeps the page transition as performant as possible
   useEffect(() => {
-    if (!post || !ionViewEntered) return;
+    if (!post) return;
+
+    // Wait until the page has fully transitioned in
+    // (only applies to single column mode)
+    if (!isSecondColumn && !ionViewEntered) return;
 
     dispatch(setPostRead(post.post.id));
-  }, [post, ionViewEntered, dispatch]);
+  }, [post, ionViewEntered, dispatch, isSecondColumn]);
 
   useIonViewDidEnter(() => {
     setIonViewEntered(true);
