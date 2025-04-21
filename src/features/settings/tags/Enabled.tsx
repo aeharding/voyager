@@ -1,4 +1,4 @@
-import { IonItem, IonText, IonToggle } from "@ionic/react";
+import { IonItem, IonToggle } from "@ionic/react";
 
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setTagsEnabled } from "../settingsSlice";
@@ -13,7 +13,7 @@ export default function Enabled() {
         checked={enabled}
         onIonChange={(e) => dispatch(setTagsEnabled(e.detail.checked))}
       >
-        Enable User Tags <IonText color="medium">(experimental)</IonText>
+        Enable User Tags
       </IonToggle>
     </IonItem>
   );
