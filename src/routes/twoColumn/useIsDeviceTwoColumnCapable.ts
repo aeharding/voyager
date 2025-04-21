@@ -1,5 +1,5 @@
-import { ua } from "#/helpers/device";
+import { isPlatform } from "@ionic/core";
 
 export default function useIsDeviceTwoColumnCapable() {
-  return ua.getDevice().type !== "mobile";
+  return isPlatform("desktop") || isPlatform("tablet") || isPlatform("phablet");
 }
