@@ -392,6 +392,7 @@ export interface GlobalSettingValueTypes {
   tap_to_collapse: TapToCollapseType;
   thumbnailinator_enabled: boolean;
   touch_friendly_links: boolean;
+  two_column_layout: boolean;
   upvote_on_save: boolean;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
@@ -459,6 +460,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "show_collapsed_comment",
   "show_comment_images",
   "show_community_icons",
+  "two_column_layout",
   "show_hidden_in_communities",
   "show_hide_read_button",
   "show_jump_button",

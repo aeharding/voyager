@@ -9,7 +9,7 @@ import { OutletContext } from "../Outlet";
 
 export function useOpenPostProps(postView: PostView) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { setPostDetail, twoColumnLayoutEnabled } = use(OutletContext);
+  const { setPostDetail, isTwoColumnLayout } = use(OutletContext);
   const router = useOptimizedIonRouter();
 
   return {
@@ -17,7 +17,7 @@ export function useOpenPostProps(postView: PostView) {
       `/c/${getHandle(postView.community)}/comments/${postView.post.id}`,
     ),
     onClick: (e: React.MouseEvent<unknown>) => {
-      if (!twoColumnLayoutEnabled) return;
+      if (!isTwoColumnLayout) return;
 
       e.preventDefault();
 

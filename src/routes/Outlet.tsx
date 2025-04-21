@@ -1,6 +1,6 @@
 import { IonRouterOutlet } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, { createContext, use, useState } from "react";
+import React, { createContext, use, useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
@@ -18,7 +18,7 @@ import profile from "./tabs/profile";
 import search from "./tabs/search";
 import settings from "./tabs/settings";
 import SecondColumnContent from "./twoColumn/SecondColumnContent";
-import useIsViewportTwoColumnCapable from "./twoColumn/useIsViewportTwoColumnCapable";
+import useIsTwoColumnLayout from "./twoColumn/useIsTwoColumnLayout";
 
 import styles from "./Outlet.module.css";
 
@@ -54,7 +54,7 @@ function AppRoutes() {
     return getPathForFeed(defaultFeed);
   })();
 
-  const { twoColumnLayoutEnabled } = use(OutletContext);
+  const { isTwoColumnLayout: twoColumnLayoutEnabled } = use(OutletContext);
 
   return (
     <div className={styles.routerOutletContents}>
@@ -113,14 +113,19 @@ function OutletProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  // TODO: Make this check setting too
-  const twoColumnLayoutEnabled = useIsViewportTwoColumnCapable();
+  const isTwoColumnLayout = useIsTwoColumnLayout();
+
+  useEffect(() => {
+    if (isTwoColumnLayout) return;
+
+    setPostDetailDictionary({});
+  }, [isTwoColumnLayout]);
 
   return (
     <OutletContext
       value={{
         setPostDetail,
-        twoColumnLayoutEnabled,
+        isTwoColumnLayout,
         _postDetailDictionary: postDetailDictionary,
       }}
     >
@@ -133,13 +138,13 @@ export const OutletContext = createContext<{
   setPostDetail: (
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) => void;
-  twoColumnLayoutEnabled: boolean;
+  isTwoColumnLayout: boolean;
   _postDetailDictionary: Record<
     string,
     React.ComponentProps<typeof PostPageContent> | undefined
   >;
 }>({
   setPostDetail: noop,
-  twoColumnLayoutEnabled: false,
+  isTwoColumnLayout: false,
   _postDetailDictionary: {},
 });

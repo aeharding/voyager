@@ -9,11 +9,11 @@ import TwoColumnEmpty from "./TwoColumnEmpty";
 import { IsSecondColumnContext } from "./useIsSecondColumn";
 
 export default function SecondColumnContent() {
-  const { twoColumnLayoutEnabled, _postDetailDictionary } = use(OutletContext);
+  const { isTwoColumnLayout, _postDetailDictionary } = use(OutletContext);
 
   const tab = useLocation().pathname.split("/")[1];
 
-  if (!twoColumnLayoutEnabled) return null;
+  if (!isTwoColumnLayout) return null;
 
   const postDetail = tab ? _postDetailDictionary[tab] : undefined;
 
