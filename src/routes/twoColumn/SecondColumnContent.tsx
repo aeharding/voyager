@@ -9,26 +9,28 @@ import TwoColumnEmpty from "./TwoColumnEmpty";
 import { IsSecondColumnContext } from "./useIsSecondColumn";
 
 export default function SecondColumnContent() {
-  const { isTwoColumnLayout, _postDetailDictionary } = use(OutletContext);
+  const { postDetailDictionary, isTwoColumnLayout } = use(OutletContext);
 
   const tab = useLocation().pathname.split("/")[1];
 
-  if (!isTwoColumnLayout) return null;
+  if (!isTwoColumnLayout) return;
 
-  const postDetail = tab ? _postDetailDictionary[tab] : undefined;
+  const postDetail =
+    tab && postDetailDictionary ? postDetailDictionary[tab] : undefined;
 
   return (
     <IsSecondColumnContext value={true}>
-      {Object.entries(_postDetailDictionary).map(
-        ([tab, currPostDetail]) =>
-          currPostDetail && (
-            <PostPageContent
-              {...currPostDetail}
-              key={`${tab}${currPostDetail.id}`}
-              className={cx(currPostDetail !== postDetail && "ion-hide")}
-            />
-          ),
-      )}
+      {postDetailDictionary &&
+        Object.entries(postDetailDictionary).map(
+          ([tab, currPostDetail]) =>
+            currPostDetail && (
+              <PostPageContent
+                {...currPostDetail}
+                key={`${tab}${currPostDetail.id}`}
+                className={cx(currPostDetail !== postDetail && "ion-hide")}
+              />
+            ),
+        )}
       {!postDetail && <TwoColumnEmpty />}
     </IsSecondColumnContext>
   );

@@ -94,11 +94,15 @@ function AppRoutes() {
   );
 }
 
+type PostDetailDictionary =
+  | Record<string, React.ComponentProps<typeof PostPageContent> | undefined>
+  | undefined;
+
 function OutletProvider({ children }: { children: React.ReactNode }) {
-  const [postDetailDictionary, setPostDetailDictionary] = useState<
-    Record<string, React.ComponentProps<typeof PostPageContent> | undefined>
-  >({});
   const router = useOptimizedIonRouter();
+
+  const [postDetailDictionary, setPostDetailDictionary] =
+    useState<PostDetailDictionary>(undefined);
 
   function setPostDetail(
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
@@ -118,7 +122,7 @@ function OutletProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isTwoColumnLayout) return;
 
-    setPostDetailDictionary({});
+    setPostDetailDictionary(undefined);
   }, [isTwoColumnLayout]);
 
   return (
@@ -126,7 +130,7 @@ function OutletProvider({ children }: { children: React.ReactNode }) {
       value={{
         setPostDetail,
         isTwoColumnLayout,
-        _postDetailDictionary: postDetailDictionary,
+        postDetailDictionary,
       }}
     >
       {children}
@@ -139,12 +143,9 @@ export const OutletContext = createContext<{
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) => void;
   isTwoColumnLayout: boolean;
-  _postDetailDictionary: Record<
-    string,
-    React.ComponentProps<typeof PostPageContent> | undefined
-  >;
+  postDetailDictionary: PostDetailDictionary;
 }>({
   setPostDetail: noop,
   isTwoColumnLayout: false,
-  _postDetailDictionary: {},
+  postDetailDictionary: undefined,
 });
