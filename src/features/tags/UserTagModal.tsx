@@ -85,7 +85,7 @@ function UserTagModalContents({
                 setIsOpen(false);
               }}
             >
-              Dismiss
+              Close
             </IonButton>
           </IonButtons>
         </IonToolbar>
