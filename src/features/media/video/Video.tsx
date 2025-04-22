@@ -11,6 +11,8 @@ export interface VideoProps extends Omit<PlayerProps, "ref"> {
   /**
    * A unique identifier to track a specific video
    * as it is portaled around the app
+   *
+   * Generated from `buildMediaId`
    */
   portalWithMediaId?: string;
 }

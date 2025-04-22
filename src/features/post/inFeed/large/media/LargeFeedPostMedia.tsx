@@ -3,7 +3,9 @@ import { ComponentProps } from "react";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
 import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";
+import { buildMediaId } from "#/features/media/video/VideoPortalProvider";
 import { cx } from "#/helpers/css";
+import { getApId } from "#/helpers/lemmyCompat";
 
 import usePostSrc from "../../usePostSrc";
 import LargeFeedMedia from "./LargeFeedMedia";
@@ -28,7 +30,7 @@ export default function LargeFeedPostMedia(
             autoPlay={!props.blur}
             disableInlineInteraction={props.blur}
             className={cx(styles.lightbox, props.className)}
-            portalWithMediaId={`${props.post.post.id}`}
+            portalWithMediaId={buildMediaId(getApId(props.post.post))}
           />
         );
     }
@@ -43,7 +45,7 @@ export default function LargeFeedPostMedia(
         disableInlineInteraction={props.blur}
         alt={props.post.post.alt_text}
         className={cx(styles.lightbox, props.className)}
-        portalWithMediaId={`${props.post.post.id}`}
+        portalWithMediaId={buildMediaId(getApId(props.post.post))}
       />
     );
 }

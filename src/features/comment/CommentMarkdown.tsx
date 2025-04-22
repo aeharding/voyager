@@ -1,3 +1,4 @@
+import { buildMediaId } from "#/features/media/video/VideoPortalProvider";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import Markdown, { MarkdownProps } from "#/features/shared/markdown/Markdown";
 import MarkdownImg from "#/features/shared/markdown/MarkdownImg";
@@ -7,14 +8,14 @@ interface CommentMarkdownProps extends Omit<MarkdownProps, "components"> {
   id: string;
 }
 
-export default function CommentMarkdown(props: CommentMarkdownProps) {
+export default function CommentMarkdown(mdProps: CommentMarkdownProps) {
   const { showCommentImages } = useAppSelector(
     (state) => state.settings.general.comments,
   );
 
   return (
     <Markdown
-      {...props}
+      {...mdProps}
       components={{
         img: (props) =>
           !showCommentImages ? (
@@ -31,6 +32,10 @@ export default function CommentMarkdown(props: CommentMarkdownProps) {
             <MarkdownImg
               small
               {...props}
+              portalWithMediaId={buildMediaId(
+                mdProps.id,
+                props.node?.position?.start?.offset,
+              )}
               onClick={(e) => e.stopPropagation()}
             />
           ),
