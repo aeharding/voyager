@@ -55,6 +55,7 @@ export default function InlineMedia({
         className={cx(mediaPlaceholderStyles.media, mediaClassName)}
         style={buildStyle()}
         ref={mediaRef as React.Ref<HTMLImageElement>}
+        portalWithMediaId={props.portalWithMediaId}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}

@@ -35,6 +35,7 @@ interface IGalleryContext {
     img: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
     src: string,
     post?: PostView,
+    mediaId?: string,
     animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
   ) => void;
   close: () => void;
@@ -70,9 +71,8 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const isVideo = !!videoContainer;
 
   const [src, setSrc] = useState("");
-  const portalNode = useVideoPortalNode(
-    isVideo && post ? `${post.post.id}` : undefined,
-  );
+  const [mediaId, setMediaId] = useState<string | undefined>(undefined);
+  const portalNode = useVideoPortalNode(mediaId);
 
   const videoRef = useRef<HTMLVideoElement>(undefined);
 
@@ -181,12 +181,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       thumbEl: ThumbEl,
       src: string,
       post?: PostView,
+      mediaId?: string,
       animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
     ) => {
       if (lightboxRef.current) return;
 
       thumbElRef.current = thumbEl;
       setPost(post);
+      setMediaId(mediaId);
 
       if (thumbEl instanceof HTMLImageElement) {
         const ratio = thumbEl.width / thumbEl.naturalWidth;
@@ -526,6 +528,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       instance.on("close", () => {
         setSrc("");
+        setMediaId(undefined);
         setVideoContainer(null);
       });
 

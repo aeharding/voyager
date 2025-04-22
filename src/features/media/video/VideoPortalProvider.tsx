@@ -200,3 +200,14 @@ export function useVideoPortalNode(
   )
     return potentialVideoRef.portalNode;
 }
+
+/**
+ * Build a stable id for a media element, potentially within markdown
+ *
+ * (Can't use the src, because video with duplicate src in comment is possible)
+ */
+export function buildMediaId(apId: string, mdPosition?: number) {
+  if (mdPosition == null) return `${apId}`;
+
+  return `${mdPosition}-${apId}`;
+}

@@ -30,7 +30,6 @@ export default function GalleryMedia({
   animationType,
   onClick: _onClick,
   controls,
-  portalWithMediaId,
   volume,
   progress,
   disableInlineInteraction,
@@ -64,7 +63,13 @@ export default function GalleryMedia({
 
     e.preventDefault();
 
-    open(e.currentTarget, props.src, post, animationType);
+    open(
+      e.currentTarget,
+      props.src,
+      post,
+      props.portalWithMediaId,
+      animationType,
+    );
 
     // marking read happens after the gallery has finished animating
     // so that the post doesn't rerender before it's fully hidden
@@ -82,7 +87,6 @@ export default function GalleryMedia({
         {...props}
         src={props.src!}
         controls={controls}
-        portalWithMediaId={portalWithMediaId}
         disableInlineInteraction={disableInlineInteraction}
         volume={volume}
         progress={progress}
