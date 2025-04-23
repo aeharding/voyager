@@ -50,7 +50,7 @@ export interface FeedProps<I>
   extends Partial<
     Pick<EndPostProps, "sortDuration" | "renderCustomEmptyContent">
   > {
-  itemsRef?: React.MutableRefObject<I[] | undefined>;
+  itemsRef?: React.RefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
   /**
