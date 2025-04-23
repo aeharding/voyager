@@ -28,7 +28,7 @@ export interface TabButtonProps {
 
   children?: React.ReactNode;
 
-  longPressedRef: React.MutableRefObject<boolean>;
+  longPressedRef: React.RefObject<boolean>;
 
   onLongPressOverride?: () => void;
   onLongPressExtraAction?: () => void;

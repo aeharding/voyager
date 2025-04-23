@@ -1,15 +1,13 @@
 import { useIonAlert } from "@ionic/react";
 import { GetSiteResponse } from "lemmy-js-client";
-import { MutableRefObject } from "react";
+import { RefObject } from "react";
 
 import { requestJoinSiteData } from "#/features/auth/login/join/joinSlice";
 import Legal from "#/features/auth/login/join/Legal";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
 
-export default function useStartJoinFlow(
-  ref: MutableRefObject<HTMLElement | null>,
-) {
+export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
   const presentToast = useAppToast();
   const [presentAlert] = useIonAlert();
   const dispatch = useAppDispatch();

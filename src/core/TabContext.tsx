@@ -1,13 +1,8 @@
-import React, {
-  createContext,
-  MutableRefObject,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, RefObject, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
 
 interface ITabContext {
-  tabRef: MutableRefObject<string> | undefined;
+  tabRef: RefObject<string> | undefined;
 }
 
 export const TabContext = createContext<ITabContext>({
