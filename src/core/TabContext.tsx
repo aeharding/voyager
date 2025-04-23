@@ -1,4 +1,11 @@
-import React, { createContext, RefObject, useEffect, useRef } from "react";
+import React, {
+  createContext,
+  RefObject,
+  use,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLocation } from "react-router";
 
 interface ITabContext {
@@ -38,4 +45,18 @@ function TabContextProviderInternals({
   }, [tab]);
 
   return <TabContext value={{ tabRef }}>{children}</TabContext>;
+}
+
+/**
+ * Cache tab name on mount. Do not update on navigation changes
+ * (assumes component can't be moved between tabs)
+ *
+ * This is an optimization
+ */
+export function useTabName() {
+  const { tabRef } = use(TabContext);
+
+  const [tabName] = useState(() => tabRef?.current ?? "");
+
+  return tabName;
 }

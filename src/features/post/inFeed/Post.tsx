@@ -22,6 +22,7 @@ import {
   stopIonicTapClick,
 } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
+import useIsPostSelected from "#/routes/twoColumn/useIsPostSelected";
 import { useOpenPostProps } from "#/routes/twoColumn/useOpenPostProps";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
@@ -105,6 +106,7 @@ function Post(props: PostProps) {
   })();
 
   const openPostProps = useOpenPostProps(props.post);
+  const isActivated = useIsPostSelected(props.post.post.id);
 
   return (
     <AnimateHeight
@@ -119,7 +121,11 @@ function Post(props: PostProps) {
       >
         <IonItem
           mode="ios" // Use iOS style activatable tap highlight
-          className={cx(styles.item, isTouchDevice() && "ion-activatable")}
+          className={cx(
+            styles.item,
+            isTouchDevice() && "ion-activatable",
+            isActivated && "ion-activated",
+          )}
           detail={false}
           {...openPostProps}
           onClick={(e) => {
