@@ -46,6 +46,7 @@ import {
   OProfileLabelType,
   OShowSubscribedIcon,
   OTapToCollapseType,
+  OTwoColumnLayout,
   OVoteDisplayMode,
   PostAppearanceType,
   PostBlurNsfwType,
@@ -53,6 +54,7 @@ import {
   ProfileLabelType,
   ShowSubscribedIcon,
   TapToCollapseType,
+  TwoColumnLayout,
   VoteDisplayMode,
   VotesThemeType,
 } from "#/services/db";
@@ -84,7 +86,7 @@ export interface SettingsState {
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
       profileLabel: ProfileLabelType;
-      twoColumnLayout: boolean;
+      twoColumnLayout: TwoColumnLayout;
     };
     posts: {
       blurNsfw: PostBlurNsfwType;
@@ -200,7 +202,7 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
-      twoColumnLayout: false,
+      twoColumnLayout: OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     large: {
@@ -567,7 +569,7 @@ export const settingsSlice = createSlice({
       state.general.comments.touchFriendlyLinks = action.payload;
       db.setSetting("touch_friendly_links", action.payload);
     },
-    setTwoColumnLayout(state, action: PayloadAction<boolean>) {
+    setTwoColumnLayout(state, action: PayloadAction<TwoColumnLayout>) {
       state.appearance.general.twoColumnLayout = action.payload;
       db.setSetting("two_column_layout", action.payload);
     },

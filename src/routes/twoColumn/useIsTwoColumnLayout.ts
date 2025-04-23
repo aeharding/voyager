@@ -1,5 +1,7 @@
+import { OTwoColumnLayout } from "#/services/db";
 import { useAppSelector } from "#/store";
 
+import useIsLandscape from "./useIsLandscape";
 import useIsViewportTwoColumnCapable from "./useIsViewportTwoColumnCapable";
 
 export default function useIsTwoColumnLayout() {
@@ -7,6 +9,16 @@ export default function useIsTwoColumnLayout() {
     (state) => state.settings.appearance.general.twoColumnLayout,
   );
   const isViewportTwoColumnCapable = useIsViewportTwoColumnCapable();
+  const isLandscape = useIsLandscape();
 
-  return setting && isViewportTwoColumnCapable;
+  if (!isViewportTwoColumnCapable) return false;
+
+  switch (setting) {
+    case OTwoColumnLayout.On:
+      return true;
+    case OTwoColumnLayout.LandscapeOnly:
+      return isLandscape;
+    case OTwoColumnLayout.Off:
+      return false;
+  }
 }

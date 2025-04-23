@@ -1,4 +1,5 @@
 import { Capacitor } from "@capacitor/core";
+import { isPlatform } from "@ionic/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "es-toolkit";
 import {
@@ -37,7 +38,9 @@ export const isInstallable =
   ua.getDevice().type === "mobile" || ua.getDevice().type === "tablet";
 
 export function isAppleDeviceInstalledToHomescreen(): boolean {
-  return ua.getDevice().vendor === "Apple" && isInstalled();
+  return (
+    ua.getDevice().vendor === "Apple" && isInstalled() && !isPlatform("desktop")
+  );
 }
 
 export function isAppleDeviceInstallable(): boolean {

@@ -1,5 +1,5 @@
-import { useViewportSize } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function useIsViewportTwoColumnCapable() {
-  return useViewportSize().width > 768;
+  return useMediaQuery("(min-width: 768px)");
 }
