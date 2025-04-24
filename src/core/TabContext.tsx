@@ -55,7 +55,7 @@ function TabContextProviderInternals({
  * so disable compiler
  */
 export function useTabName() {
-  // eslint-disable-next-line react-compiler/react-compiler
+  // eslint-disable-next-line react-hooks/react-compiler
   "use no memo";
 
   const { tabRef } = use(TabContext);
