@@ -1,5 +1,4 @@
 import {
-  IonBackButton,
   IonButtons,
   IonContent,
   IonRefresher,
@@ -27,6 +26,7 @@ import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
+import { PostBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 interface PostPageParams {
@@ -50,12 +50,13 @@ export default function PostPage() {
   );
 }
 
-function PostPageContent({
+export function PostPageContent({
   id,
   commentPath,
   community,
   threadCommentId,
-}: PostPageParams) {
+  className,
+}: PostPageParams & { className?: string }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const post = useAppSelector((state) => state.post.postById[id]);
   const client = useClient();
@@ -137,11 +138,11 @@ function PostPageContent({
   })();
 
   return (
-    <AppPage>
+    <AppPage className={className}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
+            <PostBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
             />
           </IonButtons>

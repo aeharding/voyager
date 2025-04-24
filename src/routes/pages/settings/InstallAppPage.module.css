@@ -2,6 +2,8 @@
   composes: ion-padding from global;
 
   line-height: 1.5;
+
+  container-type: size;
 }
 
 .badgeContainer {
@@ -15,12 +17,12 @@
     display: flex;
   }
 
-  @media (max-width: 360px) {
+  @container (max-width: 360px) {
     grid-template-columns: 1fr;
     gap: 20px 0;
   }
 
-  @media (min-width: 800px) {
+  @container (min-width: 650px) {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }

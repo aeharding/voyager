@@ -17,21 +17,28 @@ ion-tab-button {
   opacity: 1 !important;
 }
 
-ion-router-outlet > .ion-page > ion-header {
-  /* Header doesn't support dynamic font size */
-  ion-button,
-  ion-back-button,
-  ion-title {
-    font-size: 17px;
-  }
+ion-router-outlet {
+  /* First column (main content) */
+  > .ion-page,
+  /* Second column */
+  + .ion-page {
+    > ion-header {
+      /* Header doesn't support dynamic font size */
+      ion-button,
+      ion-back-button,
+      ion-title {
+        font-size: 17px;
+      }
 
-  /* Ionic's default font size for icons in header is a bit too large */
-  ion-button.in-toolbar ion-icon {
-    font-size: 1.35em !important;
-  }
+      /* Ionic's default font size for icons in header is a bit too large */
+      ion-button.in-toolbar ion-icon {
+        font-size: 1.35em !important;
+      }
 
-  ion-back-button.md::part(text) {
-    display: none;
+      ion-back-button.md::part(text) {
+        display: none;
+      }
+    }
   }
 }
 
@@ -385,5 +392,17 @@ html:not(.theme-has-custom-background):not(.ion-palette-dark) {
     --ion-color-contrast-rgb: var(--ion-color-light-bg-contrast-rgb);
     --ion-color-shade: var(--ion-color-light-bg-shade);
     --ion-color-tint: var(--ion-color-light-bg-tint);
+  }
+}
+
+/* The same as ion-activated, but cloned here so Ionic won't remove the class on tap */
+.app-activated {
+  &::part(native) {
+    color: var(--color-activated);
+  }
+
+  &::part(native)::after {
+    background: var(--background-activated);
+    opacity: var(--background-activated-opacity);
   }
 }

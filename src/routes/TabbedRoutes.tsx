@@ -1,28 +1,20 @@
 import { SplashScreen } from "@capacitor/splash-screen";
-import { IonRouterOutlet, IonTabs } from "@ionic/react";
+import { IonTabs } from "@ionic/react";
 import { use, useEffect } from "react";
-import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
 import { SharedDialogContextProvider } from "#/features/auth/SharedDialogContext";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
-import { isInstalled } from "#/helpers/device";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { getDefaultServer } from "#/services/app";
 import { DefaultFeedType, ODefaultFeedType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
 import { usingActorRedirect } from "./common/ActorRedirect";
-import Route from "./common/Route";
+import Outlet from "./Outlet";
 import TabBar from "./TabBar";
-import general from "./tabs/general";
-import inbox from "./tabs/inbox";
-import buildPostsRoutes from "./tabs/posts";
-import profile from "./tabs/profile";
-import search from "./tabs/search";
-import settings from "./tabs/settings";
 
 export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const ready = useAppSelector((state) => state.settings.ready);
@@ -54,11 +46,6 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
 }
 
 function InnerTabbedRoutes() {
-  const defaultFeed = useAppSelector(
-    (state) => state.settings.general.defaultFeed,
-  );
-  const selectedInstance = useAppSelector(instanceSelector);
-
   const router = useOptimizedIonRouter();
   const { tabRef } = use(TabContext);
 
@@ -100,46 +87,9 @@ function InnerTabbedRoutes() {
     push();
   }, [router, tabRef]);
 
-  const redirectRoute = (() => {
-    if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
-
-    if (!defaultFeed) return "";
-
-    return getPathForFeed(defaultFeed);
-  })();
-
   return (
     <IonTabs>
-      <IonRouterOutlet>
-        <Route exact path="/">
-          {defaultFeed ? (
-            <Redirect
-              to={`/posts/${
-                selectedInstance ?? getDefaultServer()
-              }${redirectRoute}`}
-              push={false}
-            />
-          ) : (
-            ""
-          )}
-        </Route>
-
-        {...buildPostsRoutes({
-          defaultFeed,
-          redirectRoute,
-          selectedInstance,
-        })}
-
-        {...inbox}
-
-        {...profile}
-
-        {...search}
-
-        {...settings}
-
-        {...general}
-      </IonRouterOutlet>
+      <Outlet />
 
       <TabBar slot="bottom" />
     </IonTabs>
