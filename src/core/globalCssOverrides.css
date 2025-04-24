@@ -394,3 +394,15 @@ html:not(.theme-has-custom-background):not(.ion-palette-dark) {
     --ion-color-tint: var(--ion-color-light-bg-tint);
   }
 }
+
+/* The same as ion-activated, but cloned here so Ionic won't remove the class on tap */
+.app-activated {
+  &::part(native) {
+    color: var(--color-activated);
+  }
+
+  &::part(native)::after {
+    background: var(--background-activated);
+    opacity: var(--background-activated-opacity);
+  }
+}

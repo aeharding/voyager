@@ -124,7 +124,7 @@ function Post(props: PostProps) {
           className={cx(
             styles.item,
             isTouchDevice() && "ion-activatable",
-            isActivated && "ion-activated",
+            isActivated && "app-activated",
           )}
           detail={false}
           {...openPostProps}
