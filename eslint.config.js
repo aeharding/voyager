@@ -4,7 +4,6 @@ import eslint from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
 import reactPlugin from "eslint-plugin-react";
-import pluginReactCompiler from "eslint-plugin-react-compiler";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import vitestPlugin from "eslint-plugin-vitest";
 import tseslint from "typescript-eslint";
@@ -18,12 +17,6 @@ export default tseslint.config(
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
   reactHooksPlugin.configs.recommended,
-  {
-    ...pluginReactCompiler.configs.recommended,
-    rules: {
-      "react-compiler/react-compiler": ["error", compilerOptions],
-    },
-  },
   {
     plugins: {
       perfectionist: perfectionistPlugin,
@@ -137,6 +130,8 @@ export default tseslint.config(
         "error",
         { namedComponents: "function-declaration", unnamedComponents: [] },
       ],
+
+      "react-hooks/react-compiler": ["error", compilerOptions],
     },
   },
   {

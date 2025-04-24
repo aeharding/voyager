@@ -305,12 +305,9 @@ importers:
       eslint-plugin-react:
         specifier: ^7.37.5
         version: 7.37.5(eslint@9.25.0(jiti@2.4.2))
-      eslint-plugin-react-compiler:
-        specifier: 0.0.0-experimental-af1b7da-20250417
-        version: 0.0.0-experimental-af1b7da-20250417(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-react-hooks:
-        specifier: 0.0.0-experimental-bc6184dd-20250417
-        version: 0.0.0-experimental-bc6184dd-20250417(eslint@9.25.0(jiti@2.4.2))
+        specifier: 0.0.0-experimental-72135096-20250421
+        version: 0.0.0-experimental-72135096-20250421(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-vitest:
         specifier: ^0.5.4
         version: 0.5.4(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(happy-dom@15.11.6)(jiti@2.4.2)(jsdom@26.1.0)(less@4.2.0)(lightningcss@1.28.1)(sass@1.81.0)(stylus@0.62.0)(terser@5.36.0))
@@ -511,13 +508,6 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
-
-  '@babel/plugin-proposal-private-methods@7.18.6':
-    resolution: {integrity: sha512-nutsvktDItsNn4rpGItSNV2sz1XwS+nfU0Rg8aCx3W3NOKVzdMjJRu0O5OkgDp3ZGICSTbgRpxZoWsxoKRvbeA==}
-    engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-private-property-in-object@7.21.0-placeholder-for-preset-env.2':
     resolution: {integrity: sha512-SOSkfJDddaM7mak6cPEpswyTRnuRltl429hMraQEglW+OkovnCzsiszTmsrlY//qLFjCpQDFRvjdm2wA5pPm9w==}
@@ -3201,14 +3191,8 @@ packages:
     peerDependencies:
       eslint: '>=8.45.0'
 
-  eslint-plugin-react-compiler@0.0.0-experimental-af1b7da-20250417:
-    resolution: {integrity: sha512-fCxgbOumVHvqwkpZ/K59RhNxBqoPezEV6GwrfFBHd2CUzeS7HK+IqE4HVS1MBGamAeZq7HFkNUrHj0cs6h8Acw==}
-    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
-    peerDependencies:
-      eslint: '>=7'
-
-  eslint-plugin-react-hooks@0.0.0-experimental-bc6184dd-20250417:
-    resolution: {integrity: sha512-jMFmq7RbNDAPkx7zPBu+m9a+vOkfDQjCjsxnUpDn4AowTLLLU5297F7UeGTtmy0dVJxPPAs5uUIU5KVTqMKlEA==}
+  eslint-plugin-react-hooks@0.0.0-experimental-72135096-20250421:
+    resolution: {integrity: sha512-wI834fnun4LhahfwQLigkd+BBaxsPpUoXuXdCKG9ZKqd0b9Flnb6dvWTygmgINexP09NCoqIo8mVLmKNiRG0Mw==}
     engines: {node: '>=18'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -6874,14 +6858,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/plugin-proposal-private-methods@7.18.6(@babel/core@7.26.10)':
-    dependencies:
-      '@babel/core': 7.26.10
-      '@babel/helper-create-class-features-plugin': 7.27.0(@babel/core@7.26.10)
-      '@babel/helper-plugin-utils': 7.26.5
-    transitivePeerDependencies:
-      - supports-color
-
   '@babel/plugin-proposal-private-property-in-object@7.21.0-placeholder-for-preset-env.2(@babel/core@7.26.10)':
     dependencies:
       '@babel/core': 7.26.10
@@ -9895,19 +9871,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-react-compiler@0.0.0-experimental-af1b7da-20250417(eslint@9.25.0(jiti@2.4.2)):
-    dependencies:
-      '@babel/core': 7.26.10
-      '@babel/parser': 7.27.0
-      '@babel/plugin-proposal-private-methods': 7.18.6(@babel/core@7.26.10)
-      eslint: 9.25.0(jiti@2.4.2)
-      hermes-parser: 0.25.1
-      zod: 3.24.3
-      zod-validation-error: 3.4.0(zod@3.24.3)
-    transitivePeerDependencies:
-      - supports-color
-
-  eslint-plugin-react-hooks@0.0.0-experimental-bc6184dd-20250417(eslint@9.25.0(jiti@2.4.2)):
+  eslint-plugin-react-hooks@0.0.0-experimental-72135096-20250421(eslint@9.25.0(jiti@2.4.2)):
     dependencies:
       '@babel/core': 7.26.10
       '@babel/parser': 7.27.0
