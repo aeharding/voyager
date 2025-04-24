@@ -22,7 +22,7 @@
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
     "upgrade:packageManager": "corepack use pnpm@latest",
-    "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental",
+    "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental",
     "release": "./scripts/prerelease.sh"
   },
   "imports": {
@@ -145,8 +145,7 @@
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-perfectionist": "^4.11.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-compiler": "0.0.0-experimental-af1b7da-20250417",
-    "eslint-plugin-react-hooks": "0.0.0-experimental-bc6184dd-20250417",
+    "eslint-plugin-react-hooks": "0.0.0-experimental-72135096-20250421",
     "eslint-plugin-vitest": "^0.5.4",
     "jsdom": "^26.1.0",
     "mdast-util-lemmy-spoiler": "^2.0.0",
