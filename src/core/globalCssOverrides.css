@@ -225,6 +225,12 @@ ion-action-sheet ion-icon {
   overflow-x: hidden !important;
 }
 
+/* This is a hack to fix the issue with the second column on iPad portrait mode,
+   where changes to the scroll view abruptly stops the scroll for some reason??? */
+html.ios ion-router-outlet + .ion-page {
+  overflow: initial !important;
+}
+
 .ios {
   .ion-content-scroll-host::before,
   .ion-content-scroll-host::after {

@@ -28,7 +28,6 @@ import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
 import { IndexedVirtuaItem } from "#/helpers/virtua";
-import { postDetailPageHasVirtualScrollEnabled } from "#/routes/pages/posts/PostPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -55,6 +54,8 @@ interface CommentsProps {
   bottomPadding?: number;
 
   ref: React.RefObject<CommentsHandle | undefined>;
+
+  virtualEnabled?: boolean;
 }
 
 export default function Comments({
@@ -65,6 +66,7 @@ export default function Comments({
   bottomPadding,
   threadCommentId,
   ref,
+  virtualEnabled,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
@@ -82,11 +84,6 @@ export default function Comments({
 
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
-
-  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
-    commentPath,
-    threadCommentId,
-  );
 
   const preservePositionFromBottomInScrollView =
     usePreservePositionFromBottomInScrollView(
