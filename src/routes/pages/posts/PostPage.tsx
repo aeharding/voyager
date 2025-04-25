@@ -121,6 +121,7 @@ export function PostPageContent({
           sort={sort}
           commentPath={commentPath}
           threadCommentId={threadCommentId}
+          virtualEnabled={virtualEnabled}
         />
       </>
     );
@@ -159,7 +160,7 @@ export function PostPageContent({
   );
 }
 
-export function postDetailPageHasVirtualScrollEnabled(
+function postDetailPageHasVirtualScrollEnabled(
   commentPath: string | undefined,
   threadCommentId: string | undefined,
 ): boolean {

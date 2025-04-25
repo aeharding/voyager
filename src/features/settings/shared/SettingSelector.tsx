@@ -13,7 +13,7 @@ import { Dispatchable, useAppDispatch } from "#/store";
 import styles from "./SettingSelector.module.css";
 
 export interface SettingSelectorProps<T, O extends Record<string, T>> {
-  title: string;
+  title: React.ReactNode;
   openTitle?: string;
   selected: T;
   setSelected: Dispatchable<T>;
@@ -87,7 +87,7 @@ export default function SettingSelector<
 
           dispatch(setSelected(e.detail.data));
         }}
-        header={openTitle ?? title}
+        header={openTitle ?? (typeof title === "string" ? title : undefined)}
         buttons={buttons}
       />
     </IonItem>

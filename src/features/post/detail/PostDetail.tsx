@@ -17,6 +17,7 @@ interface PostDetailProps {
 
   commentPath: string | undefined;
   threadCommentId: string | undefined;
+  virtualEnabled?: boolean;
 }
 
 export default function PostDetail({
@@ -24,6 +25,7 @@ export default function PostDetail({
   sort,
   commentPath,
   threadCommentId,
+  virtualEnabled,
 }: PostDetailProps) {
   const dispatch = useAppDispatch();
   const { showJumpButton, jumpButtonPosition } = useAppSelector(
@@ -91,6 +93,7 @@ export default function PostDetail({
         threadCommentId={threadCommentId}
         sort={sort}
         bottomPadding={bottomPadding}
+        virtualEnabled={virtualEnabled}
       />
       {commentPath && <ViewAllComments onHeight={onHeight} />}
       {!commentPath && showJumpButton && <JumpFab />}
