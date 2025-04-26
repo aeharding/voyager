@@ -5,10 +5,13 @@
 
 # export MARKETING_VERSION=1.0.0
 
+export BUILD_FOSS_ONLY=true
+
 corepack enable
 pnpm install
 
 pushd ios/App
+pod init
 pod install
 popd
 

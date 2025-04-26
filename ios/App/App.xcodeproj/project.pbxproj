@@ -14,6 +14,8 @@
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		59EA2CFCD573239D16569824 /* Pods_VoyagerActionExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C227E66FD6D1CDB6928F1F84 /* Pods_VoyagerActionExtension.framework */; };
+		94B955192119095351642252 /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB3E4E1D51A1DAC9708B48F4 /* Pods_App.framework */; };
 		E71849C82B9FA18C00F6C005 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E71849C72B9FA18C00F6C005 /* UniformTypeIdentifiers.framework */; };
 		E71849CD2B9FA18C00F6C005 /* ActionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71849CC2B9FA18C00F6C005 /* ActionRequestHandler.swift */; };
 		E71849CF2B9FA18C00F6C005 /* Action.js in Resources */ = {isa = PBXBuildFile; fileRef = E71849CE2B9FA18C00F6C005 /* Action.js */; };
@@ -34,6 +36,7 @@
 		E75D25712A7C369900C4AD87 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75D256D2A7C369800C4AD87 /* PostView.swift */; };
 		E75D25722A7C369900C4AD87 /* GetPostsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75D256E2A7C369800C4AD87 /* GetPostsResponse.swift */; };
 		E7B2B4FA2B2511CC0050006F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
+		EB9DF5AB48FC30223B8EEC9F /* Pods_VoyagerWatch_Watch_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1263A1805DC275A03977BE /* Pods_VoyagerWatch_Watch_App.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +83,7 @@
 
 /* Begin PBXFileReference section */
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		32BF5CFFB546E924B93BB792 /* Pods-VoyagerWatch Watch App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VoyagerWatch Watch App.debug.xcconfig"; path = "Target Support Files/Pods-VoyagerWatch Watch App/Pods-VoyagerWatch Watch App.debug.xcconfig"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +92,13 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		7FE63541DBD84AB77F70A90F /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
+		8EF148062FEA9F504598BA63 /* Pods-VoyagerActionExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VoyagerActionExtension.release.xcconfig"; path = "Target Support Files/Pods-VoyagerActionExtension/Pods-VoyagerActionExtension.release.xcconfig"; sourceTree = "<group>"; };
+		8FF18B9EBAF8B122DBD208FB /* Pods-VoyagerWatch Watch App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VoyagerWatch Watch App.release.xcconfig"; path = "Target Support Files/Pods-VoyagerWatch Watch App/Pods-VoyagerWatch Watch App.release.xcconfig"; sourceTree = "<group>"; };
+		C227E66FD6D1CDB6928F1F84 /* Pods_VoyagerActionExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VoyagerActionExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCC45F3AB3673954FFD56654 /* Pods-VoyagerActionExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VoyagerActionExtension.debug.xcconfig"; path = "Target Support Files/Pods-VoyagerActionExtension/Pods-VoyagerActionExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		DE1263A1805DC275A03977BE /* Pods_VoyagerWatch_Watch_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VoyagerWatch_Watch_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E427539DAF3A30F53EC2F645 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
 		E71849C62B9FA18C00F6C005 /* VoyagerActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = VoyagerActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		E71849C72B9FA18C00F6C005 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		E71849CC2B9FA18C00F6C005 /* ActionRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRequestHandler.swift; sourceTree = "<group>"; };
@@ -108,6 +119,7 @@
 		E75D256C2A7C369800C4AD87 /* SavePost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavePost.swift; sourceTree = "<group>"; };
 		E75D256D2A7C369800C4AD87 /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		E75D256E2A7C369800C4AD87 /* GetPostsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPostsResponse.swift; sourceTree = "<group>"; };
+		FB3E4E1D51A1DAC9708B48F4 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +128,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D22ABE92AF431CB00220026 /* CapApp-SPM in Frameworks */,
+				94B955192119095351642252 /* Pods_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +137,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E71849C82B9FA18C00F6C005 /* UniformTypeIdentifiers.framework in Frameworks */,
+				59EA2CFCD573239D16569824 /* Pods_VoyagerActionExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB9DF5AB48FC30223B8EEC9F /* Pods_VoyagerWatch_Watch_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +160,8 @@
 				E71849C92B9FA18C00F6C005 /* VoyagerActionExtension */,
 				504EC3051FED79650016851F /* Products */,
 				E7520EC02D8BAB5E0002A3A9 /* Recovered References */,
+				81CFFA87EC396ADBF39875EF /* Pods */,
+				CC2EC26ECB8FB96EB4D3AB47 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -171,6 +188,29 @@
 				50B271D01FEDC1A000F3C39B /* public */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		81CFFA87EC396ADBF39875EF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7FE63541DBD84AB77F70A90F /* Pods-App.debug.xcconfig */,
+				E427539DAF3A30F53EC2F645 /* Pods-App.release.xcconfig */,
+				CCC45F3AB3673954FFD56654 /* Pods-VoyagerActionExtension.debug.xcconfig */,
+				8EF148062FEA9F504598BA63 /* Pods-VoyagerActionExtension.release.xcconfig */,
+				32BF5CFFB546E924B93BB792 /* Pods-VoyagerWatch Watch App.debug.xcconfig */,
+				8FF18B9EBAF8B122DBD208FB /* Pods-VoyagerWatch Watch App.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		CC2EC26ECB8FB96EB4D3AB47 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FB3E4E1D51A1DAC9708B48F4 /* Pods_App.framework */,
+				C227E66FD6D1CDB6928F1F84 /* Pods_VoyagerActionExtension.framework */,
+				DE1263A1805DC275A03977BE /* Pods_VoyagerWatch_Watch_App.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E71849C92B9FA18C00F6C005 /* VoyagerActionExtension */ = {
@@ -235,6 +275,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 504EC3161FED79650016851F /* Build configuration list for PBXNativeTarget "App" */;
 			buildPhases = (
+				EA819F16A621D8E17FF87E6B /* [CP] Check Pods Manifest.lock */,
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
@@ -259,6 +300,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E71849D72B9FA18C00F6C005 /* Build configuration list for PBXNativeTarget "VoyagerActionExtension" */;
 			buildPhases = (
+				5BCAF543C7C1CA0F7651D9E2 /* [CP] Check Pods Manifest.lock */,
 				E71849C22B9FA18C00F6C005 /* Sources */,
 				E71849C32B9FA18C00F6C005 /* Frameworks */,
 				E71849C42B9FA18C00F6C005 /* Resources */,
@@ -276,6 +318,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E75D25572A7C351F00C4AD87 /* Build configuration list for PBXNativeTarget "VoyagerWatch Watch App" */;
 			buildPhases = (
+				BC705B8441964202D8CFD223 /* [CP] Check Pods Manifest.lock */,
 				E75D25422A7C351E00C4AD87 /* Sources */,
 				E75D25432A7C351E00C4AD87 /* Frameworks */,
 				E75D25442A7C351E00C4AD87 /* Resources */,
@@ -301,15 +344,12 @@
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
-						ProvisioningStyle = Manual;
 					};
 					E71849C52B9FA18C00F6C005 = {
 						CreatedOnToolsVersion = 15.3;
-						ProvisioningStyle = Manual;
 					};
 					E75D25452A7C351E00C4AD87 = {
 						CreatedOnToolsVersion = 14.3.1;
-						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -369,6 +409,75 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5BCAF543C7C1CA0F7651D9E2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VoyagerActionExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BC705B8441964202D8CFD223 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VoyagerWatch Watch App-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EA819F16A621D8E17FF87E6B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-App-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		504EC3001FED79650016851F /* Sources */ = {
@@ -471,7 +580,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				MARKETING_VERSION = 1;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -491,6 +599,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -531,7 +640,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				MARKETING_VERSION = 1;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -545,6 +653,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -556,14 +665,14 @@
 		};
 		504EC3171FED79650016851F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7FE63541DBD84AB77F70A90F /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SYTN44U2UN;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6S42TYZ5ZV;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -574,7 +683,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.vger.voyager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development app.vger.voyager";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -583,14 +691,14 @@
 		};
 		504EC3181FED79650016851F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E427539DAF3A30F53EC2F645 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SYTN44U2UN;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6S42TYZ5ZV;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -600,7 +708,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.vger.voyager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore app.vger.voyager";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -609,6 +716,7 @@
 		};
 		E71849D52B9FA18C00F6C005 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCC45F3AB3673954FFD56654 /* Pods-VoyagerActionExtension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ActionIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -617,10 +725,9 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SYTN44U2UN;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6S42TYZ5ZV;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -639,7 +746,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.vger.voyager.VoyagerActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development app.vger.voyager.VoyagerActionExtension";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -650,6 +756,7 @@
 		};
 		E71849D62B9FA18C00F6C005 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8EF148062FEA9F504598BA63 /* Pods-VoyagerActionExtension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ActionIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -658,10 +765,9 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SYTN44U2UN;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6S42TYZ5ZV;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -679,7 +785,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.vger.voyager.VoyagerActionExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore app.vger.voyager.VoyagerActionExtension";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -689,6 +794,7 @@
 		};
 		E75D25552A7C351F00C4AD87 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 32BF5CFFB546E924B93BB792 /* Pods-VoyagerWatch Watch App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -697,11 +803,10 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"VoyagerWatch Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=watchos*]" = SYTN44U2UN;
+				DEVELOPMENT_TEAM = 6S42TYZ5ZV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Voyager;
@@ -716,7 +821,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.vger.voyager.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "match Development app.vger.voyager.watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -728,6 +832,7 @@
 		};
 		E75D25562A7C351F00C4AD87 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8FF18B9EBAF8B122DBD208FB /* Pods-VoyagerWatch Watch App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -736,11 +841,10 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"VoyagerWatch Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=watchos*]" = SYTN44U2UN;
+				DEVELOPMENT_TEAM = 6S42TYZ5ZV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Voyager;
@@ -754,7 +858,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.vger.voyager.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "match AppStore app.vger.voyager.watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
