@@ -34,8 +34,9 @@ export function VoteButton({ type, post }: VoteButtonProps) {
   const { presentLoginIfNeeded } = use(SharedDialogContext);
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
-  const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const myVote = postVotesById[post.post.id];
+  const myVote = useAppSelector(
+    (state) => state.post.postVotesById[post.post.id],
+  );
 
   const [state, toggle] = useTransition();
 
