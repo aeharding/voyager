@@ -22,8 +22,8 @@ import {
   stopIonicTapClick,
 } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
-import useIsPostSelected from "#/routes/twoColumn/useIsPostSelected";
-import { useOpenPostProps } from "#/routes/twoColumn/useOpenPostProps";
+import useActivatedClass from "#/routes/twoColumn/useActivatedClass";
+import { useOpenPostCommentProps } from "#/routes/twoColumn/useOpenPostCommentProps";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";
@@ -105,8 +105,10 @@ function Post(props: PostProps) {
     }
   })();
 
-  const openPostProps = useOpenPostProps(props.post);
-  const isActivated = useIsPostSelected(props.post.post.id);
+  const openPostProps = useOpenPostCommentProps(
+    props.post.post,
+    props.post.community,
+  );
 
   return (
     <AnimateHeight
@@ -124,7 +126,7 @@ function Post(props: PostProps) {
           className={cx(
             styles.item,
             isTouchDevice() && "ion-activatable",
-            isActivated && "app-activated",
+            useActivatedClass(props.post),
           )}
           detail={false}
           {...openPostProps}
