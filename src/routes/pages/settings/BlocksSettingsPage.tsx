@@ -2,12 +2,9 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonPage,
   IonToolbar,
 } from "@ionic/react";
-import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { localUserSelector } from "#/features/auth/siteSlice";
 import BlockedCommunities from "#/features/settings/blocks/BlockedCommunities";
@@ -24,11 +21,10 @@ import {
   ListEditorProvider,
 } from "#/features/shared/ListEditor";
 import MultilineTitle from "#/features/shared/MultilineTitle";
+import { AppPage } from "#/helpers/AppPage";
 import { useAppSelector } from "#/store";
 
 export default function BlocksSettingsPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
   const userHandle = useAppSelector(userHandleSelector);
   const localUser = useAppSelector(localUserSelector);
 
@@ -40,18 +36,16 @@ export default function BlocksSettingsPage() {
       state.settings.blocks.keywords.length,
   );
 
-  useSetActivePage(pageRef);
-
   const content = (() => {
     if (!localUser)
       return (
-        <IonContent scrollY={false}>
+        <IonContent scrollY={false} color="light-bg">
           <CenteredSpinner />
         </IonContent>
       );
 
     return (
-      <AppContent scrollY>
+      <AppContent scrollY color="light-bg">
         <FilterNsfw />
         <BlockedCommunities />
         <BlockedUsers />
@@ -63,7 +57,7 @@ export default function BlocksSettingsPage() {
   })();
 
   const page = (
-    <IonPage ref={pageRef} className="grey-bg">
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -81,7 +75,7 @@ export default function BlocksSettingsPage() {
       </AppHeader>
 
       {content}
-    </IonPage>
+    </AppPage>
   );
 
   if (hasBlocks) {

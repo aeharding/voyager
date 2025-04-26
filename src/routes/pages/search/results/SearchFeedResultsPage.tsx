@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
 
 import { receivedComments } from "#/features/comment/commentSlice";
@@ -17,6 +11,7 @@ import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import { receivedPosts } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -61,7 +56,7 @@ export default function SearchFeedResultsPage({
   };
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -86,6 +81,6 @@ export default function SearchFeedResultsPage({
           filterKeywordsAndWebsites={false}
         />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

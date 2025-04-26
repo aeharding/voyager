@@ -4,7 +4,7 @@
   left: 50%;
   transform: translateX(-50%);
   max-width: 700px;
-  width: calc(100vw - 1rem);
+  width: calc(100% - 1rem);
   background: var(--ion-color-primary);
   color: white;
   text-decoration: none;

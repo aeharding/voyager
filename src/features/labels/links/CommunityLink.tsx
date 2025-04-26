@@ -7,7 +7,7 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import { Community, SubscribedType } from "lemmy-js-client";
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import { Link } from "react-router-dom";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
@@ -54,8 +54,7 @@ export default function CommunityLink({
   const [present] = useIonActionSheet();
 
   const handle = getHandle(community);
-  const { hideCommunity } = useContext(ShareImageContext);
-
+  const { hideCommunity } = use(ShareImageContext);
   const showCommunityIcons = useAppSelector(
     (state) => state.settings.appearance.posts.showCommunityIcons,
   );
@@ -79,14 +78,6 @@ export default function CommunityLink({
       cssClass: "left-align-buttons",
       buttons: [
         {
-          text: `${isBlocked ? "Unblock" : "Block"} Community`,
-          icon: removeCircleOutline,
-          role: "destructive",
-          handler: () => {
-            block();
-          },
-        },
-        {
           text: !isSubscribed ? "Subscribe" : "Unsubscribe",
           icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           handler: () => {
@@ -99,6 +90,14 @@ export default function CommunityLink({
           icon: tabletPortraitOutline,
           handler: () => {
             sidebar();
+          },
+        },
+        {
+          text: `${isBlocked ? "Unblock" : "Block"} Community`,
+          icon: removeCircleOutline,
+          role: "destructive",
+          handler: () => {
+            block();
           },
         },
         {
@@ -200,7 +199,7 @@ const onStart: LongPressOptions["onStart"] = (e) => {
 };
 
 function useShowSubscribedIcon() {
-  const feedEnabled = useContext(ShowSubscribedIconContext);
+  const feedEnabled = use(ShowSubscribedIconContext);
   const subscribedIcon = useAppSelector(
     (state) => state.settings.appearance.posts.subscribedIcon,
   );

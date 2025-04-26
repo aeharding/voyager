@@ -6,7 +6,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonPage,
   IonSearchbar,
   IonTitle,
   IonToolbar,
@@ -18,6 +17,8 @@ import {
   useState,
 } from "react";
 import { VList } from "virtua";
+
+import { AppPage } from "#/helpers/AppPage";
 
 import AppHeader from "../AppHeader";
 
@@ -54,7 +55,7 @@ export default function GenericSelectorModal<I>({
   }, []);
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar className={sharedStyles.transparentIonToolbar}>
           <IonButtons slot="end">
@@ -94,6 +95,6 @@ export default function GenericSelectorModal<I>({
           </VList>
         </IonList>
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

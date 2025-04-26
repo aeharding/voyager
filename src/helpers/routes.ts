@@ -1,16 +1,16 @@
-import { useContext, useEffect, useRef } from "react";
+import { use, useEffect, useRef } from "react";
 
 import { TabContext } from "#/core/TabContext";
 import { TabNameContext } from "#/routes/common/Route";
 import { useAppSelector } from "#/store";
 
 export function useBuildGeneralBrowseLink() {
-  const { tabRef } = useContext(TabContext);
+  const { tabRef } = use(TabContext);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
 
-  const tabName = useContext(TabNameContext);
+  const tabName = use(TabNameContext);
   const tabNameRef = useRef(tabName);
 
   useEffect(() => {

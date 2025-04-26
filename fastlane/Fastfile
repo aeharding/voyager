@@ -13,6 +13,8 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+opt_out_usage
+
 default_platform(:ios)
 
 ENV['app_identifier'] = 'app.vger.voyager'

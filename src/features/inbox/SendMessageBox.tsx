@@ -1,12 +1,12 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { resize, send as sendIcon } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, use, useEffect, useRef, useState } from "react";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import { privateMessageSendFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -35,7 +35,7 @@ export default function SendMessageBox({
   const [value, setValue] = useState("");
   const client = useClient();
   const presentToast = useAppToast();
-  const { presentPrivateMessageCompose } = useContext(PageContext);
+  const { presentPrivateMessageCompose } = use(SharedDialogContext);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 

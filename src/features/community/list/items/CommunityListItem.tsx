@@ -116,10 +116,8 @@ export default function CommunityListItem({
         lines={line ? "inset" : "none"}
         className={className}
       >
-        <div className={listStyles.content}>
-          <ItemIcon item={community} size={28} />
-          {handle}
-        </div>
+        <ItemIcon item={community} size={28} slot="start" />
+        <div className={listStyles.content}>{handle}</div>
         {loggedIn && (
           <ActionButton
             slot="end"

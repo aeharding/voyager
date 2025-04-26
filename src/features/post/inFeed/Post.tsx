@@ -21,9 +21,9 @@ import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
-import { getHandle } from "#/helpers/lemmy";
 import { filterEvents } from "#/helpers/longPress";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useActivatedClass from "#/routes/twoColumn/useActivatedClass";
+import { useOpenPostCommentProps } from "#/routes/twoColumn/useOpenPostCommentProps";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";
@@ -83,8 +83,6 @@ function Post(props: PostProps) {
     shouldHideRef.current = shouldHide;
   }, [shouldHide]);
 
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-
   const postAppearance = usePostAppearance();
 
   const onPostLongPress = useCallback(() => {
@@ -107,6 +105,11 @@ function Post(props: PostProps) {
     }
   })();
 
+  const openPostProps = useOpenPostCommentProps(
+    props.post.post,
+    props.post.community,
+  );
+
   return (
     <AnimateHeight
       duration={200}
@@ -120,15 +123,17 @@ function Post(props: PostProps) {
       >
         <IonItem
           mode="ios" // Use iOS style activatable tap highlight
-          className={cx(styles.item, isTouchDevice() && "ion-activatable")}
-          detail={false}
-          routerLink={buildGeneralBrowseLink(
-            `/c/${getHandle(props.post.community)}/comments/${
-              props.post.post.id
-            }`,
+          className={cx(
+            styles.item,
+            isTouchDevice() && "ion-activatable",
+            useActivatedClass(props.post),
           )}
+          detail={false}
+          {...openPostProps}
           onClick={(e) => {
             if (preventOnClickNavigationBug(e)) return;
+
+            openPostProps.onClick(e);
 
             // Marking post read is done in the post detail page when it finishes transitioning in.
             // However, autohiding is context-sensitive (community feed vs special feed, etc)

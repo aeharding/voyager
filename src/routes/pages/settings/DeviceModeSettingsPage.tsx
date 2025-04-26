@@ -1,24 +1,13 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import SelectDeviceMode from "#/features/settings/appearance/themes/system/SelectDeviceMode";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 
 export default function DeviceModeSettingsPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -31,9 +20,9 @@ export default function DeviceModeSettingsPage() {
           <IonTitle>Device Mode</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light-bg">
         <SelectDeviceMode />
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

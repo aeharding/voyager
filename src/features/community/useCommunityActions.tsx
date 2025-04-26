@@ -1,14 +1,15 @@
 import { useIonActionSheet } from "@ionic/react";
 import { Community, SubscribedType } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import {
   isAdminSelector,
   localUserSelector,
   showNsfw,
 } from "#/features/auth/siteSlice";
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { shareUrl } from "#/helpers/share";
 import {
@@ -55,8 +56,7 @@ export default function useCommunityActions(
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
-  const { presentPostEditor } = useContext(PageContext);
+  const { presentLoginIfNeeded, presentPostEditor } = use(SharedDialogContext);
 
   const site = useAppSelector((state) => state.site.response);
   const isAdmin = useAppSelector(isAdminSelector);
@@ -192,7 +192,7 @@ export default function useCommunityActions(
   };
 
   const share = () => {
-    shareUrl(community.actor_id);
+    shareUrl(getApId(community));
   };
 
   return {

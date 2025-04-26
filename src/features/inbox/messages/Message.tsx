@@ -1,8 +1,8 @@
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
+  use,
   useCallback,
-  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useRef,
@@ -10,7 +10,7 @@ import {
 } from "react";
 import { useLongPress } from "use-long-press";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import Markdown from "#/features/shared/markdown/Markdown";
 import { cx } from "#/helpers/css";
 import useClient from "#/helpers/useClient";
@@ -27,7 +27,7 @@ interface MessageProps {
 
 export default function Message({ message, first }: MessageProps) {
   const dispatch = useAppDispatch();
-  const { presentReport } = useContext(PageContext);
+  const { presentReport } = use(SharedDialogContext);
   const myUserId = useAppSelector(
     (state) =>
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,

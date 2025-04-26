@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import Comments, { CommentsHandle } from "#/features/comment/inTree/Comments";
 import JumpFab from "#/features/comment/inTree/JumpFab";
+import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../postSlice";
@@ -16,6 +17,7 @@ interface PostDetailProps {
 
   commentPath: string | undefined;
   threadCommentId: string | undefined;
+  virtualEnabled?: boolean;
 }
 
 export default function PostDetail({
@@ -23,12 +25,14 @@ export default function PostDetail({
   sort,
   commentPath,
   threadCommentId,
+  virtualEnabled,
 }: PostDetailProps) {
   const dispatch = useAppDispatch();
   const { showJumpButton, jumpButtonPosition } = useAppSelector(
     (state) => state.settings.general.comments,
   );
   const [ionViewEntered, setIonViewEntered] = useState(false);
+  const isSecondColumn = useIsSecondColumn();
   const commentsRef = useRef<CommentsHandle>(undefined);
 
   const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(0);
@@ -37,10 +41,14 @@ export default function PostDetail({
   // has fully transitioned in.
   // This keeps the page transition as performant as possible
   useEffect(() => {
-    if (!post || !ionViewEntered) return;
+    if (!post) return;
+
+    // Wait until the page has fully transitioned in
+    // (only applies to single column mode)
+    if (!isSecondColumn && !ionViewEntered) return;
 
     dispatch(setPostRead(post.post.id));
-  }, [post, ionViewEntered, dispatch]);
+  }, [post, ionViewEntered, dispatch, isSecondColumn]);
 
   useIonViewDidEnter(() => {
     setIonViewEntered(true);
@@ -85,6 +93,7 @@ export default function PostDetail({
         threadCommentId={threadCommentId}
         sort={sort}
         bottomPadding={bottomPadding}
+        virtualEnabled={virtualEnabled}
       />
       {commentPath && <ViewAllComments onHeight={onHeight} />}
       {!commentPath && showJumpButton && <JumpFab />}

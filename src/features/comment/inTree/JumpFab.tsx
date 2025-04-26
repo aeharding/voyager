@@ -1,17 +1,16 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
-import { useContext } from "react";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
-import { AppContext } from "#/features/auth/AppContext";
+import { useAppPageVListHandleRef } from "#/helpers/AppPage";
 import { isNative } from "#/helpers/device";
 import { findCurrentPage } from "#/helpers/ionic";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppSelector } from "#/store";
 
 export default function JumpFab() {
-  const { activePageRef } = useContext(AppContext);
+  const virtuaRef = useAppPageVListHandleRef();
   const vibrate = useHapticFeedback();
   const jumpButtonPosition = useAppSelector(
     (state) => state.settings.general.comments.jumpButtonPosition,
@@ -48,9 +47,7 @@ export default function JumpFab() {
   })();
 
   function onJump(skip = 1) {
-    const virtuaRef = activePageRef?.current?.current;
     if (!virtuaRef) return;
-    if (!("scrollToIndex" in virtuaRef)) return;
 
     const page = findCurrentPage();
     if (!page) return;
@@ -103,7 +100,7 @@ export default function JumpFab() {
 
     if (isNative()) vibrate({ style: ImpactStyle.Light });
 
-    virtuaRef.scrollToIndex(index, { smooth: true });
+    virtuaRef.current?.scrollToIndex(index, { smooth: true });
   }
 
   const bind = useLongPress(() => onJump(-1), {

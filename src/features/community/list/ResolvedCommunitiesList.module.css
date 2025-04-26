@@ -1,8 +1,8 @@
 .subIcon {
   border-radius: 50%;
   padding: 6px;
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
 
   color: white;
 
@@ -10,11 +10,8 @@
 }
 
 .content {
-  margin: 0.7rem 0;
-
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  margin-top: 8px;
+  margin-bottom: 8px;
 
   aside {
     margin-top: 0.2rem;

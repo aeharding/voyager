@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { Community, Person } from "lemmy-js-client";
 import { useEffect } from "react";
 import { useParams } from "react-router";
@@ -22,6 +16,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { getUser } from "#/features/user/userSlice";
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -109,7 +104,7 @@ function Modlog({ community, user }: ModlogProps) {
 
   return (
     <FeedContextProvider>
-      <IonPage>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -129,7 +124,7 @@ function Modlog({ community, user }: ModlogProps) {
             getIndex={getLogIndex}
           />
         </FeedContent>
-      </IonPage>
+      </AppPage>
     </FeedContextProvider>
   );
 }

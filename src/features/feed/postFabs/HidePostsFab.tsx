@@ -1,10 +1,11 @@
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
-import { eyeOffOutline } from "ionicons/icons";
-import { useContext } from "react";
+import { noop } from "es-toolkit";
+import { eyeOffOutline, eyeOutline } from "ionicons/icons";
+import { createContext, use, useState } from "react";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 
 import useHidePosts from "../useHidePosts";
 import useResetHiddenPosts from "../useResetHiddenPosts";
@@ -16,19 +17,41 @@ interface HidePostsFabProps {
 export default function HidePostsFab({ forceRefresh }: HidePostsFabProps) {
   const hidePosts = useHidePosts();
   const resetHiddenPosts = useResetHiddenPosts();
-  const { activePageRef } = useContext(AppContext);
+  const getAppScrollable = useGetAppScrollable();
+  const { showHiddenPosts, setShowHiddenPosts } = useShowHiddenPosts();
+
+  function onUpdateShowHiddenPosts(show: boolean) {
+    setShowHiddenPosts(show);
+    forceRefresh();
+    scrollUpIfNeeded(getAppScrollable(), 0, "auto");
+  }
 
   const bind = useLongPress(
     () => {
-      resetHiddenPosts(() => {
-        forceRefresh();
-        scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+      resetHiddenPosts({
+        prependButtons: [
+          {
+            text: "Show hidden temporarily",
+            handler: () => {
+              onUpdateShowHiddenPosts(true);
+            },
+          },
+        ],
+        onFinishReset: () => {
+          forceRefresh();
+          scrollUpIfNeeded(getAppScrollable(), 0, "auto");
+        },
       });
     },
     {
       cancelOnMovement: 15,
       onCancel: (_, meta) => {
         if (meta.reason !== LongPressCallbackReason.CancelledByRelease) return;
+
+        if (showHiddenPosts) {
+          onUpdateShowHiddenPosts(false);
+          return;
+        }
 
         hidePosts();
       },
@@ -37,9 +60,34 @@ export default function HidePostsFab({ forceRefresh }: HidePostsFabProps) {
 
   return (
     <IonFab slot="fixed" vertical="bottom" horizontal="end">
-      <IonFabButton onClick={hidePosts} {...bind()}>
-        <IonIcon icon={eyeOffOutline} />
+      <IonFabButton {...bind()}>
+        <IonIcon icon={showHiddenPosts ? eyeOutline : eyeOffOutline} />
       </IonFabButton>
     </IonFab>
   );
+}
+
+interface ShowHiddenPostsContextValue {
+  showHiddenPosts: boolean;
+  setShowHiddenPosts: (show: boolean) => void;
+}
+
+const ShowHiddenPostsContext = createContext<ShowHiddenPostsContextValue>({
+  showHiddenPosts: false,
+  setShowHiddenPosts: noop,
+});
+
+export function ShowHiddenPostsProvider(props: React.PropsWithChildren) {
+  const [showHiddenPosts, setShowHiddenPosts] = useState(false);
+
+  return (
+    <ShowHiddenPostsContext
+      value={{ showHiddenPosts, setShowHiddenPosts }}
+      {...props}
+    />
+  );
+}
+
+export function useShowHiddenPosts() {
+  return use(ShowHiddenPostsContext);
 }

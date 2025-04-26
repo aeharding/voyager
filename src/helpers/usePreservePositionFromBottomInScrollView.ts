@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { MutableRefObject } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 import { getScrollParent } from "./dom";
 
@@ -17,7 +16,7 @@ import { getScrollParent } from "./dom";
  * content that can be observed for size changes
  */
 export default function usePreservePositionFromBottomInScrollView(
-  elRef: MutableRefObject<HTMLElement | null>,
+  elRef: RefObject<HTMLElement | null>,
   enabled: boolean,
 ) {
   const saveTopOffsetRef = useRef<number>(undefined);

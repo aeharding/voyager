@@ -14,3 +14,7 @@ export function shareUrl(url: string) {
 
   return Share.share({ url });
 }
+
+export function canShare() {
+  return isNative() || "share" in navigator;
+}

@@ -1,13 +1,5 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
 import InboxFeed from "#/features/feed/InboxFeed";
 import { InboxItemView } from "#/features/inbox/InboxItem";
@@ -18,6 +10,7 @@ import {
 } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { receivedUsers } from "#/features/user/userSlice";
+import { AppPage } from "#/helpers/AppPage";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -29,7 +22,6 @@ interface InboxPageProps {
 }
 
 export default function InboxPage({ showRead }: InboxPageProps) {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const client = useClient();
   const myUserId = useAppSelector(
@@ -37,8 +29,6 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
   const totalUnread = useAppSelector(totalUnreadSelector);
-
-  useSetActivePage(pageRef);
 
   const fetchFn: FetchFn<InboxItemView> = async (pageData, ...rest) => {
     if (!myUserId) return [];
@@ -93,7 +83,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   };
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -113,6 +103,6 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

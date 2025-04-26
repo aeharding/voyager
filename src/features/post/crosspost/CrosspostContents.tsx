@@ -7,6 +7,7 @@ import { PostView } from "lemmy-js-client";
 
 import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
 import { cx } from "#/helpers/css";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 
 import { CrosspostProps } from "./Crosspost";
@@ -56,7 +57,7 @@ export default function CrosspostContents({
         <div className={styles.stat}>
           <IonIcon icon={arrowUpSharp} />{" "}
           {crosspost ? (
-            formatNumber(crosspost.counts.score)
+            formatNumber(getCounts(crosspost).score)
           ) : (
             <IonSkeletonText className={styles.statIonSkeletonText} />
           )}
@@ -64,7 +65,7 @@ export default function CrosspostContents({
         <div className={styles.stat}>
           <IonIcon icon={chatbubbleOutline} />{" "}
           {crosspost ? (
-            formatNumber(crosspost.counts.comments)
+            formatNumber(getCounts(crosspost).comments)
           ) : (
             <IonSkeletonText className={styles.statIonSkeletonText} />
           )}

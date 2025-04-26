@@ -1,8 +1,6 @@
 import {
-  IonBackButton,
   IonButtons,
   IonContent,
-  IonPage,
   IonRefresher,
   IonRefresherContent,
   IonTitle,
@@ -10,10 +8,8 @@ import {
   RefresherCustomEvent,
 } from "@ionic/react";
 import { useEffect } from "react";
-import { useRef } from "react";
 import { useParams } from "react-router";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import CommentSort from "#/features/comment/CommentSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import PostDetail from "#/features/post/detail/PostDetail";
@@ -23,11 +19,14 @@ import MoreModActions from "#/features/post/shared/MoreModAction";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
+import { AppPage } from "#/helpers/AppPage";
 import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
+import { PostBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 interface PostPageParams {
@@ -51,12 +50,13 @@ export default function PostPage() {
   );
 }
 
-function PostPageContent({
+export function PostPageContent({
   id,
   commentPath,
   community,
   threadCommentId,
-}: PostPageParams) {
+  className,
+}: PostPageParams & { className?: string }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const post = useAppSelector((state) => state.post.postById[id]);
   const client = useClient();
@@ -75,15 +75,11 @@ function PostPageContent({
 
   const postIfFound = typeof post === "object" ? post : undefined;
 
-  const pageRef = useRef<HTMLElement>(null);
   const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
     commentPath,
     threadCommentId,
   );
 
-  // TODO This is gets quite hacky when dynamically using virtual scroll view.
-  // pageRef should probably be refactored
-  useSetActivePage(pageRef, !virtualEnabled);
   const Content = virtualEnabled ? FeedContent : IonContent;
 
   useEffect(() => {
@@ -125,6 +121,7 @@ function PostPageContent({
           sort={sort}
           commentPath={commentPath}
           threadCommentId={threadCommentId}
+          virtualEnabled={virtualEnabled}
         />
       </>
     );
@@ -135,17 +132,18 @@ function PostPageContent({
 
     return (
       <>
-        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
+        {postIfFound ? formatNumber(getCounts(postIfFound).comments) : ""}{" "}
+        Comments
       </>
     );
   })();
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage className={className}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
+            <PostBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
             />
           </IonButtons>
@@ -158,11 +156,11 @@ function PostPageContent({
         </IonToolbar>
       </AppHeader>
       <Content>{renderPost()}</Content>
-    </IonPage>
+    </AppPage>
   );
 }
 
-export function postDetailPageHasVirtualScrollEnabled(
+function postDetailPageHasVirtualScrollEnabled(
   commentPath: string | undefined,
   threadCommentId: string | undefined,
 ): boolean {

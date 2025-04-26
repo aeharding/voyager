@@ -1,3 +1,5 @@
+import type { Mode } from "@ionic/core";
+
 /**
  * Most storage happens asynchronously with Dexie (indexeddb).
  *
@@ -7,6 +9,7 @@
  * So, those critical settings are stored here.
  */
 
+import { isAndroid } from "#/helpers/device";
 import { DeepPartial } from "#/helpers/typescript";
 
 import type { SettingsState } from "./settingsSlice";
@@ -45,7 +48,7 @@ export function getLocalStorageInitialState(): DeepPartial<SettingsState> {
         userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
         usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
       },
-      deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+      deviceMode: getDeviceMode(),
       font: {
         fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
         useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
@@ -56,4 +59,15 @@ export function getLocalStorageInitialState(): DeepPartial<SettingsState> {
       theme: get(LOCALSTORAGE_KEYS.THEME),
     },
   } as const;
+}
+
+export function getDeviceMode(): Mode {
+  const mode = get(LOCALSTORAGE_KEYS.DEVICE_MODE);
+
+  if (isAndroid() && !mode) return "md";
+
+  // Default to ios for web and unknown
+  if (!mode) return "ios";
+
+  return mode;
 }

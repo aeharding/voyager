@@ -13,7 +13,7 @@ import {
   PostView,
   ResolveObjectResponse,
 } from "lemmy-js-client";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 
 import {
   getInstanceFromHandle,
@@ -107,7 +107,7 @@ export default function CommentReplyPage(props: CommentReplyPageProps) {
 }
 
 interface CommentReplyPageContentProps extends CommentReplyPageProps {
-  resolvedRef: MutableRefObject<ResolveObjectResponse | undefined>;
+  resolvedRef: RefObject<ResolveObjectResponse | undefined>;
 }
 
 function CommentReplyPageWithAccount({

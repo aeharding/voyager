@@ -4,8 +4,8 @@ import { Community } from "lemmy-js-client";
 import {
   createContext,
   memo,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -25,6 +25,7 @@ import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppSelector } from "#/store";
 
 import AlphabetJump from "./AlphabetJump";
+import EmptyCommunities from "./EmptyCommunities";
 import Item from "./Item";
 import useShowModeratorFeed from "./useShowModeratorFeed";
 
@@ -35,6 +36,11 @@ const OVERSCAN_AMOUNT = 3;
 interface SeparatorItem {
   type: "separator";
   value: string;
+}
+
+interface CustomItem {
+  type: "custom";
+  children: React.ReactNode;
 }
 
 interface SpecialItem {
@@ -55,7 +61,8 @@ export type ItemType =
   | SeparatorItem
   | SpecialItem
   | CommunityItem
-  | FavoriteItem;
+  | FavoriteItem
+  | CustomItem;
 
 interface CommunitiesListParams {
   actor: string;
@@ -149,6 +156,10 @@ function ResolvedCommunitiesList({
       ...modItems,
       ...alphabetItems,
     ]);
+
+    if (jwt && items.length === 3) {
+      items.push({ type: "custom", children: <EmptyCommunities /> });
+    }
 
     return {
       items,
@@ -248,7 +259,7 @@ export default memo(ResolvedCommunitiesList);
 
 const StickyIndexContext = createContext(-1);
 function StickyItem({ style, index, ...props }: CustomItemComponentProps) {
-  const activeIndex = useContext(StickyIndexContext);
+  const activeIndex = use(StickyIndexContext);
   return (
     <div
       {...props}

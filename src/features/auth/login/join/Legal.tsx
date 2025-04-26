@@ -14,6 +14,7 @@ import {
 import AppHeader from "#/features/shared/AppHeader";
 import { useInterceptHrefWithInAppBrowserIfNeeded } from "#/features/shared/InAppExternalLink";
 import Markdown from "#/features/shared/markdown/Markdown";
+import { getApId } from "#/helpers/lemmyCompat";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
 import { useAppSelector } from "#/store";
 
@@ -51,7 +52,7 @@ export default function Legal() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Privacy &amp; Terms</IonTitle>
@@ -91,7 +92,7 @@ export default function Legal() {
           {site?.site_view.local_site.legal_information?.trim() ? (
             <Markdown
               className="collapse-md-margins"
-              id={`site-legal-${site?.site_view.site.actor_id}`}
+              id={`site-legal-${getApId(site?.site_view.site)}`}
             >
               {site.site_view.local_site.legal_information}
             </Markdown>

@@ -1,9 +1,9 @@
 import { CSSProperties } from "react";
 
-import Media, { MediaProps } from "#/features/media/Media";
 import { cx } from "#/helpers/css";
 import { useAppDispatch } from "#/store";
 
+import GalleryMedia, { GalleryMediaProps } from "./gallery/GalleryMedia";
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
 import MediaPlaceholder from "./MediaPlaceholder";
 import { isLoadedAspectRatio } from "./useAspectRatio";
@@ -13,7 +13,7 @@ import useMediaLoadObserver, {
 
 import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 
-export type InlineMediaProps = Omit<MediaProps, "ref"> & {
+export type InlineMediaProps = Omit<GalleryMediaProps, "ref"> & {
   defaultAspectRatio?: number;
   mediaClassName?: string;
 };
@@ -49,12 +49,13 @@ export default function InlineMedia({
       state={buildPlaceholderState()}
       defaultAspectRatio={defaultAspectRatio}
     >
-      <Media
+      <GalleryMedia
         {...props}
         src={src}
         className={cx(mediaPlaceholderStyles.media, mediaClassName)}
         style={buildStyle()}
-        ref={mediaRef}
+        ref={mediaRef as React.Ref<HTMLImageElement>}
+        portalWithMediaId={props.portalWithMediaId}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}

@@ -15,6 +15,7 @@ import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { filterEvents } from "#/helpers/longPress";
 import { useAppSelector } from "#/store";
 
@@ -40,6 +41,8 @@ interface CommentProps {
 
   className?: string;
 
+  itemClassName?: string;
+
   rootIndex?: number;
 }
 
@@ -53,6 +56,7 @@ export default function Comment({
   context,
   routerLink,
   className,
+  itemClassName,
   rootIndex,
 }: CommentProps) {
   const showCollapsedComment = useAppSelector(
@@ -72,7 +76,7 @@ export default function Comment({
   const stub = isStubComment(comment, canModerate);
 
   const cannotCollapse =
-    (showCollapsedComment || stub) && !commentView.counts.child_count;
+    (showCollapsedComment || stub) && !getCounts(commentView).child_count;
 
   const collapsed = cannotCollapse ? false : _collapsed;
 
@@ -100,6 +104,7 @@ export default function Comment({
           styles.commentItem,
           !cannotCollapse && isTouchDevice() && "ion-activatable",
           `comment-${comment.id}`,
+          itemClassName,
         )}
         routerLink={routerLink}
         href={undefined}

@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
 import { LoginResponse } from "lemmy-js-client";
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
@@ -34,7 +34,7 @@ export default function Join({ answer }: JoinProps) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
 
-  const { setCanDismiss, dismiss } = useContext(DynamicDismissableModalContext);
+  const { setCanDismiss, dismiss } = use(DynamicDismissableModalContext);
   const { site, url } = useAppSelector((state) => state.join);
 
   const ref = useRef<HTMLIonListElement>(null);
@@ -143,7 +143,7 @@ export default function Join({ answer }: JoinProps) {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account Details</IonTitle>

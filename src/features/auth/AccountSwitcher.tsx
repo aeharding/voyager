@@ -5,14 +5,13 @@ import {
   IonIcon,
   IonList,
   IonLoading,
-  IonPage,
   IonRadioGroup,
   IonReorderGroup,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useContext, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
 import {
@@ -20,6 +19,7 @@ import {
   ListEditorContext,
   ListEditorProvider,
 } from "#/features/shared/ListEditor";
+import { AppPage } from "#/helpers/AppPage";
 import { moveItem } from "#/helpers/array";
 import { isPromiseResolvedByPaint } from "#/helpers/promise";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -79,7 +79,7 @@ function AccountSwitcherContents({
     _activeHandle ?? appActiveHandle,
   );
 
-  const { editing } = useContext(ListEditorContext);
+  const { editing } = use(ListEditorContext);
 
   useEffect(() => {
     setSelectedAccount(_activeHandle ?? appActiveHandle);
@@ -101,7 +101,7 @@ function AccountSwitcherContents({
   ));
 
   return (
-    <IonPage>
+    <AppPage>
       <IonLoading isOpen={loading} />
       <AppHeader>
         <IonToolbar>
@@ -122,7 +122,7 @@ function AccountSwitcherContents({
           )}
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         {!editing ? (
           <IonRadioGroup
             value={selectedAccount}
@@ -177,6 +177,6 @@ function AccountSwitcherContents({
           </IonList>
         )}
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

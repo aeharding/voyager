@@ -1,4 +1,6 @@
 .container {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
   width: 100%;
 
   display: flex;
@@ -8,8 +10,6 @@
 }
 
 .contents {
-  composes: maxWidth from "#/features/shared/shared.module.css";
-
   display: flex;
   align-items: flex-start;
   gap: 12px;

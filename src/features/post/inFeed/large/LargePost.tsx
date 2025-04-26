@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { use } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
@@ -49,7 +49,12 @@ export default function LargePost({ post }: PostProps) {
 
   const inModqueue = useInModqueue();
 
-  const inCommunityFeed = useContext(PageTypeContext) === "community";
+  const inCommunityFeed = use(PageTypeContext) === "community";
+
+  const isAnnouncement =
+    post.post.featured_community || post.post.featured_local;
+
+  const hasTopLabelContent = showCommunityAtTop && !inCommunityFeed;
 
   function renderPostBody() {
     if (crosspostUrl) {
@@ -160,21 +165,26 @@ export default function LargePost({ post }: PostProps) {
         <ModeratableItemBannerOutlet />
 
         <div className={styles.header}>
-          {showCommunityAtTop && !inCommunityFeed && (
+          {hasTopLabelContent && (
             <div className={styles.details}>
               <div className={styles.leftDetails}>
-                <CommunityLink
-                  community={post.community}
-                  subscribed={post.subscribed}
-                  showInstanceWhenRemote
-                  tinyIcon
-                />
+                <span className={styles.communityName}>
+                  {isAnnouncement ? <AnnouncementIcon /> : undefined}
+                  <CommunityLink
+                    community={post.community}
+                    subscribed={post.subscribed}
+                    showInstanceWhenRemote
+                    tinyIcon
+                  />
+                </span>
               </div>
             </div>
           )}
 
           <div className={styles.title}>
-            <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+            <InlineMarkdown parseBlocks={false}>
+              {post.post.name}
+            </InlineMarkdown>{" "}
             {isNsfw(post) && <Nsfw />}
           </div>
         </div>
@@ -184,7 +194,7 @@ export default function LargePost({ post }: PostProps) {
         <div className={styles.details}>
           <div className={styles.leftDetails}>
             <span className={styles.communityName}>
-              {post.post.featured_community || post.post.featured_local ? (
+              {isAnnouncement && !hasTopLabelContent ? (
                 <AnnouncementIcon />
               ) : undefined}
               {inCommunityFeed ? (

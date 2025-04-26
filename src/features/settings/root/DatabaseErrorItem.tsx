@@ -1,12 +1,12 @@
 import { IonBadge, IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { alert } from "ionicons/icons";
-import { useContext } from "react";
+import { use } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { IconBg } from "#/routes/pages/settings/SettingsPage";
 
 export default function DatabaseErrorItem() {
-  const { presentDatabaseErrorModal } = useContext(PageContext);
+  const { presentDatabaseErrorModal } = use(SharedDialogContext);
 
   return (
     <IonList inset>

@@ -7,18 +7,18 @@ import { differenceBy } from "es-toolkit";
 import React, {
   createContext,
   Fragment,
+  use,
   useCallback,
-  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { VList, VListHandle } from "virtua";
+import { VListHandle } from "virtua";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import AppVList from "#/helpers/AppVList";
 import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
@@ -47,8 +47,10 @@ export type FetchFn<I> = (
 type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
 export interface FeedProps<I>
-  extends Partial<Pick<EndPostProps, "sortDuration">> {
-  itemsRef?: React.MutableRefObject<I[] | undefined>;
+  extends Partial<
+    Pick<EndPostProps, "sortDuration" | "renderCustomEmptyContent">
+  > {
+  itemsRef?: React.RefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
   /**
@@ -103,6 +105,7 @@ export default function Feed<I>({
   getIndex,
   limit = DEFAULT_LIMIT,
   sortDuration,
+  renderCustomEmptyContent,
   onRemovedFromTop,
   onPull,
 }: FeedProps<I>) {
@@ -122,9 +125,11 @@ export default function Feed<I>({
 
   const [loadFailed, setLoadFailed] = useState(false);
 
-  const { setScrolledPastSearch } = useContext(FeedSearchContext);
+  const { setScrolledPastSearch } = use(FeedSearchContext);
 
   const startRangeRef = useRef(0);
+
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const infiniteScrolling = useAppSelector(
     (state) => state.settings.general.posts.infiniteScrolling,
@@ -208,6 +213,7 @@ export default function Feed<I>({
         : newPageItems;
 
       setLoadFailed(false);
+      setInitialLoad(false);
 
       if (refresh) {
         setAtEnd(false);
@@ -261,8 +267,6 @@ export default function Feed<I>({
 
   const virtuaHandle = useRef<VListHandle>(null);
 
-  useSetActivePage(virtuaHandle);
-
   const onScroll = useRangeChange(
     virtuaHandle,
     function onRangeChange(start, end) {
@@ -313,6 +317,7 @@ export default function Feed<I>({
           empty={!items.length}
           communityName={communityName}
           sortDuration={sortDuration}
+          renderCustomEmptyContent={renderCustomEmptyContent}
           key="footer"
         />
       );
@@ -338,7 +343,7 @@ export default function Feed<I>({
     }
   }
 
-  if ((loading && !filteredItems.length) || loading === undefined)
+  if ((loading && initialLoad) || loading === undefined)
     return <CenteredSpinner />;
 
   return (
@@ -352,7 +357,7 @@ export default function Feed<I>({
       </IonRefresher>
 
       <InFeedContext value={true}>
-        <VList
+        <AppVList
           className={
             isSafariFeedHackEnabled
               ? "virtual-scroller"
@@ -376,7 +381,7 @@ export default function Feed<I>({
             </Fragment>
           ))}
           {footer}
-        </VList>
+        </AppVList>
       </InFeedContext>
     </>
   );

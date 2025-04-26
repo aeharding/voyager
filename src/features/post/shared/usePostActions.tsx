@@ -17,10 +17,10 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { use, useCallback } from "react";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { InFeedContext } from "#/features/feed/Feed";
 import {
@@ -52,7 +52,7 @@ import {
 } from "../postSlice";
 
 export default function usePostActions(post: PostView) {
-  const inFeed = useContext(InFeedContext);
+  const inFeed = use(InFeedContext);
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
@@ -70,7 +70,7 @@ export default function usePostActions(post: PostView) {
     presentSelectText,
     presentShareAsImage,
     presentCreateCrosspost,
-  } = useContext(PageContext);
+  } = use(SharedDialogContext);
 
   const presentPostModActions = usePostModActions(post);
 

@@ -19,14 +19,12 @@ import {
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
-import { Post } from "lemmy-js-client";
+import { CreatePost, EditPost } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
-import {
-  deletePendingImageUploads,
-  uploadImage,
-} from "#/features/shared/markdown/editing/uploadImageSlice";
+import { deletePendingImageUploads } from "#/features/shared/markdown/editing/uploadImageSlice";
+import useUploadImage from "#/features/shared/markdown/editing/useUploadImage";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { isAndroid } from "#/helpers/device";
 import { getRemoteHandle } from "#/helpers/lemmy";
@@ -49,7 +47,7 @@ import { PostEditorProps } from "./PostEditor";
 
 import styles from "./PostEditorRoot.module.css";
 
-type PostType = "photo" | "link" | "text";
+type PostType = "media" | "link" | "text";
 
 const MAX_TITLE_LENGTH = 200;
 
@@ -59,6 +57,7 @@ export default function PostEditorRoot({
   ...props
 }: PostEditorProps) {
   const dispatch = useAppDispatch();
+  const { uploadImage } = useUploadImage("post-content");
   const [presentAlert] = useIonAlert();
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -82,9 +81,9 @@ export default function PostEditorRoot({
   const initialImage = isImage ? existingPost!.post.url : undefined;
 
   const initialPostType = (() => {
-    if (!existingPost) return "photo";
+    if (!existingPost) return "media";
 
-    if (initialImage) return "photo";
+    if (initialImage) return "media";
 
     if (existingPost.post.url) return "link";
 
@@ -115,14 +114,23 @@ export default function PostEditorRoot({
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
     initialImage,
   );
+  const [isPreviewVideo, setIsPreviewVideo] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
 
   const showAutofill = !!url && isValidUrl(url) && !title;
 
   const showNsfwToggle = !!(
-    (postType === "photo" && photoPreviewURL) ||
+    (postType === "media" && photoPreviewURL) ||
     (postType === "link" && url)
   );
+
+  useEffect(() => {
+    return () => {
+      if (!photoPreviewURL) return;
+
+      URL.revokeObjectURL(photoPreviewURL);
+    };
+  }, [photoPreviewURL]);
 
   useEffect(() => {
     setCanDismiss(
@@ -158,7 +166,7 @@ export default function PostEditorRoot({
         if (!url) return false;
         break;
 
-      case "photo":
+      case "media":
         if (!photoUrl) return false;
         break;
     }
@@ -182,7 +190,7 @@ export default function PostEditorRoot({
       switch (postType) {
         case "link":
           return url || undefined;
-        case "photo":
+        case "media":
           return photoUrl || undefined;
         default:
           return;
@@ -194,7 +202,7 @@ export default function PostEditorRoot({
         case "link":
         default:
           return undefined;
-        case "photo":
+        case "media":
           return altText;
       }
     })();
@@ -211,7 +219,7 @@ export default function PostEditorRoot({
     ) {
       errorMessage =
         "Please add a valid URL to your post (start with https://).";
-    } else if (postType === "photo" && !photoUrl) {
+    } else if (postType === "media" && !photoUrl) {
       errorMessage = "Please add a photo to your post.";
     } else if (!canSubmit()) {
       errorMessage =
@@ -232,7 +240,8 @@ export default function PostEditorRoot({
 
     let postResponse;
 
-    const payload: Pick<Post, "name" | "url" | "body" | "nsfw" | "alt_text"> = {
+    const payload: Omit<CreatePost & EditPost, "post_id" | "community_id"> = {
+      custom_thumbnail: existingPost?.post.thumbnail_url,
       name: title,
       url: postUrl,
       body: text || undefined,
@@ -290,6 +299,7 @@ export default function PostEditorRoot({
 
   async function receivedImage(image: File) {
     setPhotoPreviewURL(URL.createObjectURL(image));
+    setIsPreviewVideo(image.type.startsWith("video/"));
     setPhotoUploading(true);
 
     let imageUrl;
@@ -298,15 +308,8 @@ export default function PostEditorRoot({
     if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
-      imageUrl = await dispatch(uploadImage(image, "post-content"));
+      imageUrl = await uploadImage(image);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-
-      presentToast({
-        message: `Problem uploading image: ${message}. Please try again.`,
-        color: "danger",
-        fullscreen: true,
-      });
       clearImage();
 
       throw error;
@@ -328,6 +331,7 @@ export default function PostEditorRoot({
   function clearImage() {
     setPhotoUrl("");
     setPhotoPreviewURL(undefined);
+    setIsPreviewVideo(false);
   }
 
   async function fetchPostTitle() {
@@ -408,13 +412,13 @@ export default function PostEditorRoot({
             value={postType}
             onIonChange={(e) => setPostType(e.target.value as PostType)}
           >
-            <IonSegmentButton value="photo">Photo</IonSegmentButton>
+            <IonSegmentButton value="media">Media</IonSegmentButton>
             <IonSegmentButton value="link">Link</IonSegmentButton>
             <IonSegmentButton value="text">Text</IonSegmentButton>
           </IonSegment>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <div className={styles.container}>
           <IonList>
             <IonItem>
@@ -446,28 +450,31 @@ export default function PostEditorRoot({
                 </IonButton>
               )}
             </IonItem>
-            {postType === "photo" && (
+            {postType === "media" && (
               <>
-                <label htmlFor="photo-upload-post">
+                <label htmlFor="media-upload-post">
                   <IonItem>
                     <IonLabel color="primary">
                       <IonIcon
                         className={styles.cameraIcon}
                         icon={cameraOutline}
                       />{" "}
-                      Choose Photo
+                      Choose Photo / Video
                     </IonLabel>
 
                     <input
                       type="file"
-                      accept="image/*"
-                      id="photo-upload-post"
+                      accept="image/*,video/webm,video/mp4"
+                      id="media-upload-post"
                       className={styles.hiddenInput}
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
                         if (!image) return;
 
                         receivedImage(image);
+
+                        // Allow next upload attempt
+                        (e.target as HTMLInputElement).value = "";
                       }}
                     />
                   </IonItem>
@@ -477,6 +484,7 @@ export default function PostEditorRoot({
                     <PhotoPreview
                       src={photoPreviewURL}
                       loading={photoUploading}
+                      isVideo={isPreviewVideo}
                     />
                     <IonButton
                       fill={altText ? "solid" : "outline"}

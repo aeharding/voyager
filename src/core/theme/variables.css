@@ -106,7 +106,7 @@
       --thick-separator-color: var(--app-inset-item-background);
     }
 
-    ion-router-outlet ion-list.list-inset ion-item {
+    ion-list.list-inset ion-item {
       --background: var(--app-inset-item-background);
     }
 
@@ -122,11 +122,6 @@
 
 .ios body {
   --ion-background-color: #fff;
-}
-
-.ios ion-modal {
-  --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
-  --ion-item-background: var(--app-background, #fff);
 }
 
 .ion-color-primary-fixed {

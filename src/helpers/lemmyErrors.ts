@@ -41,6 +41,8 @@ export function getLoginErrorMessage(
         return "You have been banned.";
       case "deleted":
         return "Account deleted.";
+      case "registration_application_is_pending":
+        return "Signup approval pending, try again later.";
     }
   });
 }

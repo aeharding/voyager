@@ -12,17 +12,17 @@ export const SERVERS_BY_CATEGORY = {
     "sopuli.xyz",
     "reddthat.com",
     "lemmy.zip",
-    "lemmy.one",
     "lemmy.today",
     "lemmings.world",
     "discuss.online",
-    "lemmus.org",
     "lemmy.wtf",
+    "lemmy.cafe",
     "lemy.lol",
     "thelemmy.club",
-    "lemmy.cafe",
-    "toast.ooo",
+    "lemmy.myserv.one",
+    "lemmus.org",
     "endlesstalk.org",
+    "toast.ooo",
   ],
   regional: [
     "feddit.org",
@@ -94,11 +94,11 @@ export const WHITELISTED_SERVERS = uniq(
 
 const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.ml",
+  "lemmy.one",
   "lemmygrad.ml",
   "lemmynsfw.com",
   "hexbear.net",
   "vger.social",
-  "lemmy.myserv.one",
 ];
 
 export const LOGIN_SERVERS = uniq([

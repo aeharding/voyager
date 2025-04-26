@@ -1,16 +1,16 @@
 import { ComponentRef, useEffect, useRef } from "react";
 
 import { imageLoaded } from "#/features/media/imageSlice";
-import type Media from "#/features/media/Media";
 import { useAppDispatch } from "#/store";
 
+import type GalleryMedia from "./gallery/GalleryMedia";
 import useAspectRatio, { isLoadedAspectRatio } from "./useAspectRatio";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();
   const aspectRatio = useAspectRatio(src);
-  const mediaRef = useRef<ComponentRef<typeof Media>>(null);
-  const resizeObserverRef = useRef<ResizeObserver>(undefined);
+  const mediaRef = useRef<ComponentRef<typeof GalleryMedia>>(null);
+  const resizeObserverRef = useRef<ResizeObserver | undefined>(undefined);
 
   useEffect(() => {
     let destroyed = false;
@@ -61,7 +61,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
   return [mediaRef, aspectRatio] as const;
 }
 
-export function getTargetDimensions(target: ComponentRef<typeof Media>) {
+export function getTargetDimensions(target: ComponentRef<typeof GalleryMedia>) {
   let width, height;
 
   switch (true) {

@@ -3,6 +3,7 @@ import { CommunityView } from "lemmy-js-client";
 
 import { getCommunity } from "#/features/community/communitySlice";
 import { getHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GenericSidebar from "./GenericSidebar";
@@ -42,7 +43,7 @@ export default function CommunitySidebar({ community }: CommunitySidebarProps) {
         counts={community.counts}
         banner={community.community.banner}
         name={`c/${getHandle(community.community)}`}
-        id={community.community.actor_id}
+        id={getApId(community.community)}
       />
     </>
   );

@@ -6,6 +6,10 @@ import {
   PersonView,
   PostView,
 } from "lemmy-js-client";
+import { use } from "react";
+
+import { OutletContext } from "#/routes/Outlet";
+import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
 
 import { buildCommunityLink } from "./appLinkBuilder";
 import { getHandle } from "./lemmy";
@@ -18,6 +22,8 @@ export default function useAppNavigation() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
+  const { setPostDetail } = use(OutletContext);
+  const isSecondColumn = useIsSecondColumn();
 
   function pushRouteIfNeeded(route: string) {
     if (router.getRouteInfo()?.pathname === route) {
@@ -30,6 +36,14 @@ export default function useAppNavigation() {
   }
 
   function navigateToPost(post: PostView) {
+    if (!isSecondColumn) {
+      setPostDetail({
+        id: `${post.post.id}`,
+        community: getHandle(post.community),
+      });
+      return "success"; // TODO: return if already there
+    }
+
     return pushRouteIfNeeded(
       buildGeneralBrowseLink(
         `/c/${getHandle(post.community)}/comments/${post.post.id}`,
@@ -61,6 +75,15 @@ export default function useAppNavigation() {
   }
 
   function navigateToComment(comment: CommentView) {
+    if (!isSecondColumn) {
+      setPostDetail({
+        id: `${comment.post.id}`,
+        community: getHandle(comment.community),
+        commentPath: comment.comment.path,
+      });
+      return "success"; // TODO: return if already there
+    }
+
     return pushRouteIfNeeded(
       buildGeneralBrowseLink(
         `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${

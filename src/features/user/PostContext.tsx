@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { getHandle } from "#/helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOpenPostCommentProps } from "#/routes/twoColumn/useOpenPostCommentProps";
 
 import styles from "./PostContext.module.css";
 
@@ -13,19 +13,24 @@ interface PostContextProps {
 }
 
 export default function PostContext({ post, community }: PostContextProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const itemLinkProps = useOpenPostCommentProps(post, community);
+  const linkProps = {
+    onClick: itemLinkProps.onClick,
+    to: itemLinkProps.routerLink,
+  };
 
   return (
     <Link
       className={styles.link}
-      onClick={(e) => e.stopPropagation()}
       draggable={false}
-      to={buildGeneralBrowseLink(
-        `/c/${getHandle(community)}/comments/${post.id}`,
-      )}
+      {...linkProps}
+      onClick={(e) => {
+        e.stopPropagation();
+        linkProps.onClick(e);
+      }}
     >
       <div className={styles.name}>
-        <InlineMarkdown>{post.name}</InlineMarkdown>
+        <InlineMarkdown parseBlocks={false}>{post.name}</InlineMarkdown>
       </div>
       <div className={styles.communityName}>{getHandle(community)}</div>
     </Link>

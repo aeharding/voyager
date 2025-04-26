@@ -11,7 +11,9 @@ import {
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort.js";
 import { ALL_POST_SORTS } from "#/features/feed/PostSort.js";
+import { get, LOCALSTORAGE_KEYS, set } from "#/features/settings/syncStorage";
 import { arrayOfAll } from "#/helpers/array.js";
+import { isAndroid } from "#/helpers/device";
 
 export interface IPostMetadata {
   post_id: number;
@@ -247,6 +249,15 @@ export const OAutoplayMediaType = {
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
+export const OTwoColumnLayout = {
+  On: "on",
+  LandscapeOnly: "landscape-only",
+  Off: "off",
+} as const;
+
+export type TwoColumnLayout =
+  (typeof OTwoColumnLayout)[keyof typeof OTwoColumnLayout];
+
 export const OLongSwipeTriggerPointType = {
   Normal: "normal",
   Later: "later",
@@ -390,6 +401,7 @@ export interface GlobalSettingValueTypes {
   tap_to_collapse: TapToCollapseType;
   thumbnailinator_enabled: boolean;
   touch_friendly_links: boolean;
+  two_column_layout: TwoColumnLayout;
   upvote_on_save: boolean;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
@@ -457,6 +469,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "show_collapsed_comment",
   "show_comment_images",
   "show_community_icons",
+  "two_column_layout",
   "show_hidden_in_communities",
   "show_hide_read_button",
   "show_jump_button",
@@ -676,6 +689,16 @@ export class WefwefDB extends Dexie {
         ++,
         &handle
       `,
+    });
+
+    this.version(10).upgrade(async () => {
+      // Existing installations on Android should default to "ios"
+      // to maintain old behavior
+      if (isAndroid() && !get(LOCALSTORAGE_KEYS.DEVICE_MODE)) {
+        set(LOCALSTORAGE_KEYS.DEVICE_MODE, "ios");
+
+        location.reload();
+      }
     });
   }
 
