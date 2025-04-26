@@ -1,17 +1,17 @@
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
-import { ComponentProps, HTMLProps, MouseEvent, useContext } from "react";
+import { ComponentProps, MouseEvent, use } from "react";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
-import { isUrlPotentialAnimatedImage } from "#/helpers/url";
+import Video, { VideoProps } from "#/features/media/video/Video";
+import { isUrlPotentialAnimatedImage, isUrlVideo } from "#/helpers/url";
 
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
 import { GalleryContext } from "./GalleryProvider";
 
-export interface GalleryMediaProps
-  extends Omit<HTMLProps<HTMLImageElement>, "ref" | "onClick"> {
+export interface GalleryMediaProps extends Omit<VideoProps, "ref" | "src"> {
   src?: string;
   alt?: string;
   className?: string;
@@ -19,22 +19,32 @@ export interface GalleryMediaProps
   animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
   onClick?: (e: MouseEvent) => boolean | void;
 
-  ref?: React.Ref<HTMLImageElement> | React.Ref<HTMLCanvasElement>;
+  ref?:
+    | React.Ref<HTMLImageElement>
+    | React.Ref<HTMLCanvasElement>
+    | React.Ref<HTMLVideoElement>;
 }
 
 export default function GalleryMedia({
   post,
   animationType,
   onClick: _onClick,
+  controls,
+  volume,
+  progress,
+  disableInlineInteraction,
   ...props
 }: GalleryMediaProps) {
+  const isVideo =
+    props.src && isUrlVideo(props.src, post?.post.url_content_type);
+
   const isGif =
     props.src &&
     isUrlPotentialAnimatedImage(props.src, post?.post.url_content_type);
 
   const shouldAutoplay = useShouldAutoplay();
 
-  const { open } = useContext(GalleryContext);
+  const { open } = use(GalleryContext);
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
   function onClick(e: MouseEvent) {
@@ -43,14 +53,23 @@ export default function GalleryMedia({
     if (
       !(
         e.currentTarget instanceof HTMLImageElement ||
-        e.currentTarget instanceof HTMLCanvasElement
+        e.currentTarget instanceof HTMLCanvasElement ||
+        e.currentTarget instanceof HTMLVideoElement
       )
     )
       return;
 
     if (e.target instanceof HTMLElement && e.target.closest("a")) return;
 
-    open(e.currentTarget, props.src, post, animationType);
+    e.preventDefault();
+
+    open(
+      e.currentTarget,
+      props.src,
+      post,
+      props.portalWithMediaId,
+      animationType,
+    );
 
     // marking read happens after the gallery has finished animating
     // so that the post doesn't rerender before it's fully hidden
@@ -61,6 +80,20 @@ export default function GalleryMedia({
 
     _onClick?.(e);
   }
+
+  if (isVideo)
+    return (
+      <Video
+        {...props}
+        src={props.src!}
+        controls={controls}
+        disableInlineInteraction={disableInlineInteraction}
+        volume={volume}
+        progress={progress}
+        ref={props.ref as ComponentProps<typeof Video>["ref"]}
+        onClick={onClick}
+      />
+    );
 
   if (isGif && !shouldAutoplay) {
     return (

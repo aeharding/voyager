@@ -59,6 +59,9 @@ const domToBlobOptions: DomToBlobOptions = {
           // if pictrs, convert large gifs to jpg
           url: getImageSrc(url, { format: "jpg" }),
           responseType: "blob",
+          headers: {
+            ["User-Agent"]: "VoyagerApp/1.0",
+          },
         });
 
         // Workaround that will probably break in a future capacitor upgrade

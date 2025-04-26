@@ -15,10 +15,10 @@ import {
   timeOutline,
 } from "ionicons/icons";
 import { CommentSortType } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { useState } from "react";
 
-import { AppContext } from "#/features/auth/AppContext";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 
 export const COMMENT_SORTS = [
   "Hot",
@@ -43,7 +43,7 @@ interface CommentSortProps {
 
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
-  const { activePageRef } = useContext(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   if (!sort) return;
 
@@ -62,7 +62,7 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
           if (!e.detail.data) return;
 
           setSort(e.detail.data);
-          scrollUpIfNeeded(activePageRef?.current, 1, "auto");
+          scrollUpIfNeeded(getAppScrollable(), 1, "auto");
         }}
         header="Sort by..."
         buttons={BUTTONS.map((b) => ({

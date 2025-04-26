@@ -8,6 +8,7 @@ import {
   buildLemmyPostLink,
   isPost,
 } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import { shareUrl } from "#/helpers/share";
 import {
   buildResolveCommentFailed,
@@ -137,7 +138,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         await onAsk();
         break;
       case OPostCommentShareType.Community: {
-        const instance = parseUrl(itemView.community.actor_id)?.hostname;
+        const instance = parseUrl(getApId(itemView.community))?.hostname;
         if (instance) await shareInstance(instance);
         break;
       }
@@ -182,7 +183,7 @@ function generateInstanceCandidates(
   candidates.push(connectedInstance);
 
   const communityActorHostname = parseUrl(
-    postOrComment.community.actor_id,
+    getApId(postOrComment.community),
   )?.hostname;
   if (communityActorHostname) candidates.push(communityActorHostname);
 

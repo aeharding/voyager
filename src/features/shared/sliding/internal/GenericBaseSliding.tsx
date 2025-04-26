@@ -13,9 +13,9 @@ import {
   mailUnread,
   share as shareIcon,
 } from "ionicons/icons";
-import { useContext, useMemo } from "react";
+import { use, useMemo } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { VOTE_COLORS } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import { SwipeAction, SwipeActions } from "#/services/db";
 import { useAppSelector } from "#/store";
@@ -59,7 +59,7 @@ export default function GenericBaseSliding({
   className,
   children,
 }: GenericBaseSlidingProps) {
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
 
   const votesTheme = useAppSelector(
     (state) => state.settings.appearance.votesTheme,

@@ -42,10 +42,12 @@ export default function Item({ item, actor, line }: ItemProps) {
         <CommunityListItem
           community={item.value}
           favorites={favorites}
-          removeAction="follow"
+          removeAction={item.type === "favorite" ? "favorite" : "follow"}
           line={line}
           className={sharedStyles.maxWidth}
         />
       );
+    case "custom":
+      return item.children;
   }
 }

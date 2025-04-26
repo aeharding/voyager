@@ -1,5 +1,5 @@
 import { noop } from "es-toolkit";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 
 import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
 import {
@@ -101,7 +101,7 @@ const PostAppearanceContext = createContext<ContextValue>({
 });
 
 export function usePostAppearance() {
-  const { postAppearance } = useContext(PostAppearanceContext);
+  const { postAppearance } = use(PostAppearanceContext);
   const defaultPostAppearance = useAppSelector(
     (state) => state.settings.appearance.posts.type,
   );
@@ -110,13 +110,13 @@ export function usePostAppearance() {
 }
 
 export function useSetPostAppearance() {
-  return useContext(PostAppearanceContext).setPostAppearance;
+  return use(PostAppearanceContext).setPostAppearance;
 }
 
 export function WaitUntilPostAppearanceResolved({
   children,
 }: React.PropsWithChildren) {
-  if (!useContext(PostAppearanceContext).postAppearance) return;
+  if (!use(PostAppearanceContext).postAppearance) return;
 
   return children;
 }

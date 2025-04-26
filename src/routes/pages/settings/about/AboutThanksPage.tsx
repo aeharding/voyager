@@ -3,18 +3,16 @@ import {
   IonButtons,
   IonLabel,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import InAppExternalLink, {
   IonItemInAppExternalLink,
 } from "#/features/shared/InAppExternalLink";
+import { AppPage } from "#/helpers/AppPage";
 
 const links = [
   {
@@ -56,12 +54,8 @@ const links = [
 ];
 
 export default function AboutThanksPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -71,7 +65,7 @@ export default function AboutThanksPage() {
           <IonTitle>Thanks To</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light-bg">
         <IonList inset color="primary">
           {links.map(({ label, href }) => (
             <IonItemInAppExternalLink
@@ -99,6 +93,6 @@ export default function AboutThanksPage() {
           />
         </InAppExternalLink>
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

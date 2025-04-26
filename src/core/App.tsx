@@ -40,13 +40,9 @@ import { IonApp, setupIonicReact } from "@ionic/react";
 import { NavModes } from "capacitor-android-nav-mode";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { AppContextProvider } from "#/features/auth/AppContext";
 import BeforeInstallPromptProvider from "#/features/pwa/BeforeInstallPromptProvider";
-import {
-  getAndroidNavMode,
-  getDeviceMode,
-  isInstalled,
-} from "#/helpers/device";
+import { getDeviceMode } from "#/features/settings/syncStorage";
+import { getAndroidNavMode, isInstalled } from "#/helpers/device";
 import { AppToastProvider } from "#/helpers/useAppToast";
 import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
 import Router from "#/routes/common/Router";
@@ -90,31 +86,29 @@ export default function App() {
   return (
     <ErrorBoundary FallbackComponent={AppCrash}>
       <ConfigProvider>
-        <AppContextProvider>
-          <StoreProvider>
-            <GlobalStyles>
-              <BeforeInstallPromptProvider>
-                <UpdateContextProvider>
-                  <Router>
-                    <OptimizedRouterProvider>
-                      <TabContextProvider>
-                        <AppToastProvider>
-                          <IonApp>
-                            <Auth>
-                              <TabbedRoutes>
-                                <Listeners />
-                              </TabbedRoutes>
-                            </Auth>
-                          </IonApp>
-                        </AppToastProvider>
-                      </TabContextProvider>
-                    </OptimizedRouterProvider>
-                  </Router>
-                </UpdateContextProvider>
-              </BeforeInstallPromptProvider>
-            </GlobalStyles>
-          </StoreProvider>
-        </AppContextProvider>
+        <StoreProvider>
+          <GlobalStyles>
+            <BeforeInstallPromptProvider>
+              <UpdateContextProvider>
+                <Router>
+                  <OptimizedRouterProvider>
+                    <TabContextProvider>
+                      <AppToastProvider>
+                        <IonApp>
+                          <Auth>
+                            <TabbedRoutes>
+                              <Listeners />
+                            </TabbedRoutes>
+                          </Auth>
+                        </IonApp>
+                      </AppToastProvider>
+                    </TabContextProvider>
+                  </OptimizedRouterProvider>
+                </Router>
+              </UpdateContextProvider>
+            </BeforeInstallPromptProvider>
+          </GlobalStyles>
+        </StoreProvider>
       </ConfigProvider>
     </ErrorBoundary>
   );

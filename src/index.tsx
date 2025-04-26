@@ -9,6 +9,17 @@ import App from "./core/App";
 import "./features/icons";
 import { getAndroidNavMode, isNative } from "./helpers/device";
 
+// MARK: User agent config
+
+history.scrollRestoration = "manual";
+
+(async () => {
+  // Native apps should silently accept without user prompt
+  if (isNative()) await navigator.storage.persist();
+})();
+
+// MARK: App initialization
+
 (async () => {
   try {
     await getAndroidNavMode();
@@ -22,9 +33,4 @@ import { getAndroidNavMode, isNative } from "./helpers/device";
       </React.StrictMode>,
     );
   }
-})();
-
-(async () => {
-  // Native apps should silently accept without user prompt
-  if (isNative()) await navigator.storage.persist();
 })();

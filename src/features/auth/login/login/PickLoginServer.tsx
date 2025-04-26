@@ -142,7 +142,7 @@ export default function PickLoginServer() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent scrollY={false}>
+      <IonContent scrollY={false} color="light-bg">
         <div className={styles.container} ref={ref}>
           <div className="ion-padding">
             <IonText color="medium">

@@ -11,23 +11,23 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VList, VListHandle } from "virtua";
+import { VListHandle } from "virtua";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
+import AppVList from "#/helpers/AppVList";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
 import {
   buildCommentsTreeWithMissing,
   getDepthFromCommentPath,
 } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
 import { IndexedVirtuaItem } from "#/helpers/virtua";
-import { postDetailPageHasVirtualScrollEnabled } from "#/routes/pages/posts/PostPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -54,6 +54,8 @@ interface CommentsProps {
   bottomPadding?: number;
 
   ref: React.RefObject<CommentsHandle | undefined>;
+
+  virtualEnabled?: boolean;
 }
 
 export default function Comments({
@@ -64,6 +66,7 @@ export default function Comments({
   bottomPadding,
   threadCommentId,
   ref,
+  virtualEnabled,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
@@ -82,11 +85,6 @@ export default function Comments({
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
 
-  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
-    commentPath,
-    threadCommentId,
-  );
-
   const preservePositionFromBottomInScrollView =
     usePreservePositionFromBottomInScrollView(
       scrollViewContainerRef,
@@ -97,8 +95,6 @@ export default function Comments({
     _setLoading(loading);
     loadingRef.current = loading;
   }
-
-  useSetActivePage(virtuaRef, virtualEnabled);
 
   const [maxContext, setMaxContext] = useState(
     getCommentContextDepthForPath(commentPath),
@@ -340,7 +336,7 @@ export default function Comments({
               ...parent,
               counts: {
                 ...parent.counts,
-                child_count: parent.counts.child_count + 1,
+                child_count: getCounts(parent).child_count + 1,
               },
             });
           }
@@ -479,7 +475,7 @@ export default function Comments({
       </IonRefresher>
       <div className={styles.scrollViewContainer} ref={scrollViewContainerRef}>
         {virtualEnabled ? (
-          <VList
+          <AppVList
             className={
               isSafariFeedHackEnabled
                 ? "virtual-scroller"
@@ -495,7 +491,7 @@ export default function Comments({
             }}
           >
             {...content}
-          </VList>
+          </AppVList>
         ) : (
           <>{...content}</>
         )}

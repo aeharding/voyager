@@ -61,8 +61,8 @@ export default function OutPortalEventDispatcher({
   }, [eventsToPropagateViaOutPortal]);
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <span ref={containerRef} className={styles.container}>
       {children}
-    </div>
+    </span>
   );
 }

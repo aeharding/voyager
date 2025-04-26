@@ -1,11 +1,6 @@
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-} from "react";
+import React, { createContext, useEffect, useLayoutEffect } from "react";
 
 import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
 import { isNative } from "#/helpers/device";
@@ -119,7 +114,28 @@ export default function GlobalStyles({ children }: React.PropsWithChildren) {
     Keyboard.setStyle({ style: keyboardStyle });
   }, [isDark, usingSystemDarkMode]);
 
-  return <DarkContext value={isDark}>{children}</DarkContext>;
+  const { tabBarBackground } = getThemeByStyle(
+    theme,
+    isDark ? "dark" : "light",
+  );
+
+  // TODO clean this up - define colors elsewhere?
+  const themeColor = (() => {
+    if (tabBarBackground) return tabBarBackground;
+
+    if (!isDark) return "#f7f7f7";
+
+    if (pureBlack) return "#000";
+
+    return "#22252f";
+  })();
+
+  return (
+    <DarkContext value={isDark}>
+      {children}
+      <meta name="theme-color" content={themeColor} />
+    </DarkContext>
+  );
 }
 
 function useComputeIsDark(): boolean {
@@ -132,9 +148,4 @@ function useComputeIsDark(): boolean {
   return usingSystemDarkMode ? systemDarkMode : userDarkMode;
 }
 
-// Cached
-export function useIsDark() {
-  return useContext(DarkContext);
-}
-
-const DarkContext = createContext(false);
+export const DarkContext = createContext(false);

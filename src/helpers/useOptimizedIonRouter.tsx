@@ -1,16 +1,14 @@
 import { useIonRouter, UseIonRouterResult } from "@ionic/react";
 import {
   createContext,
-  MutableRefObject,
-  useContext,
+  RefObject,
+  use,
   useEffect,
   useMemo,
   useRef,
 } from "react";
 
-type OptimizedRouterRef =
-  | MutableRefObject<UseIonRouterResult | undefined>
-  | undefined;
+type OptimizedRouterRef = RefObject<UseIonRouterResult | undefined> | undefined;
 
 interface IOptimizedRouterContext {
   // used for determining whether page needs to be scrolled up first
@@ -22,7 +20,7 @@ const OptimizedRouterContext = createContext<IOptimizedRouterContext>({
 });
 
 export function useOptimizedIonRouter() {
-  const context = useContext(OptimizedRouterContext);
+  const context = use(OptimizedRouterContext);
 
   return useMemo(
     () => ({

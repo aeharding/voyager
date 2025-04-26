@@ -1,16 +1,10 @@
 import { IonModal, useIonActionSheet } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { Prompt, useLocation } from "react-router";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { useAppPageRef } from "#/helpers/AppPage";
 import { isNative } from "#/helpers/device";
 import useStateRef from "#/helpers/useStateRef";
 import { clearRecoveredText } from "#/helpers/useTextRecovery";
@@ -49,7 +43,7 @@ export function DynamicDismissableModal({
   textRecovery,
 }: DynamicDismissableModalProps) {
   const dispatch = useAppDispatch();
-  const pageContext = useContext(PageContext);
+  const pageRef = useAppPageRef();
   const location = useLocation();
   const selectedInstance = useAppSelector(
     instanceSelector ?? ((state) => state.auth.connectedInstance),
@@ -72,13 +66,11 @@ export function DynamicDismissableModal({
   });
 
   useEffect(() => {
-    setPresentingElement(
-      pageContext.pageRef?.current?.closest("ion-tabs") ?? undefined,
-    );
+    setPresentingElement(document.querySelector("ion-tabs") ?? undefined);
 
     // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
     // so grab new IonRouterOutlet
-  }, [pageContext.pageRef, selectedInstance]);
+  }, [pageRef, selectedInstance]);
 
   const onDismissAttemptCb = async () => {
     if (document.activeElement instanceof HTMLElement)

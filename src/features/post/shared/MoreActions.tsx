@@ -1,7 +1,7 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { ellipsisHorizontal } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { ActionButton } from "#/features/post/actions/ActionButton";
@@ -15,7 +15,7 @@ interface MoreActionsProps {
 }
 
 export default function MoreActions({ post, className }: MoreActionsProps) {
-  const inFeed = useContext(InFeedContext);
+  const inFeed = use(InFeedContext);
   const Button = inFeed ? ActionButton : IonButton;
   const openPostActions = usePostActions(post);
 

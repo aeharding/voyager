@@ -1,8 +1,11 @@
-import React, { RefObject, useContext } from "react";
+import React from "react";
 
-import { AppContext, Page } from "#/features/auth/AppContext";
 import { getOffsetTop, scrollIntoView } from "#/helpers/dom";
 import { CommentNodeI } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
+import useGetAppScrollable, {
+  AppScrollable,
+} from "#/helpers/useGetAppScrollable";
 import { OTapToCollapseType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -39,7 +42,7 @@ export default function CommentTree({
   const tapToCollapse = useAppSelector(
     (state) => state.settings.general.comments.tapToCollapse,
   );
-  const { activePageRef } = useContext(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   // Comment context chains don't show missing for parents
   const showMissing = (() => {
@@ -61,7 +64,7 @@ export default function CommentTree({
 
   if (
     comment.absoluteDepth - baseDepth > MAX_COMMENT_DEPTH &&
-    comment.comment_view.counts.child_count >= 2
+    getCounts(comment.comment_view).child_count >= 2
   ) {
     return (
       <ContinueThread
@@ -99,7 +102,7 @@ export default function CommentTree({
 
           toggleCollapsed();
 
-          scrollCommentIntoViewIfNeeded(e.target, activePageRef);
+          scrollCommentIntoViewIfNeeded(e.target, getAppScrollable());
         }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
@@ -136,7 +139,7 @@ export default function CommentTree({
 
 export function scrollCommentIntoViewIfNeeded(
   target: EventTarget,
-  activePageRef: RefObject<Page | undefined> | undefined,
+  activePage: AppScrollable | null | undefined,
 ) {
   if (!(target instanceof HTMLElement)) return;
 
@@ -152,8 +155,7 @@ export function scrollCommentIntoViewIfNeeded(
   const itemScrollOffsetTop = getOffsetTop(item, scrollView);
   if (itemScrollOffsetTop > scrollView.scrollTop) return;
 
-  const page = activePageRef?.current?.current;
-  if (page && !("querySelector" in page)) {
+  if (activePage && !("querySelector" in activePage)) {
     // if virtual scrolling, use virtual scroll API
 
     // get root comment index
@@ -164,7 +166,7 @@ export function scrollCommentIntoViewIfNeeded(
     // get comment's vertical offset from root comment
     const itemOffsetRootCommentTop = getOffsetTop(item, rootCommentContainer);
 
-    page.scrollToIndex(rootIndex, {
+    activePage.scrollToIndex(rootIndex, {
       smooth: true,
       offset: itemOffsetRootCommentTop,
     });

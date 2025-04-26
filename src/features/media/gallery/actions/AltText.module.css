@@ -54,6 +54,7 @@
   position: relative;
 
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .clamped {

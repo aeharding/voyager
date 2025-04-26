@@ -255,6 +255,12 @@ export const photoSaved: AppToastOptions = {
   fullscreen: true,
 };
 
+export const videoSaved: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Video saved!",
+  fullscreen: true,
+};
+
 export const photoCopied: AppToastOptions = {
   ...shortSuccessDefaults,
   message: "Photo copied to clipboard!",
@@ -316,4 +322,9 @@ export const deepLinkFailed: AppToastOptions = {
 export const privateMessageSendFailed: AppToastOptions = {
   message: "Message failed to send. Please try again",
   color: "danger",
+};
+
+export const subscribedStarterPacks: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Subscribed! Pull to refresh",
 };

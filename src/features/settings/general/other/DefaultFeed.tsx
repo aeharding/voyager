@@ -9,15 +9,14 @@ import {
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { CommunityView } from "lemmy-js-client";
-import { useContext } from "react";
 
 import {
   handleSelector,
   loggedInSelector,
 } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
 import SettingSelector from "#/features/settings/shared/SettingSelector";
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
+import { useAppPageRef } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { ODefaultFeedType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -31,7 +30,7 @@ export default function DefaultFeed() {
   );
   const loggedIn = useAppSelector(loggedInSelector);
   const handle = useAppSelector(handleSelector);
-  const { pageRef } = useContext(PageContext);
+  const pageRef = useAppPageRef();
 
   const [presentCommunitySelectorModal, onDismiss] = useIonModal(
     CommunitySelectorModal,

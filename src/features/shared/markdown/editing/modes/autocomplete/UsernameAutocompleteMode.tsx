@@ -1,6 +1,7 @@
 import { Person } from "lemmy-js-client";
 
 import { getRemoteHandle } from "#/helpers/lemmy";
+import { getApId } from "#/helpers/lemmyCompat";
 import useClient from "#/helpers/useClient";
 
 import GenericAutocompleteMode, {
@@ -26,5 +27,5 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
 }
 
 function buildMd(item: Person) {
-  return `[@${getRemoteHandle(item)}](${item.actor_id})`;
+  return `[@${getRemoteHandle(item)}](${getApId(item)})`;
 }

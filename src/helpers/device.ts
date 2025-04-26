@@ -1,20 +1,32 @@
 import { Capacitor } from "@capacitor/core";
-import { Mode } from "@ionic/core";
+import { isPlatform } from "@ionic/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "es-toolkit";
-import { shareOutline, shareSocialOutline } from "ionicons/icons";
+import {
+  share,
+  shareOutline,
+  shareSocial,
+  shareSocialOutline,
+} from "ionicons/icons";
 import { UAParser } from "ua-parser-js";
 
-import { get, LOCALSTORAGE_KEYS } from "#/features/settings/syncStorage";
-
-export function getDeviceMode(): Mode {
-  // md mode is beta, so default ios for all devices
-  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
-}
+import { getDeviceMode } from "#/features/settings/syncStorage";
 
 export const isNative = memoize(() => {
   return Capacitor.isNativePlatform();
 });
+
+/**
+ * Run `VITE_FORCE_NO_CORS=true` in dev to test with following command to disable CORS for easier testing
+ *
+ * ```
+ * /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-site-isolation-trials --disable-web-security --user-data-dir="~/tmp"
+ * ```
+ */
+export function canBypassCors() {
+  if (import.meta.env.VITE_FORCE_NO_CORS) return true;
+  return isNative();
+}
 
 export function isInstalled(): boolean {
   return isNative() || window.matchMedia("(display-mode: standalone)").matches;
@@ -26,7 +38,9 @@ export const isInstallable =
   ua.getDevice().type === "mobile" || ua.getDevice().type === "tablet";
 
 export function isAppleDeviceInstalledToHomescreen(): boolean {
-  return ua.getDevice().vendor === "Apple" && isInstalled();
+  return (
+    ua.getDevice().vendor === "Apple" && isInstalled() && !isPlatform("desktop")
+  );
 }
 
 export function isAppleDeviceInstallable(): boolean {
@@ -75,6 +89,8 @@ export function getAndroidNavMode() {
 
 export const isIosTheme = memoize(() => getDeviceMode() === "ios");
 
-export const getShareIcon = memoize(() =>
-  isIosTheme() ? shareOutline : shareSocialOutline,
-);
+export const getShareIcon = memoize((filled = false) => {
+  if (filled) return isIosTheme() ? share : shareSocial;
+
+  return isIosTheme() ? shareOutline : shareSocialOutline;
+});

@@ -1,11 +1,10 @@
-import { GalleryMediaProps } from "#/features/media/gallery/GalleryMedia";
-import InlineMedia from "#/features/media/InlineMedia";
+import InlineMedia, { InlineMediaProps } from "#/features/media/InlineMedia";
 import { cx } from "#/helpers/css";
 import { forceSecureUrl } from "#/helpers/url";
 
 import styles from "./MarkdownImg.module.css";
 
-interface MarkdownImgProps extends Omit<GalleryMediaProps, "ref"> {
+interface MarkdownImgProps extends Omit<InlineMediaProps, "ref"> {
   /**
    * Restrict height of media within comments (unrestricted in post body)
    */

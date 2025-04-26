@@ -4,7 +4,6 @@ import eslint from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
 import reactPlugin from "eslint-plugin-react";
-import pluginReactCompiler from "eslint-plugin-react-compiler";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import vitestPlugin from "eslint-plugin-vitest";
 import tseslint from "typescript-eslint";
@@ -13,27 +12,43 @@ import compilerOptions from "./compilerOptions.js";
 
 export default tseslint.config(
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
   eslintConfigPrettier,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  {
-    // TODO replace with https://github.com/facebook/react/pull/30774
-    name: "react-hooks/recommended",
-    plugins: { "react-hooks": reactHooksPlugin },
-    rules: reactHooksPlugin.configs.recommended.rules,
-  },
-  {
-    plugins: {
-      "react-compiler": pluginReactCompiler,
-    },
-    rules: {
-      "react-compiler/react-compiler": ["error", compilerOptions],
-    },
-  },
+  reactHooksPlugin.configs.recommended,
   {
     plugins: {
       perfectionist: perfectionistPlugin,
+    },
+    rules: {
+      "perfectionist/sort-named-imports": [
+        "warn",
+        { ignoreCase: false, type: "natural", ignoreAlias: false },
+      ],
+      "perfectionist/sort-imports": [
+        "warn",
+        {
+          newlinesBetween: "always",
+          partitionByComment: true,
+          type: "natural",
+          ignoreCase: false,
+          tsconfigRootDir: ".",
+          sortSideEffects: true,
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling", "index"],
+            "css-modules",
+          ],
+          customGroups: {
+            value: {
+              ["css-modules"]: ["\\.module\\.css$"],
+            },
+          },
+        },
+      ],
     },
   },
   {
@@ -68,7 +83,7 @@ export default tseslint.config(
           paths: [
             {
               name: "@ionic/react",
-              importNames: ["IonHeader", "useIonToast"],
+              importNames: ["IonHeader", "useIonToast", "IonPage"],
               message:
                 "Has an App alternative. Replace 'Ion' with 'App' when importing.",
             },
@@ -76,6 +91,11 @@ export default tseslint.config(
               name: "react",
               importNames: ["forwardRef"],
               message: "Please use ref prop directly.",
+            },
+            {
+              name: "react",
+              importNames: ["useContext"],
+              message: "Please use use() instead.",
             },
           ],
           patterns: [
@@ -97,34 +117,6 @@ export default tseslint.config(
         },
       ],
 
-      "perfectionist/sort-named-imports": [
-        "warn",
-        { ignoreCase: false, type: "natural", ignoreAlias: false },
-      ],
-      "perfectionist/sort-imports": [
-        "warn",
-        {
-          newlinesBetween: "always",
-          partitionByComment: true,
-          type: "natural",
-          ignoreCase: false,
-          tsconfigRootDir: ".",
-          sortSideEffects: true,
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            ["parent", "sibling", "index"],
-            "css-modules",
-          ],
-          customGroups: {
-            value: {
-              ["css-modules"]: ["\\.module\\.css$"],
-            },
-          },
-        },
-      ],
-
       "react/prop-types": "off",
       "react/jsx-fragments": ["warn", "syntax"],
       "react/jsx-curly-brace-presence": ["warn", "never"],
@@ -138,15 +130,12 @@ export default tseslint.config(
         "error",
         { namedComponents: "function-declaration", unnamedComponents: [] },
       ],
+
+      "react-hooks/react-compiler": ["error", compilerOptions],
     },
   },
   {
+    ...vitestPlugin.configs.recommended,
     files: ["**/*.test.ts", "**/*.test.tsx"],
-    plugins: {
-      vitest: vitestPlugin,
-    },
-    rules: {
-      ...vitestPlugin.configs.recommended.rules,
-    },
   },
 );

@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -18,6 +17,7 @@ import PostCommentFeed, {
 import useResetHiddenPosts from "#/features/feed/useResetHiddenPosts";
 import { postHiddenByIdSelector } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -94,7 +94,7 @@ export default function ProfileFeedHiddenPostsPage() {
   };
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonTitle>Hidden Posts</IonTitle>
@@ -119,6 +119,6 @@ export default function ProfileFeedHiddenPostsPage() {
           filterKeywordsAndWebsites={false}
         />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

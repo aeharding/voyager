@@ -23,6 +23,7 @@ import {
 import useModZoneActions from "#/features/moderation/useModZoneActions";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import { getHandle, getRemoteHandle, isPost } from "#/helpers/lemmy";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
@@ -64,7 +65,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const header = (
     <MaxWidthContainer>
       <Scores
-        aggregates={person.person_view.counts}
+        aggregates={getCounts(person.person_view)}
         accountCreated={person.person_view.person.published}
       />
       <IonList inset>
@@ -72,6 +73,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/posts`,
           )}
+          detail
         >
           <IonIcon icon={albumsOutline} color="primary" slot="start" />{" "}
           <IonLabel className="ion-text-nowrap">Posts</IonLabel>
@@ -80,6 +82,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/comments`,
           )}
+          detail
         >
           <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />{" "}
           <IonLabel className="ion-text-nowrap">Comments</IonLabel>
@@ -90,6 +93,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/saved`,
               )}
+              detail
             >
               <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
               <IonLabel className="ion-text-nowrap">Saved</IonLabel>
@@ -98,6 +102,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/upvoted`,
               )}
+              detail
             >
               <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
               <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
@@ -106,6 +111,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/downvoted`,
               )}
+              detail
             >
               <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
               <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
@@ -114,6 +120,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
               )}
+              detail
             >
               <IonIcon icon={eyeOffOutline} color="primary" slot="start" />{" "}
               <IonLabel className="ion-text-nowrap">Hidden</IonLabel>
@@ -123,7 +130,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
       </IonList>
       {isSelf && role && (
         <IonList inset>
-          <IonItem detail onClick={presentModZoneActions}>
+          <IonItem detail button onClick={presentModZoneActions}>
             <IonIcon
               icon={getModIcon(role)}
               color={getModColor(role)}

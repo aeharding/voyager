@@ -1,18 +1,11 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { CommentReplyView } from "lemmy-js-client";
-import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
 import InboxFeed from "#/features/feed/InboxFeed";
 import { receivedInboxItems } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch } from "#/store";
@@ -24,11 +17,8 @@ interface RepliesPageProps {
 }
 
 export default function RepliesPage({ type }: RepliesPageProps) {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const client = useClient();
-
-  useSetActivePage(pageRef);
 
   const fetchFn: FetchFn<CommentReplyView> = async (pageData, ...rest) => {
     // TODO - actually paginate properly if Lemmy implements
@@ -53,7 +43,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
   };
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -70,7 +60,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }
 

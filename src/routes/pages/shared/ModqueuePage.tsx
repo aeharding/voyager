@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { uniqBy } from "es-toolkit";
 import {
   CommentReportView,
@@ -13,7 +7,7 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import { useParams } from "react-router";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
@@ -31,6 +25,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { getPostCommentItemCreatedDate } from "#/features/user/Profile";
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -121,7 +116,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
 
   return (
     <FeedContextProvider>
-      <IonPage>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -145,7 +140,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
             />
           </ModqueueContext>
         </FeedContent>
-      </IonPage>
+      </AppPage>
     </FeedContextProvider>
   );
 }
@@ -189,5 +184,5 @@ function convertCommentReportToComment(
 const ModqueueContext = createContext(false);
 
 export function useInModqueue() {
-  return useContext(ModqueueContext);
+  return use(ModqueueContext);
 }

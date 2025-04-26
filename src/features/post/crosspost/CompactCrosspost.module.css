@@ -12,10 +12,11 @@
   text-decoration: none;
   -webkit-touch-callout: default;
 
-  background: rgba(var(--ion-color-light-rgb), 0.5);
   padding: 3px 9px;
 
   font-size: 0.8em;
+
+  background: var(--lightroom-bg);
 
   color: var(--ion-color-text-aside);
 

@@ -3,7 +3,6 @@ import {
   IonButtons,
   IonContent,
   IonIcon,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -11,6 +10,7 @@ import { arrowBackSharp } from "ionicons/icons";
 import { useId } from "react";
 
 import CommentMarkdown from "#/features/comment/CommentMarkdown";
+import { AppPage } from "#/helpers/AppPage";
 import { isIosTheme } from "#/helpers/device";
 
 import AppHeader from "../../AppHeader";
@@ -51,7 +51,7 @@ export default function PreviewModal({
   })();
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           {isIosTheme() ? (
@@ -71,6 +71,6 @@ export default function PreviewModal({
         </IonToolbar>
       </AppHeader>
       <IonContent className="ion-padding">{content}</IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

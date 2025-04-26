@@ -1,8 +1,8 @@
-import React, { createContext, MutableRefObject, useRef } from "react";
+import React, { createContext, RefObject, useRef } from "react";
 
 import { PostCommentItem } from "./PostCommentFeed";
 
-type ItemsRef = MutableRefObject<PostCommentItem[] | undefined>;
+type ItemsRef = RefObject<PostCommentItem[] | undefined>;
 
 interface IFeedContext {
   setItemsRef: (ref: ItemsRef | undefined) => void;
@@ -10,7 +10,7 @@ interface IFeedContext {
   /**
    * yodawg
    */
-  itemsRefRef: React.MutableRefObject<ItemsRef | undefined> | undefined;
+  itemsRefRef: RefObject<ItemsRef | undefined> | undefined;
 }
 
 export const FeedContext = createContext<IFeedContext>({

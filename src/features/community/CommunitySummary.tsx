@@ -8,6 +8,7 @@ import { ActionButton } from "#/features/post/actions/ActionButton";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
 import { cx } from "#/helpers/css";
+import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
@@ -58,8 +59,8 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
           </div>
         </div>
         <div className={styles.stats}>
-          {formatNumber(community.counts.subscribers)} Subscriber
-          {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
+          {formatNumber(getCounts(community).subscribers)} Subscriber
+          {getCounts(community).subscribers !== 1 ? "s" : ""} ·{" "}
           <Ago date={community.community.published} /> Old{" "}
         </div>
         {community.community.description && (

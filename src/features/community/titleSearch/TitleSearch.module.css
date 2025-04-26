@@ -26,7 +26,7 @@
   text-align: inherit;
   outline: none;
 
-  &.input {
+  && {
     padding-top: 0;
     padding-bottom: 0;
   }
