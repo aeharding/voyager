@@ -32,7 +32,7 @@ export function useOpenPostCommentProps(
       if (!existingPath) throw new Error("No existing path");
 
       setPostDetail({
-        id: "post_id" in item ? `${item.post_id}` : `${item.id}`,
+        id: `${item.id}`,
         community: getHandle(community),
         commentPath: "path" in item ? item.path : undefined,
       });
