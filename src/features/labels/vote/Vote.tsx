@@ -17,6 +17,7 @@ export default function Vote({
   item,
   className,
 }: VoteProps): React.ReactElement {
+
   const voteDisplayMode = useAppSelector(
     (state) => state.settings.appearance.voting.voteDisplayMode,
   );

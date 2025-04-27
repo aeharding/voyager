@@ -135,7 +135,9 @@ export default function CommentHeader({
             {renderAside(comment.updated || comment.published)}
           </>
         );
+
       default:
+
         if (accommodateLargeText) {
           return (
             <div className={styles.divContainerLarge}>
@@ -158,7 +160,6 @@ export default function CommentHeader({
                 <Vote
                   className={styles.commentVote}
                   item={commentView}
-                  spacer={true}
                 />
                 <Edited item={commentView} />
                 <div className={styles.spacer}>

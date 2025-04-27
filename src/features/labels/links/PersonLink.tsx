@@ -136,9 +136,8 @@ export default function PersonLink({
   if (accommodateLargeText) {
     return (
       <div className={sharedStyles.linkContainerParentLarge}>
-        <div></div>
-
         <div className={sharedStyles.linkContainerChildLarge}>
+
           <Link
             className={sharedStyles.link}
             to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
@@ -148,16 +147,34 @@ export default function PersonLink({
             }}
             draggable={false}
           >
+
             {prefix ? (
               <>
                 <span className={styles.prefix}>{prefix}</span>{" "}
               </>
             ) : undefined}
 
-            {handle}
-            {!disableInstanceClick && end}
+            {!disableInstanceClick ? (
+              <>
+                <span className={styles.shrinkable}>
+                  {handle}
+                  {instance}
+                </span>
+                {suffix}
+              </>
+            ) : (
+              handle
+            )}
+    
           </Link>
-          {disableInstanceClick && end}
+
+          {disableInstanceClick && (
+              <span className={styles.shrinkable}>
+              {instance}
+              {suffix}
+              </span>
+          )}
+
         </div>
       </div>
     );

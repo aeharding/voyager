@@ -8,11 +8,20 @@ import VoteStat from "../VoteStat";
 import { useVote } from "./shared";
 import { VoteModeProps } from "./shared";
 
+import { useAppSelector } from "#/store";
+
 import styles from "./shared.module.css";
 
-export default function SeparateVoteMode({ item, className }: VoteModeProps) {
+export default function SeparateVoteMode({ 
+  item, 
+  className,
+}: VoteModeProps) {
   const { upvotes, downvotes } = useCalculateSeparateScore(item);
   const { myVote, onVote } = useVote(item);
+
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
 
   return (
     <>
@@ -29,6 +38,9 @@ export default function SeparateVoteMode({ item, className }: VoteModeProps) {
       >
         {formatNumber(upvotes)}
       </VoteStat>
+
+      {accommodateLargeText && <div className={styles.spacer}></div>}
+
       <VoteStat
         button
         icon={arrowDownSharp}
@@ -42,6 +54,9 @@ export default function SeparateVoteMode({ item, className }: VoteModeProps) {
       >
         {formatNumber(downvotes)}
       </VoteStat>
+
+      {accommodateLargeText && <div className={styles.spacer}></div>}
+
     </>
   );
 }
