@@ -109,6 +109,9 @@ importers:
       capacitor-stash-media:
         specifier: ^3.1.1
         version: 3.1.1(@capacitor/core@7.2.0)
+      capacitor-tips:
+        specifier: ^2.0.0
+        version: 2.0.0(@capacitor/core@7.2.0)
       colorjs.io:
         specifier: ^0.5.2
         version: 0.5.2
@@ -2555,6 +2558,11 @@ packages:
 
   capacitor-stash-media@3.1.1:
     resolution: {integrity: sha512-ms/GX1vs7Sg2RFQel98UCysIG7ATVSbfDQYelVoRK/c22wyeuANPCBjAUh/hFFbNR16vEvKY75+5Dq9zjG81EQ==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  capacitor-tips@2.0.0:
+    resolution: {integrity: sha512-rmY+NnidBvNmuns4Wfb++GU98apP197HSRqqyGEPRC9tZNtBa0C1R3EcA7T2fhXo63OTwFf5nOjBbsQeJjXg2g==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -9119,6 +9127,10 @@ snapshots:
       '@capacitor/core': 7.2.0
 
   capacitor-stash-media@3.1.1(@capacitor/core@7.2.0):
+    dependencies:
+      '@capacitor/core': 7.2.0
+
+  capacitor-tips@2.0.0(@capacitor/core@7.2.0):
     dependencies:
       '@capacitor/core': 7.2.0
 
