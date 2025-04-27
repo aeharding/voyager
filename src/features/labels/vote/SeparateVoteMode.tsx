@@ -6,9 +6,8 @@ import { useCalculateSeparateScore } from "#/helpers/vote";
 
 import VoteStat from "../VoteStat";
 import { useVote } from "./shared";
-import { VoteModeProps } from "./shared";
-
 import { useAppSelector } from "#/store";
+import { VoteModeProps } from "./shared";
 
 import styles from "./shared.module.css";
 

@@ -7,7 +7,6 @@ import Stat from "#/features/post/detail/Stat";
 import TimeStat from "#/features/post/detail/TimeStat";
 import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
-
 import { useAppSelector } from "#/store";
 
 import styles from "./PreviewStats.module.css";
