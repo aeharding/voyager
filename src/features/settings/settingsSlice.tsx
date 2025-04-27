@@ -46,7 +46,7 @@ import {
   OProfileLabelType,
   OShowSubscribedIcon,
   OTapToCollapseType,
-  OTwoColumnLayout,
+  OTwoColumnMode,
   OVoteDisplayMode,
   PostAppearanceType,
   PostBlurNsfwType,
@@ -54,7 +54,7 @@ import {
   ProfileLabelType,
   ShowSubscribedIcon,
   TapToCollapseType,
-  TwoColumnLayout,
+  TwoColumnMode,
   VoteDisplayMode,
   VotesThemeType,
 } from "#/services/db";
@@ -86,7 +86,10 @@ export interface SettingsState {
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
       profileLabel: ProfileLabelType;
-      twoColumnLayout: TwoColumnLayout;
+    };
+    layout: {
+      compactTwoColumn: boolean;
+      twoColumnMode: TwoColumnMode;
     };
     posts: {
       blurNsfw: PostBlurNsfwType;
@@ -202,11 +205,14 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
-      twoColumnLayout: OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     large: {
       showVotingButtons: true,
+    },
+    layout: {
+      compactTwoColumn: true,
+      twoColumnMode: OTwoColumnMode.Off,
     },
     posts: {
       alwaysShowAuthor: false,
@@ -353,6 +359,10 @@ export const settingsSlice = createSlice({
     ) {
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
+    },
+    setCompactTwoColumn(state, action: PayloadAction<boolean>) {
+      state.appearance.layout.compactTwoColumn = action.payload;
+      db.setSetting("compact_two_column", action.payload);
     },
     setDefaultCommentSort(state, action: PayloadAction<CommentDefaultSort>) {
       state.general.comments.sort = action.payload;
@@ -569,8 +579,8 @@ export const settingsSlice = createSlice({
       state.general.comments.touchFriendlyLinks = action.payload;
       db.setSetting("touch_friendly_links", action.payload);
     },
-    setTwoColumnLayout(state, action: PayloadAction<TwoColumnLayout>) {
-      state.appearance.general.twoColumnLayout = action.payload;
+    setTwoColumnMode(state, action: PayloadAction<TwoColumnMode>) {
+      state.appearance.layout.twoColumnMode = action.payload;
       db.setSetting("two_column_layout", action.payload);
     },
     setUpvoteOnSave(state, action: PayloadAction<boolean>) {
@@ -795,6 +805,7 @@ export const {
   setCompactShowSelfPostThumbnails,
   setCompactShowVotingButtons,
   setCompactThumbnailSize,
+  setCompactTwoColumn,
   setDatabaseError,
   setDefaultCommentSort,
   setDefaultFeed,
@@ -845,7 +856,7 @@ export const {
   setThumbnailPosition,
   settingsReady,
   setTouchFriendlyLinks,
-  setTwoColumnLayout,
+  setTwoColumnMode,
   setUpvoteOnSave,
   setUserDarkMode,
   setUserInstanceUrlDisplay,
@@ -882,11 +893,14 @@ function hydrateStateWithGlobalSettings(
       },
       general: {
         profileLabel: settings.profile_label,
-        twoColumnLayout: settings.two_column_layout,
         userInstanceUrlDisplay: settings.user_instance_url_display,
       },
       large: {
         showVotingButtons: settings.large_show_voting_buttons,
+      },
+      layout: {
+        compactTwoColumn: settings.compact_two_column,
+        twoColumnMode: settings.two_column_layout,
       },
       posts: {
         alwaysShowAuthor: settings.always_show_author,

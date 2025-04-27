@@ -3,9 +3,11 @@ import { createContext, use, useEffect, useState } from "react";
 
 import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
 import {
+  OPostAppearanceType,
   PostAppearanceType,
   setPostAppearance as setGlobalPostAppearanceReducer,
 } from "#/features/settings/settingsSlice";
+import { OutletContext } from "#/routes/Outlet";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import {
@@ -22,7 +24,7 @@ export default function PostAppearanceProvider({
   children,
 }: PostAppearanceProviderProps) {
   const dispatch = useAppDispatch();
-  const defaultPostAppearance = useAppSelector(
+  const globalPostAppearance = useAppSelector(
     (state) => state.settings.appearance.posts.type,
   );
   const rememberCommunityPostAppearance = useAppSelector(
@@ -33,37 +35,56 @@ export default function PostAppearanceProvider({
       ? state.postAppearance.postAppearanceByFeedName[serializeFeedName(feed)]
       : null,
   );
-  const [postAppearance, _setPostAppearance] = useState(
-    !rememberCommunityPostAppearance
-      ? defaultPostAppearance
-      : (feedPostAppearance ?? undefined),
+
+  const { isTwoColumnLayout } = use(OutletContext);
+  const compactTwoColumn = useAppSelector(
+    (state) => state.settings.appearance.layout.compactTwoColumn,
   );
+
+  const forceCompact = isTwoColumnLayout && compactTwoColumn;
+
+  const [postAppearance, _setPostAppearance] = useState(() => {
+    if (forceCompact) return OPostAppearanceType.Compact;
+
+    if (!rememberCommunityPostAppearance) return globalPostAppearance;
+
+    return feedPostAppearance ?? globalPostAppearance;
+  });
 
   useEffect(() => {
     (async () => {
       if (!rememberCommunityPostAppearance) return;
       if (!feed) return;
+      if (forceCompact) return;
 
       try {
         await dispatch(getPostAppearance(feed)).unwrap(); // unwrap to catch dispatched error (db failure)
       } catch (error) {
-        _setPostAppearance((_sort) => _sort ?? defaultPostAppearance); // fallback if indexeddb unavailable
+        _setPostAppearance((_sort) => _sort ?? globalPostAppearance); // fallback if indexeddb unavailable
         throw error;
       }
     })();
-  }, [feed, dispatch, rememberCommunityPostAppearance, defaultPostAppearance]);
+  }, [
+    feed,
+    dispatch,
+    rememberCommunityPostAppearance,
+    globalPostAppearance,
+    forceCompact,
+  ]);
 
   useEffect(() => {
     if (!rememberCommunityPostAppearance) return;
     if (postAppearance) return;
     if (feedPostAppearance === undefined) return; // null = loaded, but custom community sort not found
+    if (forceCompact) return;
 
-    _setPostAppearance(feedPostAppearance ?? defaultPostAppearance);
+    _setPostAppearance(feedPostAppearance ?? globalPostAppearance);
   }, [
     feedPostAppearance,
     postAppearance,
-    defaultPostAppearance,
+    globalPostAppearance,
     rememberCommunityPostAppearance,
+    forceCompact,
   ]);
 
   function setPostAppearance(postAppearance: PostAppearanceType) {
@@ -102,11 +123,19 @@ const PostAppearanceContext = createContext<ContextValue>({
 
 export function usePostAppearance() {
   const { postAppearance } = use(PostAppearanceContext);
-  const defaultPostAppearance = useAppSelector(
+  const globalPostAppearance = useAppSelector(
     (state) => state.settings.appearance.posts.type,
   );
+  const { isTwoColumnLayout } = use(OutletContext);
+  const compactTwoColumn = useAppSelector(
+    (state) => state.settings.appearance.layout.compactTwoColumn,
+  );
 
-  return postAppearance ?? defaultPostAppearance;
+  const forceCompact = isTwoColumnLayout && compactTwoColumn;
+
+  if (forceCompact) return OPostAppearanceType.Compact;
+
+  return postAppearance ?? globalPostAppearance;
 }
 
 export function useSetPostAppearance() {

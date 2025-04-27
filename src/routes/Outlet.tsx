@@ -142,7 +142,7 @@ export const OutletContext = createContext<{
   setPostDetail: (
     postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
   ) => void;
-  isTwoColumnLayout: boolean;
+  isTwoColumnLayout: boolean | undefined;
   postDetailDictionary: PostDetailDictionary;
 }>({
   setPostDetail: noop,

@@ -1,14 +1,14 @@
 import { IonText } from "@ionic/react";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OTwoColumnLayout } from "#/services/db";
+import { OTwoColumnMode } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import { setTwoColumnLayout } from "../../settingsSlice";
+import { setTwoColumnMode } from "../../settingsSlice";
 
 export default function TwoColumn() {
-  const twoColumnLayout = useAppSelector(
-    (state) => state.settings.appearance.general.twoColumnLayout,
+  const twoColumnMode = useAppSelector(
+    (state) => state.settings.appearance.layout.twoColumnMode,
   );
 
   return (
@@ -18,9 +18,9 @@ export default function TwoColumn() {
           Two Column Mode <IonText color="medium">(beta)</IonText>
         </>
       }
-      selected={twoColumnLayout}
-      setSelected={setTwoColumnLayout}
-      options={OTwoColumnLayout}
+      selected={twoColumnMode}
+      setSelected={setTwoColumnMode}
+      options={OTwoColumnMode}
     />
   );
 }

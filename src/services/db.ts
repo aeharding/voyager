@@ -249,14 +249,14 @@ export const OAutoplayMediaType = {
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
-export const OTwoColumnLayout = {
+export const OTwoColumnMode = {
   On: "on",
   LandscapeOnly: "landscape-only",
   Off: "off",
 } as const;
 
-export type TwoColumnLayout =
-  (typeof OTwoColumnLayout)[keyof typeof OTwoColumnLayout];
+export type TwoColumnMode =
+  (typeof OTwoColumnMode)[keyof typeof OTwoColumnMode];
 
 export const OLongSwipeTriggerPointType = {
   Normal: "normal",
@@ -360,6 +360,7 @@ export interface GlobalSettingValueTypes {
   compact_show_voting_buttons: boolean;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_thumbnail_size: CompactThumbnailSizeType;
+  compact_two_column: boolean;
   default_comment_sort: CommentDefaultSort;
   default_post_sort: PostSortType;
   default_share: PostCommentShareType;
@@ -401,7 +402,7 @@ export interface GlobalSettingValueTypes {
   tap_to_collapse: TapToCollapseType;
   thumbnailinator_enabled: boolean;
   touch_friendly_links: boolean;
-  two_column_layout: TwoColumnLayout;
+  two_column_layout: TwoColumnMode;
   upvote_on_save: boolean;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
@@ -470,6 +471,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "show_comment_images",
   "show_community_icons",
   "two_column_layout",
+  "compact_two_column",
   "show_hidden_in_communities",
   "show_hide_read_button",
   "show_jump_button",

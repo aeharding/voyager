@@ -3,6 +3,7 @@ import { IonLabel, IonList } from "@ionic/react";
 import { ListHeader } from "#/features/settings/shared/formatting";
 import useIsDeviceTwoColumnCapable from "#/routes/twoColumn/useIsDeviceTwoColumnCapable";
 
+import CompactTwoColumn from "./CompactTwoColumn";
 import TwoColumn from "./TwoColumn";
 
 export default function Layout() {
@@ -17,6 +18,7 @@ export default function Layout() {
       </ListHeader>
       <IonList inset>
         <TwoColumn />
+        <CompactTwoColumn />
       </IonList>
     </>
   );

@@ -1,8 +1,10 @@
 import { use } from "react";
 import { useLocation } from "react-router-dom";
 
+import { loggedInSelector } from "#/features/auth/authSelectors";
 import { cx } from "#/helpers/css";
 import { PostPageContent } from "#/routes/pages/posts/PostPage";
+import { useAppSelector } from "#/store";
 
 import { OutletContext } from "../Outlet";
 import TwoColumnEmpty from "./TwoColumnEmpty";
@@ -12,11 +14,21 @@ export default function SecondColumnContent() {
   const { postDetailDictionary, isTwoColumnLayout } = use(OutletContext);
 
   const tab = useLocation().pathname.split("/")[1];
+  const loggedIn = useAppSelector(loggedInSelector);
 
   if (!isTwoColumnLayout) return;
 
   const postDetail =
     tab && postDetailDictionary ? postDetailDictionary[tab] : undefined;
+
+  function shouldShowEmpty() {
+    if (postDetail) return false;
+
+    // show full screen empty state on profile tab when logged out
+    if (!loggedIn && tab === "profile") return false;
+
+    return true;
+  }
 
   return (
     <IsSecondColumnContext value={true}>
@@ -31,7 +43,7 @@ export default function SecondColumnContent() {
               />
             ),
         )}
-      {!postDetail && <TwoColumnEmpty />}
+      {shouldShowEmpty() && <TwoColumnEmpty />}
     </IsSecondColumnContext>
   );
 }
