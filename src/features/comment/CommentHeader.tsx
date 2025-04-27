@@ -137,7 +137,6 @@ export default function CommentHeader({
         );
 
       default:
-
         if (accommodateLargeText) {
           return (
             <div className={styles.divContainerLarge}>
@@ -157,10 +156,7 @@ export default function CommentHeader({
               </div>
 
               <div className={styles.divChildLarge}>
-                <Vote
-                  className={styles.commentVote}
-                  item={commentView}
-                />
+                <Vote className={styles.commentVote} item={commentView} />
                 <Edited item={commentView} />
                 <div className={styles.spacer}>
                   {tagsEnabled && <UserTag person={commentView.creator} />}

@@ -11,10 +11,7 @@ import { VoteModeProps } from "./shared";
 
 import styles from "./shared.module.css";
 
-export default function SeparateVoteMode({ 
-  item, 
-  className,
-}: VoteModeProps) {
+export default function SeparateVoteMode({ item, className }: VoteModeProps) {
   const { upvotes, downvotes } = useCalculateSeparateScore(item);
   const { myVote, onVote } = useVote(item);
 
@@ -55,7 +52,6 @@ export default function SeparateVoteMode({
       </VoteStat>
 
       {accommodateLargeText && <div className={styles.spacer}></div>}
-
     </>
   );
 }

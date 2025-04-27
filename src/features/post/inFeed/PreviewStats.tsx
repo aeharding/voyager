@@ -16,7 +16,6 @@ interface PreviewStatsProps {
 }
 
 export default function PreviewStats({ post }: PreviewStatsProps) {
-
   const accommodateLargeText = useAppSelector(
     (state) => state.settings.appearance.font.accommodateLargeText,
   );
