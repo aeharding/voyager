@@ -22,7 +22,7 @@ export default function useAppNavigation() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
-  const { setPostDetail } = use(OutletContext);
+  const { isTwoColumnLayout, setPostDetail } = use(OutletContext);
   const isSecondColumn = useIsSecondColumn();
 
   function pushRouteIfNeeded(route: string) {
@@ -36,7 +36,7 @@ export default function useAppNavigation() {
   }
 
   function navigateToPost(post: PostView) {
-    if (!isSecondColumn) {
+    if (isTwoColumnLayout && !isSecondColumn) {
       setPostDetail({
         id: `${post.post.id}`,
         community: getHandle(post.community),
@@ -75,7 +75,7 @@ export default function useAppNavigation() {
   }
 
   function navigateToComment(comment: CommentView) {
-    if (!isSecondColumn) {
+    if (isTwoColumnLayout && !isSecondColumn) {
       setPostDetail({
         id: `${comment.post.id}`,
         community: getHandle(comment.community),
