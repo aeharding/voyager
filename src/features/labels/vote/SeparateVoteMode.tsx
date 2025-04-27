@@ -3,10 +3,10 @@ import { arrowDownSharp } from "ionicons/icons";
 
 import { formatNumber } from "#/helpers/number";
 import { useCalculateSeparateScore } from "#/helpers/vote";
+import { useAppSelector } from "#/store";
 
 import VoteStat from "../VoteStat";
 import { useVote } from "./shared";
-import { useAppSelector } from "#/store";
 import { VoteModeProps } from "./shared";
 
 import styles from "./shared.module.css";
