@@ -1,3 +1,13 @@
 .container {
   composes: sharedStatsClass from "#/features/post/detail/Stats.module.css";
 }
+
+.containerAlignLeft  {
+  display: flex;
+  align-items: start;
+}
+
+.spacer {
+  width: 10px;
+}
+
