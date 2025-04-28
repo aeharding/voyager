@@ -12,12 +12,13 @@
     flex: 1;
   }
 
-  > *:first-child {
-    max-width: 520px;
+  /* Change order here, so css selector + can be used below */
+  > ion-router-outlet {
+    order: -1;
   }
 
-  > *:last-child {
-    /* When only one child (one column mode), override first-child's max-width */
-    max-width: initial;
+  /* If empty state or page is shown (not hidden), router outlet (first column) should have max width */
+  > div:not(:global(.ion-hide)) + ion-router-outlet {
+    max-width: 520px;
   }
 }

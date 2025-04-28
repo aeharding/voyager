@@ -58,6 +58,9 @@ function AppRoutes() {
 
   return (
     <div className={styles.routerOutletContents}>
+      {twoColumnLayoutEnabled && <SecondColumnContent />}
+
+      {/* This is first (order = -1) in css. Why? See Outlet.module.css */}
       <IonRouterOutlet>
         <Route exact path="/">
           {defaultFeed ? (
@@ -88,8 +91,6 @@ function AppRoutes() {
 
         {...general}
       </IonRouterOutlet>
-
-      {twoColumnLayoutEnabled && <SecondColumnContent />}
     </div>
   );
 }
