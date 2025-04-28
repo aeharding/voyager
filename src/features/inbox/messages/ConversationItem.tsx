@@ -15,6 +15,7 @@ import { clientSelector } from "#/features/auth/authSelectors";
 import ItemIcon from "#/features/labels/img/ItemIcon";
 import { blockUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
+import { useOpenInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import Time from "./Time";
@@ -108,7 +109,9 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
         </IonItemOptions>
 
         <IonItem
-          routerLink={`/inbox/messages/${getHandle(person)}`}
+          {...useOpenInSecondColumnIfNeededProps(
+            `/inbox/messages/${getHandle(person)}`,
+          )}
           href={undefined}
           draggable={false}
           detail={false}

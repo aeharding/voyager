@@ -1,10 +1,7 @@
-import { PostView } from "lemmy-js-client";
-import { CommentView } from "lemmy-js-client";
+import useIsLinkSelected from "./useIsLinkSelected";
 
-import useIsPostSelected from "./useIsPostSelected";
-
-export default function useActivatedClass(item: PostView | CommentView) {
-  const isActivated = useIsPostSelected(item);
+export default function useActivatedClass(routerLink: string) {
+  const isActivated = useIsLinkSelected(routerLink);
 
   if (isActivated) return "app-activated";
 }

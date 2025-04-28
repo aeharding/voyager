@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { getHandle } from "#/helpers/lemmy";
-import { useOpenPostCommentProps } from "#/routes/twoColumn/useOpenPostCommentProps";
+import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
 import styles from "./PostContext.module.css";
 
@@ -13,7 +13,7 @@ interface PostContextProps {
 }
 
 export default function PostContext({ post, community }: PostContextProps) {
-  const itemLinkProps = useOpenPostCommentProps(post, community);
+  const itemLinkProps = useOpenPostInSecondColumnIfNeededProps(post, community);
   const linkProps = {
     onClick: itemLinkProps.onClick,
     to: itemLinkProps.routerLink,

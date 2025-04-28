@@ -31,7 +31,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   const totalUnread = useAppSelector(totalUnreadSelector);
 
   const fetchFn: FetchFn<InboxItemView> = async (pageData, ...rest) => {
-    if (!myUserId) return [];
+    if (!myUserId) throw new Error("Logged out");
 
     const params = {
       limit: 50,
