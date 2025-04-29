@@ -151,8 +151,9 @@ export default function CompactPost({ post }: PostProps) {
               <VoteButton type="down" post={post} />
             </div>
           )}
-          <Save type="post" id={post.post.id} />
         </div>
+
+        <Save type="post" id={post.post.id} />
       </div>
     </ModeratableItem>
   );
