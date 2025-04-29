@@ -22,6 +22,7 @@ import { filterEvents } from "#/helpers/longPress";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppToast from "#/helpers/useAppToast";
 import { isPostReply } from "#/routes/pages/inbox/RepliesPage";
+import { useOpenInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import InboxItemMoreActions, {
@@ -183,18 +184,23 @@ export default function InboxItem({ item }: InboxItemProps) {
     filterEvents,
   });
 
+  const itemLinkProps = useOpenInSecondColumnIfNeededProps(getLink());
   const contents = (
     <IonItem
       mode="ios" // Use iOS style activatable tap highlight
+      {...itemLinkProps}
       className={cx(
         styles.item,
         !read && styles.itemUnread,
         isTouchDevice() && "ion-activatable",
+        itemLinkProps.className,
       )}
-      routerLink={getLink()}
+      onClick={(e) => {
+        itemLinkProps.onClick(e);
+        markRead();
+      }}
       href={undefined}
       detail={false}
-      onClick={markRead}
       {...bind()}
     >
       <div className={styles.container}>

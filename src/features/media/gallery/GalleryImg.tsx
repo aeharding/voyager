@@ -13,7 +13,8 @@ export const preventPhotoswipeGalleryFocusTrap = {
   onKeyDown: (e: KeyboardEvent) => e.stopPropagation(),
 };
 
-interface GalleryImgProps extends Omit<GalleryMediaProps, "ref"> {
+interface GalleryImgProps
+  extends Omit<GalleryMediaProps, "ref" | "portalWithMediaId"> {
   ref?: React.RefObject<HTMLImageElement>;
 }
 

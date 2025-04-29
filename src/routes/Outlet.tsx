@@ -1,15 +1,13 @@
 import { IonRouterOutlet } from "@ionic/react";
-import { noop } from "es-toolkit";
-import React, { createContext, use, useEffect, useState } from "react";
+import { use } from "react";
 import { Redirect, Route } from "react-router-dom";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
 import { isInstalled } from "#/helpers/device";
-import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { getDefaultServer } from "#/services/app";
 import { useAppSelector } from "#/store";
 
-import { PostPageContent } from "./pages/posts/PostPage";
+import { OutletContext } from "./OutletProvider";
 import { getPathForFeed } from "./TabbedRoutes";
 import general from "./tabs/general";
 import inbox from "./tabs/inbox";
@@ -18,7 +16,6 @@ import profile from "./tabs/profile";
 import search from "./tabs/search";
 import settings from "./tabs/settings";
 import SecondColumnContent from "./twoColumn/SecondColumnContent";
-import useIsTwoColumnLayout from "./twoColumn/useIsTwoColumnLayout";
 
 import styles from "./Outlet.module.css";
 
@@ -33,11 +30,7 @@ export default function Outlet() {
 Outlet.isRouterOutlet = true;
 
 function AppOutlet() {
-  return (
-    <OutletProvider>
-      <AppRoutes />
-    </OutletProvider>
-  );
+  return <AppRoutes />;
 }
 
 function AppRoutes() {
@@ -58,6 +51,9 @@ function AppRoutes() {
 
   return (
     <div className={styles.routerOutletContents}>
+      {twoColumnLayoutEnabled && <SecondColumnContent />}
+
+      {/* This is first (order = -1) in css. Why? See Outlet.module.css */}
       <IonRouterOutlet>
         <Route exact path="/">
           {defaultFeed ? (
@@ -88,64 +84,6 @@ function AppRoutes() {
 
         {...general}
       </IonRouterOutlet>
-
-      {twoColumnLayoutEnabled && <SecondColumnContent />}
     </div>
   );
 }
-
-type PostDetailDictionary =
-  | Record<string, React.ComponentProps<typeof PostPageContent> | undefined>
-  | undefined;
-
-function OutletProvider({ children }: { children: React.ReactNode }) {
-  const router = useOptimizedIonRouter();
-
-  const [postDetailDictionary, setPostDetailDictionary] =
-    useState<PostDetailDictionary>(undefined);
-
-  function setPostDetail(
-    postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
-  ) {
-    const tab = router.getRouteInfo()?.pathname.split("/")[1];
-
-    if (!tab) throw new Error("No tab");
-
-    setPostDetailDictionary({
-      ...postDetailDictionary,
-      [tab]: postDetail,
-    });
-  }
-
-  const isTwoColumnLayout = useIsTwoColumnLayout();
-
-  useEffect(() => {
-    if (isTwoColumnLayout) return;
-
-    setPostDetailDictionary(undefined);
-  }, [isTwoColumnLayout]);
-
-  return (
-    <OutletContext
-      value={{
-        setPostDetail,
-        isTwoColumnLayout,
-        postDetailDictionary,
-      }}
-    >
-      {children}
-    </OutletContext>
-  );
-}
-
-export const OutletContext = createContext<{
-  setPostDetail: (
-    postDetail: React.ComponentProps<typeof PostPageContent> | undefined,
-  ) => void;
-  isTwoColumnLayout: boolean;
-  postDetailDictionary: PostDetailDictionary;
-}>({
-  setPostDetail: noop,
-  isTwoColumnLayout: false,
-  postDetailDictionary: undefined,
-});
