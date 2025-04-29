@@ -26,7 +26,7 @@ import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
-import { PostBackButton } from "#/routes/twoColumn/AppBackButton";
+import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 interface PostPageParams {
@@ -143,7 +143,7 @@ export function PostPageContent({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <PostBackButton
+            <AppBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
             />
           </IonButtons>

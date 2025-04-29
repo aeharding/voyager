@@ -22,8 +22,7 @@ import {
   stopIonicTapClick,
 } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
-import useActivatedClass from "#/routes/twoColumn/useActivatedClass";
-import { useOpenPostCommentProps } from "#/routes/twoColumn/useOpenPostCommentProps";
+import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";
@@ -105,7 +104,7 @@ function Post(props: PostProps) {
     }
   })();
 
-  const openPostProps = useOpenPostCommentProps(
+  const openPostProps = useOpenPostInSecondColumnIfNeededProps(
     props.post.post,
     props.post.community,
   );
@@ -123,13 +122,13 @@ function Post(props: PostProps) {
       >
         <IonItem
           mode="ios" // Use iOS style activatable tap highlight
+          {...openPostProps}
           className={cx(
             styles.item,
             isTouchDevice() && "ion-activatable",
-            useActivatedClass(props.post),
+            openPostProps.className,
           )}
           detail={false}
-          {...openPostProps}
           onClick={(e) => {
             if (preventOnClickNavigationBug(e)) return;
 

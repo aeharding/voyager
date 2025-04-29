@@ -1,28 +1,31 @@
 import { use } from "react";
-import { useLocation } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
-import { cx } from "#/helpers/css";
-import { PostPageContent } from "#/routes/pages/posts/PostPage";
+import anyPane from "#/routes/tabs/anyPane";
 import { useAppSelector } from "#/store";
 
-import { OutletContext } from "../Outlet";
+import { OutletContext } from "../OutletProvider";
 import TwoColumnEmpty from "./TwoColumnEmpty";
+import { HiddenPageContext } from "./useIsPageHidden";
 import { IsSecondColumnContext } from "./useIsSecondColumn";
 
 export default function SecondColumnContent() {
   const loggedIn = useAppSelector(loggedInSelector);
-  const { postDetailDictionary, isTwoColumnLayout } = use(OutletContext);
+  const { secondColumnLocationDictionary, isTwoColumnLayout } =
+    use(OutletContext);
 
   const tab = useLocation().pathname.split("/")[1];
 
   if (!isTwoColumnLayout) return;
 
-  const postDetail =
-    tab && postDetailDictionary ? postDetailDictionary[tab] : undefined;
+  const secondColumnLocation =
+    tab && secondColumnLocationDictionary
+      ? secondColumnLocationDictionary[tab]
+      : undefined;
 
   function shouldShowEmpty() {
-    if (postDetail) return false;
+    if (secondColumnLocation) return false;
 
     // show full screen empty state on profile tab when logged out
     if (!loggedIn && tab === "profile") return false;
@@ -32,16 +35,22 @@ export default function SecondColumnContent() {
 
   return (
     <IsSecondColumnContext value={true}>
-      {postDetailDictionary &&
-        Object.entries(postDetailDictionary).map(
-          ([tab, currPostDetail]) =>
-            currPostDetail && (
-              <PostPageContent
-                {...currPostDetail}
-                key={`${tab}${currPostDetail.id}`}
-                className={cx(currPostDetail !== postDetail && "ion-hide")}
-              />
-            ),
+      {secondColumnLocationDictionary &&
+        Object.entries(secondColumnLocationDictionary).map(
+          ([tab, currSecondColumnLocation]) => {
+            if (!currSecondColumnLocation) return;
+
+            return (
+              <HiddenPageContext
+                value={currSecondColumnLocation !== secondColumnLocation}
+                key={`${tab}${currSecondColumnLocation.pathname}`}
+              >
+                <Switch location={currSecondColumnLocation}>
+                  {...anyPane}
+                </Switch>
+              </HiddenPageContext>
+            );
+          },
         )}
       {shouldShowEmpty() && <TwoColumnEmpty />}
     </IsSecondColumnContext>

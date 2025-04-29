@@ -18,6 +18,8 @@ import ModlogPage from "#/routes/pages/shared/ModlogPage";
 import ModqueuePage from "#/routes/pages/shared/ModqueuePage";
 import SpecialFeedPage from "#/routes/pages/shared/SpecialFeedPage";
 
+import anyPaneGeneral from "./anyPaneGeneral";
+
 export default [
   <Route exact path="/:tab/:actor/c/:community">
     <CommunityPage />
@@ -31,6 +33,7 @@ export default [
   <Route exact path="/:tab/:actor/c/:community/sidebar">
     <CommunitySidebarPage />
   </Route>,
+  ...anyPaneGeneral,
   <Route exact path="/:tab/:actor/c/:community/comments/:id">
     <PostDetail />
   </Route>,

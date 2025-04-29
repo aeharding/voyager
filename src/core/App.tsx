@@ -55,6 +55,7 @@ import GlobalStyles from "./GlobalStyles";
 import { TabContextProvider } from "./TabContext";
 
 // preserve lexical order
+import OutletProvider from "#/routes/OutletProvider";
 import TabbedRoutes from "#/routes/TabbedRoutes";
 
 import Auth from "./Auth";
@@ -96,9 +97,11 @@ export default function App() {
                       <AppToastProvider>
                         <IonApp>
                           <Auth>
-                            <TabbedRoutes>
-                              <Listeners />
-                            </TabbedRoutes>
+                            <OutletProvider>
+                              <TabbedRoutes>
+                                <Listeners />
+                              </TabbedRoutes>
+                            </OutletProvider>
                           </Auth>
                         </IonApp>
                       </AppToastProvider>

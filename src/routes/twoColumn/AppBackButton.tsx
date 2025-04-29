@@ -4,14 +4,14 @@ import { IonBackButton } from "@ionic/react";
 import { close } from "ionicons/icons";
 import { use } from "react";
 
-import { OutletContext } from "../Outlet";
+import { OutletContext } from "../OutletProvider";
 import { useIsSecondColumn } from "./useIsSecondColumn";
 
-export function PostBackButton(
+export function AppBackButton(
   props: Omit<React.ComponentProps<typeof IonBackButton>, "ref">,
 ) {
   const isSecondColumn = useIsSecondColumn();
-  const { setPostDetail } = use(OutletContext);
+  const { setSecondColumnLocation: setPostDetail } = use(OutletContext);
 
   if (isSecondColumn)
     return (

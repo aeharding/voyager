@@ -1,8 +1,7 @@
 import { CommentView } from "lemmy-js-client";
 
 import PostContext from "#/features/user/PostContext";
-import useActivatedClass from "#/routes/twoColumn/useActivatedClass";
-import { useOpenPostCommentProps } from "#/routes/twoColumn/useOpenPostCommentProps";
+import { useOpenCommentInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
 import Comment from "../Comment";
 
@@ -12,15 +11,20 @@ interface FeedCommentProps {
 }
 
 export default function FeedComment({ comment, className }: FeedCommentProps) {
+  const linkProps = useOpenCommentInSecondColumnIfNeededProps(
+    comment.comment,
+    comment.community,
+  );
+
   return (
     <Comment
       comment={comment}
       context={
         <PostContext post={comment.post} community={comment.community} />
       }
+      {...linkProps}
+      itemClassName={linkProps.className}
       className={className}
-      itemClassName={useActivatedClass(comment)}
-      {...useOpenPostCommentProps(comment.comment, comment.community)}
     />
   );
 }

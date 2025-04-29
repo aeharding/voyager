@@ -1,5 +1,4 @@
 import {
-  IonBackButton,
   IonButtons,
   IonFooter,
   IonSpinner,
@@ -35,6 +34,7 @@ import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import FeedContent from "#/routes/pages/shared/FeedContent";
+import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import sharedLabelStyles from "#/features/labels/links/shared.module.css";
@@ -203,7 +203,7 @@ export default function ConversationPage() {
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/inbox/messages" text={backText} />
+            <AppBackButton defaultHref="/inbox/messages" text={backText} />
           </IonButtons>
 
           <IonTitle className={styles.title}>

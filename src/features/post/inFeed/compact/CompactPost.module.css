@@ -14,8 +14,6 @@
   align-items: flex-start;
   gap: 12px;
   line-height: 1.15;
-
-  position: relative;
 }
 
 .content {

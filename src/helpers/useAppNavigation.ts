@@ -8,7 +8,7 @@ import {
 } from "lemmy-js-client";
 import { use } from "react";
 
-import { OutletContext } from "#/routes/Outlet";
+import { OutletContext } from "#/routes/OutletProvider";
 import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
 
 import { buildCommunityLink } from "./appLinkBuilder";
@@ -22,7 +22,7 @@ export default function useAppNavigation() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
-  const { isTwoColumnLayout, setPostDetail } = use(OutletContext);
+  const { isTwoColumnLayout, setSecondColumnLocation } = use(OutletContext);
   const isSecondColumn = useIsSecondColumn();
 
   function pushRouteIfNeeded(route: string) {
@@ -36,19 +36,16 @@ export default function useAppNavigation() {
   }
 
   function navigateToPost(post: PostView) {
+    const path = buildGeneralBrowseLink(
+      `/c/${getHandle(post.community)}/comments/${post.post.id}`,
+    );
+
     if (isTwoColumnLayout && !isSecondColumn) {
-      setPostDetail({
-        id: `${post.post.id}`,
-        community: getHandle(post.community),
-      });
+      setSecondColumnLocation(path);
       return "success"; // TODO: return if already there
     }
 
-    return pushRouteIfNeeded(
-      buildGeneralBrowseLink(
-        `/c/${getHandle(post.community)}/comments/${post.post.id}`,
-      ),
-    );
+    return pushRouteIfNeeded(path);
   }
 
   function navigateToCommunity(community: CommunityView | Community) {
@@ -75,22 +72,18 @@ export default function useAppNavigation() {
   }
 
   function navigateToComment(comment: CommentView) {
+    const path = buildGeneralBrowseLink(
+      `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
+        comment.comment.path
+      }`,
+    );
+
     if (isTwoColumnLayout && !isSecondColumn) {
-      setPostDetail({
-        id: `${comment.post.id}`,
-        community: getHandle(comment.community),
-        commentPath: comment.comment.path,
-      });
+      setSecondColumnLocation(path);
       return "success"; // TODO: return if already there
     }
 
-    return pushRouteIfNeeded(
-      buildGeneralBrowseLink(
-        `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
-          comment.comment.path
-        }`,
-      ),
-    );
+    return pushRouteIfNeeded(path);
   }
 
   return {
