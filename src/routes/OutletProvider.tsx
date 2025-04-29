@@ -3,7 +3,9 @@ import { Location } from "history";
 import { createContext } from "react";
 import { useEffect, useState } from "react";
 
+import { instanceSelector } from "#/features/auth/authSelectors";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppSelector } from "#/store";
 
 import useIsTwoColumnLayout from "./twoColumn/useIsTwoColumnLayout";
 
@@ -17,6 +19,11 @@ export default function OutletProvider({
   children: React.ReactNode;
 }) {
   const router = useOptimizedIonRouter();
+
+  const selectedInstance = useAppSelector(instanceSelector);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
 
   const [secondColumnLocationDictionary, setSecondColumnLocationDictionary] =
     useState<SecondColumnLocationDictionary>(undefined);
@@ -46,6 +53,11 @@ export default function OutletProvider({
 
     setSecondColumnLocationDictionary(undefined);
   }, [isTwoColumnLayout]);
+
+  // Reset second column on instance change
+  useEffect(() => {
+    setSecondColumnLocationDictionary(undefined);
+  }, [connectedInstance, selectedInstance]);
 
   return (
     <OutletContext
