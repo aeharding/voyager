@@ -33,6 +33,7 @@ export default function GalleryMedia({
   volume,
   progress,
   disableInlineInteraction,
+  portalWithMediaId,
   ...props
 }: GalleryMediaProps) {
   const isVideo =
@@ -63,13 +64,7 @@ export default function GalleryMedia({
 
     e.preventDefault();
 
-    open(
-      e.currentTarget,
-      props.src,
-      post,
-      props.portalWithMediaId,
-      animationType,
-    );
+    open(e.currentTarget, props.src, post, portalWithMediaId, animationType);
 
     // marking read happens after the gallery has finished animating
     // so that the post doesn't rerender before it's fully hidden
@@ -90,6 +85,7 @@ export default function GalleryMedia({
         disableInlineInteraction={disableInlineInteraction}
         volume={volume}
         progress={progress}
+        portalWithMediaId={portalWithMediaId}
         ref={props.ref as ComponentProps<typeof Video>["ref"]}
         onClick={onClick}
       />
