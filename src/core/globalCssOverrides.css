@@ -17,31 +17,6 @@ ion-tab-button {
   opacity: 1 !important;
 }
 
-ion-router-outlet {
-  /* First column (main content) */
-  > .ion-page,
-  /* Second column */
-  + .ion-page {
-    > ion-header {
-      /* Header doesn't support dynamic font size */
-      ion-button,
-      ion-back-button,
-      ion-title {
-        font-size: 17px;
-      }
-
-      /* Ionic's default font size for icons in header is a bit too large */
-      ion-button.in-toolbar ion-icon {
-        font-size: 1.35em !important;
-      }
-
-      ion-back-button.md::part(text) {
-        display: none;
-      }
-    }
-  }
-}
-
 ion-list.list-inset ion-item {
   --ion-item-background: var(
     --ion-tab-bar-background,
