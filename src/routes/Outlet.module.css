@@ -17,4 +17,27 @@
   > div:not(:global(.ion-hide)) ~ ion-router-outlet {
     max-width: 520px;
   }
+
+  /* First column (main content) */
+  > ion-router-outlet > :global(.ion-page),
+  /* Second column */
+  > :global(.ion-page) {
+    > ion-header {
+      /* Header doesn't support dynamic font size */
+      ion-button,
+      ion-back-button,
+      ion-title {
+        font-size: 17px;
+      }
+
+      /* Ionic's default font size for icons in header is a bit too large */
+      ion-button:global(.in-toolbar) ion-icon {
+        font-size: 1.35em !important;
+      }
+
+      ion-back-button:global(.md)::part(text) {
+        display: none;
+      }
+    }
+  }
 }
