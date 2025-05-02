@@ -1,5 +1,7 @@
 import { IonSpinner } from "@ionic/react";
 
+import ExternalSponsorOptions from "../ExternalSponsorOptions";
+import { IAPContext } from "../useOnExternalPaymentLinkClickHandler";
 import Tip from "./Tip";
 import useInAppPurchase from "./useInAppPurchase";
 
@@ -8,12 +10,14 @@ export default function InAppProducts() {
 
   if (initializing) return <IonSpinner />;
 
-  if (!products.length)
+  if (
+    !products.length ||
+    products.some((product) => product.currencyCode === "USD")
+  )
     return (
-      <div className="ion-text-center">
-        <p>No options found.</p>
-        <p>Please try again later!</p>
-      </div>
+      <IAPContext value={true}>
+        <ExternalSponsorOptions />
+      </IAPContext>
     );
 
   return products.map((product) => (

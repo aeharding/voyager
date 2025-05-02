@@ -110,8 +110,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1(@capacitor/core@7.2.0)
       capacitor-tips:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@7.2.0)
+        specifier: ^2.1.0
+        version: 2.1.0(@capacitor/core@7.2.0)
       colorjs.io:
         specifier: ^0.5.2
         version: 0.5.2
@@ -2561,8 +2561,8 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
-  capacitor-tips@2.0.0:
-    resolution: {integrity: sha512-rmY+NnidBvNmuns4Wfb++GU98apP197HSRqqyGEPRC9tZNtBa0C1R3EcA7T2fhXo63OTwFf5nOjBbsQeJjXg2g==}
+  capacitor-tips@2.1.0:
+    resolution: {integrity: sha512-kosVsotH7+/K5iMo3ixvS2WLDpMy/mJ/d29GabNtio6h/tFLpYtJJ1td0RzbWja4ZNwaRupiBlp+qzMAcjltSQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -9130,7 +9130,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.2.0
 
-  capacitor-tips@2.0.0(@capacitor/core@7.2.0):
+  capacitor-tips@2.1.0(@capacitor/core@7.2.0):
     dependencies:
       '@capacitor/core': 7.2.0
 
