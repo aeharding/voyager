@@ -27,7 +27,7 @@ export function useOnExternalPaymentLinkClickHandler() {
           text: "Cancel",
         },
         {
-          text: "OK",
+          text: "Continue",
           handler: () => {
             window.open(href, "_blank");
           },
