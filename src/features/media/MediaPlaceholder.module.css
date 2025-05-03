@@ -1,6 +1,9 @@
 .placeholderContainer {
   display: flex;
 
+  /* Inline (coment media) placeholder width exceeds the container width */
+  max-width: 100%;
+
   /* Sometimes the <img> natural size is loaded, but the media cannot be played */
   overflow: hidden;
 
@@ -15,6 +18,8 @@
       position: absolute;
       top: 0;
       left: 0;
+
+      min-width: 1px;
     }
   }
 }

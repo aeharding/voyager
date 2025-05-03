@@ -34,21 +34,15 @@ export function parseUrl(url: string, baseUrl?: string): URL | undefined {
   }
 }
 
-export function getPotentialImageProxyPathname(
-  url: string,
-): string | undefined {
-  const parsedURL = parseUrl(url);
-
-  if (!parsedURL) return;
-
-  if (parsedURL.pathname === "/api/v3/image_proxy") {
-    const actualImageURL = parsedURL.searchParams.get("url");
+function getPotentialImageProxyUrl(url: URL): URL | undefined {
+  if (url.pathname === "/api/v3/image_proxy") {
+    const actualImageURL = url.searchParams.get("url");
 
     if (!actualImageURL) return;
-    return getPathname(actualImageURL);
+    return parseUrl(actualImageURL);
   }
 
-  return parsedURL.pathname;
+  return url;
 }
 
 const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl", "avif"];
@@ -59,16 +53,18 @@ export function isUrlImage(
 ): boolean {
   if (contentType?.startsWith("image/")) return true;
 
-  const pathname = getPotentialImageProxyPathname(url);
+  const parsedUrl = parseUrl(url);
+  if (!parsedUrl) return false;
 
-  if (!pathname) return false;
+  const unfurledUrl = getPotentialImageProxyUrl(parsedUrl);
+  if (!unfurledUrl) return false;
 
   return imageExtensions.some((extension) =>
-    pathname.endsWith(`.${extension}`),
+    unfurledUrl.pathname.endsWith(`.${extension}`),
   );
 }
 
-const animatedImageExtensions = ["gif", "webp", "jxl", "avif", "apng"];
+const animatedImageExtensions = ["gif", "webp", "jxl", "avif", "apng", "gifv"];
 const animatedImageContentTypes = animatedImageExtensions.map(
   (extension) => `image/${extension}`,
 );
@@ -80,16 +76,18 @@ export function isUrlPotentialAnimatedImage(
   if (contentType && animatedImageContentTypes.includes(contentType))
     return true;
 
-  const pathname = getPotentialImageProxyPathname(url);
+  const parsedUrl = parseUrl(url);
+  if (!parsedUrl) return false;
 
-  if (!pathname) return false;
+  const unfurledUrl = getPotentialImageProxyUrl(parsedUrl);
+  if (!unfurledUrl) return false;
 
   return animatedImageExtensions.some((extension) =>
-    pathname.endsWith(`.${extension}`),
+    unfurledUrl.pathname.endsWith(`.${extension}`),
   );
 }
 
-const videoExtensions = ["mp4", "webm", "gifv"];
+const videoExtensions = ["mp4", "webm"];
 
 export function isUrlVideo(
   url: string,
@@ -97,11 +95,17 @@ export function isUrlVideo(
 ): boolean {
   if (contentType?.startsWith("video/")) return true;
 
-  const pathname = getPotentialImageProxyPathname(url);
-  if (!pathname) return false;
+  const parsedUrl = parseUrl(url);
+  if (!parsedUrl) return false;
+
+  const unfurledUrl = getPotentialImageProxyUrl(parsedUrl);
+  if (!unfurledUrl) return false;
+
+  // Not proxied, and from imgur
+  if (parsedUrl === unfurledUrl && isImgurGifv(parsedUrl)) return true;
 
   return videoExtensions.some((extension) =>
-    pathname.endsWith(`.${extension}`),
+    unfurledUrl.pathname.endsWith(`.${extension}`),
   );
 }
 
@@ -148,21 +152,17 @@ export function isValidHostname(value: string) {
 }
 
 export function getVideoSrcForUrl(url: string) {
-  let parsedUrl;
+  const parsedUrl = parseUrl(url);
+  if (!parsedUrl) return url;
 
-  try {
-    parsedUrl = new URL(url);
-  } catch (error) {
-    console.error(error);
-    return url;
-  }
-
-  const { hostname, pathname } = parsedUrl;
-
-  if (hostname === "i.imgur.com" && pathname.endsWith(".gifv"))
-    return `https://${hostname}${pathname.replace(/\.gifv$/, ".mp4")}`;
+  if (isImgurGifv(parsedUrl))
+    return `https://${parsedUrl.hostname}${parsedUrl.pathname.replace(/\.gifv$/, ".mp4")}`;
 
   return url;
+}
+
+function isImgurGifv(url: URL) {
+  return url.hostname === "i.imgur.com" && url.pathname.endsWith(".gifv");
 }
 
 export function stripProtocol(url: string): string {
