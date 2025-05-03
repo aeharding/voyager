@@ -1,10 +1,10 @@
-import InlineMedia, { InlineMediaProps } from "#/features/media/InlineMedia";
+import Media, { MediaProps } from "#/features/media/Media";
 import { cx } from "#/helpers/css";
 import { forceSecureUrl } from "#/helpers/url";
 
 import styles from "./MarkdownImg.module.css";
 
-interface MarkdownImgProps extends Omit<InlineMediaProps, "ref"> {
+interface MarkdownImgProps extends Omit<MediaProps, "ref"> {
   /**
    * Restrict height of media within comments (unrestricted in post body)
    */
@@ -21,7 +21,7 @@ export default function MarkdownImg({
   if (!src) return;
 
   return (
-    <InlineMedia
+    <Media
       {...props}
       src={forceSecureUrl(src)}
       mediaClassName={cx(sharedStyles, props.className)}
@@ -29,6 +29,7 @@ export default function MarkdownImg({
       animationType="zoom"
       progress={false}
       volume={false}
+      inline
     />
   );
 }
