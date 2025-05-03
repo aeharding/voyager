@@ -29,7 +29,6 @@ export default function MarkdownImg({
       animationType="zoom"
       progress={false}
       volume={false}
-      inline
     />
   );
 }
