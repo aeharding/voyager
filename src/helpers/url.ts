@@ -102,7 +102,7 @@ export function isUrlVideo(
   if (!unfurledUrl) return false;
 
   // Not proxied, and from imgur
-  if (parsedUrl === unfurledUrl && isImgurGifv(url)) return true;
+  if (parsedUrl === unfurledUrl && isImgurGifv(parsedUrl)) return true;
 
   return videoExtensions.some((extension) =>
     unfurledUrl.pathname.endsWith(`.${extension}`),
@@ -152,29 +152,17 @@ export function isValidHostname(value: string) {
 }
 
 export function getVideoSrcForUrl(url: string) {
-  let parsedUrl;
+  const parsedUrl = parseUrl(url);
+  if (!parsedUrl) return url;
 
-  try {
-    parsedUrl = new URL(url);
-  } catch (error) {
-    console.error(error);
-    return url;
-  }
-
-  const { hostname, pathname } = parsedUrl;
-
-  if (isImgurGifv(url))
-    return `https://${hostname}${pathname.replace(/\.gifv$/, ".mp4")}`;
+  if (isImgurGifv(parsedUrl))
+    return `https://${parsedUrl.hostname}${parsedUrl.pathname.replace(/\.gifv$/, ".mp4")}`;
 
   return url;
 }
 
-function isImgurGifv(url: string) {
-  const parsedUrl = parseUrl(url);
-  return (
-    parsedUrl?.hostname === "i.imgur.com" &&
-    parsedUrl?.pathname.endsWith(".gifv")
-  );
+function isImgurGifv(url: URL) {
+  return url.hostname === "i.imgur.com" && url.pathname.endsWith(".gifv");
 }
 
 export function stripProtocol(url: string): string {
