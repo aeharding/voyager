@@ -177,4 +177,5 @@ export default function PersonLink({
 
 const onStart: LongPressOptions["onStart"] = (e) => {
   e.stopPropagation();
+  e.preventDefault();
 };

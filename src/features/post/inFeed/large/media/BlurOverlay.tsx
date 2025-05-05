@@ -1,6 +1,4 @@
-import useAspectRatio, {
-  isLoadedAspectRatio,
-} from "#/features/media/useAspectRatio";
+import useImageData, { isLoadedImageData } from "#/features/media/useImageData";
 
 import BlurOverlayMessage from "./BlurOverlayMessage";
 
@@ -11,10 +9,10 @@ interface BlurOverlayProps extends React.PropsWithChildren {
 }
 
 export default function BlurOverlay({ src, children }: BlurOverlayProps) {
-  const aspectRatio = useAspectRatio(src);
+  const imageData = useImageData(src);
 
   // Only blur if image is displayed (loaded)
-  const blur = !!isLoadedAspectRatio(aspectRatio);
+  const blur = !!isLoadedImageData(imageData);
 
   return (
     <div className={styles.container}>

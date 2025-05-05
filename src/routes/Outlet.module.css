@@ -1,7 +1,3 @@
-.tabs-content {
-  display: flex;
-}
-
 .routerOutletContents {
   display: flex;
   width: 100%;
@@ -12,12 +8,36 @@
     flex: 1;
   }
 
-  > *:first-child {
+  /* Change order here, so css selector + can be used below */
+  > ion-router-outlet {
+    order: -1;
+  }
+
+  /* If empty state or page is shown (not hidden), router outlet (first column) should have max width */
+  > div:not(:global(.ion-hide)) ~ ion-router-outlet {
     max-width: 520px;
   }
 
-  > *:last-child {
-    /* When only one child (one column mode), override first-child's max-width */
-    max-width: initial;
+  /* First column (main content) */
+  > ion-router-outlet > :global(.ion-page),
+  /* Second column */
+  > :global(.ion-page) {
+    > ion-header {
+      /* Header doesn't support dynamic font size */
+      ion-button,
+      ion-back-button,
+      ion-title {
+        font-size: 17px;
+      }
+
+      /* Ionic's default font size for icons in header is a bit too large */
+      ion-button:global(.in-toolbar) ion-icon {
+        font-size: 1.35em !important;
+      }
+
+      ion-back-button:global(.md)::part(text) {
+        display: none;
+      }
+    }
   }
 }

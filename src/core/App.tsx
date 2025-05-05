@@ -1,11 +1,9 @@
 // Core CSS required for Ionic components to work properly
 import "@ionic/react/css/core.css";
-
 // Basic CSS for apps built with Ionic */
 import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/structure.css";
 import "@ionic/react/css/typography.css";
-
 // Optional CSS utils that can be commented out
 import "@ionic/react/css/display.css";
 import "@ionic/react/css/flex-utils.css";
@@ -55,11 +53,11 @@ import GlobalStyles from "./GlobalStyles";
 import { TabContextProvider } from "./TabContext";
 
 // preserve lexical order
+import OutletProvider from "#/routes/OutletProvider";
 import TabbedRoutes from "#/routes/TabbedRoutes";
 
 import Auth from "./Auth";
 import Listeners from "./listeners";
-
 // Setup global app lifecycle listeners
 import "./listeners";
 
@@ -96,9 +94,11 @@ export default function App() {
                       <AppToastProvider>
                         <IonApp>
                           <Auth>
-                            <TabbedRoutes>
-                              <Listeners />
-                            </TabbedRoutes>
+                            <OutletProvider>
+                              <TabbedRoutes>
+                                <Listeners />
+                              </TabbedRoutes>
+                            </OutletProvider>
                           </Auth>
                         </IonApp>
                       </AppToastProvider>

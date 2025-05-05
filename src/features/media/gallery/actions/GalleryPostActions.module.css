@@ -6,6 +6,11 @@
 
   max-width: 600px;
   width: 100%;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 .section {
