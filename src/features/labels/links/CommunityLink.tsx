@@ -196,6 +196,7 @@ export default function CommunityLink({
 
 const onStart: LongPressOptions["onStart"] = (e) => {
   e.stopPropagation();
+  e.preventDefault();
 };
 
 function useShowSubscribedIcon() {

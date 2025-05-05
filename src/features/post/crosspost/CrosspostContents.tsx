@@ -11,7 +11,7 @@ import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 
 import { CrosspostProps } from "./Crosspost";
-import { useCopyPostAspectRatioIfNeeded } from "./useCopyPostAspectRatioIfNeeded";
+import { useCopyPostImageDataIfNeeded } from "./useCopyPostImageDataIfNeeded";
 
 import styles from "./CrosspostContents.module.css";
 
@@ -25,7 +25,7 @@ export default function CrosspostContents({
   hasBeenRead,
   post,
 }: CrosspostContentsProps) {
-  useCopyPostAspectRatioIfNeeded(post, crosspost);
+  useCopyPostImageDataIfNeeded(post, crosspost);
 
   return (
     <>

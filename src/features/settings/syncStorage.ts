@@ -8,7 +8,6 @@ import type { Mode } from "@ionic/core";
  *
  * So, those critical settings are stored here.
  */
-
 import { isAndroid } from "#/helpers/device";
 import { DeepPartial } from "#/helpers/typescript";
 

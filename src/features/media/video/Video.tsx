@@ -1,5 +1,6 @@
 import { useImperativeHandle } from "react";
 
+import useImageData from "../useImageData";
 import type { PlayerProps } from "./Player";
 import Player from "./Player";
 import { OutPortalPlayer } from "./PortaledPlayer";
@@ -46,8 +47,12 @@ function PortaledVideo({
     [portalNode],
   );
 
+  // when the video is portaled elsewhere, we need all available data
+  const imageData = useImageData(props.src);
+  const width = typeof imageData === "object" ? imageData.width : undefined;
+
   return (
-    <span style={props.style} className={props.className}>
+    <span style={{ width, ...props.style }} className={props.className}>
       {portalNode ? (
         <OutPortalPlayer {...props} node={portalNode} />
       ) : undefined}

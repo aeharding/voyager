@@ -17,7 +17,7 @@ import {
 } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { CustomItemComponent, VListHandle } from "virtua";
+import { VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
 import { jwtPayloadSelector } from "#/features/auth/authSelectors";
@@ -40,10 +40,6 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import sharedLabelStyles from "#/features/labels/links/shared.module.css";
 import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ConversationPage.module.css";
-
-function FlexItem(props: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...props} className={styles.flexItem} />;
-}
 
 function useMessages(
   allMessages: PrivateMessageView[],
@@ -172,14 +168,14 @@ export default function ConversationPage() {
               });
             });
           }}
-          item={FlexItem as unknown as CustomItemComponent}
         >
           {messages.map((message, index) => (
-            <Message
+            <div
+              className={styles.messageContainer}
               key={message.private_message.id}
-              message={message}
-              first={index === 0}
-            />
+            >
+              <Message message={message} first={index === 0} />
+            </div>
           ))}
         </AppVList>
       );
