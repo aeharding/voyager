@@ -63,3 +63,14 @@
     min-width: fit-content;
   }
 }
+
+.divContainerLarge {
+  display: flex;
+  flex-direction: column;
+}
+
+.divChildLarge {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}

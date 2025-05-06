@@ -34,6 +34,14 @@
   color: var(--ion-color-text-aside);
 }
 
+.detailsLarge {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: right;
+}
+
 .leftDetails {
   display: flex;
   flex-direction: column;
@@ -54,6 +62,12 @@
   > * {
     padding: 0.5rem !important;
   }
+}
+
+.rightDetailsLarge {
+  display: flex;
+  align-items: right;
+  margin-left: auto;
 }
 
 .communityName {

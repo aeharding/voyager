@@ -82,6 +82,7 @@ export interface SettingsState {
     font: {
       fontSizeMultiplier: number;
       useSystemFontSize: boolean;
+      accommodateLargeText: boolean;
     };
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
@@ -197,6 +198,7 @@ const baseState: SettingsState = {
     },
     deviceMode: "ios",
     font: {
+      accommodateLargeText: false,
       fontSizeMultiplier: 1,
       useSystemFontSize: false,
     },
@@ -304,6 +306,11 @@ export const settingsSlice = createSlice({
   },
 
   reducers: {
+    setAccommodateLargeText(state, action: PayloadAction<boolean>) {
+      state.appearance.font.accommodateLargeText = action.payload;
+      set(LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT, action.payload);
+    },
+
     setDatabaseError(state, action: PayloadAction<Error>) {
       state.databaseError = action.payload;
     },
@@ -785,6 +792,7 @@ export const defaultThreadCollapse = createSelector(
 );
 
 export const {
+  setAccommodateLargeText,
   setAlwaysShowAuthor,
   setAlwaysUseReaderMode,
   setAutoHideRead,
