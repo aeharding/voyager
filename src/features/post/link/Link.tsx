@@ -115,7 +115,7 @@ export default function Link({
       return (
         <img
           className={styles.thumbnailImg}
-          src={getImageSrc(forceSecureUrl(url), { size: 50 })}
+          src={getImageSrc(forceSecureUrl(url), { size: 100 })}
           onError={onError}
         />
       );
@@ -126,8 +126,11 @@ export default function Link({
     return (
       <img
         className={styles.thumbnailImg}
-        src={forceSecureUrl(
-          typeof thumbnail === "string" ? thumbnail : thumbnail.sm,
+        src={getImageSrc(
+          forceSecureUrl(
+            typeof thumbnail === "string" ? thumbnail : thumbnail.sm,
+          ),
+          { size: 100 },
         )}
         onError={onError}
       />
