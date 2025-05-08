@@ -4,6 +4,7 @@ import { isNative, supportsWebp } from "#/helpers/device";
 import { reduceFileSize } from "#/helpers/imageCompress";
 
 import nativeFetch from "./nativeFetch";
+import { isUrlPictrsLike, parseUrl } from "#/helpers/url";
 
 const usingNativeFetch = isNative();
 
@@ -109,13 +110,10 @@ const defaultFormat = supportsWebp() ? "webp" : "jpg";
 export function getImageSrc(url: string, options?: ImageOptions) {
   if (!options || !options.size) return url;
 
-  let mutableUrl;
+  let mutableUrl = parseUrl(url);
 
-  try {
-    mutableUrl = new URL(url);
-  } catch (_) {
-    return url;
-  }
+  if (!mutableUrl) return url;
+  if (!isUrlPictrsLike(mutableUrl)) return url;
 
   const params = mutableUrl.searchParams;
 

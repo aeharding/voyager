@@ -21,6 +21,7 @@ import CompactFeedPostMedia from "./CompactFeedPostMedia";
 import SelfSvg from "./self.svg?react";
 
 import styles from "./Thumbnail.module.css";
+import useIsPostUrlMedia from "../../useIsPostUrlMedia";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -42,18 +43,17 @@ interface ImgProps {
 export default function Thumbnail({ post }: ImgProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
+
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post],
   );
 
-  const [error, setError] = useState(false);
-
-  const postImageSrc = useMemo(() => {
-    if (post.post.url) return post.post.url;
-
-    if (markdownLoneImage) return markdownLoneImage.url;
-  }, [markdownLoneImage, post.post]);
+  const isPostUrlMedia = useIsPostUrlMedia();
+  const urlIsMedia = useMemo(
+    () => isPostUrlMedia(post) || markdownLoneImage,
+    [post, isPostUrlMedia, markdownLoneImage],
+  );
 
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
@@ -67,7 +67,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
 
-  const isLink = !postImageSrc && post.post.url;
+  const isLink = !urlIsMedia && post.post.url;
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -78,14 +78,13 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const renderContents = useCallback(() => {
     if (isLink) {
-      if (post.post.thumbnail_url && !error)
+      if (post.post.thumbnail_url)
         return (
           <>
             <img
               src={getImageSrc(forceSecureUrl(post.post.thumbnail_url), {
                 size: 100,
               })}
-              onError={() => setError(true)}
               className={cx(styles.img, nsfw && styles.blurImg)}
             />
             <IonIcon className={styles.linkIcon} icon={linkOutline} />
@@ -95,7 +94,7 @@ export default function Thumbnail({ post }: ImgProps) {
       return <IonIcon className={styles.fullsizeIcon} icon={link} />;
     }
 
-    if (postImageSrc) {
+    if (urlIsMedia || markdownLoneImage) {
       return (
         <CompactFeedPostMedia
           post={post}
@@ -105,7 +104,7 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     return <SelfSvg />;
-  }, [isLink, nsfw, post, postImageSrc, error]);
+  }, [isLink, nsfw, post, urlIsMedia, markdownLoneImage]);
 
   if (thumbnailSize === OCompactThumbnailSizeType.Hidden) return;
 
