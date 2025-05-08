@@ -7,7 +7,6 @@ import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { cx } from "#/helpers/css";
-import { findLoneImage } from "#/helpers/markdown";
 import { forceSecureUrl } from "#/helpers/url";
 import {
   CompactThumbnailSizeType,
@@ -44,15 +43,10 @@ export default function Thumbnail({ post }: ImgProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const markdownLoneImage = useMemo(
-    () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
-  );
-
   const isPostUrlMedia = useIsPostUrlMedia();
   const urlIsMedia = useMemo(
-    () => isPostUrlMedia(post) || markdownLoneImage,
-    [post, isPostUrlMedia, markdownLoneImage],
+    () => isPostUrlMedia(post),
+    [post, isPostUrlMedia],
   );
 
   const blurNsfw = useAppSelector(
@@ -94,7 +88,7 @@ export default function Thumbnail({ post }: ImgProps) {
       return <IonIcon className={styles.fullsizeIcon} icon={link} />;
     }
 
-    if (urlIsMedia || markdownLoneImage) {
+    if (urlIsMedia) {
       return (
         <CompactFeedPostMedia
           post={post}
@@ -104,7 +98,7 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     return <SelfSvg />;
-  }, [isLink, nsfw, post, urlIsMedia, markdownLoneImage]);
+  }, [isLink, nsfw, post, urlIsMedia]);
 
   if (thumbnailSize === OCompactThumbnailSizeType.Hidden) return;
 

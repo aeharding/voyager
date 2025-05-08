@@ -23,7 +23,6 @@ import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import Markdown from "#/features/shared/markdown/Markdown";
 import { cx } from "#/helpers/css";
 import { findIonContentScrollView } from "#/helpers/ionic";
-import { findLoneImage } from "#/helpers/markdown";
 import { postLocked } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { OTapToCollapseType } from "#/services/db";
@@ -70,11 +69,6 @@ export default function PostHeader({
   );
   const presentToast = useAppToast();
 
-  const markdownLoneImage = useMemo(
-    () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
-  );
-
   const isPostUrlMedia = useIsPostUrlMedia();
   const urlIsMedia = useMemo(
     () => isPostUrlMedia(post),
@@ -108,7 +102,7 @@ export default function PostHeader({
   const renderMedia = useCallback(() => {
     if (!post) return;
 
-    if (urlIsMedia || markdownLoneImage) {
+    if (urlIsMedia) {
       return (
         <LargeFeedPostMedia
           className={styles.lightboxMedia}
@@ -121,7 +115,7 @@ export default function PostHeader({
         />
       );
     }
-  }, [post, urlIsMedia, markdownLoneImage, constrainHeight]);
+  }, [post, urlIsMedia, constrainHeight]);
 
   const renderText = useCallback(() => {
     if (!post) return;
@@ -136,9 +130,7 @@ export default function PostHeader({
       );
     }
 
-    const usedLoneImage = markdownLoneImage && !urlIsMedia;
-
-    if (post.post.body?.trim() && !usedLoneImage) {
+    if (post.post.body?.trim() && urlIsMedia !== "from-body") {
       return (
         <>
           {post.post.url && !urlIsMedia && <PostLink post={post} />}
@@ -155,7 +147,7 @@ export default function PostHeader({
     if (post.post.url && !urlIsMedia) {
       return <PostLink className={styles.postLink} post={post} />;
     }
-  }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
+  }, [post, crosspostUrl, urlIsMedia]);
 
   const text = renderText();
 
