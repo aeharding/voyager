@@ -2,6 +2,7 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { isNative, supportsWebp } from "#/helpers/device";
 import { reduceFileSize } from "#/helpers/imageCompress";
+import { isUrlPictrsLike, parseUrl } from "#/helpers/url";
 
 import nativeFetch from "./nativeFetch";
 
@@ -109,13 +110,10 @@ const defaultFormat = supportsWebp() ? "webp" : "jpg";
 export function getImageSrc(url: string, options?: ImageOptions) {
   if (!options || !options.size) return url;
 
-  let mutableUrl;
+  const mutableUrl = parseUrl(url);
 
-  try {
-    mutableUrl = new URL(url);
-  } catch (_) {
-    return url;
-  }
+  if (!mutableUrl) return url;
+  if (!isUrlPictrsLike(mutableUrl)) return url;
 
   const params = mutableUrl.searchParams;
 

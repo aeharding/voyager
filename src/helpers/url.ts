@@ -208,3 +208,10 @@ export function forceSecureUrl(url: string | undefined): string | undefined {
   if (url.startsWith("http://")) return url.replace(/^http:\/\//, "https://");
   return url;
 }
+
+export function isUrlPictrsLike(url: URL): boolean {
+  return (
+    url.pathname.startsWith("/api/v3/image_proxy") ||
+    url.pathname.startsWith("/pictrs/image")
+  );
+}
