@@ -110,7 +110,7 @@ const defaultFormat = supportsWebp() ? "webp" : "jpg";
 export function getImageSrc(url: string, options?: ImageOptions) {
   if (!options || !options.size) return url;
 
-  let mutableUrl = parseUrl(url);
+  const mutableUrl = parseUrl(url);
 
   if (!mutableUrl) return url;
   if (!isUrlPictrsLike(mutableUrl)) return url;
