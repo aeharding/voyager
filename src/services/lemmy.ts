@@ -2,9 +2,9 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { isNative, supportsWebp } from "#/helpers/device";
 import { reduceFileSize } from "#/helpers/imageCompress";
+import { isUrlPictrsLike, parseUrl } from "#/helpers/url";
 
 import nativeFetch from "./nativeFetch";
-import { isUrlPictrsLike, parseUrl } from "#/helpers/url";
 
 const usingNativeFetch = isNative();
 

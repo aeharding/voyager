@@ -1,14 +1,14 @@
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { MouseEvent, useCallback, useMemo, useState } from "react";
+import { MouseEvent, useCallback, useMemo } from "react";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { cx } from "#/helpers/css";
 import { findLoneImage } from "#/helpers/markdown";
-import { forceSecureUrl, isUrlImage } from "#/helpers/url";
+import { forceSecureUrl } from "#/helpers/url";
 import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
@@ -17,11 +17,11 @@ import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../../postSlice";
+import useIsPostUrlMedia from "../../useIsPostUrlMedia";
 import CompactFeedPostMedia from "./CompactFeedPostMedia";
 import SelfSvg from "./self.svg?react";
 
 import styles from "./Thumbnail.module.css";
-import useIsPostUrlMedia from "../../useIsPostUrlMedia";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
