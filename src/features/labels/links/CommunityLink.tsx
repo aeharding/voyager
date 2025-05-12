@@ -58,6 +58,15 @@ export default function CommunityLink({
   const showCommunityIcons = useAppSelector(
     (state) => state.settings.appearance.posts.showCommunityIcons,
   );
+
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
+
+  const communityAtTop = useAppSelector(
+    (state) => state.settings.appearance.posts.communityAtTop,
+  );
+
   const showSubscribed = useShowSubscribedIcon();
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
@@ -118,6 +127,38 @@ export default function CommunityLink({
       )}
     </>
   );
+
+  if (accommodateLargeText && communityAtTop) {
+    return (
+      <div className={sharedStyles.linkContainerParentLarge}>
+        <div>
+          {showCommunityIcons && !hideCommunity && !hideIcon && (
+            <ItemIcon
+              item={community}
+              size={tinyIcon ? 16 : 24}
+              className={styles.itemIcon}
+            />
+          )}
+        </div>
+
+        <div className={sharedStyles.linkContainerChildLarge}>
+          <Link
+            className={sharedStyles.link}
+            to={buildGeneralBrowseLink(`/c/${handle}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              preventOnClickNavigationBug(e);
+            }}
+            draggable={false}
+          >
+            {name}
+
+            {!disableInstanceClick && end}
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <span

@@ -17,6 +17,7 @@ export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
+    ACCOMMODATE_LARGE_TEXT: "appearance--accommodate-large-text",
   },
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
@@ -50,6 +51,9 @@ export function getLocalStorageInitialState(): DeepPartial<SettingsState> {
       font: {
         fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
         useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+        accommodateLargeText: get(
+          LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT,
+        ),
       },
       theme: get(LOCALSTORAGE_KEYS.THEME),
     },
