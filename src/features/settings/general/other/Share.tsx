@@ -24,6 +24,8 @@ function getLabel(option: PostCommentShareType) {
   switch (option) {
     case OPostCommentShareType.ApId:
       return "Author";
+    case OPostCommentShareType.DeepLink:
+      return "Voyager";
     default:
       return undefined;
   }

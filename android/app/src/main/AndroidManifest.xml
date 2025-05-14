@@ -33,6 +33,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -112,6 +113,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -191,6 +193,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -270,6 +273,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -349,6 +353,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -428,6 +433,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -507,6 +513,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -586,6 +593,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />

@@ -14,6 +14,7 @@ import { produce } from "immer";
 import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
+import { isNative } from "#/helpers/device";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import {
@@ -243,7 +244,9 @@ const baseState: SettingsState = {
       touchFriendlyLinks: true,
     },
     defaultFeed: undefined,
-    defaultShare: OPostCommentShareType.Local,
+    defaultShare: isNative()
+      ? OPostCommentShareType.DeepLink
+      : OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     media: {
