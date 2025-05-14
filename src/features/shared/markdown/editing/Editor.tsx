@@ -10,7 +10,7 @@ import {
 } from "react";
 
 import { cx } from "#/helpers/css";
-import { extractLemmyLinkFromGoVoyagerLink } from "#/helpers/goVoyager";
+import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/helpers/goVoyager";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
@@ -90,7 +90,7 @@ export default function Editor({
 
       document.execCommand("insertText", false, toInsert);
     } else if (text && !onPastePlainRef.current) {
-      const potentialUrl = extractLemmyLinkFromGoVoyagerLink(text);
+      const potentialUrl = extractLemmyLinkFromPotentialGoVoyagerLink(text);
       if (potentialUrl) {
         e.preventDefault();
         document.execCommand("insertText", false, potentialUrl);

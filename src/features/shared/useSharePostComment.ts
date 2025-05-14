@@ -3,7 +3,7 @@ import { uniq } from "es-toolkit";
 import { CommentView, PostView } from "lemmy-js-client";
 
 import { isNative } from "#/helpers/device";
-import { generateGoVoyagerLink } from "#/helpers/goVoyager";
+import { buildGoVoyagerLink, GO_VOYAGER_HOST } from "#/helpers/goVoyager";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
@@ -42,8 +42,8 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       buttons: instanceCandidates.map((instance) => ({
         text: instance,
         handler: () => {
-          if (instance === "go.getvoyager.app") {
-            const voyagerLink = generateGoVoyagerLink(
+          if (instance === GO_VOYAGER_HOST) {
+            const voyagerLink = buildGoVoyagerLink(
               getApId(isPost(itemView) ? itemView.post : itemView.comment),
             );
             if (voyagerLink) shareFromUrl(voyagerLink);
@@ -156,7 +156,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         break;
       case OPostCommentShareType.DeepLink:
         await shareFromUrl(
-          generateGoVoyagerLink(
+          buildGoVoyagerLink(
             getApId(isPost(itemView) ? itemView.post : itemView.comment),
           )!,
         );
@@ -194,7 +194,7 @@ function generateInstanceCandidates(
   postOrComment: PostView | CommentView,
   connectedInstance: string,
 ) {
-  const candidates: string[] = ["go.getvoyager.app"];
+  const candidates: string[] = [GO_VOYAGER_HOST];
 
   candidates.push(connectedInstance);
 

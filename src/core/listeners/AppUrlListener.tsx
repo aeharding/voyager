@@ -7,7 +7,7 @@ import {
 
 import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
-import { extractLemmyLinkFromGoVoyagerLink } from "#/helpers/goVoyager";
+import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/helpers/goVoyager";
 import { deepLinkFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppSelector } from "#/store";
@@ -37,18 +37,10 @@ export default function AppUrlListener() {
       return;
     }
 
-    const parsedUrl = new URL(url);
-    if (!parsedUrl) {
-      presentToast(deepLinkFailed);
-      return;
-    }
-
     let lemmyLink = url;
 
-    if (parsedUrl.host === "go.getvoyager.app") {
-      const potentialLemmyLink = extractLemmyLinkFromGoVoyagerLink(url);
-      if (potentialLemmyLink) lemmyLink = potentialLemmyLink;
-    }
+    const potentialLemmyLink = extractLemmyLinkFromPotentialGoVoyagerLink(url);
+    if (potentialLemmyLink) lemmyLink = potentialLemmyLink;
 
     // wait for router to get into a good state before pushing
     // (needed for pushing user profiles from app startup)

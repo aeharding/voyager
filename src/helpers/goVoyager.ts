@@ -1,17 +1,19 @@
 import { parseUrl } from "./url";
 
-export function generateGoVoyagerLink(apId: string) {
+export const GO_VOYAGER_HOST = "go.getvoyager.app";
+
+export function buildGoVoyagerLink(apId: string) {
   const url = parseUrl(apId);
 
   if (!url) return undefined;
 
-  return `https://go.getvoyager.app/${url.hostname}${url.pathname}`;
+  return `https://${GO_VOYAGER_HOST}/${url.hostname}${url.pathname}`;
 }
 
-export function extractLemmyLinkFromGoVoyagerLink(url: string) {
+export function extractLemmyLinkFromPotentialGoVoyagerLink(url: string) {
   const potentialUrl = parseUrl(url);
 
-  if (potentialUrl?.hostname === "go.getvoyager.app" && potentialUrl.pathname) {
+  if (potentialUrl?.hostname === GO_VOYAGER_HOST && potentialUrl.pathname) {
     return `https:/${potentialUrl.pathname}`;
   }
 }
