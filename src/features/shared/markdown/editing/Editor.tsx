@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { cx } from "#/helpers/css";
+import { extractLemmyLinkFromGoVoyagerLink } from "#/helpers/goVoyager";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
@@ -48,6 +49,7 @@ export default function Editor({
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(undefined);
+  const onPastePlainRef = useRef(false);
 
   const { insertBlock } = useEditorHelpers(textareaRef);
 
@@ -72,6 +74,7 @@ export default function Editor({
 
   async function onPaste(e: ClipboardEvent) {
     const html = e.clipboardData.getData("text/html");
+    const text = e.clipboardData.getData("text/plain");
 
     if (html) {
       e.preventDefault();
@@ -86,6 +89,12 @@ export default function Editor({
       }
 
       document.execCommand("insertText", false, toInsert);
+    } else if (text && !onPastePlainRef.current) {
+      const potentialUrl = extractLemmyLinkFromGoVoyagerLink(text);
+      if (potentialUrl) {
+        e.preventDefault();
+        document.execCommand("insertText", false, potentialUrl);
+      }
     }
 
     const image = e.clipboardData.files?.[0];
@@ -169,6 +178,12 @@ export default function Editor({
     }
   }
 
+  function updateMetaRef(e: KeyboardEvent) {
+    const meta = e.shiftKey;
+    onPastePlainRef.current = meta;
+    return meta;
+  }
+
   return (
     <>
       {uploadImageJsx}
@@ -187,6 +202,8 @@ export default function Editor({
           spellCheck
           id={TOOLBAR_TARGET_ID}
           onKeyDown={(e) => {
+            updateMetaRef(e);
+
             switch (e.key) {
               case "Enter": {
                 if (e.ctrlKey || e.metaKey) {
@@ -201,6 +218,7 @@ export default function Editor({
                 break;
             }
           }}
+          onKeyUp={updateMetaRef}
           onPaste={onPaste}
           onDropCapture={onDragCapture}
           onDragOver={onDragOver}
