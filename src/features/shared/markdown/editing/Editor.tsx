@@ -13,6 +13,7 @@ import { cx } from "#/helpers/css";
 import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/helpers/goVoyager";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
+import { parseUriList } from "#/helpers/url";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 
@@ -73,8 +74,19 @@ export default function Editor({
   }, []);
 
   async function onPaste(e: ClipboardEvent) {
+    const image = e.clipboardData.files?.[0];
+
+    if (image) {
+      e.preventDefault();
+
+      onReceivedImage(image);
+      return;
+    }
+
+    // Bail on paste modifiers if user is holding down shift
+    if (onPastePlainRef.current) return;
+
     const html = e.clipboardData.getData("text/html");
-    const text = e.clipboardData.getData("text/plain");
 
     if (html) {
       e.preventDefault();
@@ -84,26 +96,31 @@ export default function Editor({
       try {
         toInsert = await htmlToMarkdown(html);
       } catch (_) {
-        toInsert = e.clipboardData.getData("Text");
+        toInsert = e.clipboardData.getData("text");
         console.error("Parse error", e);
       }
 
       document.execCommand("insertText", false, toInsert);
-    } else if (text && !onPastePlainRef.current) {
-      const potentialUrl = extractLemmyLinkFromPotentialGoVoyagerLink(text);
-      if (potentialUrl) {
-        e.preventDefault();
-        document.execCommand("insertText", false, potentialUrl);
-      }
+      return;
     }
 
-    const image = e.clipboardData.files?.[0];
+    const uriList = e.clipboardData.getData("text/uri-list");
 
-    if (!image) return;
+    if (uriList) {
+      const urls = parseUriList(uriList);
 
-    e.preventDefault();
+      if (urls.length !== 1) return;
 
-    onReceivedImage(image);
+      const potentialUrl = extractLemmyLinkFromPotentialGoVoyagerLink(urls[0]!);
+
+      if (!potentialUrl) return;
+
+      e.preventDefault();
+
+      document.execCommand("insertText", false, potentialUrl);
+
+      return;
+    }
   }
 
   async function onDragCapture(event: DragEvent) {

@@ -215,3 +215,19 @@ export function isUrlPictrsLike(url: URL): boolean {
     url.pathname.startsWith("/pictrs/image")
   );
 }
+
+/**
+ * Parses a text/uri-list string into an array of URLs.
+ * Ignores comment lines (starting with #) and empty lines.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
+ *
+ * @param uriList The raw text/uri-list string from clipboardData.
+ * @returns Array of URLs as strings.
+ */
+export function parseUriList(uriList: string): string[] {
+  return uriList
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"));
+}
