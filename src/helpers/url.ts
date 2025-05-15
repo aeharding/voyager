@@ -209,13 +209,13 @@ export function forceSecureUrl(url: string | undefined): string | undefined {
   return url;
 }
 
-<<<<<<< Updated upstream
 export function isUrlPictrsLike(url: URL): boolean {
   return (
     url.pathname.startsWith("/api/v3/image_proxy") ||
     url.pathname.startsWith("/pictrs/image")
   );
-=======
+}
+
 /**
  * Parses a text/uri-list string into an array of URLs.
  * Ignores comment lines (starting with #) and empty lines.
@@ -230,5 +230,4 @@ export function parseUriList(uriList: string): string[] {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith("#"));
->>>>>>> Stashed changes
 }
