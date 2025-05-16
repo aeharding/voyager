@@ -5,6 +5,7 @@ import { MouseEvent, useCallback, useMemo } from "react";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
+import CachedImg from "#/features/media/CachedImg";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { cx } from "#/helpers/css";
 import { forceSecureUrl } from "#/helpers/url";
@@ -12,7 +13,6 @@ import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
 } from "#/services/db";
-import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../../postSlice";
@@ -75,10 +75,11 @@ export default function Thumbnail({ post }: ImgProps) {
       if (post.post.thumbnail_url)
         return (
           <>
-            <img
-              src={getImageSrc(forceSecureUrl(post.post.thumbnail_url), {
+            <CachedImg
+              src={forceSecureUrl(post.post.thumbnail_url)}
+              pictrsOptions={{
                 size: 100,
-              })}
+              }}
               className={cx(styles.img, nsfw && styles.blurImg)}
             />
             <IonIcon className={styles.linkIcon} icon={linkOutline} />

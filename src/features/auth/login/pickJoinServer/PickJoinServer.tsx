@@ -31,6 +31,7 @@ import {
   SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 import Login from "#/features/auth/login/login/Login";
+import CachedImg from "#/features/media/CachedImg";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
@@ -39,7 +40,7 @@ import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { getApId } from "#/helpers/lemmyCompat";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
-import { getClient, getImageSrc } from "#/services/lemmy";
+import { getClient } from "#/services/lemmy";
 import { LVInstance } from "#/services/lemmyverse";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -258,9 +259,12 @@ export default function PickJoinServer() {
               return (
                 <IonItem className={styles.serverItem} key={url}>
                   <IonThumbnail className={styles.serverThumbnail} slot="start">
-                    <img
+                    <CachedImg
                       className={styles.serverImg}
-                      src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
+                      src={icon ?? lemmyLogo}
+                      pictrsOptions={{
+                        size: 32,
+                      }}
                     />
                   </IonThumbnail>
                   <IonRadio value={url}>
