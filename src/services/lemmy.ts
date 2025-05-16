@@ -1,8 +1,7 @@
 import { LemmyHttp } from "lemmy-js-client";
 
-import { isNative, supportsWebp } from "#/helpers/device";
+import { isNative } from "#/helpers/device";
 import { reduceFileSize } from "#/helpers/imageCompress";
-import { isUrlPictrsLike, parseUrl } from "#/helpers/url";
 
 import nativeFetch from "./nativeFetch";
 
@@ -92,43 +91,6 @@ export async function _uploadImage(
     throw new Error(response.msg ?? (response as unknown as Error).message);
 
   return response;
-}
-
-interface ImageOptions {
-  /**
-   * maximum image dimension
-   */
-  size?: number;
-
-  devicePixelRatio?: number;
-
-  format?: "jpg" | "png" | "webp";
-}
-
-const defaultFormat = supportsWebp() ? "webp" : "jpg";
-
-export function getImageSrc(url: string, options?: ImageOptions) {
-  if (!options || !options.size) return url;
-
-  const mutableUrl = parseUrl(url);
-
-  if (!mutableUrl) return url;
-  if (!isUrlPictrsLike(mutableUrl)) return url;
-
-  const params = mutableUrl.searchParams;
-
-  if (options.size) {
-    params.set(
-      "thumbnail",
-      `${Math.round(
-        options.size * (options?.devicePixelRatio ?? window.devicePixelRatio),
-      )}`,
-    );
-  }
-
-  params.set("format", options.format ?? defaultFormat);
-
-  return mutableUrl.toString();
 }
 
 export const customBackOff = async (attempt = 0, maxRetries = 5) => {

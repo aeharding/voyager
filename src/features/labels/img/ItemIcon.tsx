@@ -1,9 +1,9 @@
 import { Community, Person } from "lemmy-js-client";
 import { useState } from "react";
 
+import CachedImg from "#/features/media/CachedImg";
 import FakeIcon from "#/features/shared/FakeIcon";
 import { cx } from "#/helpers/css";
-import { getImageSrc } from "#/services/lemmy";
 
 import styles from "./ItemIcon.module.css";
 
@@ -39,11 +39,12 @@ export default function ItemIcon({
 
   if (icon && !failed)
     return (
-      <img
+      <CachedImg
         style={{ width: `${size}px`, height: `${size}px` }}
-        src={getImageSrc(icon, {
+        src={icon}
+        pictrsOptions={{
           size,
-        })}
+        }}
         onError={() => {
           setFailed(true);
         }}

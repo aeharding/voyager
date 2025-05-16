@@ -14,13 +14,13 @@ import {
 import { createPortal } from "react-dom";
 
 import CommentTree from "#/features/comment/inTree/CommentTree";
+import { buildImageSrc } from "#/features/media/CachedImg";
 import PostHeader from "#/features/post/detail/PostHeader";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
 import { cx } from "#/helpers/css";
 import { isNative } from "#/helpers/device";
 import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
 import useAppToast from "#/helpers/useAppToast";
-import { getImageSrc } from "#/services/lemmy";
 import { getServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
@@ -57,7 +57,7 @@ const domToBlobOptions: DomToBlobOptions = {
 
         const nativeResponse = await CapacitorHttp.get({
           // if pictrs, convert large gifs to jpg
-          url: getImageSrc(url, { format: "jpg" }),
+          url: buildImageSrc(url, { format: "jpg" }),
           responseType: "blob",
           headers: {
             ["User-Agent"]: "VoyagerApp/1.0",
