@@ -34,6 +34,7 @@ export default function GalleryMedia({
   progress,
   disableInlineInteraction,
   portalWithMediaId,
+  allowShowPlayButton,
   ...props
 }: GalleryMediaProps) {
   const isVideo =
@@ -87,6 +88,7 @@ export default function GalleryMedia({
         progress={progress}
         portalWithMediaId={portalWithMediaId}
         ref={props.ref as ComponentProps<typeof Video>["ref"]}
+        allowShowPlayButton={allowShowPlayButton}
         onClick={onClick}
       />
     );
