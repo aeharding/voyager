@@ -1,11 +1,12 @@
 import { IonButton } from "@ionic/react";
 
+import { useShare } from "#/features/share/share";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
 import { getApId } from "#/helpers/lemmyCompat";
-import { useShare } from "#/helpers/share";
 
 import { useAppSelector } from "../../store";
+import useShareUserCommunity from "../share/useShareUserCommunity";
 import usePresentUserActions from "./usePresentUserActions";
 
 interface UserPageActionsProps {
@@ -14,11 +15,12 @@ interface UserPageActionsProps {
 
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const presentUserActions = usePresentUserActions();
-  const share = useShare();
 
   const user = useAppSelector(
     (state) => state.user.userByHandle[handle.toLowerCase()],
   );
+
+  const { share } = useShareUserCommunity(user);
 
   return (
     <>
@@ -33,7 +35,7 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
                 text: "Share",
                 icon: getShareIcon(),
                 handler: () => {
-                  share(getApId(user));
+                  share();
                 },
               },
             ],

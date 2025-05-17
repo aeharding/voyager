@@ -28,7 +28,7 @@ import {
   getModIcon,
 } from "#/features/moderation/useCanModerate";
 import useCommentModActions from "#/features/moderation/useCommentModActions";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
+import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
 import {
   getHandle,

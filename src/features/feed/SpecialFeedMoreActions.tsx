@@ -10,7 +10,7 @@ import {
 import { OPostAppearanceType } from "#/features/settings/settingsSlice";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
-import { useShare } from "#/helpers/share";
+import { useShare } from "#/features/share/share";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import store from "#/store";
 

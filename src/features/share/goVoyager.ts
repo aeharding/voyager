@@ -1,4 +1,4 @@
-import { parseUrl } from "./url";
+import { parseUrl } from "#/helpers/url";
 
 export const GO_VOYAGER_HOST = "go.getvoyager.app";
 

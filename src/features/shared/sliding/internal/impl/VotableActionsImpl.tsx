@@ -18,7 +18,7 @@ import {
   isInboxItem,
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
+import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { isPost as _isPost } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
