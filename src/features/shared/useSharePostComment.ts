@@ -2,7 +2,6 @@ import { useIonActionSheet } from "@ionic/react";
 import { uniq } from "es-toolkit";
 import { CommentView, PostView } from "lemmy-js-client";
 
-import { isNative } from "#/helpers/device";
 import { buildGoVoyagerLink, GO_VOYAGER_HOST } from "#/helpers/goVoyager";
 import {
   buildLemmyCommentLink,
@@ -10,7 +9,7 @@ import {
   isPost,
 } from "#/helpers/lemmy";
 import { getApId } from "#/helpers/lemmyCompat";
-import { shareUrl } from "#/helpers/share";
+import { useShare } from "#/helpers/share";
 import {
   buildResolveCommentFailed,
   buildResolvePostFailed,
@@ -31,6 +30,8 @@ export function useSharePostComment(itemView: PostView | CommentView) {
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
 
+  const share = useShare();
+
   function onAsk() {
     const instanceCandidates = generateInstanceCandidates(
       itemView,
@@ -46,7 +47,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
             const voyagerLink = buildGoVoyagerLink(
               getApId(isPost(itemView) ? itemView.post : itemView.comment),
             );
-            if (voyagerLink) shareFromUrl(voyagerLink);
+            if (voyagerLink) share(voyagerLink);
             return;
           }
 
@@ -69,11 +70,11 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     switch (instance) {
       // optimization: sync way to get link at ap_id instance
       case apHostname: {
-        return shareFromUrl(item.ap_id);
+        return share(item.ap_id);
       }
       // optimization: sync way to get link at connectedInstance
       case connectedInstance: {
-        return shareFromUrl(buildLink(instance, item.id));
+        return share(buildLink(instance, item.id));
       }
       default: {
         const { post: resolvedPost, comment: resolvedComment } =
@@ -91,7 +92,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
           const url = buildLemmyPostLink(instance, _resolvedPost.post.id);
 
-          shareFromUrl(url);
+          share(url);
         } else {
           if (!resolvedComment) {
             presentToast(buildResolveCommentFailed(instance));
@@ -105,41 +106,16 @@ export function useSharePostComment(itemView: PostView | CommentView) {
             _resolvedComment.comment.id,
           );
 
-          shareFromUrl(url);
+          share(url);
         }
       }
     }
   }
 
-  async function shareFromUrl(url: string) {
-    try {
-      await shareUrl(url);
-    } catch (error) {
-      if (isNative()) throw error;
-
-      if (error instanceof DOMException) {
-        switch (error.name) {
-          case "NotAllowedError":
-            presentToast({
-              message: `Tap to share`,
-              onClick: () => shareFromUrl(url),
-            });
-            return;
-          case "AbortError":
-            return;
-        }
-      }
-
-      await copyToClipboard(url);
-
-      return;
-    }
-  }
-
-  async function share() {
+  async function onShare() {
     switch (defaultShare) {
       case OPostCommentShareType.ApId:
-        await shareFromUrl(
+        await share(
           isPost(itemView) ? itemView.post.ap_id : itemView.comment.ap_id,
         );
         break;
@@ -155,7 +131,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         await shareInstance(connectedInstance);
         break;
       case OPostCommentShareType.DeepLink:
-        await shareFromUrl(
+        await share(
           buildGoVoyagerLink(
             getApId(isPost(itemView) ? itemView.post : itemView.comment),
           )!,
@@ -164,29 +140,9 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     }
   }
 
-  async function copyToClipboard(url: string) {
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "NotAllowedError") {
-        presentToast({
-          message: `Tap to copy`,
-          onClick: () => shareFromUrl(url),
-        });
-        return;
-      }
-
-      throw error;
-    }
-
-    presentToast({
-      message: "Copied link!",
-    });
-  }
-
   return {
     onAsk,
-    share,
+    share: onShare,
   };
 }
 
