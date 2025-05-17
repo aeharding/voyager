@@ -13,7 +13,7 @@ import {
 } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
-import { shareUrl } from "#/helpers/share";
+import { shareUrl } from "#/features/share/share";
 import {
   copyClipboardFailed,
   copyClipboardSuccess,

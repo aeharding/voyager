@@ -29,7 +29,7 @@ import {
 } from "#/features/moderation/useCanModerate";
 import usePostModActions from "#/features/moderation/usePostModActions";
 import { resolveObject } from "#/features/resolve/resolveSlice";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
+import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
 import { getCrosspostUrl, getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";

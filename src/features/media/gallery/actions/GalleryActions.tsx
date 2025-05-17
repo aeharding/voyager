@@ -21,7 +21,7 @@ import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative, ua } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { useShare } from "#/helpers/share";
+import { useShare } from "#/features/share/share";
 import {
   photoCopied,
   photoSaved,
