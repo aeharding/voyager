@@ -21,7 +21,7 @@ import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative, ua } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
+import { useShare } from "#/helpers/share";
 import {
   photoCopied,
   photoSaved,
@@ -59,6 +59,8 @@ export default function GalleryActions({
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
 
+  const share = useShare();
+
   function openActions() {
     const mySaved = post
       ? (postSavedById[post.post.id] ?? post.saved)
@@ -71,7 +73,7 @@ export default function GalleryActions({
               text: "Share Link",
               icon: getShareIcon(),
               handler: () => {
-                shareUrl(post!.post.ap_id);
+                share(post!.post.ap_id);
               },
             },
             {
@@ -128,7 +130,7 @@ export default function GalleryActions({
               handler: () => {
                 (async () => {
                   if (!isNative()) {
-                    shareUrl(src);
+                    share(src);
                     return;
                   }
 

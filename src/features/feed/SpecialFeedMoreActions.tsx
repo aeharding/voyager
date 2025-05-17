@@ -10,7 +10,7 @@ import {
 import { OPostAppearanceType } from "#/features/settings/settingsSlice";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
-import { shareUrl } from "#/helpers/share";
+import { useShare } from "#/helpers/share";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import store from "#/store";
 
@@ -26,6 +26,7 @@ export default function SpecialFeedMoreActions({
   const [presentActionSheet] = useIonActionSheet();
   const hidePosts = useHidePosts();
   const buildTogglePostAppearanceButton = useBuildTogglePostAppearanceButton();
+  const share = useShare();
 
   function present() {
     presentActionSheet({
@@ -45,7 +46,7 @@ export default function SpecialFeedMoreActions({
           handler: () => {
             const url = buildBaseLemmyUrl(urlSelector(store.getState()));
 
-            shareUrl(`${url}?dataType=Post&listingType=${type}`);
+            share(`${url}?dataType=Post&listingType=${type}`);
           },
         },
         {

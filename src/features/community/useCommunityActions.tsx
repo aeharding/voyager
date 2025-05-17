@@ -11,7 +11,7 @@ import {
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
 import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
+import { useShare } from "#/helpers/share";
 import {
   allNSFWHidden,
   buildBlockedCommunity,
@@ -43,6 +43,7 @@ export default function useCommunityActions(
 ) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
+  const share = useShare();
 
   // useGetHandle as signal to react compiler to optimize
   const communityHandle = useGetHandle(community);
@@ -191,8 +192,8 @@ export default function useCommunityActions(
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
   };
 
-  const share = () => {
-    shareUrl(getApId(community));
+  const onShare = () => {
+    share(getApId(community));
   };
 
   return {
@@ -206,6 +207,6 @@ export default function useCommunityActions(
     modlog,
     sidebar,
     view,
-    share,
+    share: onShare,
   };
 }
