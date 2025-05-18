@@ -70,7 +70,11 @@ export default function CommentsPage(props: CommentsPageProps) {
           </IonToolbar>
         </AppHeader>
         <FeedContent>
-          <PostCommentFeed fetchFn={fetchFn} />
+          <PostCommentFeed
+            fetchFn={fetchFn}
+            filterHiddenPosts={false}
+            filterKeywordsAndWebsites={false}
+          />
         </FeedContent>
       </AppPage>
     </FeedContextProvider>
