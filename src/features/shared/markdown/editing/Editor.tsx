@@ -9,8 +9,8 @@ import {
   useRef,
 } from "react";
 
-import { cx } from "#/helpers/css";
 import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/features/share/goVoyager";
+import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
 import { parseUriList } from "#/helpers/url";

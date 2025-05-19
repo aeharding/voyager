@@ -21,13 +21,13 @@ import {
 } from "ionicons/icons";
 import { useRef } from "react";
 
+import { canShare, shareUrl } from "#/features/share/share";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
 import { AppPage } from "#/helpers/AppPage";
 import { getShareIcon, isAndroid, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { canShare, shareUrl } from "#/features/share/share";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
 import { useAppSelector } from "#/store";

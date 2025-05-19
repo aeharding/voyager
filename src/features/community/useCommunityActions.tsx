@@ -8,9 +8,8 @@ import {
   localUserSelector,
   showNsfw,
 } from "#/features/auth/siteSlice";
-import { useShare } from "#/features/share/share";
+import useShareUserCommunity from "#/features/share/useShareUserCommunity";
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   allNSFWHidden,
@@ -24,7 +23,6 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { db } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import useShareUserCommunity from "../share/useShareUserCommunity";
 import {
   addFavorite,
   blockCommunity,

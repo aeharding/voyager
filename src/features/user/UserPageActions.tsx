@@ -1,12 +1,10 @@
 import { IonButton } from "@ionic/react";
 
-import { useShare } from "#/features/share/share";
+import useShareUserCommunity from "#/features/share/useShareUserCommunity";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
-import { getApId } from "#/helpers/lemmyCompat";
 
 import { useAppSelector } from "../../store";
-import useShareUserCommunity from "../share/useShareUserCommunity";
 import usePresentUserActions from "./usePresentUserActions";
 
 interface UserPageActionsProps {

@@ -14,11 +14,11 @@ import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootCom
 import { markRead } from "#/features/inbox/inboxSlice";
 import { getCanModerate } from "#/features/moderation/useCanModerate";
 import { savePost, voteOnPost } from "#/features/post/postSlice";
+import { useSharePostComment } from "#/features/share/useSharePostComment";
 import {
   isInboxItem,
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
-import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { isPost as _isPost } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {

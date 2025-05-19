@@ -17,11 +17,11 @@ import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { airplay, pip } from "#/features/icons";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { savePost } from "#/features/post/postSlice";
+import { useShare } from "#/features/share/share";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative, ua } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { useShare } from "#/features/share/share";
 import {
   photoCopied,
   photoSaved,
