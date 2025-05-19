@@ -33,7 +33,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -83,6 +82,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity>
 
@@ -113,7 +119,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -163,6 +168,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 
@@ -193,7 +205,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -243,6 +254,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 
@@ -273,7 +291,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -323,6 +340,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 
@@ -353,7 +377,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -403,6 +426,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 
@@ -433,7 +463,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -483,6 +512,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 
@@ -513,7 +549,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -563,6 +598,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 
@@ -593,7 +635,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-                <data android:host="go.getvoyager.app" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -643,6 +684,13 @@
                 <data android:host="ttrpg.network" />
                 <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+                <data android:host="go.getvoyager.app" />
             </intent-filter>
         </activity-alias>
 

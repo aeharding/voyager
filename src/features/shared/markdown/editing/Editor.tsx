@@ -121,6 +121,18 @@ export default function Editor({
 
       return;
     }
+
+    const text = e.clipboardData.getData("text");
+
+    if (text) {
+      const potentialUrl = extractLemmyLinkFromPotentialGoVoyagerLink(text);
+
+      if (!potentialUrl) return;
+
+      e.preventDefault();
+
+      document.execCommand("insertText", false, potentialUrl);
+    }
   }
 
   async function onDragCapture(event: DragEvent) {
