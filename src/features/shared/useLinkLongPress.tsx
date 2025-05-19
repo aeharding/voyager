@@ -3,6 +3,7 @@ import { compact, noop } from "es-toolkit";
 import { copyOutline, earthOutline } from "ionicons/icons";
 import { useLongPress } from "use-long-press";
 
+import { shareUrl } from "#/features/share/share";
 import { shouldOpenWithInAppBrowser } from "#/features/shared/InAppExternalLink";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import {
@@ -13,7 +14,6 @@ import {
 } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
-import { shareUrl } from "#/helpers/share";
 import {
   copyClipboardFailed,
   copyClipboardSuccess,

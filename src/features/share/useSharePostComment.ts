@@ -2,14 +2,17 @@ import { useIonActionSheet } from "@ionic/react";
 import { uniq } from "es-toolkit";
 import { CommentView, PostView } from "lemmy-js-client";
 
-import { buildGoVoyagerLink, GO_VOYAGER_HOST } from "#/helpers/goVoyager";
+import {
+  buildGoVoyagerLink,
+  GO_VOYAGER_HOST,
+} from "#/features/share/goVoyager";
+import { useShare } from "#/features/share/share";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
   isPost,
 } from "#/helpers/lemmy";
 import { getApId } from "#/helpers/lemmyCompat";
-import { useShare } from "#/helpers/share";
 import {
   buildResolveCommentFailed,
   buildResolvePostFailed,
@@ -39,7 +42,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     );
 
     presentActionSheet({
-      header: "Share post link via...",
+      header: `Share ${isPost(itemView) ? "post" : "comment"} link via...`,
       buttons: instanceCandidates.map((instance) => ({
         text: instance,
         handler: () => {
@@ -65,12 +68,12 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
     // not in switch because React Compiler complains:
     // Todo: (BuildHIR::node.lowerReorderableExpression) Expression type `OptionalMemberExpression` cannot be safely reordered (57:57)
-    const apHostname = parseUrl(item.ap_id)?.hostname;
+    const apHostname = parseUrl(getApId(item))?.hostname;
 
     switch (instance) {
       // optimization: sync way to get link at ap_id instance
       case apHostname: {
-        return share(item.ap_id);
+        return share(getApId(item));
       }
       // optimization: sync way to get link at connectedInstance
       case connectedInstance: {
@@ -79,7 +82,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       default: {
         const { post: resolvedPost, comment: resolvedComment } =
           await getClient(instance).resolveObject({
-            q: item.ap_id,
+            q: getApId(item),
           });
 
         if (isPost(itemView)) {
@@ -116,7 +119,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     switch (defaultShare) {
       case OPostCommentShareType.ApId:
         await share(
-          isPost(itemView) ? itemView.post.ap_id : itemView.comment.ap_id,
+          isPost(itemView) ? getApId(itemView.post) : getApId(itemView.comment),
         );
         break;
       case OPostCommentShareType.Ask:
@@ -162,9 +165,9 @@ function generateInstanceCandidates(
   // ap_id is the same instance as user's instance
   let apId: string;
   if (isPost(postOrComment)) {
-    apId = postOrComment.post.ap_id;
+    apId = getApId(postOrComment.post);
   } else {
-    apId = postOrComment.comment.ap_id;
+    apId = getApId(postOrComment.comment);
   }
   const apHostname = parseUrl(apId)?.hostname;
   if (apHostname) candidates.push(apHostname);

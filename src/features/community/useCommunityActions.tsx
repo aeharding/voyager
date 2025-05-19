@@ -8,10 +8,9 @@ import {
   localUserSelector,
   showNsfw,
 } from "#/features/auth/siteSlice";
+import useShareUserCommunity from "#/features/share/useShareUserCommunity";
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { useShare } from "#/helpers/share";
 import {
   allNSFWHidden,
   buildBlockedCommunity,
@@ -43,7 +42,7 @@ export default function useCommunityActions(
 ) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
-  const share = useShare();
+  const { share } = useShareUserCommunity(community);
 
   // useGetHandle as signal to react compiler to optimize
   const communityHandle = useGetHandle(community);
@@ -192,10 +191,6 @@ export default function useCommunityActions(
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
   };
 
-  const onShare = () => {
-    share(getApId(community));
-  };
-
   return {
     isSubscribed,
     isBlocked,
@@ -207,6 +202,6 @@ export default function useCommunityActions(
     modlog,
     sidebar,
     view,
-    share: onShare,
+    share,
   };
 }

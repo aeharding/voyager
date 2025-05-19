@@ -6,8 +6,8 @@ import {
 } from "react";
 
 import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
+import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/features/share/goVoyager";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
-import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/helpers/goVoyager";
 import { deepLinkFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppSelector } from "#/store";

@@ -1,9 +1,9 @@
 import { Share } from "@capacitor/share";
 import { ShareSafari } from "capacitor-share-safari";
 
-import { isAndroid } from "./device";
-import { isNative } from "./device";
-import useAppToast from "./useAppToast";
+import { isAndroid } from "#/helpers/device";
+import { isNative } from "#/helpers/device";
+import useAppToast from "#/helpers/useAppToast";
 
 export function shareUrl(url: string) {
   // // For iOS, use custom plugin to add "Open in Safari"

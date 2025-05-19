@@ -5,6 +5,7 @@ import {
   Community,
   CommunityModeratorView,
   GetSiteResponse,
+  Person,
   Post,
   PostView,
 } from "lemmy-js-client";
@@ -348,6 +349,10 @@ export function isComment(item: PostView | CommentView): item is CommentView {
   return "comment" in item;
 }
 
+export function isCommunity(item: Community | Person): item is Community {
+  return "posting_restricted_to_mods" in item;
+}
+
 const getPublishedDate = (item: PostView | CommentView) => {
   if (isPost(item)) {
     return item.post.published;
@@ -375,4 +380,12 @@ export function buildLemmyPostLink(instance: string, id: number) {
 
 export function buildLemmyCommentLink(instance: string, id: number) {
   return `https://${instance}/comment/${id}`;
+}
+
+export function buildLemmyUserLink(instance: string, handle: string) {
+  return `https://${instance}/u/${handle}`;
+}
+
+export function buildLemmyCommunityLink(instance: string, handle: string) {
+  return `https://${instance}/c/${handle}`;
 }

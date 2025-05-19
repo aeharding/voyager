@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import MoreActions from "#/features/post/shared/MoreActions";
+import { useShare } from "#/features/share/share";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { getCounts } from "#/helpers/lemmyCompat";
-import { useShare } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
