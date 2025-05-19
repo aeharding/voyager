@@ -97,7 +97,7 @@
     "micromark-extension-gfm-table": "^2.1.1",
     "micromark-util-combine-extensions": "^2.0.1",
     "modern-screenshot": "^4.6.0",
-    "motion": "^12.12.1",
+    "motion": "^12.9.4",
     "photoswipe": "^5.4.4",
     "react": "0.0.0-experimental-f7396427-20250501",
     "react-animate-height": "^3.2.3",
