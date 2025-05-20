@@ -14,7 +14,6 @@ import { produce } from "immer";
 import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
-import { isNative } from "#/helpers/device";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import {
@@ -244,9 +243,12 @@ const baseState: SettingsState = {
       touchFriendlyLinks: true,
     },
     defaultFeed: undefined,
-    defaultShare: isNative()
-      ? OPostCommentShareType.DeepLink
-      : OPostCommentShareType.Local,
+    // TODO: Enable by default in late June 2025
+    // (devices have been updated to support go.getvoyager.app links)
+    // defaultShare: isNative()
+    //   ? OPostCommentShareType.DeepLink
+    //   : OPostCommentShareType.Local,
+    defaultShare: OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     media: {
