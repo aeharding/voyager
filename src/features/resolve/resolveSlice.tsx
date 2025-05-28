@@ -5,6 +5,7 @@ import { clientSelector } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
 import { receivedCommunity } from "#/features/community/communitySlice";
 import { receivedPosts } from "#/features/post/postSlice";
+import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/features/share/goVoyager";
 import {
   COMMENT_PATH,
   COMMENT_VIA_POST_PATH,
@@ -132,11 +133,21 @@ export function normalizeObjectUrl(objectUrl: string) {
   // Replace app schema "vger" with "https"
   url = url.replace(/^vger:\/\//, "https://");
 
+  url = unfurlRedirectServiceIfNeeded(url);
+
   // Strip fragment
   url = url.split("#")[0]!;
 
   // Strip query parameters
   url = url.split("?")[0]!;
+
+  return url;
+}
+
+export function unfurlRedirectServiceIfNeeded(url: string): string {
+  const potentialUrl = extractLemmyLinkFromPotentialGoVoyagerLink(url);
+
+  if (potentialUrl) return potentialUrl;
 
   return url;
 }
