@@ -8,9 +8,9 @@ test("load community posts", async ({ page }) => {
   });
 
   await page.goto("/");
-  await page.waitForURL("/posts/lemm.zip/all");
+  await page.waitForURL("/posts/lemmy.zip/all");
 
-  await expect(page).toHaveTitle("lemm.zip");
+  await expect(page).toHaveTitle("lemmy.zip");
 
   await expect(page.getByText(posts[0]!.post.name)).toBeVisible();
 });

@@ -161,7 +161,7 @@ http-server dist
 Optionally, you can serve a custom list of instance(s) in the `/_config` endpoint, with JSON payload of following format:
 
 ```json
-{ "customServers": ["lemmy.world", "lemm.zip"] }
+{ "customServers": ["lemmy.world", "lemmy.zip"] }
 ```
 
 For production, serve `index.html` with `Cache-Control: no-cache` and `/assets` with a long cache period (files in assets are immutable)
