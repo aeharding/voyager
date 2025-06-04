@@ -7,11 +7,10 @@ import { uniq } from "es-toolkit";
 export const SERVERS_BY_CATEGORY = {
   general: [
     "lemmy.world",
-    "lemm.ee",
+    "lemmy.zip",
     "sh.itjust.works",
     "sopuli.xyz",
     "reddthat.com",
-    "lemmy.zip",
     "lemmy.today",
     "lemmings.world",
     "discuss.online",
@@ -98,6 +97,7 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmynsfw.com",
   "hexbear.net",
   "vger.social",
+  "lemm.ee", // TODO: remove once lemm.ee is shut down (Jul 1st 2025)
 ];
 
 export const LOGIN_SERVERS = uniq([

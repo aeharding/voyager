@@ -51,7 +51,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -137,7 +136,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -223,7 +221,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -309,7 +306,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -395,7 +391,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -481,7 +476,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -567,7 +561,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />
@@ -653,7 +646,6 @@
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
-                <data android:host="lemm.ee" />
                 <data android:host="lemmings.world" />
                 <data android:host="lemmy.blahaj.zone" />
                 <data android:host="lemmy.ca" />

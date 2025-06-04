@@ -40,13 +40,7 @@ interface CustomLimit {
   maxHeight: number;
 }
 
-const CUSTOM_LIMITS: Record<string, CustomLimit> = {
-  ["lemm.ee"]: {
-    maxFileSize: 490_000, // 490 kB
-    maxWidth: 1200,
-    maxHeight: 1200,
-  },
-};
+const CUSTOM_LIMITS: Record<string, CustomLimit> = {};
 
 // Lemmy default is 1MB
 const DEFAULT_LIMIT: CustomLimit = {

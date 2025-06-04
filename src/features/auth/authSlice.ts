@@ -300,7 +300,7 @@ updateApplicationContextIfNeeded(getCredentialsFromStorage());
 function updateApplicationContextIfNeeded(
   accounts: CredentialStoragePayload | undefined,
 ) {
-  const DEFAULT_INSTANCE = "lemm.ee";
+  const DEFAULT_INSTANCE = "lemmy.zip";
 
   const connectedInstance = (() => {
     if (!accounts) return DEFAULT_INSTANCE;

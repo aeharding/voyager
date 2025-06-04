@@ -124,9 +124,9 @@ export default [
     description: "movies, tv, trailers, sciencefiction",
     icon: filmOutline,
     communities: [
-      "https://lemm.ee/c/movies",
+      "https://lemmy.world/c/movies",
       "https://lemmy.ml/c/movies",
-      "https://lemm.ee/c/television",
+      "https://piefed.social/c/television",
       "https://lemmy.blahaj.zone/c/trailers",
       "https://lemmy.world/c/filmsframes",
       "https://lemmy.world/c/sciencefiction",
