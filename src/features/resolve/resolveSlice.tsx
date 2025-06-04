@@ -5,7 +5,7 @@ import { clientSelector } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
 import { receivedCommunity } from "#/features/community/communitySlice";
 import { receivedPosts } from "#/features/post/postSlice";
-import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/features/share/goVoyager";
+import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
 import {
   COMMENT_PATH,
   COMMENT_VIA_POST_PATH,
@@ -145,7 +145,7 @@ export function normalizeObjectUrl(objectUrl: string) {
 }
 
 export function unfurlRedirectServiceIfNeeded(url: string): string {
-  const potentialUrl = extractLemmyLinkFromPotentialGoVoyagerLink(url);
+  const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(url);
 
   if (potentialUrl) return potentialUrl;
 
