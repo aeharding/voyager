@@ -13,7 +13,7 @@ import { parseUrl } from "#/helpers/url";
 import { OPostCommentShareType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import { buildGoVoyagerLink, GO_VOYAGER_HOST } from "./goVoyager";
+import { buildGoVoyagerLink, GO_VOYAGER_HOST } from "./fediRedirect";
 import { useShare } from "./share";
 
 export default function useShareUserCommunity(
