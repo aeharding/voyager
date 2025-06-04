@@ -94,7 +94,7 @@ export default function LearnMore() {
                   <strong>lemmy.world</strong>
                 </IonText>
                 <IonText color="secondary">
-                  <strong>lemm.ee</strong>
+                  <strong>lemmy.zip</strong>
                 </IonText>
               </div>
               <div>vs</div>
