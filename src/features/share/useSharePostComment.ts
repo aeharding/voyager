@@ -5,7 +5,7 @@ import { CommentView, PostView } from "lemmy-js-client";
 import {
   buildGoVoyagerLink,
   GO_VOYAGER_HOST,
-} from "#/features/share/goVoyager";
+} from "#/features/share/fediRedirect";
 import { useShare } from "#/features/share/share";
 import {
   buildLemmyCommentLink,
