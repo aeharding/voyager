@@ -63,6 +63,17 @@ export const knownInstancesSelector = createSelector(
   },
 );
 
+export const knownPiefedInstancesSelector = createSelector(
+  [(state: RootState) => state.instances.knownInstances],
+  (knownInstances) => {
+    if (!knownInstances || knownInstances === "pending") return [];
+
+    return knownInstances.linked
+      .filter((instance) => instance.software === "piefed")
+      .map((instance) => instance.domain);
+  },
+);
+
 export const getInstances =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const connectedInstance = urlSelector(getState());

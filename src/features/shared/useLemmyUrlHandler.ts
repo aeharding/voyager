@@ -1,6 +1,5 @@
 import { MouseEvent } from "react";
 
-import { knownInstancesSelector } from "#/features/instances/instancesSlice";
 import {
   normalizeObjectUrl,
   resolveObject,
@@ -13,9 +12,13 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import useDetermineSoftware from "./useDetermineSoftware";
+
 export const POST_PATH = /^\/post\/(\d+)$/;
 
 export const COMMENT_PATH = /^\/comment\/(\d+)$/;
+
+export const PIEFED_COMMENT_PATH_AND_HASH = /^\/post\/(?:\d+)#comment_(\d+)$/;
 
 /**
  * Lemmy 0.19.4 added a new url format to reference comments,
@@ -38,12 +41,13 @@ const POTENTIAL_PATHS = [
   COMMENT_VIA_POST_PATH,
   USER_PATH,
   COMMUNITY_PATH,
+  PIEFED_COMMENT_PATH_AND_HASH,
 ] as const;
 
 export type LemmyObjectType = "community" | "post" | "comment" | "user";
 
 export default function useLemmyUrlHandler() {
-  const knownInstances = useAppSelector(knownInstancesSelector);
+  const determineSoftwareFromUrl = useDetermineSoftware();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -61,7 +65,7 @@ export default function useLemmyUrlHandler() {
   const presentToast = useAppToast();
 
   function handleCommunityClickIfNeeded(url: URL, e?: MouseEvent) {
-    const matchedCommunityHandle = matchLemmyCommunity(url.pathname);
+    const matchedCommunityHandle = matchLemmyOrPiefedCommunity(url.pathname);
 
     if (!matchedCommunityHandle) return;
     const [communityName, domain] = matchedCommunityHandle;
@@ -85,7 +89,7 @@ export default function useLemmyUrlHandler() {
   }
 
   function handleUserClickIfNeeded(url: URL, e?: MouseEvent) {
-    const matchedUserHandle = matchLemmyUser(url.pathname);
+    const matchedUserHandle = matchLemmyOrPiefedUser(url.pathname);
 
     if (!matchedUserHandle) return;
     const [userName, domain] = matchedUserHandle;
@@ -173,14 +177,21 @@ export default function useLemmyUrlHandler() {
 
     if (!url) return;
 
-    if (matchLemmyCommunity(url.pathname)) return "community";
+    if (matchLemmyOrPiefedCommunity(url.pathname)) return "community";
 
-    if (!knownInstances.includes(url.hostname)) return;
-
-    if (POST_PATH.test(url.pathname)) return "post";
-    if (COMMENT_PATH.test(url.pathname)) return "comment";
-    if (COMMENT_VIA_POST_PATH.test(url.pathname)) return "comment";
-    if (USER_PATH.test(url.pathname)) return "user";
+    switch (determineSoftwareFromUrl(url)) {
+      case "piefed":
+        if (POST_PATH.test(url.pathname)) return "post";
+        if (USER_PATH.test(url.pathname)) return "user";
+        if (PIEFED_COMMENT_PATH_AND_HASH.test(`${url.pathname}${url.hash}`))
+          return "comment";
+        break;
+      case "lemmy":
+        if (POST_PATH.test(url.pathname)) return "post";
+        if (COMMENT_PATH.test(url.pathname)) return "comment";
+        if (COMMENT_VIA_POST_PATH.test(url.pathname)) return "comment";
+        if (USER_PATH.test(url.pathname)) return "user";
+    }
   }
 
   async function redirectToLemmyObjectIfNeeded(
@@ -196,8 +207,10 @@ export default function useLemmyUrlHandler() {
     const url = getUrl(normalizeObjectUrl(link));
 
     if (!url) return "not-found";
-    if (!forceResolveObject && !knownInstances.includes(url.hostname))
-      return "not-found"; // If non-lemmy domain, return
+
+    const software = determineSoftwareFromUrl(url);
+
+    if (!forceResolveObject && software === "unknown") return "not-found"; // If non-lemmy domain, return
 
     if (handleCommunityClickIfNeeded(url, e)) return "success";
     if (handleUserClickIfNeeded(url, e)) return "success";
@@ -212,7 +225,7 @@ export default function useLemmyUrlHandler() {
   };
 }
 
-export function matchLemmyCommunity(
+export function matchLemmyOrPiefedCommunity(
   urlPathname: string,
 ): [string, string] | [string] | null {
   const matches = urlPathname.match(COMMUNITY_PATH);
@@ -224,7 +237,7 @@ export function matchLemmyCommunity(
   return null;
 }
 
-export function matchLemmyUser(
+export function matchLemmyOrPiefedUser(
   urlPathname: string,
 ): [string, string] | [string] | null {
   const matches = urlPathname.match(USER_PATH);

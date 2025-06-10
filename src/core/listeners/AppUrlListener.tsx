@@ -5,7 +5,6 @@ import {
   useRef,
 } from "react";
 
-import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
 import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/features/share/goVoyager";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { deepLinkFailed } from "#/helpers/toastMessages";
@@ -53,7 +52,7 @@ export default function AppUrlListener() {
 
   useEffect(() => {
     const listener = App.addListener("appUrlOpen", (event) => {
-      onAppUrlEvent(normalizeObjectUrl(event.url));
+      onAppUrlEvent(event.url);
     });
 
     return () => {
