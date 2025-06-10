@@ -23,7 +23,6 @@ export default function InlineMarkdown({
 }: InlineMarkdownProps) {
   return (
     <ReactMarkdown
-      skipHtml
       unwrapDisallowed
       allowedElements={["em", "strong", "del", "code", "sub", "sup"]}
       components={{
