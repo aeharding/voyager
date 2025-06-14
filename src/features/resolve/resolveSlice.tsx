@@ -18,8 +18,8 @@ import {
 import { receivedUsers } from "#/features/user/userSlice";
 import { getApId } from "#/helpers/lemmyCompat";
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import getAPId from "#/services/activitypub";
 import { getClient } from "#/services/lemmy";
-import PiefedClient from "#/services/piefed";
 import { AppDispatch, RootState } from "#/store";
 
 interface ResolveState {
@@ -163,24 +163,31 @@ async function findFedilink(link: string): Promise<string | undefined> {
   const software = getDetermineSoftware(new URL(link));
 
   switch (software) {
-    case "lemmy":
-    case "unknown":
-      return findLemmyFedilink(link);
-    case "piefed":
-      return findPiefedFedilink(link);
+    case "lemmy": {
+      const response = findLemmyFedilink(link);
+
+      if (response) return response;
+
+      break;
+    }
+    case "piefed": {
+      const response = findPiefedFedilink(link);
+
+      if (response) return response;
+    }
   }
+
+  return getAPId(link);
 }
 
-async function findPiefedFedilink(link: string): Promise<string | undefined> {
+function findPiefedFedilink(link: string) {
   const url = new URL(link);
   const { hostname } = url;
-
-  const client = new PiefedClient(`https://${hostname}`);
 
   const potentialCommentId = findCommentIdFromUrl(url);
 
   if (typeof potentialCommentId === "number") {
-    return await client.getComment(potentialCommentId);
+    return getAPId(`https://${hostname}/comment/${potentialCommentId}`);
   }
 }
 

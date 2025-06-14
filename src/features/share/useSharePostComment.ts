@@ -80,10 +80,22 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         return share(buildLink(instance, item.id));
       }
       default: {
-        const { post: resolvedPost, comment: resolvedComment } =
-          await getClient(instance).resolveObject({
+        let resolvedPost, resolvedComment;
+
+        try {
+          ({ post: resolvedPost, comment: resolvedComment } = await getClient(
+            instance,
+          ).resolveObject({
             q: getApId(item),
-          });
+          }));
+        } catch (error) {
+          presentToast(
+            isPost(itemView)
+              ? buildResolvePostFailed(instance)
+              : buildResolveCommentFailed(instance),
+          );
+          throw error;
+        }
 
         if (isPost(itemView)) {
           if (!resolvedPost) {
