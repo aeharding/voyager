@@ -21,6 +21,7 @@ import AppVList from "#/helpers/AppVList";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
 import {
   buildCommentsTreeWithMissing,
+  CommentNodeI,
   getDepthFromCommentPath,
 } from "#/helpers/lemmy";
 import { getCounts } from "#/helpers/lemmyCompat";
@@ -201,14 +202,11 @@ export default function Comments({
     if (focusCommentIfNeeded()) scrolledRef.current = true;
   }, [filteredComments, focusCommentIfNeeded]);
 
-  const commentTree = useMemo(() => {
-    return filteredComments.length
-      ? buildCommentsTreeWithMissing(
-          filteredComments,
-          !!commentPath || !!threadCommentId,
-        )
-      : [];
-  }, [commentPath, filteredComments, threadCommentId]);
+  const commentTree = useBuildCommentsTree(
+    filteredComments,
+    commentPath,
+    threadCommentId,
+  );
 
   const fetchComments = useCallback(
     async (refresh = false) => {
@@ -220,16 +218,14 @@ export default function Comments({
         if (finishedPagingRef.current) return;
       }
 
-      let response;
-
       const currentPage = refresh ? 1 : page + 1;
 
       const reqPostId = postId;
       const reqCommentId = parentCommentId;
       setLoading(true);
 
-      try {
-        response = await client.getComments({
+      const response = await client
+        .getComments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           limit: 10,
@@ -240,24 +236,25 @@ export default function Comments({
 
           saved_only: false,
           page: currentPage,
+        })
+        .catch((error) => {
+          if (reqPostId === postId && reqCommentId === parentCommentId)
+            presentToast({
+              message: "Problem fetching comments. Please try again.",
+              color: "danger",
+            });
+
+          setLoadFailed(true);
+          if (refresh) {
+            setComments([]);
+            setPage(0);
+          }
+
+          throw error;
+        })
+        .finally(() => {
+          setLoading(false);
         });
-      } catch (error) {
-        if (reqPostId === postId && reqCommentId === parentCommentId)
-          presentToast({
-            message: "Problem fetching comments. Please try again.",
-            color: "danger",
-          });
-
-        setLoadFailed(true);
-        if (refresh) {
-          setComments([]);
-          setPage(0);
-        }
-
-        throw error;
-      } finally {
-        setLoading(false);
-      }
 
       dispatch(receivedComments(response.comments));
 
@@ -366,70 +363,29 @@ export default function Comments({
   );
 
   async function handleRefresh(event: RefresherCustomEvent) {
-    try {
-      await Promise.all([fetchComments(true), dispatch(getPost(postId))]);
-    } finally {
-      event.detail.complete();
-    }
+    await Promise.all([fetchComments(true), dispatch(getPost(postId))]).finally(
+      () => {
+        event.detail.complete();
+      },
+    );
   }
 
-  const allComments = useMemo(() => {
-    const tree = commentTree.map((comment, index) => (
-      <CommentTree
-        comment={comment}
-        highlightedCommentId={highlightedCommentId}
-        key={comment.comment_view.comment.id}
-        first={index === 0}
-        rootIndex={index + 1} /* Plus header index = 0 */
-        baseDepth={
-          commentPath
-            ? Math.max(0, getDepthFromCommentPath(commentPath) - 2)
-            : comment.absoluteDepth
-        }
-      />
-    ));
-
-    if (tree.length && maxContext > 0)
-      tree.unshift(
-        <LoadParentComments
-          key="load-parent-comments"
-          setMaxContext={(maxContext) => {
-            preservePositionFromBottomInScrollView.save();
-            setMaxContext(maxContext);
-          }}
-        />,
-      );
-
-    return tree;
-  }, [
+  const allComments = useBuildAllComments(
+    comments,
     commentTree,
     highlightedCommentId,
     commentPath,
     maxContext,
     preservePositionFromBottomInScrollView,
-  ]);
+    setMaxContext,
+  );
 
-  const renderFooter = useCallback(() => {
-    if (loadFailed)
-      return (
-        <FeedLoadMoreFailed
-          fetchMore={fetchComments}
-          loading={loading}
-          pluralType="comments"
-        />
-      );
-
-    if (loading && !comments.length)
-      return <IonSpinner className={styles.spinner} />;
-
-    if (!comments.length)
-      return (
-        <div className={styles.empty}>
-          <div>No Comments</div>
-          <aside>It&apos;s quiet... too quiet...</aside>
-        </div>
-      );
-  }, [comments.length, fetchComments, loadFailed, loading]);
+  const renderFooter = useRenderFooter(
+    comments,
+    loadFailed,
+    loading,
+    fetchComments,
+  );
 
   const commentsContextValue = useMemo(
     () => ({
@@ -490,10 +446,10 @@ export default function Comments({
               setIsListAtTop(offset < 6);
             }}
           >
-            {...content}
+            {content}
           </AppVList>
         ) : (
-          <>{...content}</>
+          <>{content}</>
         )}
       </div>
     </CommentsContext>
@@ -506,4 +462,97 @@ function getCommentContextDepthForPath(
   return commentPath
     ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
     : 0;
+}
+
+function useBuildCommentsTree(
+  comments: CommentView[],
+  commentPath: string | undefined,
+  threadCommentId: string | undefined,
+) {
+  return useMemo(() => {
+    return comments.length
+      ? buildCommentsTreeWithMissing(
+          comments,
+          !!commentPath || !!threadCommentId,
+        )
+      : [];
+  }, [comments, commentPath, threadCommentId]);
+}
+
+function useBuildAllComments(
+  comments: CommentView[],
+  commentTree: CommentNodeI[],
+  highlightedCommentId: number | undefined,
+  commentPath: string | undefined,
+  maxContext: number,
+  preservePositionFromBottomInScrollView: ReturnType<
+    typeof usePreservePositionFromBottomInScrollView
+  >,
+  setMaxContext: (maxContext: React.SetStateAction<number>) => void,
+) {
+  return useMemo(() => {
+    const tree = commentTree.map((comment, index) => (
+      <CommentTree
+        comment={comment}
+        highlightedCommentId={highlightedCommentId}
+        key={comment.comment_view.comment.id}
+        first={index === 0}
+        rootIndex={index + 1} /* Plus header index = 0 */
+        baseDepth={
+          commentPath
+            ? Math.max(0, getDepthFromCommentPath(commentPath) - 2)
+            : comment.absoluteDepth
+        }
+      />
+    ));
+
+    if (tree.length && maxContext > 0)
+      tree.unshift(
+        <LoadParentComments
+          key="load-parent-comments"
+          setMaxContext={(maxContext) => {
+            preservePositionFromBottomInScrollView.save();
+            setMaxContext(maxContext);
+          }}
+        />,
+      );
+
+    return tree;
+  }, [
+    commentTree,
+    highlightedCommentId,
+    commentPath,
+    maxContext,
+    preservePositionFromBottomInScrollView,
+    setMaxContext,
+  ]);
+}
+
+function useRenderFooter(
+  comments: CommentView[],
+  loadFailed: boolean,
+  loading: boolean,
+  fetchComments: (refresh?: boolean) => Promise<void>,
+) {
+  return useCallback(() => {
+    if (loadFailed)
+      return (
+        <FeedLoadMoreFailed
+          fetchMore={fetchComments}
+          loading={loading}
+          pluralType="comments"
+        />
+      );
+
+    if (loading && !comments.length)
+      return <IonSpinner className={styles.spinner} />;
+
+    if (!comments.length)
+      return (
+        <div className={styles.empty}>
+          <div>No Comments</div>
+          <aside>It&apos;s quiet... too quiet...</aside>
+        </div>
+      );
+  }, [comments, fetchComments, loadFailed, loading]);
 }
