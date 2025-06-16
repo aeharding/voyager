@@ -8,18 +8,12 @@ import { receivedPosts } from "#/features/post/postSlice";
 import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
 import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import {
-  COMMENT_PATH,
   COMMENT_VIA_POST_PATH,
-  matchLemmyOrPiefedCommunity,
-  matchLemmyOrPiefedUser,
   PIEFED_COMMENT_PATH_AND_HASH,
-  POST_PATH,
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
-import { getApId } from "#/helpers/lemmyCompat";
 import { isLemmyError } from "#/helpers/lemmyErrors";
-import getAPId from "#/services/activitypub";
-import { getClient } from "#/services/lemmy";
+import resolveFedilink from "#/services/activitypub";
 import { AppDispatch, RootState } from "#/store";
 
 interface ResolveState {
@@ -71,7 +65,7 @@ export const resolveObject =
 
     try {
       object = await clientSelector(getState()).resolveObject({
-        q: normalizeObjectUrl(url),
+        q: normalizeObjectUrl(findFedilinkFromQuirkUrl(url)),
       });
     } catch (error) {
       if (
@@ -85,7 +79,8 @@ export const resolveObject =
         isLemmyError(error, "not_found")
       ) {
         try {
-          const fedilink = await findFedilink(url);
+          // FINE. We'll do it the hard/insecure way and ask original instance >:(
+          const fedilink = await resolveFedilink(findFedilinkFromQuirkUrl(url));
 
           if (!fedilink) {
             dispatch(couldNotFindUrl(url));
@@ -156,99 +151,65 @@ export function unfurlRedirectServiceIfNeeded(url: string): string {
 }
 
 /**
- * FINE. we'll do it the hard/insecure way and ask original instance >:(
- * the below code should not need to exist.
+ * Sometimes the URL isn't an actual fedilink URL. For example,
+ * https://piefed.social/post/123#comment_456. So try to extract the
+ * fedilink from the URL if possible.
  */
-async function findFedilink(link: string): Promise<string | undefined> {
+function findFedilinkFromQuirkUrl(link: string): string {
   const software = getDetermineSoftware(new URL(link));
 
   switch (software) {
     case "lemmy": {
-      const response = findLemmyFedilink(link);
+      const response = findLemmyFedilinkFromQuirkUrl(link);
 
       if (response) return response;
 
       break;
     }
     case "piefed": {
-      const response = findPiefedFedilink(link);
+      const response = findPiefedFedilinkFromQuirkUrl(link);
 
       if (response) return response;
     }
   }
 
-  return getAPId(link);
+  return link;
 }
 
-function findPiefedFedilink(link: string) {
+function findPiefedFedilinkFromQuirkUrl(link: string): string | undefined {
   const url = new URL(link);
   const { hostname } = url;
 
-  const potentialCommentId = findCommentIdFromUrl(url);
+  const potentialCommentId = findPiefedCommentIdFromUrl(url);
 
   if (typeof potentialCommentId === "number") {
-    return getAPId(`https://${hostname}/comment/${potentialCommentId}`);
+    return `https://${hostname}/comment/${potentialCommentId}`;
   }
 }
 
-async function findLemmyFedilink(link: string): Promise<string | undefined> {
+function findLemmyFedilinkFromQuirkUrl(link: string): string | undefined {
   const url = new URL(link);
-  const { hostname, pathname } = url;
+  const { hostname } = url;
 
-  const client = await getClient(hostname);
-
-  const potentialCommentId = findCommentIdFromUrl(url);
+  const potentialCommentId = findLemmyCommentIdFromUrl(url);
 
   if (typeof potentialCommentId === "number") {
-    const response = await client.getComment({
-      id: potentialCommentId,
-    });
-
-    return response.comment_view.comment.ap_id;
-  } else if (POST_PATH.test(pathname)) {
-    const response = await client.getPost({
-      id: +pathname.match(POST_PATH)![1]!,
-    });
-
-    return response.post_view.post.ap_id;
-  } else if (matchLemmyOrPiefedUser(pathname)) {
-    const [username, userHostname] = matchLemmyOrPiefedUser(pathname)!;
-
-    const response = await getClient(userHostname ?? hostname).getPersonDetails(
-      {
-        username,
-      },
-    );
-
-    return getApId(response.person_view.person);
-  } else if (matchLemmyOrPiefedCommunity(pathname)) {
-    const [community, communityHostname] =
-      matchLemmyOrPiefedCommunity(pathname)!;
-
-    const response = await getClient(
-      communityHostname ?? hostname,
-    ).getCommunity({
-      name: community,
-    });
-
-    return getApId(response.community_view.community);
+    return `https://${hostname}/comment/${potentialCommentId}`;
   }
 }
 
-function findCommentIdFromUrl(url: URL): number | undefined {
+function findLemmyCommentIdFromUrl(url: URL): number | undefined {
+  const { pathname } = url;
+
+  if (COMMENT_VIA_POST_PATH.test(pathname))
+    return +pathname.match(COMMENT_VIA_POST_PATH)![1]!;
+}
+
+function findPiefedCommentIdFromUrl(url: URL): number | undefined {
   const { pathname, hash } = url;
 
-  if (COMMENT_PATH.test(pathname)) return +pathname.match(COMMENT_PATH)![1]!;
+  const slug = `${pathname}${hash}`;
 
-  switch (getDetermineSoftware(url)) {
-    case "lemmy":
-      if (COMMENT_VIA_POST_PATH.test(pathname))
-        return +pathname.match(COMMENT_VIA_POST_PATH)![1]!;
-      break;
-    case "piefed": {
-      const slug = `${pathname}${hash}`;
-      if (PIEFED_COMMENT_PATH_AND_HASH.test(slug))
-        return +slug.match(PIEFED_COMMENT_PATH_AND_HASH)![1]!;
-    }
-  }
+  if (PIEFED_COMMENT_PATH_AND_HASH.test(slug))
+    return +slug.match(PIEFED_COMMENT_PATH_AND_HASH)![1]!;
 }
