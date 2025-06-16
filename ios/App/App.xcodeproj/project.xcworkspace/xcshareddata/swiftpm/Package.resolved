@@ -7,7 +7,7 @@
       "location" : "https://github.com/ionic-team/capacitor-swift-pm.git",
       "state" : {
         "branch" : "main",
-        "revision" : "10bb4f254a97c4c7fd59d176e35861ca99310bdf"
+        "revision" : "2cded5ffb2ff80d8add414b3d2a3c235eaced430"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
-        "version" : "5.20.0"
+        "revision" : "b62cb63bf4ed1f04c961a56c9c6c9d5ab8524ec6",
+        "version" : "5.21.1"
       }
     }
   ],

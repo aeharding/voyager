@@ -41,8 +41,8 @@ importers:
         specifier: ^7.3.0
         version: 7.3.0
       '@capacitor/filesystem':
-        specifier: ^7.1.1
-        version: 7.1.1(@capacitor/core@7.3.0)
+        specifier: 7.0.1
+        version: 7.0.1(@capacitor/core@7.3.0)
       '@capacitor/haptics':
         specifier: ^7.0.1
         version: 7.0.1(patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0)(@capacitor/core@7.3.0)
@@ -903,8 +903,8 @@ packages:
   '@capacitor/core@7.3.0':
     resolution: {integrity: sha512-t/DdTyBchQ2eAZuCmAARlqQsrEm0WyeNwh5zeRuv+cR6gnAsw+86/EWvJ/em5dTnZyaqEy8vlmOMdWarrUbnuQ==}
 
-  '@capacitor/filesystem@7.1.1':
-    resolution: {integrity: sha512-xAQvurZlfKOO7I8d98GFRymS/Dd25sw0L1weF4dKR59nXloWEeagoFv+xtaNlDfolJHo4/uKVvxsLzM0xSmiUQ==}
+  '@capacitor/filesystem@7.0.1':
+    resolution: {integrity: sha512-dxuKNLFoUejm7tBKkQPs1j7+BLpDh5JKPSVu7nT8jgCbA/KXt5FoCLiepfkjWkYfq60X0JNFzGnIquc5FPOLzQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -942,9 +942,6 @@ packages:
     resolution: {integrity: sha512-AmRIX6QvFemItlY7/69ARkIAqitRQqJ2qwgZmD1KqgFb78pH+XFXm1guvS/a8CuOOm/IqZ4ddDbl20yxtBqzGA==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
-
-  '@capacitor/synapse@1.0.2':
-    resolution: {integrity: sha512-ynq39s4D2rhk+aVLWKfKfMCz9SHPKijL9tq8aFL5dG7ik7/+PvBHmg9cPHbqdvFEUSMmaGzL6cIjzkOruW7vGA==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -7420,10 +7417,9 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@capacitor/filesystem@7.1.1(@capacitor/core@7.3.0)':
+  '@capacitor/filesystem@7.0.1(@capacitor/core@7.3.0)':
     dependencies:
       '@capacitor/core': 7.3.0
-      '@capacitor/synapse': 1.0.2
 
   '@capacitor/haptics@7.0.1(patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0)(@capacitor/core@7.3.0)':
     dependencies:
@@ -7452,8 +7448,6 @@ snapshots:
   '@capacitor/status-bar@6.0.2(@capacitor/core@7.3.0)':
     dependencies:
       '@capacitor/core': 7.3.0
-
-  '@capacitor/synapse@1.0.2': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
