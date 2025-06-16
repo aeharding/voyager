@@ -1,9 +1,6 @@
 import { MouseEvent } from "react";
 
-import {
-  normalizeObjectUrl,
-  resolveObject,
-} from "#/features/resolve/resolveSlice";
+import { resolveObject } from "#/features/resolve/resolveSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppNavigation from "#/helpers/useAppNavigation";
@@ -181,10 +178,11 @@ export default function useLemmyUrlHandler() {
 
     switch (determineSoftwareFromUrl(url)) {
       case "piefed":
-        if (POST_PATH.test(url.pathname)) return "post";
-        if (USER_PATH.test(url.pathname)) return "user";
         if (PIEFED_COMMENT_PATH_AND_HASH.test(`${url.pathname}${url.hash}`))
           return "comment";
+        if (POST_PATH.test(url.pathname)) return "post";
+        if (USER_PATH.test(url.pathname)) return "user";
+        if (COMMENT_PATH.test(url.pathname)) return "comment";
         break;
       case "lemmy":
         if (POST_PATH.test(url.pathname)) return "post";
@@ -204,7 +202,7 @@ export default function useLemmyUrlHandler() {
      */
     forceResolveObject = false,
   ): Promise<"not-found" | "already-there" | "success"> {
-    const url = getUrl(normalizeObjectUrl(link));
+    const url = getUrl(link);
 
     if (!url) return "not-found";
 

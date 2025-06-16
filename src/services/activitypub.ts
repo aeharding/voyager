@@ -1,4 +1,4 @@
-export default async function getAPId(url: string): Promise<string> {
+export default async function resolveFedilink(url: string): Promise<string> {
   const response = await fetch(url, {
     headers: { Accept: "application/activity+json" },
   });

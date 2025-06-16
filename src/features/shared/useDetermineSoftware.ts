@@ -16,7 +16,12 @@ export function getDetermineSoftware(url: URL) {
   const knownInstances = knownInstancesSelector(state);
   const knownPiefedInstances = knownPiefedInstancesSelector(state);
 
-  return buildDetermineSoftware(knownInstances, knownPiefedInstances)(url);
+  const knownInstanceSoftware = buildDetermineSoftware(
+    knownInstances,
+    knownPiefedInstances,
+  )(url);
+
+  return knownInstanceSoftware;
 }
 
 function buildDetermineSoftware(
