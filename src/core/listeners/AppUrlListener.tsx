@@ -6,7 +6,6 @@ import {
 } from "react";
 
 import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
-import { extractLemmyLinkFromPotentialGoVoyagerLink } from "#/features/share/goVoyager";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { deepLinkFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -37,14 +36,7 @@ export default function AppUrlListener() {
       return;
     }
 
-    let lemmyLink = url;
-
-    const potentialLemmyLink = extractLemmyLinkFromPotentialGoVoyagerLink(url);
-    if (potentialLemmyLink) lemmyLink = potentialLemmyLink;
-
-    // wait for router to get into a good state before pushing
-    // (needed for pushing user profiles from app startup)
-    const result = await redirectToLemmyObjectIfNeeded(lemmyLink);
+    const result = await redirectToLemmyObjectIfNeeded(url);
 
     if (result === "not-found") presentToast(deepLinkFailed);
   };

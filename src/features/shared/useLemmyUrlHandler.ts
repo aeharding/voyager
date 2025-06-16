@@ -4,6 +4,7 @@ import { knownInstancesSelector } from "#/features/instances/instancesSlice";
 import {
   normalizeObjectUrl,
   resolveObject,
+  unfurlRedirectServiceIfNeeded,
 } from "#/features/resolve/resolveSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -159,8 +160,10 @@ export default function useLemmyUrlHandler() {
   }
 
   function getUrl(link: string) {
+    const unfurledLink = unfurlRedirectServiceIfNeeded(link);
+
     try {
-      return new URL(link, connectedInstanceUrl);
+      return new URL(unfurledLink, connectedInstanceUrl);
     } catch (error) {
       console.error("Error parsing url", error);
     }
