@@ -35,7 +35,14 @@ export default function AppUrlListener() {
       return;
     }
 
-    const result = await redirectToLemmyObjectIfNeeded(url);
+    let result;
+
+    try {
+      result = await redirectToLemmyObjectIfNeeded(url);
+    } catch (error) {
+      presentToast(deepLinkFailed);
+      throw error;
+    }
 
     if (result === "not-found") presentToast(deepLinkFailed);
   };
