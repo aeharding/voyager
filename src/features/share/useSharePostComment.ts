@@ -86,39 +86,37 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
         const software = getDetermineSoftware(new URL(`https://${instance}`));
 
-        switch (software) {
-          case "lemmy": {
-            try {
-              ({ post: resolvedPost, comment: resolvedComment } =
-                await getClient(instance).resolveObject({
-                  q: getApId(item),
-                }));
-            } catch (error) {
+        const client = (() => {
+          switch (software) {
+            case "lemmy": {
+              return getClient(instance);
+            }
+            case "piefed": {
+              return new PiefedClient(instance);
+            }
+            default: {
               presentToast(
                 isPost(itemView)
                   ? buildResolvePostFailed(instance)
                   : buildResolveCommentFailed(instance),
               );
-              throw error;
+              throw new Error(`Unknown software: ${software}`);
             }
-            break;
           }
-          case "piefed": {
-            try {
-              ({ post: resolvedPost, comment: resolvedComment } =
-                await new PiefedClient(instance).resolveObject({
-                  q: getApId(item),
-                }));
-            } catch (error) {
-              presentToast(
-                isPost(itemView)
-                  ? buildResolvePostFailed(instance)
-                  : buildResolveCommentFailed(instance),
-              );
-              throw error;
-            }
-            break;
-          }
+        })();
+
+        try {
+          ({ post: resolvedPost, comment: resolvedComment } =
+            await client.resolveObject({
+              q: getApId(item),
+            }));
+        } catch (error) {
+          presentToast(
+            isPost(itemView)
+              ? buildResolvePostFailed(instance)
+              : buildResolveCommentFailed(instance),
+          );
+          throw error;
         }
 
         if (isPost(itemView)) {
