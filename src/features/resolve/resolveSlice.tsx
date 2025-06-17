@@ -63,9 +63,11 @@ export const resolveObject =
   ): Promise<ResolveObjectResponse> => {
     let object;
 
+    const q = normalizeObjectUrl(findFedilinkFromQuirkUrl(url));
+
     try {
       object = await clientSelector(getState()).resolveObject({
-        q: normalizeObjectUrl(findFedilinkFromQuirkUrl(url)),
+        q,
       });
     } catch (error) {
       if (
@@ -80,7 +82,7 @@ export const resolveObject =
       ) {
         try {
           // FINE. We'll do it the hard/insecure way and ask original instance >:(
-          const fedilink = await resolveFedilink(findFedilinkFromQuirkUrl(url));
+          const fedilink = await resolveFedilink(q);
 
           if (!fedilink) {
             dispatch(couldNotFindUrl(url));
