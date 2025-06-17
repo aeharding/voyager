@@ -98,6 +98,7 @@
     "micromark-util-combine-extensions": "^2.0.1",
     "modern-screenshot": "^4.6.4",
     "motion": "^12.18.1",
+    "openapi-fetch": "^0.14.0",
     "photoswipe": "^5.4.4",
     "react": "0.0.0-experimental-12bc60f5-20250613",
     "react-animate-height": "^3.2.3",

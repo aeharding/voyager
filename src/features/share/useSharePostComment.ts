@@ -7,6 +7,7 @@ import {
   GO_VOYAGER_HOST,
 } from "#/features/share/fediRedirect";
 import { useShare } from "#/features/share/share";
+import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
@@ -21,6 +22,7 @@ import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { OPostCommentShareType } from "#/services/db";
 import { getClient } from "#/services/lemmy";
+import PiefedClient from "#/services/piefed/piefed";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {
@@ -82,19 +84,41 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       default: {
         let resolvedPost, resolvedComment;
 
-        try {
-          ({ post: resolvedPost, comment: resolvedComment } = await getClient(
-            instance,
-          ).resolveObject({
-            q: getApId(item),
-          }));
-        } catch (error) {
-          presentToast(
-            isPost(itemView)
-              ? buildResolvePostFailed(instance)
-              : buildResolveCommentFailed(instance),
-          );
-          throw error;
+        const software = getDetermineSoftware(new URL(`https://${instance}`));
+
+        switch (software) {
+          case "lemmy": {
+            try {
+              ({ post: resolvedPost, comment: resolvedComment } =
+                await getClient(instance).resolveObject({
+                  q: getApId(item),
+                }));
+            } catch (error) {
+              presentToast(
+                isPost(itemView)
+                  ? buildResolvePostFailed(instance)
+                  : buildResolveCommentFailed(instance),
+              );
+              throw error;
+            }
+            break;
+          }
+          case "piefed": {
+            try {
+              ({ post: resolvedPost, comment: resolvedComment } =
+                await new PiefedClient(instance).resolveObject({
+                  q: getApId(item),
+                }));
+            } catch (error) {
+              presentToast(
+                isPost(itemView)
+                  ? buildResolvePostFailed(instance)
+                  : buildResolveCommentFailed(instance),
+              );
+              throw error;
+            }
+            break;
+          }
         }
 
         if (isPost(itemView)) {

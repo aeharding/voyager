@@ -1,0 +1,1 @@
+npx openapi-typescript https://freamon.github.io/piefed-api/swagger.yaml --output schema.d.ts
