@@ -22,7 +22,7 @@ import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { OPostCommentShareType } from "#/services/db";
 import { getClient } from "#/services/lemmy";
-import PiefedClient from "#/services/piefed/piefed";
+import PiefedClient from "#/services/piefed";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {
