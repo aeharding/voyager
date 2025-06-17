@@ -88,19 +88,12 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
         const client = (() => {
           switch (software) {
+            case "unknown": // optimistically assume lemmy
             case "lemmy": {
               return getClient(instance);
             }
             case "piefed": {
               return new PiefedClient(instance);
-            }
-            default: {
-              presentToast(
-                isPost(itemView)
-                  ? buildResolvePostFailed(instance)
-                  : buildResolveCommentFailed(instance),
-              );
-              throw new Error(`Unknown software: ${software}`);
             }
           }
         })();
