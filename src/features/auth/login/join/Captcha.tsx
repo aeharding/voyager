@@ -11,7 +11,7 @@ import { GetCaptchaResponse, Register } from "lemmy-js-client";
 import { useCallback, useEffect, useImperativeHandle, useState } from "react";
 
 import { b64ToBlob } from "#/helpers/blob";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 
 import styles from "./Captcha.module.css";
 

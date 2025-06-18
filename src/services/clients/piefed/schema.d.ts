@@ -3496,8 +3496,8 @@ export interface components {
       creator_id: number;
       /** Comment.post_id */
       post_id: number;
-      /** Comment.content */
-      content: string;
+      /** Comment.body */
+      body: string;
       /** Comment.removed */
       removed: boolean;
       /** Comment.published */

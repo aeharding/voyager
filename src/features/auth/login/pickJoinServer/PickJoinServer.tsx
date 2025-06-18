@@ -40,7 +40,7 @@ import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { getApId } from "#/helpers/lemmyCompat";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { LVInstance } from "#/services/lemmyverse";
 import { useAppDispatch, useAppSelector } from "#/store";
 

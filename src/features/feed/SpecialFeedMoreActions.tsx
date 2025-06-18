@@ -11,7 +11,7 @@ import { OPostAppearanceType } from "#/features/settings/settingsSlice";
 import { useShare } from "#/features/share/share";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
-import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { buildBaseClientUrl } from "#/services/client";
 import store from "#/store";
 
 import useHidePosts from "./useHidePosts";
@@ -44,7 +44,7 @@ export default function SpecialFeedMoreActions({
           text: "Share",
           icon: getShareIcon(),
           handler: () => {
-            const url = buildBaseLemmyUrl(urlSelector(store.getState()));
+            const url = buildBaseClientUrl(urlSelector(store.getState()));
 
             share(`${url}?dataType=Post&listingType=${type}`);
           },

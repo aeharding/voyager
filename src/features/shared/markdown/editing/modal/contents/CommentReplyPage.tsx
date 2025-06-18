@@ -27,7 +27,7 @@ import { isLemmyError } from "#/helpers/lemmyErrors";
 import { commentPosted } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import AppHeader from "../../../../AppHeader";

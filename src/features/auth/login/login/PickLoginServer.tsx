@@ -25,7 +25,7 @@ import {
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { getCustomServers } from "#/services/app";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 
 import Login from "./Login";
 

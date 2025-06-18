@@ -6,7 +6,8 @@ import {
   getInstanceFromHandle,
 } from "#/features/auth/authSelectors";
 import { Credential } from "#/features/auth/authSlice";
-import { _uploadImage, getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
+import { _uploadImage } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
 export type UploadImageContext = "body" | "post-content";

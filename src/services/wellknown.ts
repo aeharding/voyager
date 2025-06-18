@@ -1,7 +1,7 @@
 export async function resolveSoftware(
-  hostname: string,
+  url: string,
 ): Promise<Nodeinfo21Payload["software"]> {
-  const response = await fetch(`https://${hostname}/.well-known/nodeinfo`, {
+  const response = await fetch(`${url}/.well-known/nodeinfo`, {
     headers: { Accept: "application/json" },
   });
 

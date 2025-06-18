@@ -1,6 +1,6 @@
 import createClient from "openapi-fetch";
 
-import { BaseVgerClient } from "../vger";
+import { BaseVgerClient, VgerClientOptions } from "../vger";
 import {
   compatPiefedCommentView,
   compatPiefedCommunity,
@@ -16,17 +16,16 @@ export default class PiefedClient implements BaseVgerClient {
   name = "piefed";
   private client: ReturnType<typeof createClient<paths>>;
 
-  constructor(
-    hostname: string,
-    otherHeaders?: Record<string, string>,
-    jwt?: string,
-  ) {
+  constructor(url: string, options: VgerClientOptions) {
     this.client = createClient({
-      baseUrl: `https://${hostname}/api/alpha`,
-      headers: {
-        ...otherHeaders,
-        ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
-      },
+      baseUrl: `${url}/api/alpha`,
+      // TODO: piefed doesn't allow CORS headers other than Authorization
+      headers: options.headers.Authorization
+        ? {
+            Authorization: options.headers.Authorization,
+          }
+        : undefined,
+      fetch: options.fetchFunction,
     });
   }
 
@@ -43,7 +42,10 @@ export default class PiefedClient implements BaseVgerClient {
     const response = await this.client.GET("/site");
 
     return {
-      site: response.data!.site,
+      site_view: {
+        site: response.data!.site,
+        local_site: {},
+      },
       my_user: {
         ...response.data!.my_user,
         follows: response.data!.my_user!.follows.map((f) => ({
@@ -142,7 +144,10 @@ export default class PiefedClient implements BaseVgerClient {
 
   async createComment(payload: Parameters<BaseVgerClient["createComment"]>[0]) {
     const response = await this.client.POST("/comment", {
-      body: payload,
+      body: {
+        ...payload,
+        body: payload.content,
+      },
     });
 
     return {
@@ -152,7 +157,10 @@ export default class PiefedClient implements BaseVgerClient {
 
   async editComment(payload: Parameters<BaseVgerClient["editComment"]>[0]) {
     const response = await this.client.PUT("/comment", {
-      body: payload,
+      body: {
+        ...payload,
+        body: payload.content,
+      },
     });
 
     return {

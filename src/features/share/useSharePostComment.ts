@@ -7,7 +7,6 @@ import {
   GO_VOYAGER_HOST,
 } from "#/features/share/fediRedirect";
 import { useShare } from "#/features/share/share";
-import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
@@ -20,9 +19,8 @@ import {
 } from "#/helpers/toastMessages";
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
+import { getClient } from "#/services/client";
 import { OPostCommentShareType } from "#/services/db";
-import { getClient } from "#/services/lemmy";
-import PiefedClient from "#/services/piefed";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {
@@ -84,19 +82,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       default: {
         let resolvedPost, resolvedComment;
 
-        const software = getDetermineSoftware(new URL(`https://${instance}`));
-
-        const client = (() => {
-          switch (software) {
-            case "unknown": // optimistically assume lemmy
-            case "lemmy": {
-              return getClient(instance);
-            }
-            case "piefed": {
-              return new PiefedClient(instance);
-            }
-          }
-        })();
+        const client = getClient(instance);
 
         try {
           ({ post: resolvedPost, comment: resolvedComment } =

@@ -1,8 +1,6 @@
 import { LemmyHttp } from "lemmy-js-client";
 
-import { getClient } from "#/services/lemmy";
-
-import { BaseVgerClient } from "../vger";
+import { BaseVgerClient, VgerClientOptions } from "../vger";
 import {
   compatLemmyCommentView,
   compatLemmyCommunityView,
@@ -13,12 +11,8 @@ export default class LemmyClient implements BaseVgerClient {
   name = "lemmy";
   private client: LemmyHttp;
 
-  constructor(
-    hostname: string,
-    otherHeaders?: Record<string, string>,
-    jwt?: string,
-  ) {
-    this.client = getClient(hostname, jwt);
+  constructor(hostname: string, options: VgerClientOptions) {
+    this.client = new LemmyHttp(hostname, options);
   }
 
   async resolveObject(payload: Parameters<BaseVgerClient["resolveObject"]>[0]) {
@@ -26,12 +20,7 @@ export default class LemmyClient implements BaseVgerClient {
   }
 
   async getSite() {
-    const site = await this.client.getSite();
-
-    return {
-      ...site,
-      site: site.site_view.site,
-    };
+    return this.client.getSite();
   }
 
   async login(payload: Parameters<BaseVgerClient["login"]>[0]) {
@@ -50,6 +39,7 @@ export default class LemmyClient implements BaseVgerClient {
     const response = await this.client.getPosts(payload);
 
     return {
+      ...response,
       posts: response.posts.map(compatLemmyPostView),
     };
   }

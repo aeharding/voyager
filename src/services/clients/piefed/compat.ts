@@ -46,6 +46,14 @@ export function compatPiefedCommentView(
     subscribed: comment.subscribed === "Subscribed",
     community: compatPiefedCommunity(comment.community),
     creator: compatPiefedPerson(comment.creator),
+    comment: compatPiefedComment(comment.comment),
+  };
+}
+
+export function compatPiefedComment(comment: components["schemas"]["Comment"]) {
+  return {
+    ...comment,
+    content: comment.body,
   };
 }
 

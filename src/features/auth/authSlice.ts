@@ -14,7 +14,7 @@ import { setDefaultFeed } from "#/features/settings/settingsSlice";
 import { resetUsers } from "#/features/user/userSlice";
 import { getRemoteHandle, parseLemmyJWT } from "#/helpers/lemmy";
 import { getDefaultServer } from "#/services/app";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { AppDispatch, RootState } from "#/store";
 
 import { getInstanceFromHandle, instanceSelector } from "./authSelectors";

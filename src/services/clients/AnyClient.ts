@@ -2,7 +2,7 @@ import { resolveSoftware } from "#/services/wellknown";
 
 import LemmyClient from "./lemmy";
 import PiefedClient from "./piefed";
-import { BaseVgerClient } from "./vger";
+import { BaseVgerClient, VgerClientOptions } from "./vger";
 
 // Global cache for software discovery promises by hostname
 const discoveryCache = new Map<string, Promise<string>>();
@@ -10,19 +10,13 @@ const discoveryCache = new Map<string, Promise<string>>();
 export default class AnyClient implements BaseVgerClient {
   name = "unknown";
   private hostname: string;
-  private otherHeaders?: Record<string, string>;
-  private jwt?: string;
+  private options: VgerClientOptions;
   private discoveredSoftware: string | null = null;
   private delegateClient: BaseVgerClient | null = null;
 
-  constructor(
-    hostname: string,
-    otherHeaders?: Record<string, string>,
-    jwt?: string,
-  ) {
+  constructor(hostname: string, options: VgerClientOptions) {
     this.hostname = hostname;
-    this.otherHeaders = otherHeaders;
-    this.jwt = jwt;
+    this.options = options;
   }
 
   private async ensureClient(): Promise<BaseVgerClient> {
@@ -42,17 +36,9 @@ export default class AnyClient implements BaseVgerClient {
 
     // Create the appropriate client based on discovered software
     if (this.discoveredSoftware === "lemmy") {
-      this.delegateClient = new LemmyClient(
-        this.hostname,
-        this.otherHeaders,
-        this.jwt,
-      );
+      this.delegateClient = new LemmyClient(this.hostname, this.options);
     } else if (this.discoveredSoftware === "piefed") {
-      this.delegateClient = new PiefedClient(
-        this.hostname,
-        this.otherHeaders,
-        this.jwt,
-      );
+      this.delegateClient = new PiefedClient(this.hostname, this.options);
     } else {
       throw new Error(`Unsupported software: ${this.discoveredSoftware}`);
     }

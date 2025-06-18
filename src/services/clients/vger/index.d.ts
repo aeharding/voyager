@@ -13,15 +13,16 @@ import {
   VgerSiteResponse,
 } from "./types";
 
+export interface VgerClientOptions {
+  fetchFunction: typeof fetch;
+  headers: Record<string, string>;
+}
+
 // Abstract base class that all clients should extend
 export abstract class BaseVgerClient {
   public name: string;
 
-  constructor(
-    hostname: string,
-    otherHeaders?: Record<string, string>,
-    jwt?: string,
-  );
+  constructor(hostname: string, options: VgerClientOptions);
 
   abstract resolveObject(payload: {
     q: string;
@@ -33,7 +34,9 @@ export abstract class BaseVgerClient {
     payload: VgerGetCommunity,
   ): Promise<{ community_view: VgerCommunityView }>;
 
-  abstract getPosts(payload: VgerGetPosts): Promise<{ posts: VgerPostView[] }>;
+  abstract getPosts(
+    payload: VgerGetPosts,
+  ): Promise<{ posts: VgerPostView[]; next_page?: string }>;
 
   abstract getComments(
     payload: VgerGetComments,
