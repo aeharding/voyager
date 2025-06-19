@@ -1,14 +1,14 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { uniqBy } from "es-toolkit";
+import { createContext, use } from "react";
+import { useParams } from "react-router";
 import {
   CommentReportView,
   CommentView,
   Community,
   PostReportView,
   PostView,
-} from "lemmy-js-client";
-import { createContext, use } from "react";
-import { useParams } from "react-router";
+} from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";

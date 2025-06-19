@@ -1,5 +1,5 @@
 import { personAdd, personRemove } from "ionicons/icons";
-import { ModBanFromCommunityView } from "lemmy-js-client";
+import { ModBanFromCommunityView } from "threadiverse";
 
 import { buildUserLink } from "#/helpers/appLinkBuilder";
 import { getHandle } from "#/helpers/lemmy";

@@ -1,5 +1,5 @@
 import { ban, refresh } from "ionicons/icons";
-import { ModBanView } from "lemmy-js-client";
+import { ModBanView } from "threadiverse";
 
 import { buildUserLink } from "#/helpers/appLinkBuilder";
 import { getHandle, getItemActorName } from "#/helpers/lemmy";

@@ -1,6 +1,6 @@
 import { IonItem, IonLabel } from "@ionic/react";
 import { startCase } from "es-toolkit";
-import { PostSortType } from "lemmy-js-client";
+import { PostSortType } from "threadiverse";
 
 import {
   formatTopLabel,

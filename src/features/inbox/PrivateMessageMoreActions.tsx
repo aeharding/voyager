@@ -6,8 +6,8 @@ import {
   personOutline,
   textOutline,
 } from "ionicons/icons";
-import { PrivateMessageView } from "lemmy-js-client";
 import { use, useCallback, useImperativeHandle } from "react";
+import { PrivateMessageView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import usePresentUserActions from "#/features/user/usePresentUserActions";

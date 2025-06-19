@@ -1,6 +1,6 @@
 import { IonNav } from "@ionic/react";
-import { CommunityView, PostView } from "lemmy-js-client";
 import { useRef, useState } from "react";
+import { CommunityView, PostView } from "threadiverse";
 
 import useIonNavBackButtonListener from "#/helpers/useIonNavBackButtonListener";
 

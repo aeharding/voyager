@@ -1,6 +1,7 @@
+import { ThreadiverseClient } from "threadiverse";
+
 import { isNative } from "#/helpers/device";
 
-import AnyClient from "./clients/AnyClient";
 import nativeFetch from "./nativeFetch";
 
 const usingNativeFetch = isNative();
@@ -18,7 +19,7 @@ export function buildBaseClientUrl(url: string): string {
 }
 
 export function getClient(url: string, jwt?: string) {
-  return new AnyClient(buildBaseClientUrl(url), {
+  return new ThreadiverseClient(buildBaseClientUrl(url), {
     fetchFunction: usingNativeFetch ? nativeFetch : fetch.bind(globalThis),
     headers: jwt
       ? {

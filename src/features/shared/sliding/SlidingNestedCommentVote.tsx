@@ -1,4 +1,4 @@
-import { CommentView } from "lemmy-js-client";
+import { CommentView } from "threadiverse";
 
 import { useAppSelector } from "#/store";
 

@@ -1,4 +1,4 @@
-import { GetComments, GetPosts } from "lemmy-js-client";
+import { GetComments, GetPosts } from "threadiverse";
 
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";

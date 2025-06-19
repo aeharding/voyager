@@ -1,4 +1,4 @@
-import { CommunityAggregates, Person, SiteAggregates } from "lemmy-js-client";
+import { CommunityAggregates, Person, SiteAggregates } from "threadiverse";
 
 import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
 import { MaxWidthContainer } from "#/features/shared/AppContent";

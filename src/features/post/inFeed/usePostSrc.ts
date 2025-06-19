@@ -1,4 +1,4 @@
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import { IMAGE_FAILED } from "#/features/media/imageSlice";
 import { findLoneImage } from "#/helpers/markdown";

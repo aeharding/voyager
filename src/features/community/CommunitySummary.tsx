@@ -1,6 +1,6 @@
 import { IonItem } from "@ionic/react";
 import { heart } from "ionicons/icons";
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView } from "threadiverse";
 
 import Ago from "#/features/labels/Ago";
 import CommunityLink from "#/features/labels/links/CommunityLink";

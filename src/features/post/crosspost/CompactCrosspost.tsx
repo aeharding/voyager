@@ -1,6 +1,6 @@
 import { IonIcon, IonSkeletonText } from "@ionic/react";
 import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import { cx } from "#/helpers/css";
 import { getCounts } from "#/helpers/lemmyCompat";

@@ -7,8 +7,8 @@ import {
   shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useState } from "react";
+import { CommentView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { localUserSelector } from "#/features/auth/siteSlice";

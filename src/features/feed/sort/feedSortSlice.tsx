@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CommentSortType, PostSortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import { db } from "#/services/db";
 import { RootState } from "#/store";

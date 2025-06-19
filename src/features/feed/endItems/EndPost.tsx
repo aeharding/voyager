@@ -1,4 +1,4 @@
-import { CommentSortType, PostSortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import styles from "./EndPost.module.css";
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BanFromCommunity, Person } from "lemmy-js-client";
+import { BanFromCommunity, Person } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";

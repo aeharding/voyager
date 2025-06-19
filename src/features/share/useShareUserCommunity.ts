@@ -1,6 +1,6 @@
 import { useIonActionSheet } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { Community, Person } from "lemmy-js-client";
+import { Community, Person } from "threadiverse";
 
 import {
   buildLemmyCommunityLink,

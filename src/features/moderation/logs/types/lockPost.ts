@@ -1,5 +1,5 @@
 import { lockClosed, lockOpen } from "ionicons/icons";
-import { ModLockPostView } from "lemmy-js-client";
+import { ModLockPostView } from "threadiverse";
 
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 

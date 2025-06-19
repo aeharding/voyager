@@ -1,4 +1,4 @@
-import { Community } from "lemmy-js-client";
+import { Community } from "threadiverse";
 
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { getApId } from "#/helpers/lemmyCompat";

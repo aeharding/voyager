@@ -1,9 +1,9 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { use, useEffect } from "react";
 import { useTransition } from "react-transition-state";
+import { PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";

@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { use, useMemo } from "react";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";

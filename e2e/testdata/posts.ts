@@ -1,4 +1,4 @@
-import type { PostView } from "lemmy-js-client";
+import type { PostView } from "threadiverse";
 
 export const posts: PostView[] = [
   {

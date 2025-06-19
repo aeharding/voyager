@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
-import { Comment, CommentView } from "lemmy-js-client";
 import { RefObject } from "react";
+import { Comment, CommentView } from "threadiverse";
 
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";

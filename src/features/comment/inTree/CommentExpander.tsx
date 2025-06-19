@@ -1,8 +1,8 @@
 import { IonIcon, IonItem, IonSpinner } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
 import { use, useState } from "react";
 import AnimateHeight from "react-animate-height";
+import { CommentView } from "threadiverse";
 
 import CommentContainer from "#/features/comment/elements/CommentContainer";
 import { PositionedContainer } from "#/features/comment/elements/PositionedContainer";

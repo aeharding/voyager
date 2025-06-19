@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ResolveObjectResponse } from "lemmy-js-client";
+import { ResolveObjectResponse } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";

@@ -1,5 +1,5 @@
 import { arrowUndoCircle, trash } from "ionicons/icons";
-import { ModRemovePostView } from "lemmy-js-client";
+import { ModRemovePostView } from "threadiverse";
 
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 

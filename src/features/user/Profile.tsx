@@ -7,8 +7,8 @@ import {
   chatbubbleOutline,
   eyeOffOutline,
 } from "ionicons/icons";
-import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { ComponentProps } from "react";
+import { GetPersonDetailsResponse } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { FetchFn } from "#/features/feed/Feed";

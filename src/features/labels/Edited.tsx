@@ -1,7 +1,7 @@
 import { useIonAlert } from "@ionic/react";
 import { pencil } from "ionicons/icons";
-import { CommentView, PostView } from "lemmy-js-client";
 import { MouseEvent } from "react";
+import { CommentView, PostView } from "threadiverse";
 
 import Stat from "#/features/post/detail/Stat";
 import { getCounts } from "#/helpers/lemmyCompat";

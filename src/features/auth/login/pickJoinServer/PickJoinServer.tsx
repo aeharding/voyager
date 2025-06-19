@@ -22,8 +22,8 @@ import {
   ellipsisHorizontalCircleOutline,
   ellipsisVertical,
 } from "ionicons/icons";
-import { GetSiteResponse } from "lemmy-js-client";
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GetSiteResponse } from "threadiverse";
 import { VList } from "virtua";
 
 import {

@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FederatedInstances } from "lemmy-js-client";
+import { FederatedInstances } from "threadiverse";
 
 import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
 import { db } from "#/services/db";

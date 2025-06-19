@@ -139,9 +139,6 @@ importers:
       ionicons:
         specifier: ^8.0.9
         version: 8.0.9
-      lemmy-js-client:
-        specifier: 0.20.0-alpha.18
-        version: 0.20.0-alpha.18
       mdast-util-gfm-autolink-literal-lemmy:
         specifier: ^3.0.1
         version: 3.0.1
@@ -226,6 +223,9 @@ importers:
       remark-stringify:
         specifier: ^11.0.0
         version: 11.0.0
+      threadiverse:
+        specifier: link:../threadiverse
+        version: link:../threadiverse
       ua-parser-js:
         specifier: ^2.0.3
         version: 2.0.3
@@ -4245,9 +4245,6 @@ packages:
 
   leek@0.0.24:
     resolution: {integrity: sha512-6PVFIYXxlYF0o6hrAsHtGpTmi06otkwNrMcmQ0K96SeSRHPREPa9J3nJZ1frliVH7XT0XFswoJFQoXsDukzGNQ==}
-
-  lemmy-js-client@0.20.0-alpha.18:
-    resolution: {integrity: sha512-oZy8DboTWfUar4mPWpi7SYrOEjTBJxkvd1e6QaVwoA5UhqQV1WhxEYbzrpi/gXnEokaVQ0i5sjtL/Y2PHMO3MQ==}
 
   less@4.2.0:
     resolution: {integrity: sha512-P3b3HJDBtSzsXUl0im2L7gTO5Ubg8mEN6G8qoTS77iXxXX4Hvu4Qj540PZDvQ8V6DmX6iXo98k7Md0Cm1PrLaA==}
@@ -11161,8 +11158,6 @@ snapshots:
       rsvp: 3.6.2
     transitivePeerDependencies:
       - supports-color
-
-  lemmy-js-client@0.20.0-alpha.18: {}
 
   less@4.2.0:
     dependencies:

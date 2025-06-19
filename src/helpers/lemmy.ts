@@ -8,7 +8,7 @@ import {
   Person,
   Post,
   PostView,
-} from "lemmy-js-client";
+} from "threadiverse";
 
 import { parseJWT } from "./jwt";
 import { getApId, getCounts } from "./lemmyCompat";

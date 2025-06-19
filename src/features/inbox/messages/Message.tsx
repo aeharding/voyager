@@ -1,5 +1,4 @@
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
-import { PrivateMessageView } from "lemmy-js-client";
 import {
   use,
   useCallback,
@@ -8,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { PrivateMessageView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";

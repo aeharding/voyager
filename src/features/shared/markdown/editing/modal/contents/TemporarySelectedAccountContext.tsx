@@ -1,3 +1,4 @@
+import { BaseVgerClient } from "#/services/clients/vger";
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
 import { createContext, use, useState } from "react";
@@ -9,7 +10,6 @@ import {
 } from "#/features/auth/authSelectors";
 import { Credential } from "#/features/auth/authSlice";
 import { getClient } from "#/services/client";
-import { BaseVgerClient } from "#/services/clients/vger";
 import { useAppSelector } from "#/store";
 
 const TemporarySelectedAccountContext = createContext<{

@@ -1,5 +1,5 @@
 import { IonBackButton, IonButtons, IonToolbar } from "@ionic/react";
-import { ListingType } from "lemmy-js-client";
+import { ListingType } from "threadiverse";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
 import ModActions from "#/features/community/mod/ModActions";

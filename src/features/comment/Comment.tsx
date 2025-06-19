@@ -1,7 +1,7 @@
 import { IonItem } from "@ionic/react";
-import { CommentView } from "lemmy-js-client";
 import React, { MouseEvent, useRef } from "react";
 import AnimateHeight from "react-animate-height";
+import { CommentView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import Save from "#/features/labels/Save";

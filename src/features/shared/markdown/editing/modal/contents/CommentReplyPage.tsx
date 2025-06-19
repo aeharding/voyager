@@ -6,14 +6,14 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { arrowBackSharp, send } from "ionicons/icons";
+import { RefObject, useEffect, useRef, useState } from "react";
 import {
   CommentReplyView,
   CommentView,
   PersonMentionView,
   PostView,
   ResolveObjectResponse,
-} from "lemmy-js-client";
-import { RefObject, useEffect, useRef, useState } from "react";
+} from "threadiverse";
 
 import {
   getInstanceFromHandle,

@@ -8,8 +8,8 @@ import {
   IonLoading,
   useIonModal,
 } from "@ionic/react";
-import { Instance } from "lemmy-js-client";
 import { useState } from "react";
+import { Instance } from "threadiverse";
 
 import { blockInstance } from "#/features/auth/siteSlice";
 import { ListHeader } from "#/features/settings/shared/formatting";

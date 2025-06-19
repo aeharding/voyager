@@ -1,3 +1,4 @@
+import { use } from "react";
 import {
   CommentView,
   Community,
@@ -5,8 +6,7 @@ import {
   Person,
   PersonView,
   PostView,
-} from "lemmy-js-client";
-import { use } from "react";
+} from "threadiverse";
 
 import { OutletContext } from "#/routes/OutletProvider";
 import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";

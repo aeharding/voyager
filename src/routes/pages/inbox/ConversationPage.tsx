@@ -5,7 +5,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { PrivateMessageView } from "lemmy-js-client";
 import {
   use,
   useCallback,
@@ -17,6 +16,7 @@ import {
 } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { PrivateMessageView } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";

@@ -3,7 +3,7 @@ import {
   CommunityModeratorView,
   CommunityView,
   GetCommunityResponse,
-} from "lemmy-js-client";
+} from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";

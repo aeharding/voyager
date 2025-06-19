@@ -1,5 +1,4 @@
 import { IonItem } from "@ionic/react";
-import { PostView } from "lemmy-js-client";
 import {
   memo,
   useCallback,
@@ -9,6 +8,7 @@ import {
   useState,
 } from "react";
 import AnimateHeight from "react-animate-height";
+import { PostView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";

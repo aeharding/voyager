@@ -1,9 +1,9 @@
 import { IonIcon } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { chatbubbleOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import React, { use } from "react";
 import { Link } from "react-router-dom";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import MoreActions from "#/features/post/shared/MoreActions";

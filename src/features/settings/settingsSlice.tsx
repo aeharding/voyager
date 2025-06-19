@@ -11,7 +11,7 @@ import {
 import Dexie from "dexie";
 import { merge, zipObject } from "es-toolkit";
 import { produce } from "immer";
-import { PostSortType } from "lemmy-js-client";
+import { PostSortType } from "threadiverse";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";

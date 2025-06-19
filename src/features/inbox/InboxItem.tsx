@@ -1,11 +1,11 @@
 import { IonIcon, IonItem } from "@ionic/react";
 import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
+import { useCallback, useRef } from "react";
 import {
   CommentReplyView,
   PersonMentionView,
   PrivateMessageView,
-} from "lemmy-js-client";
-import { useCallback, useRef } from "react";
+} from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import CommentMarkdown from "#/features/comment/CommentMarkdown";

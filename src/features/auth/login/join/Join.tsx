@@ -13,8 +13,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
-import { LoginResponse } from "lemmy-js-client";
 import { use, useEffect, useRef, useState } from "react";
+import { LoginResponse } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";

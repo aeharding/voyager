@@ -1,4 +1,4 @@
-import { GetModlogResponse } from "lemmy-js-client";
+import { GetModlogResponse } from "threadiverse";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;

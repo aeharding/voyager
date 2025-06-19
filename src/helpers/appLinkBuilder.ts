@@ -1,4 +1,4 @@
-import { Comment, Community, Person, Post } from "lemmy-js-client";
+import { Comment, Community, Person, Post } from "threadiverse";
 
 import { getHandle } from "./lemmy";
 

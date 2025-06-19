@@ -19,7 +19,7 @@ import {
   trendingUpOutline,
   trophyOutline,
 } from "ionicons/icons";
-import { PostSortType } from "lemmy-js-client";
+import { PostSortType } from "threadiverse";
 
 import { arrayOfAll } from "#/helpers/array";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";

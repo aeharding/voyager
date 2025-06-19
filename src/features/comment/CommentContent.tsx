@@ -1,6 +1,6 @@
 import { IonText } from "@ionic/react";
-import { Comment, Post } from "lemmy-js-client";
 import { useEffect } from "react";
+import { Comment, Post } from "threadiverse";
 
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
 import { useAppDispatch, useAppSelector } from "#/store";

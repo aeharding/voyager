@@ -1,5 +1,5 @@
 import { IonRefresher, IonRefresherContent } from "@ionic/react";
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView } from "threadiverse";
 
 import { getCommunity } from "#/features/community/communitySlice";
 import { getHandle } from "#/helpers/lemmy";

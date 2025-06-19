@@ -1,7 +1,7 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { Community, Person } from "lemmy-js-client";
 import { useEffect } from "react";
 import { useParams } from "react-router";
+import { Community, Person } from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import Feed, { FetchFn } from "#/features/feed/Feed";

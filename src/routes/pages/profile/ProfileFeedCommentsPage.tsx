@@ -1,5 +1,5 @@
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { useParams } from "react-router-dom";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import CommentSort from "#/features/comment/CommentSort";
 import { FetchFn } from "#/features/feed/Feed";

@@ -1,5 +1,5 @@
 import { IonIcon } from "@ionic/react";
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
 import { useSharePostComment } from "#/features/share/useSharePostComment";

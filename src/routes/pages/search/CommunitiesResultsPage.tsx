@@ -1,7 +1,7 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { compact } from "es-toolkit";
-import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
 import { useState } from "react";
+import { CommunityView, LemmyHttp, ListingType } from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";

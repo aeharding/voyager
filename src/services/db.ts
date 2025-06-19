@@ -7,7 +7,7 @@ import {
   CommentSortType,
   FederatedInstances,
   PostSortType,
-} from "lemmy-js-client";
+} from "threadiverse";
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort.js";
 import { ALL_POST_SORTS } from "#/features/feed/PostSort.js";

@@ -1,5 +1,5 @@
 import { IonBadge } from "@ionic/react";
-import { CommunityAggregates, SiteAggregates } from "lemmy-js-client";
+import { CommunityAggregates, SiteAggregates } from "threadiverse";
 
 import { formatNumber } from "#/helpers/number";
 

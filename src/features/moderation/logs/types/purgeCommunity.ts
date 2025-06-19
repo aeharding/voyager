@@ -1,5 +1,5 @@
 import { trashBin } from "ionicons/icons";
-import { AdminPurgeCommunityView } from "lemmy-js-client";
+import { AdminPurgeCommunityView } from "threadiverse";
 
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, getAdminRole } from "./shared";

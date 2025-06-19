@@ -1,6 +1,6 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import { eyeOffOutline, imageOutline, listOutline } from "ionicons/icons";
-import { ListingType } from "lemmy-js-client";
+import { ListingType } from "threadiverse";
 
 import { urlSelector } from "#/features/auth/authSelectors";
 import {

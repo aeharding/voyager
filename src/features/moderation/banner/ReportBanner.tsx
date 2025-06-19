@@ -1,6 +1,6 @@
 import { IonIcon, IonLoading } from "@ionic/react";
 import { flagOutline } from "ionicons/icons";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "threadiverse";
 
 import { isPost } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";

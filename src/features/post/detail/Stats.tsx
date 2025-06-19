@@ -1,4 +1,4 @@
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";

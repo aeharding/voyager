@@ -3,7 +3,7 @@ import { IonSkeletonText } from "@ionic/react";
 import { repeat } from "ionicons/icons";
 import { arrowUpSharp } from "ionicons/icons";
 import { chatbubbleOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
 import { cx } from "#/helpers/css";

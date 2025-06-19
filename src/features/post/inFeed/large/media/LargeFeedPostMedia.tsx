@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { ComponentProps } from "react";
+import { PostView } from "threadiverse";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
 import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";

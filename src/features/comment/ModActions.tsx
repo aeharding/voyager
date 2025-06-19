@@ -1,5 +1,5 @@
 import { IonIcon, IonLoading } from "@ionic/react";
-import { CommentView } from "lemmy-js-client";
+import { CommentView } from "threadiverse";
 
 import {
   getModColor,

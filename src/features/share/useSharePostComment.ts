@@ -1,6 +1,6 @@
 import { useIonActionSheet } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "threadiverse";
 
 import {
   buildGoVoyagerLink,

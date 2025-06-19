@@ -1,6 +1,6 @@
-import { Person } from "lemmy-js-client";
 import { use, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Person } from "threadiverse";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";

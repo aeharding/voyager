@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
-import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
+import { GetUnreadCountResponse, PrivateMessageView } from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { receivedUsers } from "#/features/user/userSlice";

@@ -14,8 +14,8 @@ import {
   skullOutline,
   timeOutline,
 } from "ionicons/icons";
-import { CommentSortType } from "lemmy-js-client";
 import { useState } from "react";
+import { CommentSortType } from "threadiverse";
 
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";

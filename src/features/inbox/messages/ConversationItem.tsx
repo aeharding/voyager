@@ -8,8 +8,8 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { chevronForwardOutline } from "ionicons/icons";
-import { PrivateMessageView } from "lemmy-js-client";
 import { useState } from "react";
+import { PrivateMessageView } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import ItemIcon from "#/features/labels/img/ItemIcon";

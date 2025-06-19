@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Comment, CommentView } from "lemmy-js-client";
+import { Comment, CommentView } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { resolveCommentReport } from "#/features/moderation/modSlice";

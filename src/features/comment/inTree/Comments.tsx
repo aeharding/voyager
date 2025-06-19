@@ -1,7 +1,6 @@
 import { RefresherCustomEvent } from "@ionic/core";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import { compact, differenceBy, sortBy, uniqBy } from "es-toolkit";
-import { CommentSortType, CommentView } from "lemmy-js-client";
 import React, {
   useCallback,
   useEffect,
@@ -11,6 +10,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { CommentSortType, CommentView } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";

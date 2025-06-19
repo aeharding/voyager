@@ -1,6 +1,6 @@
 import { useIonAlert } from "@ionic/react";
-import { GetSiteResponse } from "lemmy-js-client";
 import { RefObject } from "react";
+import { GetSiteResponse } from "threadiverse";
 
 import { requestJoinSiteData } from "#/features/auth/login/join/joinSlice";
 import Legal from "#/features/auth/login/join/Legal";

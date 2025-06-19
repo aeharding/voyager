@@ -1,4 +1,4 @@
-import { LemmyHttp } from "lemmy-js-client";
+import { ThreadiverseClient } from "threadiverse";
 
 import { reduceFileSize } from "#/helpers/imageCompress";
 
@@ -26,7 +26,7 @@ const DEFAULT_LIMIT: CustomLimit = {
  */
 export async function _uploadImage(
   instance: string,
-  client: LemmyHttp,
+  client: ThreadiverseClient,
   image: File,
 ) {
   let compressedImageIfNeeded;

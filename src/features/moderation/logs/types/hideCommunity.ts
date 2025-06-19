@@ -1,5 +1,5 @@
 import { eye, eyeOff } from "ionicons/icons";
-import { ModHideCommunityView } from "lemmy-js-client";
+import { ModHideCommunityView } from "threadiverse";
 
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
 import { getHandle } from "#/helpers/lemmy";

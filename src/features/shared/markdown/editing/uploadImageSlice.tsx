@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UploadImageResponse } from "lemmy-js-client";
+import { UploadImageResponse } from "threadiverse";
 
 import {
   activeAccount,

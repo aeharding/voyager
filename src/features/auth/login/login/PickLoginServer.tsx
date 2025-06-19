@@ -12,8 +12,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { GetSiteResponse } from "lemmy-js-client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GetSiteResponse } from "threadiverse";
 import { VList, VListHandle } from "virtua";
 
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
@@ -83,9 +83,10 @@ export default function PickLoginServer() {
     setLoading(true);
 
     let site: GetSiteResponse;
+    const client = getClient(potentialServer);
 
     try {
-      site = await getClient(potentialServer).getSite();
+      site = await client.getSite();
     } catch (error) {
       presentToast({
         message: `Problem connecting to ${potentialServer}. Please try again`,
@@ -98,7 +99,10 @@ export default function PickLoginServer() {
       setLoading(false);
     }
 
-    if (!isMinimumSupportedLemmyVersion(site.version)) {
+    if (
+      client.name === "lemmy" &&
+      !isMinimumSupportedLemmyVersion(site.version)
+    ) {
       presentToast({
         message: `${potentialServer} is running Lemmy v${site.version}. Voyager requires at least v${MINIMUM_LEMMY_VERSION}`,
         color: "danger",
