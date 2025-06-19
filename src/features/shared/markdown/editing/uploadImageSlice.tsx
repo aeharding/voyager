@@ -93,8 +93,8 @@ export const deletePendingImageUploads =
     try {
       await Promise.all(
         toRemove.map(async (img) => {
-          const file = img.files?.[0];
-          if (!file) return;
+          const delete_token = img.delete_token;
+          if (!delete_token) return;
 
           const account = getState().auth.accountData?.accounts.find(
             ({ handle }) => handle === img._handle,
@@ -107,10 +107,7 @@ export const deletePendingImageUploads =
             account.jwt,
           );
 
-          await client.deleteImage({
-            token: file.delete_token,
-            filename: file.file,
-          });
+          await client.deleteImage({ url: img.url, delete_token });
         }),
       );
     } finally {

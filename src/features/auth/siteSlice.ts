@@ -1,15 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GetSiteResponse } from "threadiverse";
 
-import { getRemoteHandle } from "#/helpers/lemmy";
 import { customBackOff } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
-import {
-  clientSelector,
-  handleSelector,
-  userHandleSelector,
-} from "./authSelectors";
+import { clientSelector, handleSelector } from "./authSelectors";
 
 interface SiteState {
   failedAttempt: number;
@@ -125,14 +120,7 @@ export const getSite =
 export const showNsfw =
   (show: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    // https://github.com/LemmyNet/lemmy/issues/3565
-    const person = getState().site.response?.my_user?.local_user_view.person;
-
-    if (!person || userHandleSelector(getState()) !== getRemoteHandle(person))
-      throw new Error("user mismatch");
-
     await clientSelector(getState())?.saveUserSettings({
-      avatar: person?.avatar || "",
       show_nsfw: show,
     });
 

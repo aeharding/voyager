@@ -201,7 +201,7 @@ export const conversationsByPersonIdSelector = createSelector(
   [
     (state: RootState) => state.inbox.messages,
     (state: RootState) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+      state.site.response?.my_user?.local_user_view?.person?.id,
   ],
   (messages, myUserId) => {
     return sortBy(

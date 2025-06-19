@@ -47,12 +47,15 @@ export async function _uploadImage(
   }
 
   const response = await client.uploadImage({
-    image: compressedImageIfNeeded as File,
+    file: compressedImageIfNeeded as File,
   });
 
   // lemm.ee uses response.message for error messages (e.g. account too new)
   if (!response.url)
-    throw new Error(response.msg ?? (response as unknown as Error).message);
+    throw new Error(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (response as any).msg ?? (response as unknown as Error).message,
+    );
 
   return response;
 }

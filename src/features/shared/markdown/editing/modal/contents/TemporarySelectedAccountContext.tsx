@@ -1,7 +1,7 @@
-import { BaseVgerClient } from "#/services/clients/vger";
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
 import { createContext, use, useState } from "react";
+import { ThreadiverseClient } from "threadiverse";
 
 import AccountSwitcher from "#/features/auth/AccountSwitcher";
 import {
@@ -14,7 +14,7 @@ import { useAppSelector } from "#/store";
 
 const TemporarySelectedAccountContext = createContext<{
   account: Credential | undefined;
-  accountClient: BaseVgerClient | undefined;
+  accountClient: ThreadiverseClient | undefined;
   presentAccountSwitcher: (onDidDismiss: () => void) => void;
 }>({
   account: undefined,
