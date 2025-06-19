@@ -9,7 +9,6 @@ import { InFeedContext } from "#/features/feed/Feed";
 import MoreActions from "#/features/post/shared/MoreActions";
 import { useShare } from "#/features/share/share";
 import { getShareIcon, isNative } from "#/helpers/device";
-import { getCounts } from "#/helpers/lemmyCompat";
 import useAppToast from "#/helpers/useAppToast";
 import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
@@ -86,7 +85,7 @@ export default function GalleryPostActions({
           >
             <div className={styles.section}>
               <IonIcon icon={chatbubbleOutline} />
-              <div className={styles.amount}>{getCounts(post).comments}</div>
+              <div className={styles.amount}>{post.counts.comments}</div>
             </div>
           </Link>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />

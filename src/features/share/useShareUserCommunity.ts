@@ -8,7 +8,6 @@ import {
   getHandle,
   isCommunity,
 } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import { parseUrl } from "#/helpers/url";
 import { OPostCommentShareType } from "#/services/db";
 import { useAppSelector } from "#/store";
@@ -43,7 +42,7 @@ export default function useShareUserCommunity(
         text: instance,
         handler: () => {
           if (instance === GO_VOYAGER_HOST) {
-            const voyagerLink = buildGoVoyagerLink(getApId(item));
+            const voyagerLink = buildGoVoyagerLink(item.actor_id);
             if (voyagerLink) share(voyagerLink);
             return;
           }
@@ -66,7 +65,7 @@ export default function useShareUserCommunity(
         return share(buildLink(instance, getHandle(item)));
       }
       default: {
-        return share(getApId(item));
+        return share(item.actor_id);
       }
     }
   }
@@ -77,7 +76,7 @@ export default function useShareUserCommunity(
     switch (defaultShare) {
       case OPostCommentShareType.ApId:
       case OPostCommentShareType.Community: {
-        await share(getApId(item));
+        await share(item.actor_id);
         break;
       }
       case OPostCommentShareType.Ask:
@@ -87,7 +86,7 @@ export default function useShareUserCommunity(
         await shareInstance(connectedInstance);
         break;
       case OPostCommentShareType.DeepLink:
-        await share(buildGoVoyagerLink(getApId(item))!);
+        await share(buildGoVoyagerLink(item.actor_id)!);
         break;
     }
   }
@@ -106,7 +105,7 @@ function generateUserCommunityInstanceCandidates(
 
   candidates.push(connectedInstance);
 
-  const communityActorHostname = parseUrl(getApId(community))?.hostname;
+  const communityActorHostname = parseUrl(community.actor_id)?.hostname;
   if (communityActorHostname) candidates.push(communityActorHostname);
 
   return uniq(candidates);

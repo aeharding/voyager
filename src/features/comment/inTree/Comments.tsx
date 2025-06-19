@@ -23,7 +23,6 @@ import {
   buildCommentsTreeWithMissing,
   getDepthFromCommentPath,
 } from "#/helpers/lemmy";
-import { getCounts } from "#/helpers/lemmyCompat";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
@@ -336,7 +335,7 @@ export default function Comments({
               ...parent,
               counts: {
                 ...parent.counts,
-                child_count: getCounts(parent).child_count + 1,
+                child_count: parent.counts.child_count + 1,
               },
             });
           }

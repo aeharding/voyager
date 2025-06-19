@@ -4,7 +4,6 @@ import { MouseEvent } from "react";
 import { CommentView, PostView } from "threadiverse";
 
 import Stat from "#/features/post/detail/Stat";
-import { getCounts } from "#/helpers/lemmyCompat";
 
 import { formatRelativeToNow } from "./Ago";
 
@@ -25,9 +24,7 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     if (!edited) return;
     if (!showDate) return;
 
-    const createdLabel = formatRelativeToNow(
-      new Date(getCounts(item).published),
-    );
+    const createdLabel = formatRelativeToNow(new Date(item.counts.published));
     const editedLabel = formatRelativeToNow(new Date(edited));
 
     if (createdLabel === editedLabel) return;

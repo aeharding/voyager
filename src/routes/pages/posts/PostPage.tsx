@@ -21,7 +21,6 @@ import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
 import { AppPage } from "#/helpers/AppPage";
 import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -132,8 +131,7 @@ export function PostPageContent({
 
     return (
       <>
-        {postIfFound ? formatNumber(getCounts(postIfFound).comments) : ""}{" "}
-        Comments
+        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
       </>
     );
   })();

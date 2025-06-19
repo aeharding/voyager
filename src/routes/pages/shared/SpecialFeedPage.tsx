@@ -87,8 +87,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
     const potentialCommunity =
       communityByHandle[getHandle(item.community).toLowerCase()];
-    if (potentialCommunity)
-      return potentialCommunity.subscribed === "NotSubscribed";
+    if (potentialCommunity) return !potentialCommunity.subscribed;
 
     return !followIds.includes(item.community.id);
   }

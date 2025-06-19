@@ -3,7 +3,6 @@ import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
 import { PostView } from "threadiverse";
 
 import { cx } from "#/helpers/css";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 
 import CrosspostContainer from "./CrosspostContainer";
@@ -35,7 +34,7 @@ export default function CompactCrosspost(props: CrosspostProps) {
           <div className={styles.stat}>
             <IonIcon icon={arrowUpSharp} />{" "}
             {crosspost ? (
-              formatNumber(getCounts(crosspost).score)
+              formatNumber(crosspost.counts.score)
             ) : (
               <IonSkeletonText className={styles.statIonSkeletonText} />
             )}
@@ -43,7 +42,7 @@ export default function CompactCrosspost(props: CrosspostProps) {
           <div className={styles.stat}>
             <IonIcon icon={chatbubbleOutline} />{" "}
             {crosspost ? (
-              formatNumber(getCounts(crosspost).comments)
+              formatNumber(crosspost.counts.comments)
             ) : (
               <IonSkeletonText className={styles.statIonSkeletonText} />
             )}

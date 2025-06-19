@@ -1,7 +1,7 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { compact } from "es-toolkit";
 import { useState } from "react";
-import { CommunityView, LemmyHttp, ListingType } from "threadiverse";
+import { CommunityView, ListingType, ThreadiverseClient } from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";
@@ -93,7 +93,7 @@ export default function CommunitiesResultsPage({
 
 async function findExactCommunity(
   name: string,
-  client: LemmyHttp,
+  client: ThreadiverseClient,
 ): Promise<CommunityView | undefined> {
   const sanitizedName = name.startsWith("!") ? name.slice(1) : name;
 

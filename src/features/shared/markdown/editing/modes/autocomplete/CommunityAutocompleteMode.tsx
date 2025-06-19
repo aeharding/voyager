@@ -1,7 +1,6 @@
 import { Community } from "threadiverse";
 
 import { getRemoteHandle } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import useClient from "#/helpers/useClient";
 
 import GenericAutocompleteMode, {
@@ -27,5 +26,5 @@ export default function CommunityAutocomplete(props: AutocompleteModeProps) {
 }
 
 function buildMd(item: Community) {
-  return `[!${getRemoteHandle(item)}](${getApId(item)})`;
+  return `[!${getRemoteHandle(item)}](${item.actor_id})`;
 }

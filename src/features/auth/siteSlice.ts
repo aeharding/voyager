@@ -53,6 +53,9 @@ export const isDownvoteEnabledSelector = (state: RootState) =>
   // @ts-expect-error TODO required changes for lemmy v0.20.0 https://github.com/aeharding/voyager/issues/1683
   state.site.response?.site_view.local_site.enable_downvotes !== false;
 
+export const localUserViewSelector = (state: RootState) =>
+  state.site.response?.my_user?.local_user_view;
+
 export const localUserSelector = (state: RootState) =>
   state.site.response?.my_user?.local_user_view.local_user;
 

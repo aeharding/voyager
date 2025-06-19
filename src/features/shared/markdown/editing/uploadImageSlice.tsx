@@ -49,7 +49,8 @@ export const uploadImageSlice = createSlice({
       }
 
       state.pendingSubmitImages = state.pendingSubmitImages.filter(
-        (img) => action.payload !== img.url,
+        (img) =>
+          !action.payload?.some((handledImg) => handledImg.url === img.url),
       );
     },
   },
