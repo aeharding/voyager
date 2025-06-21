@@ -7,11 +7,11 @@ import {
   IonText,
 } from "@ionic/react";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
-import { GetCaptchaResponse, Register } from "lemmy-js-client";
 import { useCallback, useEffect, useImperativeHandle, useState } from "react";
+import { GetCaptchaResponse, Register } from "threadiverse";
 
 import { b64ToBlob } from "#/helpers/blob";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 
 import styles from "./Captcha.module.css";
 

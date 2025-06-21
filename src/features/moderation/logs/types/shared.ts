@@ -1,4 +1,4 @@
-import { Comment, Person, Post } from "lemmy-js-client";
+import { Comment, Person, Post } from "threadiverse";
 
 import { ModeratorRole } from "../../useCanModerate";
 

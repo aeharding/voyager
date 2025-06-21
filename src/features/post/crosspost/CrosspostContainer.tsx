@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { MouseEvent, ReactNode, useEffect } from "react";
+import { PostView } from "threadiverse";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { resolveObject } from "#/features/resolve/resolveSlice";

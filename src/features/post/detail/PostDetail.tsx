@@ -1,6 +1,6 @@
 import { useIonViewDidEnter } from "@ionic/react";
-import { CommentSortType, PostView } from "lemmy-js-client";
 import { useEffect, useRef, useState } from "react";
+import { CommentSortType, PostView } from "threadiverse";
 
 import Comments, { CommentsHandle } from "#/features/comment/inTree/Comments";
 import JumpFab from "#/features/comment/inTree/JumpFab";

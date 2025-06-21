@@ -3,7 +3,7 @@ import {
   shieldCheckmarkOutline,
   shieldOutline,
 } from "ionicons/icons";
-import { Community, CommunityModeratorView, Person } from "lemmy-js-client";
+import { Community, CommunityModeratorView, Person } from "threadiverse";
 
 import {
   isAdminSelector,

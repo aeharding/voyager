@@ -1,28 +1,25 @@
 import { useIonActionSheet } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "threadiverse";
 
 import {
   buildGoVoyagerLink,
   GO_VOYAGER_HOST,
 } from "#/features/share/fediRedirect";
 import { useShare } from "#/features/share/share";
-import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
   isPost,
 } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import {
   buildResolveCommentFailed,
   buildResolvePostFailed,
 } from "#/helpers/toastMessages";
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
+import { getClient } from "#/services/client";
 import { OPostCommentShareType } from "#/services/db";
-import { getClient } from "#/services/lemmy";
-import PiefedClient from "#/services/piefed";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {
@@ -50,7 +47,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         handler: () => {
           if (instance === GO_VOYAGER_HOST) {
             const voyagerLink = buildGoVoyagerLink(
-              getApId(isPost(itemView) ? itemView.post : itemView.comment),
+              (isPost(itemView) ? itemView.post : itemView.comment).ap_id,
             );
             if (voyagerLink) share(voyagerLink);
             return;
@@ -70,12 +67,12 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
     // not in switch because React Compiler complains:
     // Todo: (BuildHIR::node.lowerReorderableExpression) Expression type `OptionalMemberExpression` cannot be safely reordered (57:57)
-    const apHostname = parseUrl(getApId(item))?.hostname;
+    const apHostname = parseUrl(item.ap_id)?.hostname;
 
     switch (instance) {
       // optimization: sync way to get link at ap_id instance
       case apHostname: {
-        return share(getApId(item));
+        return share(item.ap_id);
       }
       // optimization: sync way to get link at connectedInstance
       case connectedInstance: {
@@ -84,24 +81,12 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       default: {
         let resolvedPost, resolvedComment;
 
-        const software = getDetermineSoftware(new URL(`https://${instance}`));
-
-        const client = (() => {
-          switch (software) {
-            case "unknown": // optimistically assume lemmy
-            case "lemmy": {
-              return getClient(instance);
-            }
-            case "piefed": {
-              return new PiefedClient(instance);
-            }
-          }
-        })();
+        const client = getClient(instance);
 
         try {
           ({ post: resolvedPost, comment: resolvedComment } =
             await client.resolveObject({
-              q: getApId(item),
+              q: item.ap_id,
             }));
         } catch (error) {
           presentToast(
@@ -146,14 +131,14 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     switch (defaultShare) {
       case OPostCommentShareType.ApId:
         await share(
-          isPost(itemView) ? getApId(itemView.post) : getApId(itemView.comment),
+          isPost(itemView) ? itemView.post.ap_id : itemView.comment.ap_id,
         );
         break;
       case OPostCommentShareType.Ask:
         await onAsk();
         break;
       case OPostCommentShareType.Community: {
-        const instance = parseUrl(getApId(itemView.community))?.hostname;
+        const instance = parseUrl(itemView.community.actor_id)?.hostname;
         if (instance) await shareInstance(instance);
         break;
       }
@@ -163,7 +148,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       case OPostCommentShareType.DeepLink:
         await share(
           buildGoVoyagerLink(
-            getApId(isPost(itemView) ? itemView.post : itemView.comment),
+            (isPost(itemView) ? itemView.post : itemView.comment).ap_id,
           )!,
         );
         break;
@@ -185,16 +170,16 @@ function generateInstanceCandidates(
   candidates.push(connectedInstance);
 
   const communityActorHostname = parseUrl(
-    getApId(postOrComment.community),
+    postOrComment.community.actor_id,
   )?.hostname;
   if (communityActorHostname) candidates.push(communityActorHostname);
 
   // ap_id is the same instance as user's instance
   let apId: string;
   if (isPost(postOrComment)) {
-    apId = getApId(postOrComment.post);
+    apId = postOrComment.post.ap_id;
   } else {
-    apId = getApId(postOrComment.comment);
+    apId = postOrComment.comment.ap_id;
   }
   const apHostname = parseUrl(apId)?.hostname;
   if (apHostname) candidates.push(apHostname);

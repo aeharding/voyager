@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Post, PostView } from "lemmy-js-client";
+import { Post, PostView } from "threadiverse";
 
 import {
   clientSelector,

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { cx } from "#/helpers/css";
-import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { buildBaseClientUrl } from "#/services/client";
 import { useAppSelector } from "#/store";
 
 import InAppExternalLink, { AdditionalLinkProps } from "../InAppExternalLink";
@@ -26,7 +26,7 @@ export default function LinkInterceptor({
   ...props
 }: LinkInterceptorUnstyledProps) {
   const connectedInstanceUrl = useAppSelector((state) =>
-    buildBaseLemmyUrl(state.auth.connectedInstance),
+    buildBaseClientUrl(state.auth.connectedInstance),
   );
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
 

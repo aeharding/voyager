@@ -1,6 +1,6 @@
 import { noop } from "es-toolkit";
-import { CommentView } from "lemmy-js-client";
 import { createContext } from "react";
+import { CommentView } from "threadiverse";
 
 interface ICommentsContext {
   refresh: () => void;

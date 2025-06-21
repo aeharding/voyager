@@ -10,7 +10,7 @@ import {
   starSharp,
   tabletPortraitOutline,
 } from "ionicons/icons";
-import { Community, CommunityView } from "lemmy-js-client";
+import { Community, CommunityView } from "threadiverse";
 
 import { useBuildTogglePostAppearanceButton } from "#/features/feed/SpecialFeedMoreActions";
 import useHidePosts from "#/features/feed/useHidePosts";

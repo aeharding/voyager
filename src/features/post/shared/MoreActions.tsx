@@ -1,7 +1,7 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { ellipsisHorizontal } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { use } from "react";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { ActionButton } from "#/features/post/actions/ActionButton";

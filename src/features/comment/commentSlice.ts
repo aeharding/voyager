@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Comment, CommentView } from "lemmy-js-client";
+import { Comment, CommentView } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { resolveCommentReport } from "#/features/moderation/modSlice";
@@ -256,6 +256,7 @@ export const receivedComments =
     );
   };
 
+// TODO: Might not be needed in lemmy v1 (comment content should be returned for mods/admins)
 export const getCommentContent = createAsyncThunk(
   "comment/getCommentContent",
   async (commentId: number, thunkAPI) => {
@@ -264,7 +265,8 @@ export const getCommentContent = createAsyncThunk(
 
     const log = await client.getModlog({ comment_id: commentId });
 
-    return log.removed_comments[0]?.comment.content;
+    return log.modlog.filter((l) => "mod_remove_comment" in l)[0]?.comment
+      .content;
   },
   {
     condition: (commentId, { getState }) => {

@@ -1,4 +1,4 @@
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
 import { useAppSelector } from "#/store";

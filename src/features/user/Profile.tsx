@@ -7,8 +7,8 @@ import {
   chatbubbleOutline,
   eyeOffOutline,
 } from "ionicons/icons";
-import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { ComponentProps } from "react";
+import { GetPersonDetailsResponse } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { FetchFn } from "#/features/feed/Feed";
@@ -23,7 +23,6 @@ import {
 import useModZoneActions from "#/features/moderation/useModZoneActions";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import { getHandle, getRemoteHandle, isPost } from "#/helpers/lemmy";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
@@ -65,7 +64,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const header = (
     <MaxWidthContainer>
       <Scores
-        aggregates={getCounts(person.person_view)}
+        aggregates={person.person_view.counts}
         accountCreated={person.person_view.person.published}
       />
       <IonList inset>
@@ -156,7 +155,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
   );
 }
 
-export function getPostCommentItemCreatedDate(item: PostCommentItem): number {
+function getPostCommentItemCreatedDate(item: PostCommentItem): number {
   if (isPost(item)) return Date.parse(item.post.published);
   return Date.parse(item.comment.published);
 }

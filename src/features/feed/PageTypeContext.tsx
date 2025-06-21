@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { createContext, use } from "react";
+import { PostView } from "threadiverse";
 
 import { setPostHidden } from "#/features/post/postSlice";
 import { useAppDispatch, useAppSelector } from "#/store";

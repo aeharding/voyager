@@ -1,4 +1,4 @@
-import { CommentAggregates } from "lemmy-js-client";
+import { CommentAggregates } from "threadiverse";
 
 // https://github.com/honestbleeps/Reddit-Enhancement-Suite/blob/e804618d97350d67cf0286283fc462756dc53d87/lib/modules/userTagger.js#L644
 export function getVoteWeightColor(

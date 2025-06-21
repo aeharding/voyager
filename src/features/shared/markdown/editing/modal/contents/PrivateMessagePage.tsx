@@ -7,8 +7,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { arrowBackSharp, send } from "ionicons/icons";
-import { Person, PrivateMessageView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
+import { Person, PrivateMessageView } from "threadiverse";
 
 import { receivedMessages } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";

@@ -1,12 +1,9 @@
 import { IonItem, IonLabel } from "@ionic/react";
-import { startCase } from "es-toolkit";
-import { PostSortType } from "lemmy-js-client";
 
 import {
-  formatTopLabel,
-  isTopSort,
+  formatPostSort,
   useSelectPostSort,
-} from "#/features/feed/PostSort";
+} from "#/features/feed/sort/PostSort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setDefaultPostSort } from "../../settingsSlice";
@@ -32,10 +29,4 @@ export default function DefaultSort() {
       </IonLabel>
     </IonItem>
   );
-}
-
-function formatPostSort(sort: PostSortType): string {
-  if (isTopSort(sort)) return `Top: ${formatTopLabel(sort)}`;
-
-  return startCase(sort);
 }

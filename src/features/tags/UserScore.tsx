@@ -1,5 +1,5 @@
-import { Person } from "lemmy-js-client";
 import { use } from "react";
+import { Person } from "threadiverse";
 
 import { DarkContext } from "#/core/GlobalStyles";
 import { getRemoteHandle } from "#/helpers/lemmy";

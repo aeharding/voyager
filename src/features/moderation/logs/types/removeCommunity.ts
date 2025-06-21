@@ -1,5 +1,5 @@
 import { arrowUndoCircle, trash } from "ionicons/icons";
-import { ModRemoveCommunityView } from "lemmy-js-client";
+import { ModRemoveCommunityView } from "threadiverse";
 
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
 import { getHandle } from "#/helpers/lemmy";

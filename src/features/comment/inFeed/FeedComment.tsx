@@ -1,4 +1,4 @@
-import { CommentView } from "lemmy-js-client";
+import { CommentView } from "threadiverse";
 
 import PostContext from "#/features/user/PostContext";
 import { useOpenCommentInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";

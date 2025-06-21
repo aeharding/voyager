@@ -1,7 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isBefore, subSeconds } from "date-fns";
 import { groupBy } from "es-toolkit";
-import { CommentReport, PostReport } from "lemmy-js-client";
+import { CommentReport, PostReport } from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { AppDispatch, RootState } from "#/store";

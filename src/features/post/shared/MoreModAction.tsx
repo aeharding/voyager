@@ -1,6 +1,6 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { PostView } from "lemmy-js-client";
 import { use } from "react";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import useCanModerate, {

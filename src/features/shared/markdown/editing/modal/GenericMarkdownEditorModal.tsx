@@ -1,4 +1,4 @@
-import { Comment, CommentView, PrivateMessageView } from "lemmy-js-client";
+import { Comment, CommentView, PrivateMessageView } from "threadiverse";
 
 import { DynamicDismissableModal } from "../../../DynamicDismissableModal";
 import CommentEditPage from "./contents/CommentEditPage";

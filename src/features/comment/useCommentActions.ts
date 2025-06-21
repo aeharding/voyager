@@ -13,12 +13,8 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import {
-  CommentReplyView,
-  CommentView,
-  PersonMentionView,
-} from "lemmy-js-client";
 import { use, useCallback, useMemo } from "react";
+import { CommentReplyView, CommentView, PersonMentionView } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";

@@ -1,5 +1,5 @@
 import { useIonAlert } from "@ionic/react";
-import { PersonAggregates } from "lemmy-js-client";
+import { PersonAggregates } from "threadiverse";
 
 import Ago, { formatRelativeToNow } from "#/features/labels/Ago";
 import { formatNumber } from "#/helpers/number";

@@ -1,6 +1,6 @@
 import { compare, CompareOperator } from "compare-versions";
 import { memoize } from "es-toolkit";
-import { CommentSortType, PostSortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import { lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
@@ -35,6 +35,10 @@ const featureVersionSupported = {
    * https://github.com/LemmyNet/lemmy/issues/5183
    */
   "Random community API": "0.20.0",
+
+  "New Sorting": "1.0.0-alpha.0",
+
+  "Combined Responses": "1.0.0-alpha.0",
 } as const;
 
 type Feature = keyof typeof featureVersionSupported;

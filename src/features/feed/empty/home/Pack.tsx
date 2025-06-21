@@ -6,7 +6,6 @@ import { useState } from "react";
 
 import { cx } from "#/helpers/css";
 import { getCommunityHandleFromActorId } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import { useAppSelector } from "#/store";
 
 import { PackType } from "./StarterPacksModal";
@@ -35,9 +34,9 @@ export default function Pack({ pack, onSelect }: PackProps) {
       ];
 
     if (community) {
-      return community.subscribed !== "NotSubscribed";
+      return !community.subscribed;
     }
-    if (follows?.find((f) => getApId(f.community) === ap_id)) return true;
+    if (follows?.find((f) => f.community.actor_id === ap_id)) return true;
     return false;
   }).length;
 

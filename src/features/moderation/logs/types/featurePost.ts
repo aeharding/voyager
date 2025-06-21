@@ -1,5 +1,5 @@
 import { megaphone, volumeOff } from "ionicons/icons";
-import { ModFeaturePostView } from "lemmy-js-client";
+import { ModFeaturePostView } from "threadiverse";
 
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 

@@ -1,7 +1,6 @@
 import { IonItem, IonList } from "@ionic/react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { compact, sortBy, uniqBy } from "es-toolkit";
-import { Community, CommunityView } from "lemmy-js-client";
 import {
   use,
   useEffect,
@@ -10,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Community, CommunityView } from "threadiverse";
 
 import useShowModeratorFeed from "#/features/community/list/useShowModeratorFeed";
 import { getHandle } from "#/helpers/lemmy";

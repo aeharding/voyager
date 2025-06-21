@@ -1,5 +1,5 @@
 import { IonItem, IonLabel, IonList } from "@ionic/react";
-import { Person } from "lemmy-js-client";
+import { Person } from "threadiverse";
 
 import ItemIcon from "#/features/labels/img/ItemIcon";
 import { getHandle } from "#/helpers/lemmy";

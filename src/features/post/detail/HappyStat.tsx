@@ -1,5 +1,5 @@
 import { happyOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import { useCalculateSeparateScore } from "#/helpers/vote";
 

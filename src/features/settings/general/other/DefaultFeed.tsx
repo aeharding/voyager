@@ -8,7 +8,7 @@ import {
   pinOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView } from "threadiverse";
 
 import {
   handleSelector,

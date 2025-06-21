@@ -4,7 +4,7 @@ import {
   PersonMentionView,
   PostView,
   PrivateMessageView,
-} from "lemmy-js-client";
+} from "threadiverse";
 
 import { getInboxItemId, markRead } from "#/features/inbox/inboxSlice";
 import useAppToast from "#/helpers/useAppToast";

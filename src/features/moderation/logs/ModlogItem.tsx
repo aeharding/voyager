@@ -1,8 +1,8 @@
 import { IonIcon, IonItem } from "@ionic/react";
 import { timerOutline } from "ionicons/icons";
-import { Person } from "lemmy-js-client";
 import { useCallback } from "react";
 import { useRef } from "react";
+import { Person } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import Ago from "#/features/labels/Ago";

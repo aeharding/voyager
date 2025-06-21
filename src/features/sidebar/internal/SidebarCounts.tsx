@@ -1,5 +1,5 @@
 import { IonBadge } from "@ionic/react";
-import { CommunityAggregates, SiteAggregates } from "lemmy-js-client";
+import { CommunityAggregates, SiteAggregates } from "threadiverse";
 
 import { formatNumber } from "#/helpers/number";
 
@@ -27,15 +27,21 @@ export default function SidebarCounts({ counts }: SidebarCountsProps) {
       <IonBadge color="warning">
         {formatNumber(counts.comments)} comments
       </IonBadge>{" "}
-      <IonBadge color="success">
-        {formatNumber(counts.users_active_month)} users per month
-      </IonBadge>{" "}
-      <IonBadge color="tertiary">
-        {formatNumber(counts.users_active_week)} per week
-      </IonBadge>{" "}
-      <IonBadge color="light">
-        {formatNumber(counts.users_active_day)} per day
-      </IonBadge>
+      {"users_active_month" in counts && (
+        <IonBadge color="success">
+          {formatNumber(counts.users_active_month)} users per month
+        </IonBadge>
+      )}
+      {"users_active_week" in counts && (
+        <IonBadge color="tertiary">
+          {formatNumber(counts.users_active_week)} per week
+        </IonBadge>
+      )}
+      {"users_active_day" in counts && (
+        <IonBadge color="light">
+          {formatNumber(counts.users_active_day)} per day
+        </IonBadge>
+      )}
     </>
   );
 }

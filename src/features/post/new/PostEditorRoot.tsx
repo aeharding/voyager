@@ -19,8 +19,8 @@ import {
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
-import { CreatePost, EditPost } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
+import { CreatePost, EditPost } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { deletePendingImageUploads } from "#/features/shared/markdown/editing/uploadImageSlice";

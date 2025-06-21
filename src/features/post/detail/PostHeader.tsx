@@ -1,7 +1,7 @@
 import { IonItem } from "@ionic/react";
-import { CommentView, PostView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useRef } from "react";
 import AnimateHeight from "react-animate-height";
+import { CommentView, PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";

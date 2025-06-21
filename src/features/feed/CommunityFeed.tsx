@@ -1,4 +1,4 @@
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView } from "threadiverse";
 
 import CommunitySummary from "#/features/community/CommunitySummary";
 

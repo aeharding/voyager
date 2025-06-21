@@ -1,4 +1,4 @@
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView } from "threadiverse";
 
 import CommunitySidebar from "./internal/CommunitySidebar";
 import InstanceSidebar from "./internal/InstanceSidebar";

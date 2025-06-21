@@ -7,11 +7,11 @@ import {
   shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useState } from "react";
+import { CommentView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
-import { localUserSelector } from "#/features/auth/siteSlice";
+import { localUserViewSelector } from "#/features/auth/siteSlice";
 import {
   modDistinguishComment,
   modNukeCommentChain,
@@ -19,7 +19,6 @@ import {
 } from "#/features/comment/commentSlice";
 import { trashEllipse } from "#/features/icons";
 import { banUser } from "#/features/user/userSlice";
-import { getCounts } from "#/helpers/lemmyCompat";
 import {
   buildBanFailed,
   buildBanned,
@@ -50,9 +49,9 @@ export default function useCommentModActions(commentView: CommentView) {
     const comment =
       state.comment.commentById[commentView.comment.id] ?? commentView.comment;
 
-    const localUser = localUserSelector(state);
+    const localUser = localUserViewSelector(state);
 
-    const isSelf = comment.creator_id === localUser?.person_id;
+    const isSelf = comment.creator_id === localUser?.person.id;
 
     const reports = reportsByCommentIdSelector(state)[comment.id];
 
@@ -154,7 +153,7 @@ export default function useCommentModActions(commentView: CommentView) {
           handler: () => {
             presentAlert({
               message: `Remove ${
-                getCounts(commentView).child_count + 1
+                commentView.counts.child_count + 1
               } comments in comment chain?`,
               buttons: [
                 {

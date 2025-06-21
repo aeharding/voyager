@@ -3,11 +3,10 @@ import { IonSkeletonText } from "@ionic/react";
 import { repeat } from "ionicons/icons";
 import { arrowUpSharp } from "ionicons/icons";
 import { chatbubbleOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
 import { cx } from "#/helpers/css";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { formatNumber } from "#/helpers/number";
 
 import { CrosspostProps } from "./Crosspost";
@@ -57,7 +56,7 @@ export default function CrosspostContents({
         <div className={styles.stat}>
           <IonIcon icon={arrowUpSharp} />{" "}
           {crosspost ? (
-            formatNumber(getCounts(crosspost).score)
+            formatNumber(crosspost.counts.score)
           ) : (
             <IonSkeletonText className={styles.statIonSkeletonText} />
           )}
@@ -65,7 +64,7 @@ export default function CrosspostContents({
         <div className={styles.stat}>
           <IonIcon icon={chatbubbleOutline} />{" "}
           {crosspost ? (
-            formatNumber(getCounts(crosspost).comments)
+            formatNumber(crosspost.counts.comments)
           ) : (
             <IonSkeletonText className={styles.statIonSkeletonText} />
           )}

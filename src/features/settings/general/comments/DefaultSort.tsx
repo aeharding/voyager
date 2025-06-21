@@ -1,7 +1,7 @@
 import { mapValues } from "es-toolkit";
 
-import { getSortIcon } from "#/features/comment/CommentSort";
 import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { getSortIcon } from "#/routes/pages/shared/Sort";
 import { OCommentDefaultSort } from "#/services/db";
 import { useAppSelector } from "#/store";
 

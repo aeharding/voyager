@@ -10,8 +10,8 @@ import {
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { use } from "react";
+import { PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { airplay, pip } from "#/features/icons";

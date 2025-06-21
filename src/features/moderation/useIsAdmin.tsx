@@ -1,4 +1,4 @@
-import { Person } from "lemmy-js-client";
+import { Person } from "threadiverse";
 
 import { isAdminSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";

@@ -1,5 +1,5 @@
-import { Community, Post } from "lemmy-js-client";
 import { Link } from "react-router-dom";
+import { Community, Post } from "threadiverse";
 
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { getHandle } from "#/helpers/lemmy";

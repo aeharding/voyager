@@ -1,5 +1,5 @@
 import { IonBackButton, IonButtons, IonToolbar } from "@ionic/react";
-import { ListingType } from "lemmy-js-client";
+import { ListingType } from "threadiverse";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
 import ModActions from "#/features/community/mod/ModActions";
@@ -16,8 +16,10 @@ import PostCommentFeed, {
 } from "#/features/feed/PostCommentFeed";
 import { ShowHiddenPostsProvider } from "#/features/feed/postFabs/HidePostsFab";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { PostSort } from "#/features/feed/sort/PostSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import SpecialFeedMoreActions from "#/features/feed/SpecialFeedMoreActions";
 import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
@@ -49,6 +51,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
   const postFeed = { listingType: type };
   const [sort, setSort] = useFeedSort("posts", postFeed);
+  const sortParams = useFeedSortParams("posts", sort);
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(
@@ -72,7 +75,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         ...pageData,
         ...commonPostFeedParams,
         limit: LIMIT,
-        sort,
+        ...sortParams,
         type_: type,
         show_read: true,
       },
@@ -87,8 +90,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
     const potentialCommunity =
       communityByHandle[getHandle(item.community).toLowerCase()];
-    if (potentialCommunity)
-      return potentialCommunity.subscribed === "NotSubscribed";
+    if (potentialCommunity) return !potentialCommunity.subscribed;
 
     return !followIds.includes(item.community.id);
   }

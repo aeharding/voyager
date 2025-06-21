@@ -11,7 +11,7 @@ import { CONTINUE, EXIT, SKIP, visit } from "unist-util-visit";
 import CommentLink from "#/features/post/link/CommentLink";
 import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
 import { parseUrl } from "#/helpers/url";
-import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { buildBaseClientUrl } from "#/services/client";
 import { useAppSelector } from "#/store";
 
 import styles from "./CommentLinks.module.css";
@@ -34,7 +34,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   );
 
   const links = (() => {
-    const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
+    const connectedInstanceUrl = buildBaseClientUrl(connectedInstance);
 
     // Initialize a unified processor with the remark-parse parser
     // and parse the Markdown content

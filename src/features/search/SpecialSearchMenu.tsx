@@ -1,7 +1,6 @@
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { planetOutline, shuffle } from "ionicons/icons";
 
-import { getCounts } from "#/helpers/lemmyCompat";
 import { useAppSelector } from "#/store";
 
 export default function SpecialSearchMenu() {
@@ -9,7 +8,7 @@ export default function SpecialSearchMenu() {
     (state) => state.community.trendingCommunities,
   );
   const communitiesCount = useAppSelector(
-    (state) => getCounts(state.site.response?.site_view)?.communities,
+    (state) => state.site.response?.site_view.counts?.communities,
   );
 
   // Prevent shift of content

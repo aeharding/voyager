@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { useEffect } from "react";
+import { PostView } from "threadiverse";
 
 import { IMAGE_FAILED, imageLoaded } from "#/features/media/imageSlice";
 import useImageData from "#/features/media/useImageData";

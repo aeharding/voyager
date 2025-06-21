@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BanFromCommunity, Person } from "lemmy-js-client";
+import { BanFromCommunity, Person } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";
@@ -100,7 +100,7 @@ export const banUser =
       Partial<Pick<BanFromCommunity, "ban">>,
   ) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const response = await clientSelector(getState())?.banFromCommunity({
+    await clientSelector(getState())?.banFromCommunity({
       ban: true,
       ...payload,
     });
@@ -109,7 +109,7 @@ export const banUser =
       updateBanned({
         communityId: payload.community_id,
         userId: payload.person_id,
-        banned: response.banned,
+        banned: true,
       }),
     );
   };

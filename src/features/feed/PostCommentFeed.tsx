@@ -1,5 +1,5 @@
-import { CommentView, PostView } from "lemmy-js-client";
 import { ReactElement, use, useCallback, useEffect, useRef } from "react";
+import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import FeedComment from "#/features/comment/inFeed/FeedComment";

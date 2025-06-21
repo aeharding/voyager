@@ -6,8 +6,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { CommentView, PostView } from "lemmy-js-client";
 import { RefObject, useEffect, useState } from "react";
+import { CommentView, PostView } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 

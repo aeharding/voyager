@@ -9,7 +9,7 @@ import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppNavigation from "#/helpers/useAppNavigation";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
-import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { buildBaseClientUrl } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import useDetermineSoftware from "./useDetermineSoftware";
@@ -51,7 +51,7 @@ export default function useLemmyUrlHandler() {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
+  const connectedInstanceUrl = buildBaseClientUrl(connectedInstance);
   const objectByUrl = useAppSelector((state) => state.resolve.objectByUrl);
   const {
     navigateToComment,

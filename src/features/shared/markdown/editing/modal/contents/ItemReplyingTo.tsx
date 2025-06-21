@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { returnDownForwardSharp } from "ionicons/icons";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "threadiverse";
 
 import CommentContent from "#/features/comment/CommentContent";
 import Ago from "#/features/labels/Ago";

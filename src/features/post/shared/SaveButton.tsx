@@ -1,8 +1,8 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { bookmarkOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { MouseEvent, use } from "react";
+import { PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { ActionButton } from "#/features/post/actions/ActionButton";

@@ -8,8 +8,8 @@ import {
   megaphoneOutline,
   trashOutline,
 } from "ionicons/icons";
-import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import { use, useCallback } from "react";
+import { CommentReport, PostReport, PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { trashEllipse } from "#/features/icons";

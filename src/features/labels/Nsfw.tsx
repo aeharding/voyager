@@ -1,4 +1,4 @@
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import { getItemActorName } from "#/helpers/lemmy";
 import { OPostBlurNsfw, PostBlurNsfwType } from "#/services/db";

@@ -1,10 +1,9 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
-import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
+import { GetUnreadCountResponse, PrivateMessageView } from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { receivedUsers } from "#/features/user/userSlice";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { AppDispatch, RootState } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
@@ -41,9 +40,9 @@ export const inboxSlice = createSlice({
       state,
       action: PayloadAction<GetUnreadCountResponse>,
     ) => {
-      getCounts(state).mentions = action.payload.mentions;
-      getCounts(state).messages = action.payload.private_messages;
-      getCounts(state).replies = action.payload.replies;
+      state.counts.mentions = action.payload.mentions;
+      state.counts.messages = action.payload.private_messages;
+      state.counts.replies = action.payload.replies;
       state.lastUpdatedCounts = Date.now();
     },
     receivedInboxItems: (state, action: PayloadAction<InboxItemView[]>) => {
@@ -106,9 +105,9 @@ export const {
 export default inboxSlice.reducer;
 
 export const totalUnreadSelector = (state: RootState) =>
-  getCounts(state.inbox).mentions +
-  getCounts(state.inbox).messages +
-  getCounts(state.inbox).replies;
+  state.inbox.counts.mentions +
+  state.inbox.counts.messages +
+  state.inbox.counts.replies;
 
 export const getInboxCounts =
   (force = false) =>
@@ -201,7 +200,7 @@ export const conversationsByPersonIdSelector = createSelector(
   [
     (state: RootState) => state.inbox.messages,
     (state: RootState) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+      state.site.response?.my_user?.local_user_view?.person?.id,
   ],
   (messages, myUserId) => {
     return sortBy(

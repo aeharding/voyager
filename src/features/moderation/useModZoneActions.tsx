@@ -5,7 +5,7 @@ import {
   fileTrayFullOutline,
   footstepsOutline,
 } from "ionicons/icons";
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView } from "threadiverse";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";

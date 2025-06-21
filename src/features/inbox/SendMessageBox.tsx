@@ -1,10 +1,10 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { resize, send as sendIcon } from "ionicons/icons";
-import { Person } from "lemmy-js-client";
 import { KeyboardEvent, use, useEffect, useRef, useState } from "react";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
+import { Person } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";

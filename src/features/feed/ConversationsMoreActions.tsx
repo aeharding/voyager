@@ -1,6 +1,6 @@
 import { IonButton } from "@ionic/react";
 import { personCircleOutline } from "ionicons/icons";
-import { Person } from "lemmy-js-client";
+import { Person } from "threadiverse";
 
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import usePresentUserActions from "#/features/user/usePresentUserActions";

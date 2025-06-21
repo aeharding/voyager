@@ -1,13 +1,12 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { Community, Person } from "lemmy-js-client";
 import { useEffect } from "react";
 import { useParams } from "react-router";
+import { Community, Person } from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import Feed, { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import {
-  getLogDate,
   getLogIndex,
   ModlogItemType,
 } from "#/features/moderation/logs/helpers";
@@ -76,7 +75,7 @@ function Modlog({ community, user }: ModlogProps) {
   const client = useClient();
 
   const fetchFn: FetchFn<ModlogItemType> = async (pageData, ...rest) => {
-    const logs = await client.getModlog(
+    const response = await client.getModlog(
       {
         ...pageData,
         limit: LIMIT,
@@ -86,9 +85,7 @@ function Modlog({ community, user }: ModlogProps) {
       ...rest,
     );
 
-    return Object.values(logs)
-      .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
-      .sort((a, b) => Date.parse(getLogDate(b)) - Date.parse(getLogDate(a)));
+    return response.modlog;
   };
 
   function renderItemContent(item: ModlogItemType) {

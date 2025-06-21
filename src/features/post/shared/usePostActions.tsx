@@ -16,8 +16,8 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { use, useCallback } from "react";
+import { PostView } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";

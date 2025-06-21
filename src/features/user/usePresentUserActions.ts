@@ -5,8 +5,8 @@ import {
   pricetagOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { Person } from "lemmy-js-client";
 import { use } from "react";
+import { Person } from "threadiverse";
 
 import { usernameSelector } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";

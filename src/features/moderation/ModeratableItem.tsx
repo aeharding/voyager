@@ -1,5 +1,5 @@
-import { CommentView, PostView } from "lemmy-js-client";
 import { createContext, ReactNode, use } from "react";
+import { CommentView, PostView } from "threadiverse";
 
 import { isPost } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";

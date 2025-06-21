@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { ComponentProps } from "react";
+import { PostView } from "threadiverse";
 
 import GalleryMedia from "#/features/media/gallery/GalleryMedia";
 
