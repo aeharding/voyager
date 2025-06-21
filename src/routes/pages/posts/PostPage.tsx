@@ -10,7 +10,7 @@ import {
 import { useEffect } from "react";
 import { useParams } from "react-router";
 
-import CommentSort from "#/features/comment/CommentSort";
+import { CommentSort } from "#/features/comment/CommentSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import PostDetail from "#/features/post/detail/PostDetail";
 import { getPost } from "#/features/post/postSlice";

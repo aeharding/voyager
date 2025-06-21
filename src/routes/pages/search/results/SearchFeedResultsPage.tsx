@@ -1,5 +1,6 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
+import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
@@ -7,11 +8,14 @@ import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import { receivedPosts } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
+import { isPost } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -32,9 +36,10 @@ export default function SearchFeedResultsPage({
   }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = useFeedSort("posts", {
+  const [sort, setSort] = useFeedSort("search", {
     internal: `${type}Search`,
   });
+  const sortParams = useFeedSortParams("search", sort, "posts");
 
   const search = decodeURIComponent(_encodedSearch);
 
@@ -46,10 +51,27 @@ export default function SearchFeedResultsPage({
         q: search,
         type_: type,
         community_name: community,
-        sort,
+        ...sortParams,
       },
       ...rest,
     );
+
+    if ("results" in response) {
+      const posts: PostView[] = [];
+      const comments: CommentView[] = [];
+
+      // @ts-expect-error Fix with lemmy-js-client v1
+      for (const item of response.results) {
+        if (isPost(item)) posts.push(item);
+        else comments.push(item);
+      }
+
+      dispatch(receivedPosts(posts));
+      dispatch(receivedComments(comments));
+
+      return response.results as PostCommentItem[];
+    }
+
     dispatch(receivedPosts(response.posts));
     dispatch(receivedComments(response.comments));
     return [...response.posts, ...response.comments];
@@ -69,7 +91,7 @@ export default function SearchFeedResultsPage({
           <IonTitle>“{search}”</IonTitle>
 
           <IonButtons slot="end">
-            <PostSort sort={sort} setSort={setSort} />
+            <SearchSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>

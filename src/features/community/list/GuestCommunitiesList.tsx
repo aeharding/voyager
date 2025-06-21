@@ -9,6 +9,7 @@ import { Community } from "threadiverse";
 import { clientSelector } from "#/features/auth/authSelectors";
 import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import useSupported from "#/helpers/useSupported";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppSelector } from "#/store";
 
@@ -28,6 +29,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const client = useAppSelector(clientSelector);
   const [isListAtTop, setIsListAtTop] = useState(true);
   const commonPostFeedParams = useCommonPostFeedParams();
+  const newSort = useSupported("New Sorting");
 
   async function update() {
     let communities;
@@ -36,7 +38,8 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
       ({ communities } = await client.listCommunities({
         ...commonPostFeedParams,
         type_: SHOW_LOCAL_ONLY.includes(actor) ? "Local" : "All",
-        sort: "TopAll",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Remove any once we've migrated to lemmy-js-client v1
+        sort: newSort ? ("ActiveSixMonths" as any) : "TopAll",
         limit: 50,
       }));
     } catch (error) {

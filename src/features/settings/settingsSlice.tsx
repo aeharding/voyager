@@ -11,11 +11,13 @@ import {
 import Dexie from "dexie";
 import { merge, zipObject } from "es-toolkit";
 import { produce } from "immer";
-import { PostSortType } from "threadiverse";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
+import { VgerPostSortType } from "#/features/feed/sort/PostSort";
+import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
+import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 import {
   ALL_GLOBAL_SETTINGS,
   AppThemeType,
@@ -136,7 +138,7 @@ export interface SettingsState {
       rememberCommunitySort: boolean;
     };
     posts: {
-      sort: PostSortType;
+      sort: VgerPostSortType;
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
@@ -148,6 +150,14 @@ export interface SettingsState {
       upvoteOnSave: boolean;
       rememberCommunitySort: boolean;
       autoplayMedia: AutoplayMediaType;
+    };
+    search: {
+      sort: VgerSearchSortType;
+      rememberCommunitySort: boolean;
+    };
+    communities: {
+      sort: VgerCommunitySortType;
+      rememberCommunitySort: boolean;
     };
     safari: {
       alwaysUseReaderMode: boolean;
@@ -242,6 +252,10 @@ const baseState: SettingsState = {
       tapToCollapse: OTapToCollapseType.Both,
       touchFriendlyLinks: true,
     },
+    communities: {
+      rememberCommunitySort: false,
+      sort: "ActiveSixMonths",
+    },
     defaultFeed: undefined,
     // TODO: Enable by default in late June 2025
     // (devices have been updated to support go.getvoyager.app links)
@@ -273,6 +287,10 @@ const baseState: SettingsState = {
     preferNativeApps: true,
     safari: {
       alwaysUseReaderMode: false,
+    },
+    search: {
+      rememberCommunitySort: false,
+      sort: "TopAll",
     },
     thumbnailinatorEnabled: true,
   },
@@ -367,7 +385,7 @@ export const settingsSlice = createSlice({
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
-    setDefaultPostSort(state, action: PayloadAction<PostSortType>) {
+    setDefaultPostSort(state, action: PayloadAction<VgerPostSortType>) {
       state.general.posts.sort = action.payload;
       db.setSetting("default_post_sort", action.payload);
     },

@@ -14,6 +14,7 @@ import { CommentSortType, CommentView } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import { useFeedSortParams } from "#/features/feed/sort/useFeedSort";
 import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
@@ -83,6 +84,8 @@ export default function Comments({
 
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
+
+  const sortParams = useFeedSortParams("comments", sort);
 
   const preservePositionFromBottomInScrollView =
     usePreservePositionFromBottomInScrollView(
@@ -232,7 +235,7 @@ export default function Comments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           limit: 60,
-          sort,
+          ...sortParams,
           type_: "All",
 
           max_depth: maxDepth,
@@ -307,7 +310,7 @@ export default function Comments({
       parentCommentId,
       postId,
       presentToast,
-      sort,
+      sortParams,
     ],
   );
 

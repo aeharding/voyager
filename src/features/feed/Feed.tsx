@@ -192,6 +192,7 @@ export default function Feed<I>({
 
         setLoading(false);
         setLoadFailed(true);
+        if (refresh) setItems([]);
         throw error;
       } finally {
         if (abortControllerRef.current === abortController)

@@ -1,18 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CommentSortType, PostSortType } from "threadiverse";
 
+import { VgerCommentSortType } from "#/features/comment/CommentSort";
+import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 import { db } from "#/services/db";
 import { RootState } from "#/store";
 
 import { AnyFeed, serializeFeedName } from "../helpers";
+import { VgerPostSortType } from "./PostSort";
+import { VgerSearchSortType } from "./SearchSort";
 
 interface PostSortState {
   /**
    * `null`: Loaded from database, but nothing there
    */
   sortByContextByFeedName: {
-    posts: Record<string, PostSortType | null>;
-    comments: Record<string, CommentSortType | null>;
+    posts: Record<string, VgerPostSortType | null>;
+    comments: Record<string, VgerCommentSortType | null>;
+    search: Record<string, VgerSearchSortType | null>;
+    communities: Record<string, VgerCommunitySortType | null>;
   };
 }
 
@@ -20,19 +25,26 @@ const initialState: PostSortState = {
   sortByContextByFeedName: {
     posts: {},
     comments: {},
+    search: {},
+    communities: {},
   },
 };
 
 export type SetSortActionPayload =
   | {
       feed: AnyFeed;
-      sort: PostSortType;
+      sort: VgerPostSortType;
       context: "posts";
     }
   | {
       feed: AnyFeed;
-      sort: CommentSortType;
+      sort: VgerCommentSortType;
       context: "comments";
+    }
+  | {
+      feed: AnyFeed;
+      sort: VgerSearchSortType;
+      context: "search";
     };
 
 export const feedSortSlice = createSlice({
@@ -74,7 +86,7 @@ export const getFeedSort = createAsyncThunk(
     context,
   }: {
     feed: AnyFeed;
-    context: "posts" | "comments";
+    context: "posts" | "comments" | "search" | "communities";
   }) => {
     const feedName = serializeFeedName(feed);
     const sort =
@@ -91,17 +103,26 @@ export const getFeedSort = createAsyncThunk(
 );
 
 export const getFeedSortSelectorBuilder =
-  (feed: AnyFeed | undefined, context: "posts" | "comments") =>
+  (
+    feed: AnyFeed | undefined,
+    context: "posts" | "comments" | "search" | "communities",
+  ) =>
   (state: RootState) =>
     feed
       ? state.feedSort.sortByContextByFeedName[context][serializeFeedName(feed)]
       : null;
 
-function getDefaultSortSettingForContext(context: "posts" | "comments") {
+function getDefaultSortSettingForContext(
+  context: "posts" | "comments" | "search" | "communities",
+) {
   switch (context) {
     case "comments":
       return "default_comment_sort_by_feed";
     case "posts":
       return "default_post_sort_by_feed";
+    case "search":
+      return "default_search_sort_by_feed";
+    case "communities":
+      return "default_community_sort_by_feed";
   }
 }

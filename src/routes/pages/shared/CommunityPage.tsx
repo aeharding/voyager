@@ -25,8 +25,10 @@ import PostCommentFeed, {
 } from "#/features/feed/PostCommentFeed";
 import { ShowHiddenPostsProvider } from "#/features/feed/postFabs/HidePostsFab";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { PostSort } from "#/features/feed/sort/PostSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import PostAppearanceProvider, {
@@ -91,6 +93,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   };
 
   const [sort, setSort] = useFeedSort("posts", postFeed);
+  const sortParams = useFeedSortParams("posts", sort);
 
   const communityView = useFetchCommunity(community);
 
@@ -106,7 +109,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
         ...commonPostFeedParams,
         limit: LIMIT,
         community_name: community,
-        sort,
+        ...sortParams,
         show_read: true,
       },
       ...rest,

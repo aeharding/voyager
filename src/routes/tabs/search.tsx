@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import Route from "#/routes/common/Route";
-import CommunitiesResultsPage from "#/routes/pages/search/CommunitiesResultsPage";
+import CommunitiesExplorePage from "#/routes/pages/search/CommunitiesExplorePage";
 import RandomCommunityPage from "#/routes/pages/search/RandomCommunityPage";
 import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
 import SearchPostsResultsPage from "#/routes/pages/search/results/SearchFeedResultsPage";
@@ -23,6 +23,6 @@ export default [
     <SearchCommunitiesPage />
   </Route>,
   <Route exact path="/search/explore">
-    <CommunitiesResultsPage />
+    <CommunitiesExplorePage />
   </Route>,
 ];

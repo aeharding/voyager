@@ -6,8 +6,10 @@ import { CommunityView, ListingType, ThreadiverseClient } from "threadiverse";
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";
 import ListingTypeFilter from "#/features/feed/ListingType";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
 import { isLemmyError } from "#/helpers/lemmyErrors";
@@ -17,7 +19,7 @@ import FeedContent from "#/routes/pages/shared/FeedContent";
 import { LIMIT } from "#/services/lemmy";
 
 interface CommunitiesResultsPageProps {
-  search?: string;
+  search: string;
 }
 
 export default function CommunitiesResultsPage({
@@ -26,10 +28,11 @@ export default function CommunitiesResultsPage({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const [sort, setSort] = useFeedSort(
-    "posts",
+    "search",
     { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
     "TopAll",
   );
+  const sortParams = useFeedSortParams("search", sort, "posts");
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
@@ -37,27 +40,20 @@ export default function CommunitiesResultsPage({
       return compact([await findExactCommunity(search, client)]);
     }
 
-    const response = await (search
-      ? client.search(
-          {
-            limit: LIMIT,
-            q: search,
-            type_: "Communities",
-            listing_type: listingType,
-            ...pageData,
-            sort,
-          },
-          ...rest,
-        )
-      : client.listCommunities(
-          {
-            limit: LIMIT,
-            type_: listingType,
-            ...pageData,
-            sort,
-          },
-          ...rest,
-        ));
+    const response = await client.search(
+      {
+        limit: LIMIT,
+        q: search,
+        type_: "Communities",
+        listing_type: listingType,
+        ...pageData,
+        ...sortParams,
+      },
+      ...rest,
+    );
+
+    // TODO Remove `as` once upgraded to lemmy-js-client v1
+    if ("results" in response) return response.results as CommunityView[];
 
     return response.communities;
   };
@@ -80,7 +76,7 @@ export default function CommunitiesResultsPage({
               listingType={listingType}
               setListingType={setListingType}
             />
-            <PostSort sort={sort} setSort={setSort} />
+            <SearchSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>
