@@ -224,8 +224,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: link:../threadiverse
-        version: link:../threadiverse
+        specifier: ^0.1.0
+        version: 0.1.0
       ua-parser-js:
         specifier: ^2.0.3
         version: 2.0.3
@@ -4246,6 +4246,9 @@ packages:
   leek@0.0.24:
     resolution: {integrity: sha512-6PVFIYXxlYF0o6hrAsHtGpTmi06otkwNrMcmQ0K96SeSRHPREPa9J3nJZ1frliVH7XT0XFswoJFQoXsDukzGNQ==}
 
+  lemmy-js-client@0.20.0-alpha.18:
+    resolution: {integrity: sha512-oZy8DboTWfUar4mPWpi7SYrOEjTBJxkvd1e6QaVwoA5UhqQV1WhxEYbzrpi/gXnEokaVQ0i5sjtL/Y2PHMO3MQ==}
+
   less@4.2.0:
     resolution: {integrity: sha512-P3b3HJDBtSzsXUl0im2L7gTO5Ubg8mEN6G8qoTS77iXxXX4Hvu4Qj540PZDvQ8V6DmX6iXo98k7Md0Cm1PrLaA==}
     engines: {node: '>=6'}
@@ -5949,6 +5952,9 @@ packages:
   text-extensions@1.9.0:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
+
+  threadiverse@0.1.0:
+    resolution: {integrity: sha512-EN7fOAx7D64LMyHKRpuPYlFyADs7x+7uUKeax3maL3hK/bxLfSb3vNwcr26oAx7/0gXNgP1+2VZu9oqYW+2b0Q==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -11159,6 +11165,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  lemmy-js-client@0.20.0-alpha.18: {}
+
   less@4.2.0:
     dependencies:
       copy-anything: 2.0.6
@@ -13226,6 +13234,11 @@ snapshots:
       b4a: 1.6.7
 
   text-extensions@1.9.0: {}
+
+  threadiverse@0.1.0:
+    dependencies:
+      lemmy-js-client: 0.20.0-alpha.18
+      openapi-fetch: 0.14.0
 
   through2@2.0.5:
     dependencies:
