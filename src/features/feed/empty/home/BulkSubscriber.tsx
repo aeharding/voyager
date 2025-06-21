@@ -58,7 +58,7 @@ export default function BulkSubscriber({
             getCommunityHandleFromActorId(ap_id, connectedInstance)!
           ];
 
-        if (community) return !community.subscribed;
+        if (community) return community.subscribed === "NotSubscribed";
         if (follows?.find((f) => f.community.actor_id === ap_id)) return false;
 
         return true;

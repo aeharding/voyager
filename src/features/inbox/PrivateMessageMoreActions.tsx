@@ -56,7 +56,7 @@ export default function PrivateMessageMoreActions({
                   recipient:
                     item.private_message.creator_id ===
                     store.getState().site.response?.my_user?.local_user_view
-                      ?.local_user?.person_id
+                      ?.person.id
                       ? item.recipient
                       : item.creator,
                 },

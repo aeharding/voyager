@@ -29,8 +29,7 @@ export default function Message({ message, first }: MessageProps) {
   const dispatch = useAppDispatch();
   const { presentReport } = use(SharedDialogContext);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
 
   const thisIsMyMessage = message.private_message.creator_id === myUserId;

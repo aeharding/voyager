@@ -29,7 +29,7 @@ export default function LargeFeedPostMedia(
             autoPlay={!props.blur}
             disableInlineInteraction={props.blur}
             className={cx(styles.lightbox, props.className)}
-            portalWithMediaId={buildMediaId(props.post.post.actor_id)}
+            portalWithMediaId={buildMediaId(props.post.post.ap_id)}
           />
         );
     }
@@ -44,7 +44,7 @@ export default function LargeFeedPostMedia(
         disableInlineInteraction={props.blur}
         alt={props.post.post.alt_text}
         className={cx(styles.lightbox, props.className)}
-        portalWithMediaId={buildMediaId(props.post.post.actor_id)}
+        portalWithMediaId={buildMediaId(props.post.post.ap_id)}
       />
     );
 }

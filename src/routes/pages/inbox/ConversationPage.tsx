@@ -69,8 +69,7 @@ export default function ConversationPage() {
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const tabContext = use(TabContext);
   const [tab, setTab] = useState<string | undefined>();

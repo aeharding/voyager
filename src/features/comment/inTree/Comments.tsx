@@ -231,7 +231,7 @@ export default function Comments({
         response = await client.getComments({
           post_id: reqPostId,
           parent_id: parentCommentId,
-          limit: 10,
+          limit: 60,
           sort,
           type_: "All",
 
@@ -263,11 +263,28 @@ export default function Comments({
       if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
 
       const existingComments = refresh ? [] : comments;
-      const newComments = differenceBy(
+
+      // Remove comments that are already received
+      let newComments = differenceBy(
         response.comments,
         existingComments,
         (c) => c.comment.id,
       );
+
+      // When paging, only append new comments in a brand new root tree. Never append to an existing tree
+      // (Prevent user losing their place in the tree)
+      newComments = newComments.filter((c) => {
+        const rootCommentId = c.comment.path.split(".")[1];
+        if (!rootCommentId) return true;
+
+        const rootComment = existingComments.find(
+          (c) => c.comment.id === +rootCommentId,
+        );
+        if (!rootComment) return true;
+
+        return false;
+      });
+
       if (!newComments.length) finishedPagingRef.current = true;
 
       const potentialComments = uniqBy(

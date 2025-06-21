@@ -12,7 +12,7 @@ import styles from "./GenericSidebar.module.css";
 interface GenericSidebarProps {
   sidebar: string;
   people: Person[];
-  counts: SiteAggregates | CommunityAggregates;
+  counts: SiteAggregates | CommunityAggregates | undefined;
   extraBadges?: React.ReactNode;
   type: "instance" | "community";
   banner?: string;
@@ -42,7 +42,7 @@ export default function GenericSidebar({
           />
         )}
         <Markdown id={id}>{sidebar}</Markdown>
-        <SidebarCounts counts={counts} />
+        {counts && <SidebarCounts counts={counts} />}
         {extraBadges}
       </div>
       <SidebarOwners

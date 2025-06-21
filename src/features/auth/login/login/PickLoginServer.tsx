@@ -10,6 +10,7 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  useIonAlert,
 } from "@ionic/react";
 import { uniq } from "es-toolkit";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -33,6 +34,7 @@ import styles from "./PickLoginServer.module.css";
 
 export default function PickLoginServer() {
   const presentToast = useAppToast();
+  const [presentAlert] = useIonAlert();
   const [search, setSearch] = useState("");
   const [shouldSubmit, setShouldSubmit] = useState(false);
   const searchHostname = stripProtocol(search.trim());
@@ -113,12 +115,35 @@ export default function PickLoginServer() {
       return;
     }
 
-    ref.current
-      ?.closest("ion-nav")
-      ?.push(() => (
-        <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
-      ));
-  }, [instances, loading, presentToast, search, searchHostname]);
+    if (client.name === "piefed") {
+      presentAlert({
+        header: "⚠️ Piefed support is experimental",
+        message:
+          "Mind the edge; no safety rails installed. Piefed support is EXPERIMENTAL in Voyager. Don't expect things to work right, and compatibility may break at any time.",
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "I understand",
+            handler: go,
+          },
+        ],
+      });
+      return;
+    }
+
+    go();
+
+    function go() {
+      ref.current
+        ?.closest("ion-nav")
+        ?.push(() => (
+          <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
+        ));
+    }
+  }, [instances, loading, presentAlert, presentToast, search, searchHostname]);
 
   useEffect(() => {
     if (!shouldSubmit) return;

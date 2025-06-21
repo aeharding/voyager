@@ -92,8 +92,14 @@ export const getInstances =
       try {
         ({ federated_instances } = await client.getFederatedInstances());
 
-        if (!federated_instances?.linked)
-          throw new Error("No federated instances in response");
+        // Server has federation disabled
+        if (!federated_instances) {
+          federated_instances = {
+            linked: [],
+            allowed: [],
+            blocked: [],
+          };
+        }
 
         db.setCachedFederatedInstances(connectedInstance, federated_instances);
       } catch (error) {

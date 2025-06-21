@@ -31,8 +31,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
   const [present] = useIonAlert();
   const [loading, setLoading] = useState(false);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const client = useAppSelector(clientSelector);
 

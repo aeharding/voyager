@@ -155,7 +155,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
   );
 }
 
-export function getPostCommentItemCreatedDate(item: PostCommentItem): number {
+function getPostCommentItemCreatedDate(item: PostCommentItem): number {
   if (isPost(item)) return Date.parse(item.post.published);
   return Date.parse(item.comment.published);
 }

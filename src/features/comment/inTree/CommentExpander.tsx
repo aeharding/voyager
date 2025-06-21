@@ -39,7 +39,7 @@ export default function CommentExpander({
   collapsed,
 }: CommentExpanderProps) {
   const presentToast = useAppToast();
-  const { appendComments } = use(CommentsContext);
+  const { appendComments, getComments } = use(CommentsContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -56,6 +56,7 @@ export default function CommentExpander({
       response = await client.getComments({
         parent_id: comment.comment.id,
         type_: "All",
+        limit: 1_000,
         max_depth:
           collapseThreads === OCommentThreadCollapse.All
             ? 1
@@ -79,8 +80,38 @@ export default function CommentExpander({
       return;
     }
 
-    dispatch(receivedComments(response.comments));
-    appendComments(response.comments);
+    const existingComments = getComments() ?? [];
+
+    const currentTreeComments = existingComments.filter((c) => {
+      return c.comment.path.startsWith(comment.comment.path + ".");
+    });
+
+    // Only append comment that are direct descendants of the current comment, and unhydrated
+    const newComments = response.comments.filter((c) => {
+      // Say we have a tree like this. Parenthesis are missing from frontend:
+      // 1
+      // 1.1
+      // (1.1.1)
+      // (1.2)
+      // (1.2.1)
+      // (1.3)
+      // If we make a request with parent_id=1, we'll get 1.1, 1.2, 1.2.1, 1.3, 1.1.1
+      // However, we want to only append 1.1.1, 1.2, 1.3, 1.2.1
+      // So we need to filter out the comments that are already in the tree
+      // Note: This is for Piefed. Lemmy will always hydrate all siblings of a comment.
+
+      // Check if this comment has any loaded ancestors (except the parent_id)
+      const isDescendantOfLoadedComment = currentTreeComments.some(
+        (existing) => {
+          return c.comment.path.startsWith(existing.comment.path + ".");
+        },
+      );
+
+      return !isDescendantOfLoadedComment;
+    });
+
+    dispatch(receivedComments(newComments));
+    appendComments(newComments);
   }
 
   return (

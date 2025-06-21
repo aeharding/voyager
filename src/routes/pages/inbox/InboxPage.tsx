@@ -24,8 +24,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   const dispatch = useAppDispatch();
   const client = useClient();
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const totalUnread = useAppSelector(totalUnreadSelector);
 
