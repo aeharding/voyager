@@ -35,16 +35,123 @@ const sortOptions = [
   "NewComments",
 ] as const satisfies SortOptions<VgerPostSortType>;
 
-const legacySortOptions = [
-  "Active",
-  "Hot",
-  TOP_SORTS,
-  "New",
-  "Controversial",
-  "Scaled",
-  "MostComments",
-  "NewComments",
-];
+export const POST_SORT_SUPPORT = {
+  Active: [
+    {
+      mode: "lemmyv1",
+      sort: "Active",
+    },
+    {
+      mode: "lemmyv0",
+      sort: "Active",
+    },
+    {
+      mode: "piefed",
+      sort: "Active",
+    },
+  ],
+  Hot: [],
+  ...Object.fromEntries(
+    TOP_SORTS.children.map((sort) => [
+      sort,
+      sort === "TopAll"
+        ? [
+            {
+              mode: "lemmyv1",
+              sort: "TopAll",
+            },
+            {
+              mode: "lemmyv0",
+              sort: "Top",
+            },
+            {
+              mode: "piefed",
+              sort: "Top",
+            },
+          ]
+        : [
+            {
+              mode: "lemmyv1",
+              sort,
+            },
+            {
+              mode: "lemmyv0",
+              sort,
+            },
+            {
+              mode: "piefed",
+              sort,
+            },
+          ],
+    ]),
+  ),
+  New: [
+    {
+      mode: "lemmyv1",
+      sort: "New",
+    },
+    {
+      mode: "lemmyv0",
+      sort: "New",
+    },
+  ],
+  ...Object.fromEntries(
+    CONTROVERSIAL_SORTS.children.map((sort) => [
+      sort,
+      sort === "ControversialAll"
+        ? [
+            {
+              mode: "lemmyv1",
+              sort: "ControversialAll",
+            },
+            {
+              mode: "lemmyv0",
+              sort: "Controversial",
+            },
+          ]
+        : [
+            {
+              mode: "lemmyv1",
+              sort,
+            },
+            {
+              mode: "lemmyv0",
+              sort,
+            },
+          ],
+    ]),
+  ),
+  Scaled: [
+    {
+      mode: "lemmyv1",
+      sort: "Scaled",
+    },
+    {
+      mode: "lemmyv0",
+      sort: "Scaled",
+    },
+  ],
+  MostComments: [
+    {
+      mode: "lemmyv1",
+      sort: "MostComments",
+    },
+    {
+      mode: "lemmyv0",
+      sort: "MostComments",
+    },
+  ],
+  NewComments: [
+    {
+      mode: "lemmyv1",
+      sort: "NewComments",
+    },
+    {
+      mode: "lemmyv0",
+      sort: "NewComments",
+    },
+  ],
+} as Record<LemmyPostSortType, PostSortType[]>;
 
 const flattenedSortOptions = flattenSortOptions(sortOptions);
 
@@ -55,4 +162,4 @@ export const {
   Sort: PostSort,
   useSelectSort: useSelectPostSort,
   formatSort: formatPostSort,
-} = buildSort(sortOptions, legacySortOptions);
+} = buildSort(sortOptions, POST_SORT_SUPPORT);

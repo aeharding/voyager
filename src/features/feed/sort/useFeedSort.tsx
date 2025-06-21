@@ -22,7 +22,7 @@ import {
   setFeedSort,
   SetSortActionPayload,
 } from "./feedSortSlice";
-import { VgerPostSortType } from "./PostSort";
+import { POST_SORT_SUPPORT, VgerPostSortType } from "./PostSort";
 import { LemmySearchSortType, VgerSearchSortType } from "./SearchSort";
 import { isTopSort, topSortToDuration, VgerTopSort } from "./topSorts";
 
@@ -134,62 +134,36 @@ export function useFeedSortParams<
   sort: VgerSorts[Context] | undefined,
   compatibleOldSortType?: "posts" | "comments",
 ) {
-  const isModern = useSupported("New Sorting");
+  const mode = useMode();
 
   if (!sort) return;
 
-  if (compatibleOldSortType && !isModern) {
-    const oldSort = (() => {
-      switch (context) {
-        case "search":
-          return convertSearchSortToOldSortType(
-            compatibleOldSortType,
-            sort as VgerSearchSortType,
-          );
-        case "communities":
-          if (compatibleOldSortType === "comments")
-            throw new Error(
-              "Convert community sort to old comment sort not supported",
-            );
-          return convertCommunitySortToOldSortType(
-            compatibleOldSortType,
-            sort as VgerCommunitySortType,
-          );
-        default:
-          throw new Error("Can only convert search sort to old sort type");
-      }
-    })();
-
-    return convertSortToLemmyParams(
-      "search",
-      oldSort as VgerSearchSortType,
-      isModern,
-    );
-  }
-
-  return convertSortToLemmyParams(context, sort, isModern);
+  return convertSortToLemmyParams(context, sort, mode);
 }
 
 function convertSortToLemmyParams<
   Context extends "posts" | "comments" | "search" | "communities",
->(context: Context, sort: VgerSorts[Context], isModern: boolean) {
-  if (!isModern) return { sort };
-
+>(
+  context: Context,
+  sort: VgerSorts[Context],
+  mode: "lemmyv0" | "lemmyv1" | "piefed",
+) {
   switch (context) {
     case "posts":
-      return convertPostSortToLemmyParams(sort as VgerPostSortType);
+      return POST_SORT_SUPPORT[sort].find((p) => p.mode === mode);
     case "comments":
-      return convertCommentSortToLemmyParams(sort as VgerCommentSortType);
+      return COMMENT_SORT_SUPPORT[sort].find((p) => p.mode === mode);
     case "search":
-      return convertSearchSortToLemmyParams(sort as VgerSearchSortType);
+      return SEARCH_SORT_SUPPORT[sort].find((p) => p.mode === mode);
     case "communities":
-      return convertCommunitySortToLemmyParams(sort as VgerCommunitySortType);
+      return COMMUNITY_SORT_SUPPORT[sort].find((p) => p.mode === mode);
   }
 }
 
 function convertSearchSortToOldSortType(
   oldSortType: "posts" | "comments",
   sort: VgerSearchSortType,
+  mode: "lemmyv0" | "lemmyv1" | "piefed",
 ): LemmySorts["posts"] | LemmySorts["comments"] {
   switch (oldSortType) {
     case "posts":

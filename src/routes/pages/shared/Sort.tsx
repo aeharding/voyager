@@ -40,7 +40,6 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
-import useSupported from "#/helpers/useSupported";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
 export type SortOptions<S> = readonly (ChildrenSortOption<S, S> | S)[];
@@ -66,22 +65,20 @@ interface UseSortOptions {
 
 export default function buildSort<S extends AnyVgerSort>(
   _sortOptions: SortOptions<S>,
-  _legacySortOptions?: SortOptions<unknown>,
+  sortOptionsSupport?: Record<S, string[]>,
 ) {
   const newSortOptions = hydrateSortOptions(_sortOptions);
-  const legacySortOptions = _legacySortOptions
-    ? hydrateSortOptions(_legacySortOptions as SortOptions<AnyVgerSort>)
-    : undefined;
 
   return { Sort, useSelectSort, formatSort };
 
   // TODO: Remove this once we've migrated to the new sort options
   function useSortOptions() {
-    const newSort = useSupported("New Sorting");
+    const mode = useMode();
 
-    if (!legacySortOptions) return newSortOptions;
+    // TODO: Filter out sort options that are not supported in the current mode
+    // via sortOptionsSupport
 
-    return newSort ? newSortOptions : legacySortOptions;
+    return newSortOptions;
   }
 
   interface SortProps<S> {
