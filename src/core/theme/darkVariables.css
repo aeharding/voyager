@@ -81,6 +81,11 @@ html.ion-palette-dark {
     --ion-color-reddit-upvote: #f26700;
   }
 
+  /* TODO test other themes */
+  ion-modal.transparent-scroll.dark {
+    --ion-background-color: inherit;
+  }
+
   /* iOS Dark Theme */
 
   &.ios body {
@@ -101,8 +106,6 @@ html.ion-palette-dark {
     --ion-item-background: var(--ion-background-color-step-50);
   }
 
-  /* Material Design Dark Theme */
-
   @media (max-width: 767px) {
     &.ios ion-modal:not(.small, .transparent-scroll) {
       --ion-background-color: #000;
@@ -111,8 +114,5 @@ html.ion-palette-dark {
     }
   }
 
-  /* TODO test other themes */
-  ion-modal.transparent-scroll.dark {
-    --ion-background-color: inherit;
-  }
+  /* Material Design Dark Theme */
 }

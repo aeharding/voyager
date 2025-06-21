@@ -14,6 +14,14 @@ interface TipProps {
 }
 
 export default function TipDialog({ onDismiss }: TipProps) {
+  function renderTip() {
+    if (import.meta.env.BUILD_FOSS_ONLY || !isNative()) {
+      return <ExternalSponsorOptions />;
+    }
+
+    return <InAppProducts />;
+  }
+
   return (
     <FloatingDialog onDismiss={onDismiss}>
       <div className={styles.heart}>
@@ -25,13 +33,7 @@ export default function TipDialog({ onDismiss }: TipProps) {
         <br />
         Your support means a lot!
       </div>
-      <div className={styles.tips}>
-        {import.meta.env.BUILD_FOSS_ONLY || !isNative() ? (
-          <ExternalSponsorOptions />
-        ) : (
-          <InAppProducts />
-        )}
-      </div>
+      <div className={styles.tips}>{renderTip()}</div>
     </FloatingDialog>
   );
 }

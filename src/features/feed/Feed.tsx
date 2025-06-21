@@ -15,10 +15,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VList, VListHandle } from "virtua";
+import { VListHandle } from "virtua";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import AppVList from "#/helpers/AppVList";
 import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
@@ -50,7 +50,7 @@ export interface FeedProps<I>
   extends Partial<
     Pick<EndPostProps, "sortDuration" | "renderCustomEmptyContent">
   > {
-  itemsRef?: React.MutableRefObject<I[] | undefined>;
+  itemsRef?: React.RefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
   /**
@@ -216,27 +216,32 @@ export default function Feed<I>({
       setLoadFailed(false);
       setInitialLoad(false);
 
+      function updateFilteredNewPageItems() {
+        if (!filteredNewPageItems.length) {
+          requestLoopRef.current++;
+        } else {
+          requestLoopRef.current = 0;
+        }
+      }
+
       if (refresh) {
         setAtEnd(false);
         setItems(filteredNewPageItems);
+        updateFilteredNewPageItems();
       } else {
         setItems((existingItems) => {
           const newItems = getIndex
             ? differenceBy(filteredNewPageItems, existingItems, getIndex)
             : filteredNewPageItems;
 
+          updateFilteredNewPageItems();
+
+          if (!newItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
+            setAtEnd(true);
+
           return [...existingItems, ...newItems];
         });
       }
-
-      if (!filteredNewPageItems.length) {
-        requestLoopRef.current++;
-      } else {
-        requestLoopRef.current = 0;
-      }
-
-      if (!newPageItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
-        setAtEnd(true);
 
       setNumberedPage((numberedPage) => (refresh ? 1 : numberedPage + 1));
       setPage(currentPage);
@@ -267,8 +272,6 @@ export default function Feed<I>({
   }, [filteredItems, items, page, loading, limit, loadFailed, fetchMore]);
 
   const virtuaHandle = useRef<VListHandle>(null);
-
-  useSetActivePage(virtuaHandle);
 
   const onScroll = useRangeChange(
     virtuaHandle,
@@ -360,7 +363,7 @@ export default function Feed<I>({
       </IonRefresher>
 
       <InFeedContext value={true}>
-        <VList
+        <AppVList
           className={
             isSafariFeedHackEnabled
               ? "virtual-scroller"
@@ -384,7 +387,7 @@ export default function Feed<I>({
             </Fragment>
           ))}
           {footer}
-        </VList>
+        </AppVList>
       </InFeedContext>
     </>
   );

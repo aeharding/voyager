@@ -7,18 +7,17 @@ import {
   IonLabel,
   IonList,
   IonLoading,
-  IonPage,
   IonRefresher,
   IonRefresherContent,
   IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { use, useEffect, useRef, useState } from "react";
+import { use, useEffect, useState } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { ua } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 
@@ -29,12 +28,8 @@ import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./UpdateAppPage.module.css";
 
 export default function UpdateAppPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
   const [loading, setLoading] = useState(false);
   const { status, checkForUpdates, updateServiceWorker } = use(UpdateContext);
-
-  useSetActivePage(pageRef);
 
   useEffect(() => {
     checkForUpdates();
@@ -63,7 +58,7 @@ export default function UpdateAppPage() {
   }
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -73,7 +68,7 @@ export default function UpdateAppPage() {
           <IonTitle>Updates</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <IonLoading isOpen={loading} message="Updating" />
         <IonRefresher
           slot="fixed"
@@ -100,6 +95,7 @@ export default function UpdateAppPage() {
                 href="https://github.com/aeharding/voyager/releases"
                 target="_blank"
                 rel="noopener noreferrer"
+                detail
               >
                 <IonLabel>Release notes</IonLabel>
               </IonItem>
@@ -134,6 +130,6 @@ export default function UpdateAppPage() {
           )}
         </div>
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

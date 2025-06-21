@@ -5,8 +5,8 @@ import {
   IonItemSliding,
 } from "@ionic/react";
 import { star } from "ionicons/icons";
-import { Community } from "lemmy-js-client";
 import { useMemo } from "react";
+import { Community } from "threadiverse";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import ItemIcon from "#/features/labels/img/ItemIcon";
@@ -116,10 +116,8 @@ export default function CommunityListItem({
         lines={line ? "inset" : "none"}
         className={className}
       >
-        <div className={listStyles.content}>
-          <ItemIcon item={community} size={28} />
-          {handle}
-        </div>
+        <ItemIcon item={community} size={28} slot="start" />
+        <div className={listStyles.content}>{handle}</div>
         {loggedIn && (
           <ActionButton
             slot="end"

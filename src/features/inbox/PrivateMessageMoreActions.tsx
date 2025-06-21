@@ -6,10 +6,10 @@ import {
   personOutline,
   textOutline,
 } from "ionicons/icons";
-import { PrivateMessageView } from "lemmy-js-client";
 import { use, useCallback, useImperativeHandle } from "react";
+import { PrivateMessageView } from "threadiverse";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
@@ -37,7 +37,7 @@ export default function PrivateMessageMoreActions({
 }: PrivateMessageMoreActionsProps) {
   const dispatch = useAppDispatch();
   const { presentReport, presentSelectText, presentPrivateMessageCompose } =
-    use(PageContext);
+    use(SharedDialogContext);
 
   const presentUserActions = usePresentUserActions();
   const { navigateToUser } = useAppNavigation();
@@ -56,7 +56,7 @@ export default function PrivateMessageMoreActions({
                   recipient:
                     item.private_message.creator_id ===
                     store.getState().site.response?.my_user?.local_user_view
-                      ?.local_user?.person_id
+                      ?.person.id
                       ? item.recipient
                       : item.creator,
                 },

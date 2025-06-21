@@ -1,3 +1,4 @@
+import { use } from "react";
 import {
   CommentView,
   Community,
@@ -5,7 +6,10 @@ import {
   Person,
   PersonView,
   PostView,
-} from "lemmy-js-client";
+} from "threadiverse";
+
+import { OutletContext } from "#/routes/OutletProvider";
+import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
 
 import { buildCommunityLink } from "./appLinkBuilder";
 import { getHandle } from "./lemmy";
@@ -18,6 +22,8 @@ export default function useAppNavigation() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
+  const { isTwoColumnLayout, setSecondColumnLocation } = use(OutletContext);
+  const isSecondColumn = useIsSecondColumn();
 
   function pushRouteIfNeeded(route: string) {
     if (router.getRouteInfo()?.pathname === route) {
@@ -30,11 +36,16 @@ export default function useAppNavigation() {
   }
 
   function navigateToPost(post: PostView) {
-    return pushRouteIfNeeded(
-      buildGeneralBrowseLink(
-        `/c/${getHandle(post.community)}/comments/${post.post.id}`,
-      ),
+    const path = buildGeneralBrowseLink(
+      `/c/${getHandle(post.community)}/comments/${post.post.id}`,
     );
+
+    if (isTwoColumnLayout && !isSecondColumn) {
+      setSecondColumnLocation(path);
+      return "success"; // TODO: return if already there
+    }
+
+    return pushRouteIfNeeded(path);
   }
 
   function navigateToCommunity(community: CommunityView | Community) {
@@ -61,13 +72,18 @@ export default function useAppNavigation() {
   }
 
   function navigateToComment(comment: CommentView) {
-    return pushRouteIfNeeded(
-      buildGeneralBrowseLink(
-        `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
-          comment.comment.path
-        }`,
-      ),
+    const path = buildGeneralBrowseLink(
+      `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
+        comment.comment.path
+      }`,
     );
+
+    if (isTwoColumnLayout && !isSecondColumn) {
+      setSecondColumnLocation(path);
+      return "success"; // TODO: return if already there
+    }
+
+    return pushRouteIfNeeded(path);
   }
 
   return {

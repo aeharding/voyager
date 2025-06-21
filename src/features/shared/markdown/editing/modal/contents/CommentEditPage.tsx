@@ -7,8 +7,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { arrowBackSharp, send } from "ionicons/icons";
-import { Comment, CommentView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
+import { Comment, CommentView } from "threadiverse";
 
 import { editComment } from "#/features/comment/commentSlice";
 import { isIosTheme } from "#/helpers/device";

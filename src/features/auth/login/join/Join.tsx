@@ -13,8 +13,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
-import { LoginResponse } from "lemmy-js-client";
 import { use, useEffect, useRef, useState } from "react";
+import { LoginResponse } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
@@ -47,7 +47,6 @@ export default function Join({ answer }: JoinProps) {
   const [passwordVerify, setPasswordVerify] = useState("");
   const [nsfw, setNsfw] = useState(false);
   const [email, setEmail] = useState("");
-  const [honeypot, setHoneypot] = useState("");
 
   const captchaRef = useRef<CaptchaHandle>(undefined);
 
@@ -76,7 +75,6 @@ export default function Join({ answer }: JoinProps) {
           password_verify: passwordVerify,
           show_nsfw: nsfw,
           email: email || undefined,
-          honeypot: honeypot || undefined,
           answer: answer || undefined,
           ...captchaRef.current?.getResult(),
         }),
@@ -143,7 +141,7 @@ export default function Join({ answer }: JoinProps) {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account Details</IonTitle>
@@ -239,13 +237,6 @@ export default function Join({ answer }: JoinProps) {
         {site?.site_view.local_site.captcha_enabled && url && (
           <Captcha url={url} ref={captchaRef} />
         )}
-
-        <input
-          type="text"
-          value={honeypot}
-          onChange={(e) => setHoneypot(e.target.value)}
-          className="ion-hide"
-        />
       </IonContent>
     </>
   );

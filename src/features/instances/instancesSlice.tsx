@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FederatedInstances } from "lemmy-js-client";
+import { FederatedInstances } from "threadiverse";
 
 import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
 import { db } from "#/services/db";
@@ -63,6 +63,17 @@ export const knownInstancesSelector = createSelector(
   },
 );
 
+export const knownPiefedInstancesSelector = createSelector(
+  [(state: RootState) => state.instances.knownInstances],
+  (knownInstances) => {
+    if (!knownInstances || knownInstances === "pending") return [];
+
+    return knownInstances.linked
+      .filter((instance) => instance.software === "piefed")
+      .map((instance) => instance.domain);
+  },
+);
+
 export const getInstances =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const connectedInstance = urlSelector(getState());
@@ -81,8 +92,14 @@ export const getInstances =
       try {
         ({ federated_instances } = await client.getFederatedInstances());
 
-        if (!federated_instances?.linked)
-          throw new Error("No federated instances in response");
+        // Server has federation disabled
+        if (!federated_instances) {
+          federated_instances = {
+            linked: [],
+            allowed: [],
+            blocked: [],
+          };
+        }
 
         db.setCachedFederatedInstances(connectedInstance, federated_instances);
       } catch (error) {

@@ -7,7 +7,7 @@ import useAppToast from "#/helpers/useAppToast";
 
 import useInAppPurchase from "./useInAppPurchase";
 
-import styles from "./Tip.module.css";
+import styles from "../Tip.module.css";
 
 interface TipProps {
   product: Product;

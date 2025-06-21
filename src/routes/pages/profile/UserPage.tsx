@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
 
 import {
@@ -16,6 +10,7 @@ import DocumentTitle from "#/features/shared/DocumentTitle";
 import AsyncProfile from "#/features/user/AsyncProfile";
 import ProfilePageActions from "#/features/user/ProfilePageActions";
 import UserPageActions from "#/features/user/UserPageActions";
+import { AppPage } from "#/helpers/AppPage";
 import { useAppSelector } from "#/store";
 
 interface UserPageProps {
@@ -34,7 +29,7 @@ function UserPageContent({ handle }: UserPageProps) {
   const isSelf = handle === myUsername || handle === myHandle;
 
   return (
-    <IonPage className="grey-bg">
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -54,6 +49,6 @@ function UserPageContent({ handle }: UserPageProps) {
         </IonToolbar>
       </AppHeader>
       <AsyncProfile handle={handle} />
-    </IonPage>
+    </AppPage>
   );
 }

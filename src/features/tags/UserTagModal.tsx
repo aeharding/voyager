@@ -7,8 +7,8 @@ import {
   IonModal,
   IonToolbar,
 } from "@ionic/react";
-import { Person } from "lemmy-js-client";
 import { useEffect, useRef, useState } from "react";
+import { Person } from "threadiverse";
 
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
@@ -85,7 +85,7 @@ function UserTagModalContents({
                 setIsOpen(false);
               }}
             >
-              Dismiss
+              Close
             </IonButton>
           </IonButtons>
         </IonToolbar>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { isNative } from "#/helpers/device";
 
-const DEFAULT_LEMMY_SERVERS = getCustomDefaultServers() ?? ["lemm.ee"];
+const DEFAULT_LEMMY_SERVERS = getCustomDefaultServers() ?? ["lemmy.zip"];
 
 let _customServers = DEFAULT_LEMMY_SERVERS;
 

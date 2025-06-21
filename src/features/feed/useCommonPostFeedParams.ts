@@ -1,4 +1,4 @@
-import { GetPosts } from "lemmy-js-client";
+import { GetPosts } from "threadiverse";
 
 import { handleSelector } from "#/features/auth/authSelectors";
 import { useAppSelector } from "#/store";

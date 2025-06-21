@@ -48,6 +48,7 @@ import {
   OProfileLabelType,
   OShowSubscribedIcon,
   OTapToCollapseType,
+  OTwoColumnLayout,
   OVoteDisplayMode,
   PostAppearanceType,
   PostBlurNsfwType,
@@ -55,6 +56,7 @@ import {
   ProfileLabelType,
   ShowSubscribedIcon,
   TapToCollapseType,
+  TwoColumnLayout,
   VoteDisplayMode,
   VotesThemeType,
 } from "#/services/db";
@@ -86,6 +88,7 @@ export interface SettingsState {
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
       profileLabel: ProfileLabelType;
+      twoColumnLayout: TwoColumnLayout;
     };
     posts: {
       blurNsfw: PostBlurNsfwType;
@@ -209,6 +212,7 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
+      twoColumnLayout: OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     large: {
@@ -253,6 +257,11 @@ const baseState: SettingsState = {
       sort: "ActiveSixMonths",
     },
     defaultFeed: undefined,
+    // TODO: Enable by default in late June 2025
+    // (devices have been updated to support go.getvoyager.app links)
+    // defaultShare: isNative()
+    //   ? OPostCommentShareType.DeepLink
+    //   : OPostCommentShareType.Local,
     defaultShare: OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -583,6 +592,10 @@ export const settingsSlice = createSlice({
       state.general.comments.touchFriendlyLinks = action.payload;
       db.setSetting("touch_friendly_links", action.payload);
     },
+    setTwoColumnLayout(state, action: PayloadAction<TwoColumnLayout>) {
+      state.appearance.general.twoColumnLayout = action.payload;
+      db.setSetting("two_column_layout", action.payload);
+    },
     setUpvoteOnSave(state, action: PayloadAction<boolean>) {
       state.general.posts.upvoteOnSave = action.payload;
 
@@ -855,6 +868,7 @@ export const {
   setThumbnailPosition,
   settingsReady,
   setTouchFriendlyLinks,
+  setTwoColumnLayout,
   setUpvoteOnSave,
   setUserDarkMode,
   setUserInstanceUrlDisplay,
@@ -891,6 +905,7 @@ function hydrateStateWithGlobalSettings(
       },
       general: {
         profileLabel: settings.profile_label,
+        twoColumnLayout: settings.two_column_layout,
         userInstanceUrlDisplay: settings.user_instance_url_display,
       },
       large: {

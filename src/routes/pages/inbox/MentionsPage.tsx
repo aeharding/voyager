@@ -1,18 +1,11 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { PersonMentionView } from "lemmy-js-client";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
+import { PersonMentionView } from "threadiverse";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
 import InboxFeed from "#/features/feed/InboxFeed";
 import { receivedInboxItems } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { LIMIT } from "#/services/lemmy";
@@ -21,11 +14,8 @@ import { useAppDispatch } from "#/store";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 
 export default function MentionsPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const client = useClient();
-
-  useSetActivePage(pageRef);
 
   const fetchFn: FetchFn<PersonMentionView> = async (pageData, ...rest) => {
     const response = await client.getPersonMentions(
@@ -44,7 +34,7 @@ export default function MentionsPage() {
   };
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -61,6 +51,6 @@ export default function MentionsPage() {
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { useMemo } from "react";
+import { PostView } from "threadiverse";
 
 import { getCrosspostUrl } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";

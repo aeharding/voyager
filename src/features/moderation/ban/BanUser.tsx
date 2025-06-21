@@ -15,7 +15,7 @@ import {
 import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
 
-import { BanUserPayload } from "#/features/auth/PageContext";
+import { BanUserPayload } from "#/features/auth/SharedDialogContext";
 import { preventPhotoswipeGalleryFocusTrap } from "#/features/media/gallery/GalleryImg";
 import AddRemoveButtons from "#/features/share/asImage/AddRemoveButtons";
 import AppHeader from "#/features/shared/AppHeader";

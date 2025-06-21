@@ -4,14 +4,14 @@ import {
   IonContent,
   IonIcon,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { arrowBackSharp, send } from "ionicons/icons";
+import { arrowBackSharp } from "ionicons/icons";
 import { useRef, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { isIosTheme } from "#/helpers/device";
 
 import BulkSubscriber, { BulkSubscriberHandle } from "./BulkSubscriber";
@@ -48,7 +48,7 @@ export default function StarterPacksModal({
   }
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -63,17 +63,13 @@ export default function StarterPacksModal({
 
           <IonButtons slot="end">
             <IonButton strong type="submit" onClick={onSubmit}>
-              {isIosTheme() ? (
-                "Submit"
-              ) : (
-                <IonIcon icon={send} slot="icon-only" />
-              )}
+              Submit
             </IonButton>
           </IonButtons>
           <IonTitle>Starter Packs</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <BulkSubscriber ref={bulkSubscriberRef} onDismiss={onDismiss} />
         <IonList>
           {starterPackData.map((pack) => (
@@ -81,6 +77,6 @@ export default function StarterPacksModal({
           ))}
         </IonList>
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

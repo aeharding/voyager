@@ -11,7 +11,7 @@ export default function ThemesButton() {
         <IonLabel>Themes</IonLabel>
       </ListHeader>
       <IonList inset>
-        <IonItem routerLink="/settings/appearance/theme">
+        <IonItem routerLink="/settings/appearance/theme" button detail>
           <IconBg color="color(display-p3 0.5 0 1)" slot="start">
             <IonIcon icon={colorPalette} />
           </IconBg>

@@ -8,13 +8,14 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { chevronForwardOutline } from "ionicons/icons";
-import { PrivateMessageView } from "lemmy-js-client";
 import { useState } from "react";
+import { PrivateMessageView } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import ItemIcon from "#/features/labels/img/ItemIcon";
 import { blockUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
+import { useOpenInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import Time from "./Time";
@@ -30,8 +31,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
   const [present] = useIonAlert();
   const [loading, setLoading] = useState(false);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const client = useAppSelector(clientSelector);
 
@@ -108,7 +108,9 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
         </IonItemOptions>
 
         <IonItem
-          routerLink={`/inbox/messages/${getHandle(person)}`}
+          {...useOpenInSecondColumnIfNeededProps(
+            `/inbox/messages/${getHandle(person)}`,
+          )}
           href={undefined}
           draggable={false}
           detail={false}

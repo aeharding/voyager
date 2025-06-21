@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center"/>Voyager</h1>
+<h1 align="center">Voyager</h1>
 
 <p align="center">
 A mobile-first Lemmy web client
@@ -21,7 +21,7 @@ A mobile-first Lemmy web client
 </p>
 <p align="center">
   <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
-  <a href="https://lemmyverse.link/c/voyagerapp@lemmy.world"><img src="https://img.shields.io/lemmy/voyagerapp@lemmy.world?style=flat-square&logo=lemmy&label=lemmy" alt="lemmy community"></a>
+  <a href="https://go.getvoyager.app/lemmy.world/c/voyagerapp"><img src="https://img.shields.io/lemmy/voyagerapp@lemmy.world?style=flat-square&logo=lemmy&label=lemmy" alt="lemmy community"></a>
 </p>
 <br/>
 
@@ -81,6 +81,9 @@ Native apps can be great, but we believe in the strengths of the web. Why use a 
 
 However, if you prefer using the Progressive Web App, there are a number of folks that host it:
 
+<details>
+<summary>Community Deployments</summary>
+
 | Country          | URL                                                      | Description                                                  | Contact/Privacy                             |
 | ---------------- | -------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------- |
 | 🇺🇸 Virginia, USA | [vger.app](https://vger.app)                             | ✅ Official Voyager PWA instance                             | [➡️](https://vger.social/u/aeharding)       |
@@ -98,6 +101,8 @@ However, if you prefer using the Progressive Web App, there are a number of folk
 | ?                | [m.lemdro.id](https://m.lemdro.id)                       | Fully open source instance with incredible transparency.     | [➡️](https://lemdro.id)                     |
 
 > **Note**: Community deployments are **NOT** maintained by the Voyager team. They may not be synced with Voyager's source code. Please do your own research about the host servers before using them.
+
+</details>
 
 ### Beta Testing
 
@@ -156,7 +161,7 @@ http-server dist
 Optionally, you can serve a custom list of instance(s) in the `/_config` endpoint, with JSON payload of following format:
 
 ```json
-{ "customServers": ["lemmy.world", "lemm.ee"] }
+{ "customServers": ["lemmy.world", "lemmy.zip"] }
 ```
 
 For production, serve `index.html` with `Cache-Control: no-cache` and `/assets` with a long cache period (files in assets are immutable)

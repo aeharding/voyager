@@ -5,7 +5,6 @@ import {
   useRef,
 } from "react";
 
-import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { deepLinkFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -36,9 +35,14 @@ export default function AppUrlListener() {
       return;
     }
 
-    // wait for router to get into a good state before pushing
-    // (needed for pushing user profiles from app startup)
-    const result = await redirectToLemmyObjectIfNeeded(url);
+    let result;
+
+    try {
+      result = await redirectToLemmyObjectIfNeeded(url);
+    } catch (error) {
+      presentToast(deepLinkFailed);
+      throw error;
+    }
 
     if (result === "not-found") presentToast(deepLinkFailed);
   };
@@ -47,7 +51,7 @@ export default function AppUrlListener() {
 
   useEffect(() => {
     const listener = App.addListener("appUrlOpen", (event) => {
-      onAppUrlEvent(normalizeObjectUrl(event.url));
+      onAppUrlEvent(event.url);
     });
 
     return () => {

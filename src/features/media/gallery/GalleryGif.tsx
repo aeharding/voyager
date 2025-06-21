@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 
 import { GalleryMediaProps } from "./GalleryMedia";
 
-interface GalleryGifProps extends GalleryMediaProps {
+interface GalleryGifProps extends Omit<GalleryMediaProps, "portalWithMediaId"> {
   ref?: React.Ref<HTMLCanvasElement>;
 }
 

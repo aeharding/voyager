@@ -1,12 +1,11 @@
-import { PostView } from "lemmy-js-client";
 import { use, useMemo } from "react";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import PostLink from "#/features/post/link/PostLink";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { cx } from "#/helpers/css";
-import { findLoneImage } from "#/helpers/markdown";
 import { useAppSelector } from "#/store";
 
 import useIsPostUrlMedia from "../../useIsPostUrlMedia";
@@ -28,10 +27,6 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
-  const markdownLoneImage = useMemo(
-    () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
-  );
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
   );
@@ -42,7 +37,7 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
     [post, isPostUrlMedia],
   );
 
-  if (urlIsMedia || markdownLoneImage) {
+  if (urlIsMedia) {
     return (
       <div
         className={cx(

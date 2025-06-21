@@ -14,6 +14,8 @@ import * as portals from "react-reverse-portal";
 import type Player from "./Player";
 import PortaledPlayer from "./PortaledPlayer";
 
+import styles from "./VideoPortalProvider.module.css";
+
 export default function VideoPortalProvider({
   children,
 }: React.PropsWithChildren) {
@@ -55,7 +57,8 @@ export default function VideoPortalProvider({
     const newRef = {
       outPortalUids: [outPortalUid],
       portalNode: portals.createHtmlPortalNode({
-        attributes: { style: "flex:1;display:flex;width:100%" },
+        containerElement: "span",
+        attributes: { class: styles.portalNodeStyles! },
       }),
     };
 
@@ -196,4 +199,15 @@ export function useVideoPortalNode(
     last(potentialVideoRef?.outPortalUids) === outPortalUid
   )
     return potentialVideoRef.portalNode;
+}
+
+/**
+ * Build a stable id for a media element, potentially within markdown
+ *
+ * (Can't use the src, because video with duplicate src in comment is possible)
+ */
+export function buildMediaId(apId: string, mdPosition?: number) {
+  if (mdPosition == null) return `${apId}`;
+
+  return `${mdPosition}-${apId}`;
 }

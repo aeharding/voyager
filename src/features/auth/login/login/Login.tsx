@@ -24,7 +24,7 @@ import { getLoginErrorMessage, isLemmyError } from "#/helpers/lemmyErrors";
 import { loginSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_TERMS } from "#/helpers/voyager";
-import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { buildBaseClientUrl } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { getInstanceFromHandle } from "../../authSelectors";
@@ -152,11 +152,11 @@ export default function Login({ url, siteIcon }: LoginProps) {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <div className="ion-padding">
           You are logging in to{" "}
           <InAppExternalLink
-            href={buildBaseLemmyUrl(url)}
+            href={buildBaseClientUrl(url)}
             target="_blank"
             rel="noopener noreferrer"
           >

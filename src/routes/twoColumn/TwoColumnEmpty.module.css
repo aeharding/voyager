@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    border-radius: 15%;
+    filter: grayscale(80%) opacity(0.2);
+  }
+}

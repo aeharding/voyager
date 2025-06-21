@@ -9,9 +9,11 @@ import {
   useRef,
 } from "react";
 
+import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
 import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
+import { parseUriList } from "#/helpers/url";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 
@@ -48,6 +50,7 @@ export default function Editor({
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(undefined);
+  const onPastePlainRef = useRef(false);
 
   const { insertBlock } = useEditorHelpers(textareaRef);
 
@@ -71,6 +74,18 @@ export default function Editor({
   }, []);
 
   async function onPaste(e: ClipboardEvent) {
+    const image = e.clipboardData.files?.[0];
+
+    if (image) {
+      e.preventDefault();
+
+      onReceivedImage(image);
+      return;
+    }
+
+    // Bail on paste modifiers if user is holding down shift
+    if (onPastePlainRef.current) return;
+
     const html = e.clipboardData.getData("text/html");
 
     if (html) {
@@ -81,20 +96,46 @@ export default function Editor({
       try {
         toInsert = await htmlToMarkdown(html);
       } catch (_) {
-        toInsert = e.clipboardData.getData("Text");
+        toInsert = e.clipboardData.getData("text");
         console.error("Parse error", e);
       }
 
       document.execCommand("insertText", false, toInsert);
+      return;
     }
 
-    const image = e.clipboardData.files?.[0];
+    const uriList = e.clipboardData.getData("text/uri-list");
 
-    if (!image) return;
+    if (uriList) {
+      const urls = parseUriList(uriList);
 
-    e.preventDefault();
+      if (urls.length !== 1) return;
 
-    onReceivedImage(image);
+      const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(
+        urls[0]!,
+      );
+
+      if (!potentialUrl) return;
+
+      e.preventDefault();
+
+      document.execCommand("insertText", false, potentialUrl);
+
+      return;
+    }
+
+    const text = e.clipboardData.getData("text");
+
+    if (text) {
+      const potentialUrl =
+        extractLemmyLinkFromPotentialFediRedirectService(text);
+
+      if (!potentialUrl) return;
+
+      e.preventDefault();
+
+      document.execCommand("insertText", false, potentialUrl);
+    }
   }
 
   async function onDragCapture(event: DragEvent) {
@@ -169,6 +210,12 @@ export default function Editor({
     }
   }
 
+  function updateMetaRef(e: KeyboardEvent) {
+    const meta = e.shiftKey;
+    onPastePlainRef.current = meta;
+    return meta;
+  }
+
   return (
     <>
       {uploadImageJsx}
@@ -187,6 +234,8 @@ export default function Editor({
           spellCheck
           id={TOOLBAR_TARGET_ID}
           onKeyDown={(e) => {
+            updateMetaRef(e);
+
             switch (e.key) {
               case "Enter": {
                 if (e.ctrlKey || e.metaKey) {
@@ -201,6 +250,7 @@ export default function Editor({
                 break;
             }
           }}
+          onKeyUp={updateMetaRef}
           onPaste={onPaste}
           onDropCapture={onDragCapture}
           onDragOver={onDragOver}

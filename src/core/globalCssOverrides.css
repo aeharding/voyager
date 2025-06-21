@@ -17,26 +17,8 @@ ion-tab-button {
   opacity: 1 !important;
 }
 
-ion-router-outlet > .ion-page > ion-header {
-  /* Header doesn't support dynamic font size */
-  ion-button,
-  ion-back-button,
-  ion-title {
-    font-size: 17px;
-  }
-
-  /* Ionic's default font size for icons in header is a bit too large */
-  ion-button.in-toolbar ion-icon {
-    font-size: 1.35em !important;
-  }
-
-  ion-back-button.md::part(text) {
-    display: none;
-  }
-}
-
-ion-router-outlet ion-list.list-inset ion-item {
-  --background: var(
+ion-list.list-inset ion-item {
+  --ion-item-background: var(
     --ion-tab-bar-background,
     var(--ion-background-color-step-50, #fff)
   );
@@ -93,6 +75,10 @@ ion-modal.small {
 }
 ion-modal.small ion-header ion-toolbar:first-of-type {
   padding-top: 0px;
+}
+
+ion-modal.modal-sheet ion-header {
+  --ion-safe-area-top: 0px;
 }
 
 ion-modal.transparent-scroll {
@@ -212,6 +198,12 @@ ion-action-sheet ion-icon {
 
 .virtual-scroller {
   overflow-x: hidden !important;
+}
+
+/* This is a hack to fix the issue with the second column on iPad portrait mode,
+   where changes to the scroll view abruptly stops the scroll for some reason??? */
+html.ios ion-router-outlet + .ion-page {
+  overflow: initial !important;
 }
 
 .ios {
@@ -352,3 +344,46 @@ ion-modal.save-as-image-modal {
   }
 }
 /* End: Landscape modal with open keyboard */
+
+/* Ionic bug with condensed header w/ light IonContent */
+.ios.toolbar-title-large {
+  --background: none;
+}
+
+.list-md:not(.ion-padding) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+:root {
+  --ion-color-light-bg: var(--ion-color-light);
+  --ion-color-light-bg-rgb: var(--ion-color-light-rgb);
+  --ion-color-light-bg-contrast: var(--ion-color-light-contrast);
+  --ion-color-light-bg-contrast-rgb: var(--ion-color-light-contrast-rgb);
+  --ion-color-light-bg-shade: var(--ion-color-light-shade);
+  --ion-color-light-bg-tint: var(--ion-color-light-tint);
+}
+
+/* Only apply light color to light mode with no custom theme */
+html:not(.theme-has-custom-background):not(.ion-palette-dark) {
+  .ion-color-light-bg {
+    --ion-color-base: var(--ion-color-light-bg);
+    --ion-color-base-rgb: var(--ion-color-light-bg-rgb);
+    --ion-color-contrast: var(--ion-color-light-bg-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-light-bg-contrast-rgb);
+    --ion-color-shade: var(--ion-color-light-bg-shade);
+    --ion-color-tint: var(--ion-color-light-bg-tint);
+  }
+}
+
+/* The same as ion-activated, but cloned here so Ionic won't remove the class on tap */
+.app-activated {
+  &::part(native) {
+    color: var(--color-activated);
+  }
+
+  &::part(native)::after {
+    background: var(--background-activated);
+    opacity: var(--background-activated-opacity);
+  }
+}

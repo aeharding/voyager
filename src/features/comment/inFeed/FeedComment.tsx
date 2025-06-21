@@ -1,9 +1,7 @@
-import { CommentView } from "lemmy-js-client";
+import { CommentView } from "threadiverse";
 
 import PostContext from "#/features/user/PostContext";
-import { getHandle } from "#/helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useOpenCommentInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
 import Comment from "../Comment";
 
@@ -13,8 +11,10 @@ interface FeedCommentProps {
 }
 
 export default function FeedComment({ comment, className }: FeedCommentProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const router = useOptimizedIonRouter();
+  const linkProps = useOpenCommentInSecondColumnIfNeededProps(
+    comment.comment,
+    comment.community,
+  );
 
   return (
     <Comment
@@ -22,16 +22,9 @@ export default function FeedComment({ comment, className }: FeedCommentProps) {
       context={
         <PostContext post={comment.post} community={comment.community} />
       }
+      {...linkProps}
+      itemClassName={linkProps.className}
       className={className}
-      onClick={() =>
-        router.push(
-          buildGeneralBrowseLink(
-            `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
-              comment.comment.path
-            }`,
-          ),
-        )
-      }
     />
   );
 }

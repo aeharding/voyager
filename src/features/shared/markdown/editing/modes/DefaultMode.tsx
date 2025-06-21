@@ -353,7 +353,7 @@ export default function DefaultMode({
           <input
             className="ion-hide"
             type="file"
-            accept="image/*,video/webm"
+            accept="image/*,video/webm,video/mp4"
             id="photo-upload-toolbar"
             onInput={async (e) => {
               const image = (e.target as HTMLInputElement).files?.[0];

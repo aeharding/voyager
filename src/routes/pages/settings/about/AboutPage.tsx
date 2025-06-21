@@ -4,7 +4,6 @@ import {
   IonIcon,
   IonLabel,
   IonList,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -22,13 +21,13 @@ import {
 } from "ionicons/icons";
 import { useRef } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
+import { canShare, shareUrl } from "#/features/share/share";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
+import { AppPage } from "#/helpers/AppPage";
 import { getShareIcon, isAndroid, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
 import { useAppSelector } from "#/store";
@@ -38,8 +37,6 @@ import AppDetails from "./AppDetails";
 import compliments from "./compliments.txt?raw";
 
 export default function AboutPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
@@ -84,10 +81,8 @@ export default function AboutPage() {
     );
   })();
 
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -97,7 +92,7 @@ export default function AboutPage() {
           <IonTitle>About</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light-bg">
         <AppDetails />
 
         <IonList inset color="primary">
@@ -105,6 +100,7 @@ export default function AboutPage() {
             href="https://github.com/aeharding/voyager/releases"
             target="_blank"
             rel="noopener noreferrer"
+            detail
           >
             <IconBg color="color(display-p3 0.7 0 1)" size="0.8" slot="start">
               <IonIcon icon={sparkles} />
@@ -114,6 +110,7 @@ export default function AboutPage() {
           <IonItemInAppExternalLink
             routerLink={buildGeneralBrowseLink(`/c/${appCommunityHandle}`)}
             detail
+            button
           >
             <IconBg color="color(display-p3 0 0.8 0.3)" slot="start">
               <IonIcon icon={people} />
@@ -154,7 +151,11 @@ export default function AboutPage() {
             <IonLabel>Terms of Use</IonLabel>
           </IonItemInAppExternalLink>
           {rateVoyager}
-          <IonItemInAppExternalLink detail routerLink="/settings/about/thanks">
+          <IonItemInAppExternalLink
+            detail
+            button
+            routerLink="/settings/about/thanks"
+          >
             <IconBg color="color(display-p3 0.1 0.6 0.1)" slot="start">
               <IonIcon icon={thumbsUp} />
             </IconBg>
@@ -171,7 +172,7 @@ export default function AboutPage() {
             </IconBg>
             <IonLabel>Bug Tracker</IonLabel>
           </IonItemInAppExternalLink>
-          <IonItemInAppExternalLink detail onClick={getCompliment}>
+          <IonItemInAppExternalLink detail button onClick={getCompliment}>
             <IconBg color="color(display-p3 1 0.1 0.6)" size="1.1" slot="start">
               <IonIcon icon={happy} />
             </IconBg>
@@ -181,9 +182,10 @@ export default function AboutPage() {
             href="https://getvoyager.app"
             target="_blank"
             rel="noopener noreferrer"
+            detail
             onClick={(e) => {
               if (e.metaKey || e.ctrlKey) return;
-              if (!("share" in navigator)) return;
+              if (!canShare()) return;
 
               e.preventDefault();
               e.stopPropagation();
@@ -198,6 +200,6 @@ export default function AboutPage() {
           </IonItemInAppExternalLink>
         </IonList>
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

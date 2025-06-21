@@ -6,14 +6,14 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { arrowBackSharp, send } from "ionicons/icons";
+import { RefObject, useEffect, useRef, useState } from "react";
 import {
   CommentReplyView,
   CommentView,
   PersonMentionView,
   PostView,
   ResolveObjectResponse,
-} from "lemmy-js-client";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+} from "threadiverse";
 
 import {
   getInstanceFromHandle,
@@ -27,7 +27,7 @@ import { isLemmyError } from "#/helpers/lemmyErrors";
 import { commentPosted } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import AppHeader from "../../../../AppHeader";
@@ -107,7 +107,7 @@ export default function CommentReplyPage(props: CommentReplyPageProps) {
 }
 
 interface CommentReplyPageContentProps extends CommentReplyPageProps {
-  resolvedRef: MutableRefObject<ResolveObjectResponse | undefined>;
+  resolvedRef: RefObject<ResolveObjectResponse | undefined>;
 }
 
 function CommentReplyPageWithAccount({

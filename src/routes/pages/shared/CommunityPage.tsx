@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonPage,
   IonSearchbar,
   IonToolbar,
 } from "@ionic/react";
@@ -39,6 +38,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { AppTitleHandle } from "#/features/shared/AppTitle";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
+import { AppPage } from "#/helpers/AppPage";
 import { cx } from "#/helpers/css";
 import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -189,7 +189,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
       <ShowHiddenPostsProvider>
         <PostAppearanceProvider feed={postFeed}>
           <TitleSearchProvider>
-            <IonPage className={searchOpen ? "grey-bg" : ""}>
+            <AppPage>
               <AppHeader>
                 <IonToolbar
                   className={cx(
@@ -251,7 +251,10 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
                   />
                 </IonToolbar>
               </AppHeader>
-              <FeedContent className={styles.feedContent}>
+              <FeedContent
+                className={styles.feedContent}
+                color={searchOpen ? "light-bg" : undefined}
+              >
                 {renderFeed()}
                 <TitleSearchResults />
                 {!showHiddenInCommunities && (
@@ -259,7 +262,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
                 )}
                 <div className={styles.fixedBg} slot="fixed" />
               </FeedContent>
-            </IonPage>
+            </AppPage>
           </TitleSearchProvider>
         </PostAppearanceProvider>
       </ShowHiddenPostsProvider>

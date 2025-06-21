@@ -19,8 +19,8 @@ import {
 } from "@ionic/react";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
-import { CreatePost, EditPost } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
+import { CreatePost, EditPost } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { deletePendingImageUploads } from "#/features/shared/markdown/editing/uploadImageSlice";
@@ -418,7 +418,7 @@ export default function PostEditorRoot({
           </IonSegment>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <div className={styles.container}>
           <IonList>
             <IonItem>
@@ -464,7 +464,7 @@ export default function PostEditorRoot({
 
                     <input
                       type="file"
-                      accept="image/*,video/webm"
+                      accept="image/*,video/webm,video/mp4"
                       id="media-upload-post"
                       className={styles.hiddenInput}
                       onInput={(e) => {

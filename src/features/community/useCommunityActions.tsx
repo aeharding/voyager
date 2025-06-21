@@ -1,17 +1,16 @@
 import { useIonActionSheet } from "@ionic/react";
-import { Community, SubscribedType } from "lemmy-js-client";
 import { use } from "react";
+import { Community, SubscribedType } from "threadiverse";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import {
   isAdminSelector,
   localUserSelector,
   showNsfw,
 } from "#/features/auth/siteSlice";
+import useShareUserCommunity from "#/features/share/useShareUserCommunity";
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
 import {
   allNSFWHidden,
   buildBlockedCommunity,
@@ -43,6 +42,7 @@ export default function useCommunityActions(
 ) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
+  const { share } = useShareUserCommunity(community);
 
   // useGetHandle as signal to react compiler to optimize
   const communityHandle = useGetHandle(community);
@@ -56,8 +56,7 @@ export default function useCommunityActions(
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
 
-  const { presentLoginIfNeeded } = use(PageContext);
-  const { presentPostEditor } = use(PageContext);
+  const { presentLoginIfNeeded, presentPostEditor } = use(SharedDialogContext);
 
   const site = useAppSelector((state) => state.site.response);
   const isAdmin = useAppSelector(isAdminSelector);
@@ -190,10 +189,6 @@ export default function useCommunityActions(
 
   const view = () => {
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
-  };
-
-  const share = () => {
-    shareUrl(getApId(community));
   };
 
   return {

@@ -1,10 +1,10 @@
 import { IonRefresher, IonRefresherContent } from "@ionic/react";
-import { Community } from "lemmy-js-client";
 import {
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useState,
 } from "react";
+import { Community } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";

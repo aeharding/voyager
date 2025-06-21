@@ -1,6 +1,6 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import { eyeOffOutline, imageOutline, listOutline } from "ionicons/icons";
-import { ListingType } from "lemmy-js-client";
+import { ListingType } from "threadiverse";
 
 import { urlSelector } from "#/features/auth/authSelectors";
 import {
@@ -8,10 +8,10 @@ import {
   useSetPostAppearance,
 } from "#/features/post/appearance/PostAppearanceProvider";
 import { OPostAppearanceType } from "#/features/settings/settingsSlice";
+import { useShare } from "#/features/share/share";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
-import { shareUrl } from "#/helpers/share";
-import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { buildBaseClientUrl } from "#/services/client";
 import store from "#/store";
 
 import useHidePosts from "./useHidePosts";
@@ -26,6 +26,7 @@ export default function SpecialFeedMoreActions({
   const [presentActionSheet] = useIonActionSheet();
   const hidePosts = useHidePosts();
   const buildTogglePostAppearanceButton = useBuildTogglePostAppearanceButton();
+  const share = useShare();
 
   function present() {
     presentActionSheet({
@@ -43,9 +44,9 @@ export default function SpecialFeedMoreActions({
           text: "Share",
           icon: getShareIcon(),
           handler: () => {
-            const url = buildBaseLemmyUrl(urlSelector(store.getState()));
+            const url = buildBaseClientUrl(urlSelector(store.getState()));
 
-            shareUrl(`${url}?dataType=Post&listingType=${type}`);
+            share(`${url}?dataType=Post&listingType=${type}`);
           },
         },
         {

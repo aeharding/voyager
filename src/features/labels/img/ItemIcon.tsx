@@ -1,9 +1,9 @@
-import { Community, Person } from "lemmy-js-client";
 import { useState } from "react";
+import { Community, Person } from "threadiverse";
 
+import CachedImg from "#/features/media/CachedImg";
 import FakeIcon from "#/features/shared/FakeIcon";
 import { cx } from "#/helpers/css";
-import { getImageSrc } from "#/services/lemmy";
 
 import styles from "./ItemIcon.module.css";
 
@@ -26,18 +26,25 @@ export default function ItemIcon({
 
   if (typeof item === "string")
     return (
-      <FakeIcon seed={item} name={item} className={className} size={size} />
+      <FakeIcon
+        seed={item}
+        name={item}
+        className={className}
+        size={size}
+        slot={slot}
+      />
     );
 
   const icon = "posting_restricted_to_mods" in item ? item.icon : item.avatar;
 
   if (icon && !failed)
     return (
-      <img
+      <CachedImg
         style={{ width: `${size}px`, height: `${size}px` }}
-        src={getImageSrc(icon, {
+        src={icon}
+        pictrsOptions={{
           size,
-        })}
+        }}
         onError={() => {
           setFailed(true);
         }}

@@ -1,19 +1,16 @@
 import { IonIcon } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { chatbubbleOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import React, { use } from "react";
-import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import MoreActions from "#/features/post/shared/MoreActions";
-import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { useShare } from "#/features/share/share";
 import { getShareIcon, isNative } from "#/helpers/device";
-import { getCounts } from "#/helpers/lemmyCompat";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
-import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
 import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
@@ -39,15 +36,13 @@ export default function GalleryPostActions({
   videoRef,
   title,
 }: GalleryPostActionsProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const router = useOptimizedIonRouter();
-  const location = useLocation();
   const presentToast = useAppToast();
   const { close } = use(GalleryContext);
+  const share = useShare();
 
   async function shareImage() {
     if (!isNative()) {
-      shareUrl(src);
+      share(src);
       return;
     }
 
@@ -68,6 +63,11 @@ export default function GalleryPostActions({
     }
   }
 
+  const postProps = useOpenPostInSecondColumnIfNeededProps(
+    post.post,
+    post.community,
+  );
+
   return (
     <BottomContainer>
       <AltText alt={alt} title={title} />
@@ -75,22 +75,19 @@ export default function GalleryPostActions({
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
           <Vote post={post} />
-          <div
-            onClick={() => {
+          <Link
+            to={postProps.routerLink}
+            onClick={(e) => {
               close();
 
-              const link = buildGeneralBrowseLink(
-                buildPostLink(post.community, post.post),
-              );
-
-              if (!location.pathname.startsWith(link)) router.push(link);
+              postProps.onClick(e);
             }}
           >
             <div className={styles.section}>
               <IonIcon icon={chatbubbleOutline} />
-              <div className={styles.amount}>{getCounts(post).comments}</div>
+              <div className={styles.amount}>{post.counts.comments}</div>
             </div>
-          </div>
+          </Link>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
           {isNative() ? (
             <GalleryActions post={post} src={src} videoRef={videoRef} />

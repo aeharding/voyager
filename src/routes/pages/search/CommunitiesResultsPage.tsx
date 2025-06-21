@@ -1,13 +1,7 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { compact } from "es-toolkit";
-import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
 import { useState } from "react";
+import { CommunityView, ListingType, ThreadiverseClient } from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";
@@ -17,6 +11,7 @@ import useFeedSort, {
   useFeedSortParams,
 } from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -64,7 +59,7 @@ export default function CommunitiesResultsPage({
   };
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -88,13 +83,13 @@ export default function CommunitiesResultsPage({
       <FeedContent>
         <CommunityFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }
 
 async function findExactCommunity(
   name: string,
-  client: LemmyHttp,
+  client: ThreadiverseClient,
 ): Promise<CommunityView | undefined> {
   const sanitizedName = name.startsWith("!") ? name.slice(1) : name;
 

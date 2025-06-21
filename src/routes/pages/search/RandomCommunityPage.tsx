@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonPage,
   IonRefresher,
   IonRefresherContent,
   IonTitle,
@@ -13,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { AppPage } from "#/helpers/AppPage";
 
 import sharedStyles from "#/features/shared/shared.module.css";
 
@@ -62,7 +62,7 @@ export default function RandomCommunityPage() {
   }
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -72,6 +72,6 @@ export default function RandomCommunityPage() {
         </IonToolbar>
       </AppHeader>
       <IonContent>{renderContent()}</IonContent>
-    </IonPage>
+    </AppPage>
   );
 }

@@ -10,10 +10,11 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  useIonAlert,
 } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { GetSiteResponse } from "lemmy-js-client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GetSiteResponse } from "threadiverse";
 import { VList, VListHandle } from "virtua";
 
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
@@ -25,7 +26,7 @@ import {
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { getCustomServers } from "#/services/app";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 
 import Login from "./Login";
 
@@ -33,6 +34,7 @@ import styles from "./PickLoginServer.module.css";
 
 export default function PickLoginServer() {
   const presentToast = useAppToast();
+  const [presentAlert] = useIonAlert();
   const [search, setSearch] = useState("");
   const [shouldSubmit, setShouldSubmit] = useState(false);
   const searchHostname = stripProtocol(search.trim());
@@ -83,9 +85,10 @@ export default function PickLoginServer() {
     setLoading(true);
 
     let site: GetSiteResponse;
+    const client = getClient(potentialServer);
 
     try {
-      site = await getClient(potentialServer).getSite();
+      site = await client.getSite();
     } catch (error) {
       presentToast({
         message: `Problem connecting to ${potentialServer}. Please try again`,
@@ -98,7 +101,10 @@ export default function PickLoginServer() {
       setLoading(false);
     }
 
-    if (!isMinimumSupportedLemmyVersion(site.version)) {
+    if (
+      client.name === "lemmy" &&
+      !isMinimumSupportedLemmyVersion(site.version)
+    ) {
       presentToast({
         message: `${potentialServer} is running Lemmy v${site.version}. Voyager requires at least v${MINIMUM_LEMMY_VERSION}`,
         color: "danger",
@@ -109,12 +115,35 @@ export default function PickLoginServer() {
       return;
     }
 
-    ref.current
-      ?.closest("ion-nav")
-      ?.push(() => (
-        <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
-      ));
-  }, [instances, loading, presentToast, search, searchHostname]);
+    if (client.name === "piefed") {
+      presentAlert({
+        header: "⚠️ Piefed support is experimental",
+        message:
+          "Mind the edge; no safety rails installed. Piefed support is EXPERIMENTAL in Voyager. Don't expect things to work right, and compatibility may break at any time.",
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "I understand",
+            handler: go,
+          },
+        ],
+      });
+      return;
+    }
+
+    go();
+
+    function go() {
+      ref.current
+        ?.closest("ion-nav")
+        ?.push(() => (
+          <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
+        ));
+    }
+  }, [instances, loading, presentAlert, presentToast, search, searchHostname]);
 
   useEffect(() => {
     if (!shouldSubmit) return;
@@ -142,7 +171,7 @@ export default function PickLoginServer() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent scrollY={false}>
+      <IonContent scrollY={false} color="light-bg">
         <div className={styles.container} ref={ref}>
           <div className="ion-padding">
             <IonText color="medium">

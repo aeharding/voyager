@@ -1,24 +1,13 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import TagsSettings from "#/features/settings/tags/TagsSettings";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 
 export default function TagsSettingsPage() {
-  const pageRef = useRef<HTMLElement>(null);
-
-  useSetActivePage(pageRef);
-
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -28,9 +17,9 @@ export default function TagsSettingsPage() {
           <IonTitle>User Tags</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY fullscreen>
+      <AppContent scrollY fullscreen color="light-bg">
         <TagsSettings />
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

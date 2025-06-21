@@ -1,13 +1,10 @@
 import {
-  IonBackButton,
   IonButtons,
   IonFooter,
-  IonPage,
   IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { PrivateMessageView } from "lemmy-js-client";
 import {
   use,
   useCallback,
@@ -19,10 +16,10 @@ import {
 } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { CustomItemComponent, VList, VListHandle } from "virtua";
+import { PrivateMessageView } from "threadiverse";
+import { VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import ConversationsMoreActions from "#/features/feed/ConversationsMoreActions";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
@@ -31,19 +28,18 @@ import Message from "#/features/inbox/messages/Message";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
 import AppHeader from "#/features/shared/AppHeader";
 import { getUser } from "#/features/user/userSlice";
+import { AppPage } from "#/helpers/AppPage";
+import AppVList from "#/helpers/AppVList";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import FeedContent from "#/routes/pages/shared/FeedContent";
+import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import sharedLabelStyles from "#/features/labels/links/shared.module.css";
 import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ConversationPage.module.css";
-
-function FlexItem(props: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...props} className={styles.flexItem} />;
-}
 
 function useMessages(
   allMessages: PrivateMessageView[],
@@ -69,13 +65,11 @@ function useMessages(
 }
 
 export default function ConversationPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const tabContext = use(TabContext);
   const [tab, setTab] = useState<string | undefined>();
@@ -86,7 +80,7 @@ export default function ConversationPage() {
 
   const keyboardOpen = useKeyboardOpen();
 
-  const ref = useRef<VListHandle>(null);
+  const virtuaRef = useRef<VListHandle>(null);
   const shouldStickToBottom = useRef(true);
 
   const messages = useMessages(allMessages, myUserId, handle);
@@ -94,8 +88,6 @@ export default function ConversationPage() {
   const them = userByHandle[handle.toLowerCase()];
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-
-  useSetActivePage(pageRef);
 
   const loadUser = useCallback(async () => {
     if (userByHandle[handle.toLowerCase()]) return;
@@ -129,9 +121,9 @@ export default function ConversationPage() {
   }, [dispatch, jwtPayload]);
 
   const scrollToBottom = useCallback(() => {
-    if (!ref.current) return;
+    if (!virtuaRef.current) return;
 
-    ref.current.scrollToIndex(messages.length - 1, { align: "end" });
+    virtuaRef.current.scrollToIndex(messages.length - 1, { align: "end" });
   }, [messages.length]);
 
   const scrollIfNeeded = useCallback(() => {
@@ -156,33 +148,35 @@ export default function ConversationPage() {
 
     if (typeof myUserId === "number" && them)
       return (
-        <VList
+        <AppVList
           className={styles.container}
-          ref={ref}
+          ref={virtuaRef}
           style={{ flex: 1 }}
           reverse
           onScroll={(offset) => {
             // Wait for viewport resize to settle (iOS keyboard open/close)
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {
-                if (!ref.current) return;
+                if (!virtuaRef.current) return;
                 shouldStickToBottom.current =
-                  offset - ref.current.scrollSize + ref.current.viewportSize >=
+                  offset -
+                    virtuaRef.current.scrollSize +
+                    virtuaRef.current.viewportSize >=
                   // FIXME: The sum may not be 0 because of sub-pixel value when browser's window.devicePixelRatio has decimal value
                   -1.5;
               });
             });
           }}
-          item={FlexItem as unknown as CustomItemComponent}
         >
           {messages.map((message, index) => (
-            <Message
+            <div
+              className={styles.messageContainer}
               key={message.private_message.id}
-              message={message}
-              first={index === 0}
-            />
+            >
+              <Message message={message} first={index === 0} />
+            </div>
           ))}
-        </VList>
+        </AppVList>
       );
 
     return <IonSpinner className={sharedStyles.pageSpinner} />;
@@ -200,11 +194,11 @@ export default function ConversationPage() {
   })();
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/inbox/messages" text={backText} />
+            <AppBackButton defaultHref="/inbox/messages" text={backText} />
           </IonButtons>
 
           <IonTitle className={styles.title}>
@@ -231,6 +225,6 @@ export default function ConversationPage() {
           />
         </IonFooter>
       )}
-    </IonPage>
+    </AppPage>
   );
 }

@@ -8,9 +8,9 @@ test("load community posts", async ({ page }) => {
   });
 
   await page.goto("/");
-  await page.waitForURL("/posts/lemm.ee/all");
+  await page.waitForURL("/posts/lemmy.zip/all");
 
-  await expect(page).toHaveTitle("lemm.ee");
+  await expect(page).toHaveTitle("lemmy.zip");
 
   await expect(page.getByText(posts[0]!.post.name)).toBeVisible();
 });
@@ -25,6 +25,6 @@ test("navigate to post on click", async ({ page }) => {
   await page.getByText(posts[0]!.post.name).click();
 
   await expect(page).toHaveURL(
-    "/posts/lemm.ee/c/community_1@test.lemmy/comments/999",
+    "/posts/lemmy.zip/c/community_1@test.lemmy/comments/999",
   );
 });

@@ -1,8 +1,9 @@
-import { PostView } from "lemmy-js-client";
 import { ComponentProps } from "react";
+import { PostView } from "threadiverse";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
 import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";
+import { buildMediaId } from "#/features/media/video/VideoPortalProvider";
 import { cx } from "#/helpers/css";
 
 import usePostSrc from "../../usePostSrc";
@@ -28,7 +29,7 @@ export default function LargeFeedPostMedia(
             autoPlay={!props.blur}
             disableInlineInteraction={props.blur}
             className={cx(styles.lightbox, props.className)}
-            portalWithMediaId={`${props.post.post.id}`}
+            portalWithMediaId={buildMediaId(props.post.post.ap_id)}
           />
         );
     }
@@ -43,7 +44,7 @@ export default function LargeFeedPostMedia(
         disableInlineInteraction={props.blur}
         alt={props.post.post.alt_text}
         className={cx(styles.lightbox, props.className)}
-        portalWithMediaId={`${props.post.post.id}`}
+        portalWithMediaId={buildMediaId(props.post.post.ap_id)}
       />
     );
 }

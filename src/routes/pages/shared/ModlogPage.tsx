@@ -1,19 +1,12 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { Community, Person } from "lemmy-js-client";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useEffect } from "react";
 import { useParams } from "react-router";
+import { Community, Person } from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import Feed, { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import {
-  getLogDate,
   getLogIndex,
   ModlogItemType,
 } from "#/features/moderation/logs/helpers";
@@ -22,6 +15,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { getUser } from "#/features/user/userSlice";
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -81,7 +75,7 @@ function Modlog({ community, user }: ModlogProps) {
   const client = useClient();
 
   const fetchFn: FetchFn<ModlogItemType> = async (pageData, ...rest) => {
-    const logs = await client.getModlog(
+    const response = await client.getModlog(
       {
         ...pageData,
         limit: LIMIT,
@@ -91,9 +85,7 @@ function Modlog({ community, user }: ModlogProps) {
       ...rest,
     );
 
-    return Object.values(logs)
-      .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
-      .sort((a, b) => Date.parse(getLogDate(b)) - Date.parse(getLogDate(a)));
+    return response.modlog;
   };
 
   function renderItemContent(item: ModlogItemType) {
@@ -109,7 +101,7 @@ function Modlog({ community, user }: ModlogProps) {
 
   return (
     <FeedContextProvider>
-      <IonPage>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -129,7 +121,7 @@ function Modlog({ community, user }: ModlogProps) {
             getIndex={getLogIndex}
           />
         </FeedContent>
-      </IonPage>
+      </AppPage>
     </FeedContextProvider>
   );
 }

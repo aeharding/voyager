@@ -7,8 +7,8 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { Person } from "lemmy-js-client";
 import { useState } from "react";
+import { Person } from "threadiverse";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { RemoveItemButton } from "#/features/shared/ListEditor";

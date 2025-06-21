@@ -56,6 +56,8 @@
 }
 
 .contents {
+  composes: appLightColorContent from "#/features/shared/shared.module.css";
+
   /* can't use ion-content with auto height ion-modal */
   margin-bottom: var(--ion-safe-area-bottom);
 

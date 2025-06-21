@@ -20,6 +20,7 @@ export default function SpecialItem({
   className,
 }: SpecialItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
   return (
     <IonItem
       routerLink={buildGeneralBrowseLink(`/${type}`)}
@@ -28,16 +29,15 @@ export default function SpecialItem({
       lines={line ? "inset" : "none"}
       className={className}
     >
+      <IonIcon
+        className={listStyles.subIcon}
+        icon={getIcon(type)}
+        style={{ background: getIconBg(type) }}
+        slot="start"
+      />
       <div className={listStyles.content}>
-        <IonIcon
-          className={listStyles.subIcon}
-          icon={getIcon(type)}
-          style={{ background: getIconBg(type) }}
-        />
-        <div>
-          {getTitle(type)}
-          <aside>{getDescription(type, actor)}</aside>
-        </div>
+        {getTitle(type)}
+        <aside>{getDescription(type, actor)}</aside>
       </div>
     </IonItem>
   );

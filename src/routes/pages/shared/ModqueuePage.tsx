@@ -1,20 +1,14 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { uniqBy } from "es-toolkit";
+import { createContext, use } from "react";
+import { useParams } from "react-router";
 import {
   CommentReportView,
   CommentView,
   Community,
   PostReportView,
   PostView,
-} from "lemmy-js-client";
-import { createContext, use } from "react";
-import { useParams } from "react-router";
+} from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";
@@ -29,8 +23,8 @@ import {
 } from "#/features/moderation/modSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
-import { getPostCommentItemCreatedDate } from "#/features/user/Profile";
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -65,39 +59,28 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
   const dispatch = useAppDispatch();
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const [{ comment_reports }, { post_reports }] = await Promise.all([
-      client.listCommentReports(
-        {
-          ...pageData,
-          limit: LIMIT,
-          community_id: community?.id,
-          unresolved_only: true,
-        },
-        ...rest,
-      ),
-      client.listPostReports(
-        {
-          ...pageData,
-          limit: LIMIT,
-          community_id: community?.id,
-          unresolved_only: true,
-        },
-        ...rest,
-      ),
-    ]);
+    const { reports } = await client.listReports(
+      {
+        ...pageData,
+        limit: LIMIT,
+        community_id: community?.id,
+        unresolved_only: true,
+      },
+      ...rest,
+    );
 
     let needsSync = isFirstPage(pageData);
 
     const reportsByCommentId = reportsByCommentIdSelector(store.getState());
     const reportsByPostId = reportsByPostIdSelector(store.getState());
 
-    for (const report of comment_reports) {
-      if (!reportsByCommentId[report.comment.id]) {
+    for (const report of reports) {
+      if (
+        "comment_report" in report &&
+        !reportsByCommentId[report.comment.id]
+      ) {
         needsSync = true;
-      }
-    }
-    for (const report of post_reports) {
-      if (!reportsByPostId[report.post.id]) {
+      } else if ("post_report" in report && !reportsByPostId[report.post.id]) {
         needsSync = true;
       }
     }
@@ -106,22 +89,16 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
       await dispatch(syncReports(true));
     }
 
-    const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
-      convertCommentReportToComment,
-    );
-    const posts = await uniqBy(post_reports, (r) => r.post.id).map(
-      convertPostReportToPost,
+    const views = uniqBy(reports, (r) => getUniqueReportId(r)).map(
+      convertReportToPostCommentView,
     );
 
-    return [...comments, ...posts].sort(
-      (a, b) =>
-        getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
-    );
+    return views;
   };
 
   return (
     <FeedContextProvider>
-      <IonPage>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -145,24 +122,31 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
             />
           </ModqueueContext>
         </FeedContent>
-      </IonPage>
+      </AppPage>
     </FeedContextProvider>
   );
 }
 
-function convertPostReportToPost(postReport: PostReportView): PostView {
+function convertReportToPostCommentView(
+  report: CommentReportView | PostReportView,
+): PostCommentItem {
+  switch (true) {
+    case "comment_report" in report:
+      return convertCommentReportToComment(report);
+    case "post_report" in report:
+      return convertPostReportViewToPostView(report);
+    default:
+      throw new Error("Invalid report");
+  }
+}
+
+function convertPostReportViewToPostView(postReport: PostReportView): PostView {
   return {
     ...postReport,
     creator: postReport.post_creator,
 
     // The below is mocked because properties are not available.
     // See: https://github.com/LemmyNet/lemmy/issues/4200
-    creator_is_moderator: false,
-    creator_is_admin: false,
-    subscribed: "NotSubscribed",
-    saved: false,
-    read: false,
-    creator_blocked: false,
     unread_comments: 0,
     banned_from_community: false,
   };
@@ -177,11 +161,6 @@ function convertCommentReportToComment(
 
     // The below is mocked because properties are not available.
     // See: https://github.com/LemmyNet/lemmy/issues/4200
-    creator_is_moderator: false,
-    creator_is_admin: false,
-    creator_blocked: false,
-    subscribed: "NotSubscribed",
-    saved: false,
     banned_from_community: false,
   };
 }
@@ -190,4 +169,15 @@ const ModqueueContext = createContext(false);
 
 export function useInModqueue() {
   return use(ModqueueContext);
+}
+
+function getUniqueReportId(report: CommentReportView | PostReportView): string {
+  switch (true) {
+    case "comment_report" in report:
+      return `comment-${report.comment_report.id}`;
+    case "post_report" in report:
+      return `post-${report.post_report.id}`;
+    default:
+      throw new Error("Invalid report");
+  }
 }

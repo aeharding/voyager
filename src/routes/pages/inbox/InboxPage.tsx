@@ -1,23 +1,15 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useRef } from "react";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
 import InboxFeed from "#/features/feed/InboxFeed";
 import { InboxItemView } from "#/features/inbox/InboxItem";
 import {
-  getInboxItemPublished,
   receivedInboxItems,
   totalUnreadSelector,
 } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { receivedUsers } from "#/features/user/userSlice";
+import { AppPage } from "#/helpers/AppPage";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -29,19 +21,15 @@ interface InboxPageProps {
 }
 
 export default function InboxPage({ showRead }: InboxPageProps) {
-  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const client = useClient();
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const totalUnread = useAppSelector(totalUnreadSelector);
 
-  useSetActivePage(pageRef);
-
   const fetchFn: FetchFn<InboxItemView> = async (pageData, ...rest) => {
-    if (!myUserId) return [];
+    if (!myUserId) throw new Error("Logged out");
 
     const params = {
       limit: 50,
@@ -49,51 +37,40 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       unread_only: !showRead,
     };
 
-    const [replies, mentions, privateMessages] = await Promise.all([
-      client.getReplies(
-        {
-          ...params,
-          sort: "New",
-        },
-        ...rest,
-      ),
-      client.getPersonMentions(
-        {
-          ...params,
-          sort: "New",
-        },
-        ...rest,
-      ),
-      client.getPrivateMessages(params, ...rest),
-    ]);
-
-    const everything = [
-      ...replies.replies,
-      ...mentions.mentions,
-      ...privateMessages.private_messages.filter(
-        (message) =>
-          message.creator.id !== myUserId ||
-          message.creator.id === message.recipient.id, // if you message yourself, show it (lemmy returns as a notification)
-      ),
-    ].sort(
-      (a, b) =>
-        Date.parse(getInboxItemPublished(b)) -
-        Date.parse(getInboxItemPublished(a)),
+    const notifications = await client.getNotifications(
+      {
+        ...params,
+        sort: "New",
+      },
+      ...rest,
     );
 
-    dispatch(receivedInboxItems(everything));
+    const filteredNotifications = notifications.notifications.filter(
+      (notification) => {
+        if ("private_message" in notification) {
+          return (
+            notification.creator.id !== myUserId ||
+            notification.creator.id === notification.recipient.id
+          ); // if you message yourself, show it (lemmy returns as a notification)
+        }
+
+        return true;
+      },
+    );
+
+    dispatch(receivedInboxItems(filteredNotifications));
     dispatch(
       receivedUsers([
-        ...everything.map(({ creator }) => creator),
-        ...everything.map(({ recipient }) => recipient),
+        ...filteredNotifications.map(({ creator }) => creator),
+        ...filteredNotifications.map(({ recipient }) => recipient),
       ]),
     );
 
-    return everything;
+    return filteredNotifications;
   };
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -113,6 +90,6 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

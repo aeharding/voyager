@@ -7,12 +7,10 @@ import { uniq } from "es-toolkit";
 export const SERVERS_BY_CATEGORY = {
   general: [
     "lemmy.world",
-    "lemm.ee",
+    "lemmy.zip",
     "sh.itjust.works",
     "sopuli.xyz",
     "reddthat.com",
-    "lemmy.zip",
-    "lemmy.one",
     "lemmy.today",
     "lemmings.world",
     "discuss.online",
@@ -93,12 +91,25 @@ export const WHITELISTED_SERVERS = uniq(
   Object.values(SERVERS_BY_CATEGORY).flat(),
 );
 
+const PIEFED_INSTANCES = [
+  "piefed.social",
+  "preferred.social",
+  "feddit.online",
+  "piefed.blahaj.zone",
+  "piefed.world",
+  "piefed.zip",
+  "piefed.ca",
+  "feddit.fr",
+];
+
 const ADDITIONAL_LOGIN_INSTANCES = [
+  ...PIEFED_INSTANCES,
   "lemmy.ml",
   "lemmygrad.ml",
   "lemmynsfw.com",
   "hexbear.net",
   "vger.social",
+  "lemm.ee", // TODO: remove once lemm.ee is shut down (Jul 1st 2025)
 ];
 
 export const LOGIN_SERVERS = uniq([

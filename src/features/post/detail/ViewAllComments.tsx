@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOpenInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
 import styles from "./ViewAllComments.module.css";
 interface ViewAllCommentsProps {
@@ -27,12 +28,17 @@ export default function ViewAllComments({ onHeight }: ViewAllCommentsProps) {
     heightChange();
   }, [heightChange]);
 
+  const linkProps = useOpenInSecondColumnIfNeededProps(
+    buildGeneralBrowseLink(`/c/${community}/comments/${id}`),
+  );
+
   return (
     <Link
-      className={styles.link}
       ref={ref}
       slot="fixed"
-      to={buildGeneralBrowseLink(`/c/${community}/comments/${id}`)}
+      className={styles.link}
+      onClick={linkProps.onClick}
+      to={linkProps.routerLink}
     >
       <div className={styles.text}>
         <div>View All Comments</div>

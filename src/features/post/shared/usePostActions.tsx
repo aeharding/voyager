@@ -16,11 +16,11 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { use, useCallback } from "react";
+import { PostView } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { InFeedContext } from "#/features/feed/Feed";
 import {
@@ -29,7 +29,7 @@ import {
 } from "#/features/moderation/useCanModerate";
 import usePostModActions from "#/features/moderation/usePostModActions";
 import { resolveObject } from "#/features/resolve/resolveSlice";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
+import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
 import { getCrosspostUrl, getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
@@ -70,7 +70,7 @@ export default function usePostActions(post: PostView) {
     presentSelectText,
     presentShareAsImage,
     presentCreateCrosspost,
-  } = use(PageContext);
+  } = use(SharedDialogContext);
 
   const presentPostModActions = usePostModActions(post);
 

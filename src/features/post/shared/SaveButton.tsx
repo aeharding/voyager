@@ -1,10 +1,10 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { bookmarkOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { MouseEvent, use } from "react";
+import { PostView } from "threadiverse";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { saveError, saveSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -22,7 +22,7 @@ interface SaveButtonProps {
 export function SaveButton({ post }: SaveButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
   const vibrate = useHapticFeedback();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);

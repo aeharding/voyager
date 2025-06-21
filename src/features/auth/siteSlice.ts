@@ -1,15 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GetSiteResponse } from "lemmy-js-client";
+import { GetSiteResponse } from "threadiverse";
 
-import { getRemoteHandle } from "#/helpers/lemmy";
 import { customBackOff } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
-import {
-  clientSelector,
-  handleSelector,
-  userHandleSelector,
-} from "./authSelectors";
+import { clientSelector, handleSelector } from "./authSelectors";
 
 interface SiteState {
   failedAttempt: number;
@@ -57,6 +52,9 @@ export const isAdminSelector = (state: RootState) =>
 export const isDownvoteEnabledSelector = (state: RootState) =>
   // @ts-expect-error TODO required changes for lemmy v0.20.0 https://github.com/aeharding/voyager/issues/1683
   state.site.response?.site_view.local_site.enable_downvotes !== false;
+
+export const localUserViewSelector = (state: RootState) =>
+  state.site.response?.my_user?.local_user_view;
 
 export const localUserSelector = (state: RootState) =>
   state.site.response?.my_user?.local_user_view.local_user;
@@ -125,14 +123,7 @@ export const getSite =
 export const showNsfw =
   (show: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    // https://github.com/LemmyNet/lemmy/issues/3565
-    const person = getState().site.response?.my_user?.local_user_view.person;
-
-    if (!person || userHandleSelector(getState()) !== getRemoteHandle(person))
-      throw new Error("user mismatch");
-
     await clientSelector(getState())?.saveUserSettings({
-      avatar: person?.avatar || "",
       show_nsfw: show,
     });
 

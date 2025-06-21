@@ -6,8 +6,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { CommentView, PostView } from "lemmy-js-client";
-import { MutableRefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
+import { CommentView, PostView } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 
@@ -27,7 +27,7 @@ export type ShareAsImageData =
     };
 
 interface SelectTextProps {
-  dataRef: MutableRefObject<ShareAsImageData | null>;
+  dataRef: RefObject<ShareAsImageData | null>;
   onDismiss: () => void;
 }
 
@@ -47,7 +47,7 @@ export default function ShareAsImageModal({
         <ShareAsImage
           data={data}
           header={
-            <AppHeader>
+            <AppHeader className={styles.header}>
               <IonToolbar className={sharedStyles.transparentIonToolbar}>
                 <IonButtons slot="end">
                   <IonButton

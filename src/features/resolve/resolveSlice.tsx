@@ -1,21 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ResolveObjectResponse } from "lemmy-js-client";
+import { ResolveObjectResponse } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
 import { receivedCommunity } from "#/features/community/communitySlice";
 import { receivedPosts } from "#/features/post/postSlice";
+import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
+import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import {
-  COMMENT_PATH,
   COMMENT_VIA_POST_PATH,
-  matchLemmyCommunity,
-  matchLemmyUser,
-  POST_PATH,
+  PIEFED_COMMENT_PATH_AND_HASH,
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
-import { getApId } from "#/helpers/lemmyCompat";
 import { isLemmyError } from "#/helpers/lemmyErrors";
-import { getClient } from "#/services/lemmy";
+import { isPiefedError } from "#/helpers/piefedErrors";
+import resolveFedilink from "#/services/activitypub";
 import { AppDispatch, RootState } from "#/store";
 
 interface ResolveState {
@@ -65,9 +64,11 @@ export const resolveObject =
   ): Promise<ResolveObjectResponse> => {
     let object;
 
+    const q = normalizeObjectUrl(findFedilinkFromQuirkUrl(url));
+
     try {
       object = await clientSelector(getState()).resolveObject({
-        q: url,
+        q,
       });
     } catch (error) {
       if (
@@ -78,10 +79,12 @@ export const resolveObject =
         isLemmyError(error, "couldnt_find_person" as never) ||
         isLemmyError(error, "couldnt_find_community" as never) ||
         // TODO END
-        isLemmyError(error, "not_found")
+        isLemmyError(error, "not_found") ||
+        isPiefedError(error, "No object found.")
       ) {
         try {
-          const fedilink = await findFedilink(url);
+          // FINE. We'll do it the hard/insecure way and ask original instance >:(
+          const fedilink = await resolveFedilink(q);
 
           if (!fedilink) {
             dispatch(couldNotFindUrl(url));
@@ -100,7 +103,8 @@ export const resolveObject =
             isLemmyError(error, "couldnt_find_person" as never) ||
             isLemmyError(error, "couldnt_find_community" as never) ||
             // TODO END
-            isLemmyError(error, "not_found")
+            isLemmyError(error, "not_found") ||
+            isPiefedError(error, "No object found.")
           ) {
             dispatch(couldNotFindUrl(url));
           }
@@ -132,6 +136,8 @@ export function normalizeObjectUrl(objectUrl: string) {
   // Replace app schema "vger" with "https"
   url = url.replace(/^vger:\/\//, "https://");
 
+  url = unfurlRedirectServiceIfNeeded(url);
+
   // Strip fragment
   url = url.split("#")[0]!;
 
@@ -141,54 +147,74 @@ export function normalizeObjectUrl(objectUrl: string) {
   return url;
 }
 
+export function unfurlRedirectServiceIfNeeded(url: string): string {
+  const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(url);
+
+  if (potentialUrl) return potentialUrl;
+
+  return url;
+}
+
 /**
- * FINE. we'll do it the hard/insecure way and ask original instance >:(
- * the below code should not need to exist.
+ * Sometimes the URL isn't an actual fedilink URL. For example,
+ * https://piefed.social/post/123#comment_456. So try to extract the
+ * fedilink from the URL if possible.
  */
-async function findFedilink(url: string): Promise<string | undefined> {
-  const { hostname, pathname } = new URL(normalizeObjectUrl(url));
+function findFedilinkFromQuirkUrl(link: string): string {
+  const software = getDetermineSoftware(new URL(link));
 
-  const client = await getClient(hostname);
+  switch (software) {
+    case "lemmy": {
+      const response = findLemmyFedilinkFromQuirkUrl(link);
 
-  const potentialCommentId = findCommentIdFromUrl(pathname);
+      if (response) return response;
+
+      break;
+    }
+    case "piefed": {
+      const response = findPiefedFedilinkFromQuirkUrl(link);
+
+      if (response) return response;
+    }
+  }
+
+  return link;
+}
+
+function findPiefedFedilinkFromQuirkUrl(link: string): string | undefined {
+  const url = new URL(link);
+  const { hostname } = url;
+
+  const potentialCommentId = findPiefedCommentIdFromUrl(url);
 
   if (typeof potentialCommentId === "number") {
-    const response = await client.getComment({
-      id: potentialCommentId,
-    });
-
-    return response.comment_view.comment.ap_id;
-  } else if (POST_PATH.test(pathname)) {
-    const response = await client.getPost({
-      id: +pathname.match(POST_PATH)![1]!,
-    });
-
-    return response.post_view.post.ap_id;
-  } else if (matchLemmyUser(pathname)) {
-    const [username, userHostname] = matchLemmyUser(pathname)!;
-
-    const response = await getClient(userHostname ?? hostname).getPersonDetails(
-      {
-        username,
-      },
-    );
-
-    return getApId(response.person_view.person);
-  } else if (matchLemmyCommunity(pathname)) {
-    const [community, communityHostname] = matchLemmyCommunity(pathname)!;
-
-    const response = await getClient(
-      communityHostname ?? hostname,
-    ).getCommunity({
-      name: community,
-    });
-
-    return getApId(response.community_view.community);
+    return `https://${hostname}/comment/${potentialCommentId}`;
   }
 }
 
-function findCommentIdFromUrl(pathname: string): number | undefined {
-  if (COMMENT_PATH.test(pathname)) return +pathname.match(COMMENT_PATH)![1]!;
+function findLemmyFedilinkFromQuirkUrl(link: string): string | undefined {
+  const url = new URL(link);
+  const { hostname } = url;
+
+  const potentialCommentId = findLemmyCommentIdFromUrl(url);
+
+  if (typeof potentialCommentId === "number") {
+    return `https://${hostname}/comment/${potentialCommentId}`;
+  }
+}
+
+function findLemmyCommentIdFromUrl(url: URL): number | undefined {
+  const { pathname } = url;
+
   if (COMMENT_VIA_POST_PATH.test(pathname))
     return +pathname.match(COMMENT_VIA_POST_PATH)![1]!;
+}
+
+function findPiefedCommentIdFromUrl(url: URL): number | undefined {
+  const { pathname, hash } = url;
+
+  const slug = `${pathname}${hash}`;
+
+  if (PIEFED_COMMENT_PATH_AND_HASH.test(slug))
+    return +slug.match(PIEFED_COMMENT_PATH_AND_HASH)![1]!;
 }

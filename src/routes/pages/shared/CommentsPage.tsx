@@ -1,11 +1,5 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { ListingType } from "lemmy-js-client";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
+import { ListingType } from "threadiverse";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { FetchFn } from "#/features/feed/Feed";
@@ -14,6 +8,7 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
@@ -59,7 +54,7 @@ export default function CommentsPage(props: CommentsPageProps) {
 
   return (
     <FeedContextProvider>
-      <IonPage>
+      <AppPage>
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -75,9 +70,13 @@ export default function CommentsPage(props: CommentsPageProps) {
           </IonToolbar>
         </AppHeader>
         <FeedContent>
-          <PostCommentFeed fetchFn={fetchFn} />
+          <PostCommentFeed
+            fetchFn={fetchFn}
+            filterHiddenPosts={false}
+            filterKeywordsAndWebsites={false}
+          />
         </FeedContent>
-      </IonPage>
+      </AppPage>
     </FeedContextProvider>
   );
 }

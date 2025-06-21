@@ -1,5 +1,6 @@
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import {
   Comment,
   CommentView,
@@ -7,14 +8,7 @@ import {
   Person,
   PostView,
   PrivateMessageView,
-} from "lemmy-js-client";
-import React, {
-  createContext,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+} from "threadiverse";
 
 import { changeAccount } from "#/features/auth/authSlice";
 import BanUserModal from "#/features/moderation/ban/BanUserModal";
@@ -38,17 +32,14 @@ import AccountSwitcher from "./AccountSwitcher";
 import { jwtSelector } from "./authSelectors";
 import LoginModal from "./login/LoginModal";
 
-import styles from "./PageContext.module.css";
+import styles from "./SharedDialogContext.module.css";
 
 export interface BanUserPayload {
   user: Person;
   community: Community;
 }
 
-interface IPageContext {
-  // used for ion presentingElement
-  pageRef: RefObject<HTMLElement | null> | undefined;
-
+interface ISharedDialogContext {
   /**
    * @returns true if login dialog was presented
    */
@@ -100,8 +91,7 @@ interface IPageContext {
   presentDatabaseErrorModal: (automatic?: boolean) => void;
 }
 
-export const PageContext = createContext<IPageContext>({
-  pageRef: undefined,
+export const SharedDialogContext = createContext<ISharedDialogContext>({
   presentLoginIfNeeded: () => false,
   presentCommentEdit: async () => undefined,
   presentCommentReply: async () => undefined,
@@ -117,11 +107,9 @@ export const PageContext = createContext<IPageContext>({
   presentDatabaseErrorModal: noop,
 });
 
-interface PageContextProvider extends React.PropsWithChildren {
-  value: Pick<IPageContext, "pageRef">;
-}
-
-export function PageContextProvider({ value, children }: PageContextProvider) {
+export function SharedDialogContextProvider({
+  children,
+}: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const reportRef = useRef<ReportHandle>(undefined);
@@ -207,24 +195,28 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     return;
   }, [isMarkdownEditorOpen, markdownEditorData]);
 
-  const presentPrivateMessageCompose: IPageContext["presentPrivateMessageCompose"] =
+  const presentPrivateMessageCompose: ISharedDialogContext["presentPrivateMessageCompose"] =
     (item) =>
       presentMarkdownEditor({
         type: "PRIVATE_MESSAGE",
         item,
-      }) as ReturnType<IPageContext["presentPrivateMessageCompose"]>;
+      }) as ReturnType<ISharedDialogContext["presentPrivateMessageCompose"]>;
 
-  const presentCommentEdit: IPageContext["presentCommentEdit"] = (item) =>
+  const presentCommentEdit: ISharedDialogContext["presentCommentEdit"] = (
+    item,
+  ) =>
     presentMarkdownEditor({
       type: "COMMENT_EDIT",
       item,
-    }) as ReturnType<IPageContext["presentCommentEdit"]>;
+    }) as ReturnType<ISharedDialogContext["presentCommentEdit"]>;
 
-  const presentCommentReply: IPageContext["presentCommentReply"] = (item) =>
+  const presentCommentReply: ISharedDialogContext["presentCommentReply"] = (
+    item,
+  ) =>
     presentMarkdownEditor({
       type: "COMMENT_REPLY",
       item,
-    }) as ReturnType<IPageContext["presentCommentReply"]>;
+    }) as ReturnType<ISharedDialogContext["presentCommentReply"]>;
   // Markdown editor end
 
   // Edit/new post start
@@ -304,9 +296,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   };
 
   return (
-    <PageContext
+    <SharedDialogContext
       value={{
-        ...value,
         presentLoginIfNeeded,
         presentPrivateMessageCompose,
         presentCommentEdit,
@@ -352,6 +343,6 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         isOpen={isUserTagOpen}
         setIsOpen={setIsUserTagOpen}
       />
-    </PageContext>
+    </SharedDialogContext>
   );
 }

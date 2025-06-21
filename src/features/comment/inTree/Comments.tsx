@@ -1,7 +1,6 @@
 import { RefresherCustomEvent } from "@ionic/core";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import { compact, differenceBy, sortBy, uniqBy } from "es-toolkit";
-import { CommentSortType, CommentView } from "lemmy-js-client";
 import React, {
   useCallback,
   useEffect,
@@ -11,25 +10,24 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VList, VListHandle } from "virtua";
+import { CommentSortType, CommentView } from "threadiverse";
+import { VListHandle } from "virtua";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import { useFeedSortParams } from "#/features/feed/sort/useFeedSort";
 import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
+import AppVList from "#/helpers/AppVList";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
 import {
   buildCommentsTreeWithMissing,
   getDepthFromCommentPath,
 } from "#/helpers/lemmy";
-import { getCounts } from "#/helpers/lemmyCompat";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
 import { IndexedVirtuaItem } from "#/helpers/virtua";
-import { postDetailPageHasVirtualScrollEnabled } from "#/routes/pages/posts/PostPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -56,6 +54,8 @@ interface CommentsProps {
   bottomPadding?: number;
 
   ref: React.RefObject<CommentsHandle | undefined>;
+
+  virtualEnabled?: boolean;
 }
 
 export default function Comments({
@@ -66,6 +66,7 @@ export default function Comments({
   bottomPadding,
   threadCommentId,
   ref,
+  virtualEnabled,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
@@ -86,11 +87,6 @@ export default function Comments({
 
   const sortParams = useFeedSortParams("comments", sort);
 
-  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
-    commentPath,
-    threadCommentId,
-  );
-
   const preservePositionFromBottomInScrollView =
     usePreservePositionFromBottomInScrollView(
       scrollViewContainerRef,
@@ -101,8 +97,6 @@ export default function Comments({
     _setLoading(loading);
     loadingRef.current = loading;
   }
-
-  useSetActivePage(virtuaRef, virtualEnabled);
 
   const [maxContext, setMaxContext] = useState(
     getCommentContextDepthForPath(commentPath),
@@ -240,7 +234,7 @@ export default function Comments({
         response = await client.getComments({
           post_id: reqPostId,
           parent_id: parentCommentId,
-          limit: 10,
+          limit: 60,
           ...sortParams,
           type_: "All",
 
@@ -272,11 +266,28 @@ export default function Comments({
       if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
 
       const existingComments = refresh ? [] : comments;
-      const newComments = differenceBy(
+
+      // Remove comments that are already received
+      let newComments = differenceBy(
         response.comments,
         existingComments,
         (c) => c.comment.id,
       );
+
+      // When paging, only append new comments in a brand new root tree. Never append to an existing tree
+      // (Prevent user losing their place in the tree)
+      newComments = newComments.filter((c) => {
+        const rootCommentId = c.comment.path.split(".")[1];
+        if (!rootCommentId) return true;
+
+        const rootComment = existingComments.find(
+          (c) => c.comment.id === +rootCommentId,
+        );
+        if (!rootComment) return true;
+
+        return false;
+      });
+
       if (!newComments.length) finishedPagingRef.current = true;
 
       const potentialComments = uniqBy(
@@ -344,7 +355,7 @@ export default function Comments({
               ...parent,
               counts: {
                 ...parent.counts,
-                child_count: getCounts(parent).child_count + 1,
+                child_count: parent.counts.child_count + 1,
               },
             });
           }
@@ -483,7 +494,7 @@ export default function Comments({
       </IonRefresher>
       <div className={styles.scrollViewContainer} ref={scrollViewContainerRef}>
         {virtualEnabled ? (
-          <VList
+          <AppVList
             className={
               isSafariFeedHackEnabled
                 ? "virtual-scroller"
@@ -499,7 +510,7 @@ export default function Comments({
             }}
           >
             {...content}
-          </VList>
+          </AppVList>
         ) : (
           <>{...content}</>
         )}

@@ -6,40 +6,40 @@ import { useAppDispatch } from "#/store";
 import GalleryMedia, { GalleryMediaProps } from "./gallery/GalleryMedia";
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
 import MediaPlaceholder from "./MediaPlaceholder";
-import { isLoadedAspectRatio } from "./useAspectRatio";
+import { isLoadedImageData } from "./useImageData";
 import useMediaLoadObserver, {
   getTargetDimensions,
 } from "./useMediaLoadObserver";
 
 import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 
-export type InlineMediaProps = Omit<GalleryMediaProps, "ref"> & {
+export type MediaProps = Omit<GalleryMediaProps, "ref"> & {
   defaultAspectRatio?: number;
   mediaClassName?: string;
 };
 
-export default function InlineMedia({
+export default function Media({
   src,
   className,
   style: baseStyle,
   defaultAspectRatio,
   mediaClassName,
   ...props
-}: InlineMediaProps) {
+}: MediaProps) {
   const dispatch = useAppDispatch();
-  const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
+  const [mediaRef, imageData] = useMediaLoadObserver(src);
 
   function buildPlaceholderState() {
-    if (aspectRatio === IMAGE_FAILED) return "error";
-    if (!aspectRatio) return "loading";
+    if (imageData === IMAGE_FAILED) return "error";
+    if (!imageData) return "loading";
 
     return "loaded";
   }
 
   function buildStyle(): CSSProperties {
-    if (!aspectRatio || aspectRatio === IMAGE_FAILED) return { opacity: 0 };
+    if (!imageData || imageData === IMAGE_FAILED) return { opacity: 0 };
 
-    return { aspectRatio };
+    return { aspectRatio: imageData.aspectRatio };
   }
 
   return (
@@ -55,6 +55,7 @@ export default function InlineMedia({
         className={cx(mediaPlaceholderStyles.media, mediaClassName)}
         style={buildStyle()}
         ref={mediaRef as React.Ref<HTMLImageElement>}
+        portalWithMediaId={props.portalWithMediaId}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}
@@ -65,7 +66,7 @@ export default function InlineMedia({
         // TLDR Image loading should still work with this function commented out!
         onLoad={(event) => {
           if (!src) return;
-          if (isLoadedAspectRatio(aspectRatio)) return;
+          if (isLoadedImageData(imageData)) return;
 
           const dimensions = getTargetDimensions(
             event.target as HTMLImageElement,
@@ -73,7 +74,7 @@ export default function InlineMedia({
           if (!dimensions) return;
           const { width, height } = dimensions;
 
-          dispatch(imageLoaded({ src, aspectRatio: width / height }));
+          dispatch(imageLoaded({ src, width, height }));
         }}
       />
     </MediaPlaceholder>

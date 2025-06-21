@@ -7,8 +7,8 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { Community, CommunityView } from "lemmy-js-client";
 import { useState } from "react";
+import { Community, CommunityView } from "threadiverse";
 
 import { blockCommunity } from "#/features/community/communitySlice";
 import { ListHeader } from "#/features/settings/shared/formatting";

@@ -1,6 +1,6 @@
 import { useDebouncedCallback } from "@mantine/hooks";
-import { Community } from "lemmy-js-client";
 import { useEffect, useState } from "react";
+import { Community } from "threadiverse";
 
 import { getHandle } from "#/helpers/lemmy";
 

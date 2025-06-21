@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { arrowUndoOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
+import { PostView } from "threadiverse";
 
 import { SaveButton } from "#/features/post/shared/SaveButton";
 import { VoteButton } from "#/features/post/shared/VoteButton";

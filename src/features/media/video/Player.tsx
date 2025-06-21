@@ -154,10 +154,10 @@ export default function Player({
   }, []);
 
   return (
-    <span className={cx(styles.container, className)}>
+    <span className={styles.container}>
       <video
         {...rest}
-        className={styles.videoEl}
+        className={cx(styles.videoEl, className)}
         ref={setRefs}
         src={`${src}#t=0.001`}
         loop

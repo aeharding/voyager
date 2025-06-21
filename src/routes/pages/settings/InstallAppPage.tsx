@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonIcon,
-  IonPage,
   IonText,
   IonTitle,
   IonToolbar,
@@ -12,12 +11,12 @@ import {
   checkmarkCircleOutline,
   chevronBack,
 } from "ionicons/icons";
-import { use, useRef, useState } from "react";
+import { use, useState } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { BeforeInstallPromptContext } from "#/features/pwa/BeforeInstallPromptProvider";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import {
   getShareIcon,
   isAndroid,
@@ -50,11 +49,8 @@ const IOS_APP_BADGES = [
 ];
 
 export default function InstallAppPage() {
-  const pageRef = useRef<HTMLElement>(null);
   const [showInstallwebAppDirections, setShowInstallwebAppDirections] =
     useState(false);
-
-  useSetActivePage(pageRef);
 
   const beforeInstallPrompt = use(BeforeInstallPromptContext);
 
@@ -228,7 +224,7 @@ export default function InstallAppPage() {
   }
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -238,13 +234,13 @@ export default function InstallAppPage() {
           <IonTitle>Install</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <AppContent scrollY color="light-bg">
         <div className={styles.container}>
           <AppDetails />
 
           {renderGuidance()}
         </div>
       </AppContent>
-    </IonPage>
+    </AppPage>
   );
 }

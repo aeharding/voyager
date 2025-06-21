@@ -1,12 +1,6 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { CommentView, PostView } from "lemmy-js-client";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
+import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
@@ -20,6 +14,7 @@ import useFeedSort, {
 } from "#/features/feed/sort/useFeedSort";
 import { receivedPosts } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { isPost } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -83,7 +78,7 @@ export default function SearchFeedResultsPage({
   };
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -108,6 +103,6 @@ export default function SearchFeedResultsPage({
           filterKeywordsAndWebsites={false}
         />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

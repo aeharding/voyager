@@ -1,5 +1,6 @@
 import { useImperativeHandle } from "react";
 
+import useImageData from "../useImageData";
 import type { PlayerProps } from "./Player";
 import Player from "./Player";
 import { OutPortalPlayer } from "./PortaledPlayer";
@@ -11,6 +12,8 @@ export interface VideoProps extends Omit<PlayerProps, "ref"> {
   /**
    * A unique identifier to track a specific video
    * as it is portaled around the app
+   *
+   * Generated from `buildMediaId`
    */
   portalWithMediaId?: string;
 }
@@ -44,11 +47,15 @@ function PortaledVideo({
     [portalNode],
   );
 
+  // when the video is portaled elsewhere, we need all available data
+  const imageData = useImageData(props.src);
+  const width = typeof imageData === "object" ? imageData.width : undefined;
+
   return (
-    <div style={props.style} className={props.className}>
+    <span style={{ width, ...props.style }} className={props.className}>
       {portalNode ? (
         <OutPortalPlayer {...props} node={portalNode} />
       ) : undefined}
-    </div>
+    </span>
   );
 }

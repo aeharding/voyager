@@ -11,7 +11,7 @@ import WatchConnectivity
 class WatchSessionManager: NSObject, ObservableObject {
     static let shared = WatchSessionManager()
 
-    @Published var connectedInstance = "lemm.ee" // Variable to hold connected server hostname (optional)
+    @Published var connectedInstance = "lemmy.zip" // Variable to hold connected server hostname (optional)
     @Published var authToken: String? // Variable to hold the auth token (optional)
 
     var loggedIn: Bool {

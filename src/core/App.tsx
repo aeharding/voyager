@@ -1,11 +1,9 @@
 // Core CSS required for Ionic components to work properly
 import "@ionic/react/css/core.css";
-
 // Basic CSS for apps built with Ionic */
 import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/structure.css";
 import "@ionic/react/css/typography.css";
-
 // Optional CSS utils that can be commented out
 import "@ionic/react/css/display.css";
 import "@ionic/react/css/flex-utils.css";
@@ -40,7 +38,6 @@ import { IonApp, setupIonicReact } from "@ionic/react";
 import { NavModes } from "capacitor-android-nav-mode";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { AppContextProvider } from "#/features/auth/AppContext";
 import BeforeInstallPromptProvider from "#/features/pwa/BeforeInstallPromptProvider";
 import { getDeviceMode } from "#/features/settings/syncStorage";
 import { getAndroidNavMode, isInstalled } from "#/helpers/device";
@@ -56,11 +53,11 @@ import GlobalStyles from "./GlobalStyles";
 import { TabContextProvider } from "./TabContext";
 
 // preserve lexical order
+import OutletProvider from "#/routes/OutletProvider";
 import TabbedRoutes from "#/routes/TabbedRoutes";
 
 import Auth from "./Auth";
 import Listeners from "./listeners";
-
 // Setup global app lifecycle listeners
 import "./listeners";
 
@@ -87,31 +84,31 @@ export default function App() {
   return (
     <ErrorBoundary FallbackComponent={AppCrash}>
       <ConfigProvider>
-        <AppContextProvider>
-          <StoreProvider>
-            <GlobalStyles>
-              <BeforeInstallPromptProvider>
-                <UpdateContextProvider>
-                  <Router>
-                    <OptimizedRouterProvider>
-                      <TabContextProvider>
-                        <AppToastProvider>
-                          <IonApp>
-                            <Auth>
+        <StoreProvider>
+          <GlobalStyles>
+            <BeforeInstallPromptProvider>
+              <UpdateContextProvider>
+                <Router>
+                  <OptimizedRouterProvider>
+                    <TabContextProvider>
+                      <AppToastProvider>
+                        <IonApp>
+                          <Auth>
+                            <OutletProvider>
                               <TabbedRoutes>
                                 <Listeners />
                               </TabbedRoutes>
-                            </Auth>
-                          </IonApp>
-                        </AppToastProvider>
-                      </TabContextProvider>
-                    </OptimizedRouterProvider>
-                  </Router>
-                </UpdateContextProvider>
-              </BeforeInstallPromptProvider>
-            </GlobalStyles>
-          </StoreProvider>
-        </AppContextProvider>
+                            </OutletProvider>
+                          </Auth>
+                        </IonApp>
+                      </AppToastProvider>
+                    </TabContextProvider>
+                  </OptimizedRouterProvider>
+                </Router>
+              </UpdateContextProvider>
+            </BeforeInstallPromptProvider>
+          </GlobalStyles>
+        </StoreProvider>
       </ConfigProvider>
     </ErrorBoundary>
   );

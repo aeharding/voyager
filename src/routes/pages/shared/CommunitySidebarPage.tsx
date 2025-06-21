@@ -2,18 +2,17 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect } from "react";
 import { useParams } from "react-router";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import { getCommunity } from "#/features/community/communitySlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import Sidebar from "#/features/sidebar/Sidebar";
+import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -30,7 +29,6 @@ export default function CommunitySidebarPage() {
 const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
   community,
 }: CommunitySidebarPageProps) {
-  const pageRef = useRef<HTMLElement>(null);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
 
@@ -41,8 +39,6 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
     (state) => state.community.modsByHandle[community],
   );
 
-  useSetActivePage(pageRef);
-
   useEffect(() => {
     if (communityView && mods) return;
 
@@ -50,7 +46,7 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
   }, [community, dispatch, communityView, mods]);
 
   return (
-    <IonPage ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -69,6 +65,6 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
           <CenteredSpinner />
         )}
       </IonContent>
-    </IonPage>
+    </AppPage>
   );
 });

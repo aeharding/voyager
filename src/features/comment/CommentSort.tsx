@@ -1,4 +1,4 @@
-import { CommentSortType } from "lemmy-js-client";
+import { CommentSortType } from "threadiverse";
 
 import { arrayOfAll } from "#/helpers/array";
 import buildSort, { SortOptions } from "#/routes/pages/shared/Sort";

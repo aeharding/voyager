@@ -1,8 +1,7 @@
-import { CommentView, PostView } from "lemmy-js-client";
 import { ComponentProps, use, useCallback, useMemo } from "react";
+import { CommentView, PostView } from "threadiverse";
 
-import { AppContext } from "#/features/auth/AppContext";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isStubComment } from "#/features/comment/CommentHeader";
 import {
   saveComment,
@@ -15,11 +14,11 @@ import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootCom
 import { markRead } from "#/features/inbox/inboxSlice";
 import { getCanModerate } from "#/features/moderation/useCanModerate";
 import { savePost, voteOnPost } from "#/features/post/postSlice";
+import { useSharePostComment } from "#/features/share/useSharePostComment";
 import {
   isInboxItem,
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { isPost as _isPost } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
@@ -28,6 +27,7 @@ import {
   saveSuccess,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import type { BaseSlidingVote } from "../../BaseSliding";
@@ -40,10 +40,11 @@ export function VotableActionsImpl({
   rootIndex,
   ...rest
 }: ComponentProps<typeof BaseSlidingVote>) {
-  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } =
+    use(SharedDialogContext);
   const { prependComments } = use(CommentsContext);
 
-  const { activePageRef } = use(AppContext);
+  const getAppScrollable = useGetAppScrollable();
 
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -169,9 +170,9 @@ export function VotableActionsImpl({
 
       dispatch(toggleCommentCollapseState(item.comment.id));
 
-      if (e.target) scrollCommentIntoViewIfNeeded(e.target, activePageRef);
+      if (e.target) scrollCommentIntoViewIfNeeded(e.target, getAppScrollable());
     },
-    [dispatch, isPost, item, activePageRef],
+    [dispatch, isPost, item, getAppScrollable],
   );
 
   return (

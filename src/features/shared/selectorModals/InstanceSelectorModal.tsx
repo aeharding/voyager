@@ -1,10 +1,10 @@
 import { IonLoading } from "@ionic/react";
-import { Instance } from "lemmy-js-client";
 import {
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useState,
 } from "react";
+import { Instance } from "threadiverse";
 
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";

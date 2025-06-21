@@ -1,6 +1,6 @@
-import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { ComponentProps, MouseEvent, use } from "react";
+import { PostView } from "threadiverse";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -30,10 +30,11 @@ export default function GalleryMedia({
   animationType,
   onClick: _onClick,
   controls,
-  portalWithMediaId,
   volume,
   progress,
   disableInlineInteraction,
+  portalWithMediaId,
+  allowShowPlayButton,
   ...props
 }: GalleryMediaProps) {
   const isVideo =
@@ -64,7 +65,7 @@ export default function GalleryMedia({
 
     e.preventDefault();
 
-    open(e.currentTarget, props.src, post, animationType);
+    open(e.currentTarget, props.src, post, portalWithMediaId, animationType);
 
     // marking read happens after the gallery has finished animating
     // so that the post doesn't rerender before it's fully hidden
@@ -82,11 +83,12 @@ export default function GalleryMedia({
         {...props}
         src={props.src!}
         controls={controls}
-        portalWithMediaId={portalWithMediaId}
         disableInlineInteraction={disableInlineInteraction}
         volume={volume}
         progress={progress}
+        portalWithMediaId={portalWithMediaId}
         ref={props.ref as ComponentProps<typeof Video>["ref"]}
+        allowShowPlayButton={allowShowPlayButton}
         onClick={onClick}
       />
     );

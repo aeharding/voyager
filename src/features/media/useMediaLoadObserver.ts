@@ -4,11 +4,11 @@ import { imageLoaded } from "#/features/media/imageSlice";
 import { useAppDispatch } from "#/store";
 
 import type GalleryMedia from "./gallery/GalleryMedia";
-import useAspectRatio, { isLoadedAspectRatio } from "./useAspectRatio";
+import useImageData, { isLoadedImageData } from "./useImageData";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();
-  const aspectRatio = useAspectRatio(src);
+  const imageData = useImageData(src);
   const mediaRef = useRef<ComponentRef<typeof GalleryMedia>>(null);
   const resizeObserverRef = useRef<ResizeObserver | undefined>(undefined);
 
@@ -18,7 +18,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
     function setupObserver() {
       if (destroyed) return;
 
-      if (isLoadedAspectRatio(aspectRatio)) return;
+      if (isLoadedImageData(imageData)) return;
       if (!src) return;
       if (!mediaRef.current) {
         // react-reverse-portal refs can take some time to setup. Try again on next paint
@@ -34,7 +34,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
           if (!dimensions) return;
           const { width, height } = dimensions;
 
-          dispatch(imageLoaded({ src, aspectRatio: width / height }));
+          dispatch(imageLoaded({ src, width, height }));
           destroyObserver();
           return;
         }
@@ -51,14 +51,14 @@ export default function useMediaLoadObserver(src: string | undefined) {
       destroyed = true;
       destroyObserver();
     };
-  }, [aspectRatio, dispatch, src]);
+  }, [imageData, dispatch, src]);
 
   function destroyObserver() {
     resizeObserverRef.current?.disconnect();
     resizeObserverRef.current = undefined;
   }
 
-  return [mediaRef, aspectRatio] as const;
+  return [mediaRef, imageData] as const;
 }
 
 export function getTargetDimensions(target: ComponentRef<typeof GalleryMedia>) {

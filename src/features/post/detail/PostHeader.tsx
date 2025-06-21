@@ -1,10 +1,9 @@
 import { IonItem } from "@ionic/react";
-import { CommentView, PostView } from "lemmy-js-client";
 import { use, useCallback, useMemo, useRef } from "react";
 import AnimateHeight from "react-animate-height";
+import { CommentView, PostView } from "threadiverse";
 
-import { AppContext } from "#/features/auth/AppContext";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
 import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
@@ -23,9 +22,9 @@ import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import Markdown from "#/features/shared/markdown/Markdown";
 import { cx } from "#/helpers/css";
 import { findIonContentScrollView } from "#/helpers/ionic";
-import { findLoneImage } from "#/helpers/markdown";
 import { postLocked } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import { OTapToCollapseType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -60,8 +59,9 @@ export default function PostHeader({
     (state) => !!state.post.postCollapsedById[post.post.id],
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
-  const { activePageRef } = use(AppContext);
+  const { presentLoginIfNeeded, presentCommentReply } =
+    use(SharedDialogContext);
+  const getAppScrollable = useGetAppScrollable();
 
   const crosspostUrl = useCrosspostUrl(post);
 
@@ -69,11 +69,6 @@ export default function PostHeader({
     (state) => state.settings.general.comments.tapToCollapse,
   );
   const presentToast = useAppToast();
-
-  const markdownLoneImage = useMemo(
-    () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
-  );
 
   const isPostUrlMedia = useIsPostUrlMedia();
   const urlIsMedia = useMemo(
@@ -90,25 +85,27 @@ export default function PostHeader({
       return top - 12 + 1; // extra 1 to prevent thin line of image showing
     })();
 
-    if (activePageRef?.current?.current) {
-      if ("querySelector" in activePageRef.current.current) {
-        findIonContentScrollView(activePageRef.current.current)?.scrollTo({
-          top: titleTop,
-          behavior: "smooth",
-        });
-      } else {
-        activePageRef.current.current.scrollToIndex(0, {
-          smooth: true,
-          offset: titleTop,
-        });
-      }
+    const appScrollable = getAppScrollable();
+
+    if (!appScrollable) return;
+
+    if ("querySelector" in appScrollable) {
+      findIonContentScrollView(appScrollable)?.scrollTo({
+        top: titleTop,
+        behavior: "smooth",
+      });
+    } else {
+      appScrollable.scrollToIndex(0, {
+        smooth: true,
+        offset: titleTop,
+      });
     }
   }
 
   const renderMedia = useCallback(() => {
     if (!post) return;
 
-    if (urlIsMedia || markdownLoneImage) {
+    if (urlIsMedia) {
       return (
         <LargeFeedPostMedia
           className={styles.lightboxMedia}
@@ -121,7 +118,7 @@ export default function PostHeader({
         />
       );
     }
-  }, [post, urlIsMedia, markdownLoneImage, constrainHeight]);
+  }, [post, urlIsMedia, constrainHeight]);
 
   const renderText = useCallback(() => {
     if (!post) return;
@@ -136,9 +133,7 @@ export default function PostHeader({
       );
     }
 
-    const usedLoneImage = markdownLoneImage && !urlIsMedia;
-
-    if (post.post.body?.trim() && !usedLoneImage) {
+    if (post.post.body?.trim() && urlIsMedia !== "from-body") {
       return (
         <>
           {post.post.url && !urlIsMedia && <PostLink post={post} />}
@@ -155,7 +150,7 @@ export default function PostHeader({
     if (post.post.url && !urlIsMedia) {
       return <PostLink className={styles.postLink} post={post} />;
     }
-  }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
+  }, [post, crosspostUrl, urlIsMedia]);
 
   const text = renderText();
 

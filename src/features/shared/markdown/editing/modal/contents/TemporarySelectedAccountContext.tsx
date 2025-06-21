@@ -1,7 +1,7 @@
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
-import { LemmyHttp } from "lemmy-js-client";
 import { createContext, use, useState } from "react";
+import { ThreadiverseClient } from "threadiverse";
 
 import AccountSwitcher from "#/features/auth/AccountSwitcher";
 import {
@@ -9,12 +9,12 @@ import {
   userHandleSelector,
 } from "#/features/auth/authSelectors";
 import { Credential } from "#/features/auth/authSlice";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { useAppSelector } from "#/store";
 
 const TemporarySelectedAccountContext = createContext<{
   account: Credential | undefined;
-  accountClient: LemmyHttp | undefined;
+  accountClient: ThreadiverseClient | undefined;
   presentAccountSwitcher: (onDidDismiss: () => void) => void;
 }>({
   account: undefined,

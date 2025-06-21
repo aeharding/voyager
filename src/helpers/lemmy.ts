@@ -5,12 +5,12 @@ import {
   Community,
   CommunityModeratorView,
   GetSiteResponse,
+  Person,
   Post,
   PostView,
-} from "lemmy-js-client";
+} from "threadiverse";
 
 import { parseJWT } from "./jwt";
-import { getApId, getCounts } from "./lemmyCompat";
 import { quote } from "./markdown";
 import { escapeStringForRegex } from "./regex";
 import { parseUrl } from "./url";
@@ -35,7 +35,7 @@ export const MAX_DEFAULT_COMMENT_DEPTH = 6;
  * @param item Community, Person, etc
  */
 export function getItemActorName(item: Pick<Community, "actor_id">) {
-  return new URL(getApId(item)).hostname;
+  return new URL(item.actor_id).hostname;
 }
 
 export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
@@ -159,14 +159,14 @@ export function buildCommentsTreeWithMissing(
 }
 
 function childHasMissing(node: CommentNodeI) {
-  let missing = getCounts(node.comment_view).child_count;
+  let missing = node.comment_view.counts.child_count;
 
   for (const child of node.children) {
     missing--;
 
     // the child is responsible for showing missing indicator
     // if the child has missing comments
-    missing -= getCounts(child.comment_view).child_count;
+    missing -= child.comment_view.counts.child_count;
 
     childHasMissing(child);
   }
@@ -348,6 +348,10 @@ export function isComment(item: PostView | CommentView): item is CommentView {
   return "comment" in item;
 }
 
+export function isCommunity(item: Community | Person): item is Community {
+  return "posting_restricted_to_mods" in item;
+}
+
 const getPublishedDate = (item: PostView | CommentView) => {
   if (isPost(item)) {
     return item.post.published;
@@ -375,4 +379,12 @@ export function buildLemmyPostLink(instance: string, id: number) {
 
 export function buildLemmyCommentLink(instance: string, id: number) {
   return `https://${instance}/comment/${id}`;
+}
+
+export function buildLemmyUserLink(instance: string, handle: string) {
+  return `https://${instance}/u/${handle}`;
+}
+
+export function buildLemmyCommunityLink(instance: string, handle: string) {
+  return `https://${instance}/c/${handle}`;
 }

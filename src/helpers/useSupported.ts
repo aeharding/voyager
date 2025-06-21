@@ -1,6 +1,6 @@
 import { compare, CompareOperator } from "compare-versions";
 import { memoize } from "es-toolkit";
-import { CommentSortType, PostSortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import { lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";

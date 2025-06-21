@@ -1,5 +1,4 @@
 import { IonItem } from "@ionic/react";
-import { PostView } from "lemmy-js-client";
 import {
   memo,
   useCallback,
@@ -9,6 +8,7 @@ import {
   useState,
 } from "react";
 import AnimateHeight from "react-animate-height";
+import { PostView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -21,9 +21,8 @@ import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
-import { getHandle } from "#/helpers/lemmy";
 import { filterEvents } from "#/helpers/longPress";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";
@@ -83,8 +82,6 @@ function Post(props: PostProps) {
     shouldHideRef.current = shouldHide;
   }, [shouldHide]);
 
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-
   const postAppearance = usePostAppearance();
 
   const onPostLongPress = useCallback(() => {
@@ -107,6 +104,11 @@ function Post(props: PostProps) {
     }
   })();
 
+  const openPostProps = useOpenPostInSecondColumnIfNeededProps(
+    props.post.post,
+    props.post.community,
+  );
+
   return (
     <AnimateHeight
       duration={200}
@@ -120,15 +122,17 @@ function Post(props: PostProps) {
       >
         <IonItem
           mode="ios" // Use iOS style activatable tap highlight
-          className={cx(styles.item, isTouchDevice() && "ion-activatable")}
-          detail={false}
-          routerLink={buildGeneralBrowseLink(
-            `/c/${getHandle(props.post.community)}/comments/${
-              props.post.post.id
-            }`,
+          {...openPostProps}
+          className={cx(
+            styles.item,
+            isTouchDevice() && "ion-activatable",
+            openPostProps.className,
           )}
+          detail={false}
           onClick={(e) => {
             if (preventOnClickNavigationBug(e)) return;
+
+            openPostProps.onClick(e);
 
             // Marking post read is done in the post detail page when it finishes transitioning in.
             // However, autohiding is context-sensitive (community feed vs special feed, etc)

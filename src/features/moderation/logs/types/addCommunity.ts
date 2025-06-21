@@ -1,5 +1,5 @@
 import { shieldCheckmark, shieldHalf } from "ionicons/icons";
-import { ModAddCommunityView } from "lemmy-js-client";
+import { ModAddCommunityView } from "threadiverse";
 
 import { buildUserLink } from "#/helpers/appLinkBuilder";
 import { getHandle } from "#/helpers/lemmy";

@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";

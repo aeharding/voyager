@@ -1,6 +1,6 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { ListingType } from "lemmy-js-client";
 import { MouseEvent } from "react";
+import { ListingType } from "threadiverse";
 
 import { getModColor, getModIcon } from "#/features/moderation/useCanModerate";
 import useModZoneActions, {

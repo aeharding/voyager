@@ -1,5 +1,5 @@
-import { PostView } from "lemmy-js-client";
 import { ComponentProps, use } from "react";
+import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";

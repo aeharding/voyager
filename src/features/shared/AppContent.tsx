@@ -15,16 +15,14 @@ export default function AppContent({
   scrollY,
   className,
   fullscreen = false,
-}: React.PropsWithChildren<{
-  scrollY?: boolean;
-  className?: string;
-  fullscreen?: boolean;
-}>) {
+  ...rest
+}: React.ComponentProps<typeof IonContent>) {
   return (
     <IonContent
       style={{ width: "100%" }}
       scrollY={scrollY ?? false}
       fullscreen={fullscreen}
+      {...rest}
     >
       <MaxWidthContainer className={className}>{children}</MaxWidthContainer>
     </IonContent>

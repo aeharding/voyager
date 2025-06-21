@@ -2,31 +2,28 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { swapHorizontalSharp } from "ionicons/icons";
-import { use, useRef } from "react";
+import { use } from "react";
 
-import { useSetActivePage } from "#/features/auth/AppContext";
 import {
   accountsListEmptySelector,
   loggedInSelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import AppHeader from "#/features/shared/AppHeader";
 import DocumentTitle from "#/features/shared/DocumentTitle";
 import AsyncProfile from "#/features/user/AsyncProfile";
 import LoggedOut from "#/features/user/LoggedOut";
 import ProfilePageActions from "#/features/user/ProfilePageActions";
+import { AppPage } from "#/helpers/AppPage";
 import { isIosTheme } from "#/helpers/device";
 import { useAppSelector } from "#/store";
 
 export default function ProfilePage() {
-  const pageRef = useRef<HTMLElement>(null);
-
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
   const handle = useAppSelector(userHandleSelector);
   const connectedInstance = useAppSelector(
@@ -34,14 +31,12 @@ export default function ProfilePage() {
   );
   const loggedIn = useAppSelector(loggedInSelector);
 
-  const { presentAccountSwitcher } = use(PageContext);
-
-  useSetActivePage(pageRef, !handle);
+  const { presentAccountSwitcher } = use(SharedDialogContext);
 
   const title = handle ?? connectedInstance;
 
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           {!accountsListEmpty && (
@@ -68,6 +63,6 @@ export default function ProfilePage() {
       </AppHeader>
 
       {handle ? <AsyncProfile handle={handle} /> : <LoggedOut />}
-    </IonPage>
+    </AppPage>
   );
 }

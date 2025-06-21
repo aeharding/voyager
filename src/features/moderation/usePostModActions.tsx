@@ -8,10 +8,10 @@ import {
   megaphoneOutline,
   trashOutline,
 } from "ionicons/icons";
-import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import { use, useCallback } from "react";
+import { CommentReport, PostReport, PostView } from "threadiverse";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { trashEllipse } from "#/features/icons";
 import {
   modLockPost,
@@ -39,7 +39,7 @@ export default function usePostModActions(post: PostView) {
   const presentToast = useAppToast();
   const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentBanUser } = use(PageContext);
+  const { presentBanUser } = use(SharedDialogContext);
 
   return useCallback(() => {
     const state = store.getState();

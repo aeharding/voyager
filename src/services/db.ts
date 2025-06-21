@@ -3,7 +3,7 @@
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
 import { zipObject } from "es-toolkit";
-import { FederatedInstances } from "lemmy-js-client";
+import { FederatedInstances } from "threadiverse";
 
 import {
   ALL_COMMENT_SORTS,
@@ -256,6 +256,15 @@ export const OAutoplayMediaType = {
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
+export const OTwoColumnLayout = {
+  On: "on",
+  LandscapeOnly: "landscape-only",
+  Off: "off",
+} as const;
+
+export type TwoColumnLayout =
+  (typeof OTwoColumnLayout)[keyof typeof OTwoColumnLayout];
+
 export const OLongSwipeTriggerPointType = {
   Normal: "normal",
   Later: "later",
@@ -334,6 +343,7 @@ export const OPostCommentShareType = {
   Local: "local",
   Community: "community",
   ApId: "ap-id",
+  DeepLink: "deep-link",
   Ask: "ask",
 } as const;
 
@@ -401,6 +411,7 @@ export interface GlobalSettingValueTypes {
   tap_to_collapse: TapToCollapseType;
   thumbnailinator_enabled: boolean;
   touch_friendly_links: boolean;
+  two_column_layout: TwoColumnLayout;
   upvote_on_save: boolean;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
@@ -468,6 +479,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "show_collapsed_comment",
   "show_comment_images",
   "show_community_icons",
+  "two_column_layout",
   "show_hidden_in_communities",
   "show_hide_read_button",
   "show_jump_button",

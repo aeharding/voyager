@@ -1,7 +1,7 @@
 import { useState } from "react";
 
+import CachedImg from "#/features/media/CachedImg";
 import { cx } from "#/helpers/css";
-import { getImageSrc } from "#/services/lemmy";
 
 import lemmyLogo from "../lemmyLogo.svg";
 
@@ -15,15 +15,12 @@ export default function LoginAvatarImg({ src }: LoginAvatarImgProps) {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <img
+    <CachedImg
       className={cx(styles.img, !loaded && styles.loading)}
-      src={
-        src
-          ? getImageSrc(src, {
-              size: 24,
-            })
-          : lemmyLogo
-      }
+      src={src ?? lemmyLogo}
+      pictrsOptions={{
+        size: 24,
+      }}
       onLoad={() => setLoaded(true)}
     />
   );

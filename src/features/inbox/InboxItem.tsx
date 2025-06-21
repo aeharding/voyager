@@ -1,11 +1,11 @@
 import { IonIcon, IonItem } from "@ionic/react";
 import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
+import { useCallback, useRef } from "react";
 import {
   CommentReplyView,
   PersonMentionView,
   PrivateMessageView,
-} from "lemmy-js-client";
-import { useCallback, useRef } from "react";
+} from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import CommentMarkdown from "#/features/comment/CommentMarkdown";
@@ -17,11 +17,11 @@ import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { filterEvents } from "#/helpers/longPress";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppToast from "#/helpers/useAppToast";
 import { isPostReply } from "#/routes/pages/inbox/RepliesPage";
+import { useOpenInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import InboxItemMoreActions, {
@@ -137,7 +137,7 @@ export default function InboxItem({ item }: InboxItemProps) {
   }
 
   function getDate() {
-    if ("comment" in item) return getCounts(item).published;
+    if ("comment" in item) return item.comment.published;
 
     return item.private_message.published;
   }
@@ -183,18 +183,23 @@ export default function InboxItem({ item }: InboxItemProps) {
     filterEvents,
   });
 
+  const itemLinkProps = useOpenInSecondColumnIfNeededProps(getLink());
   const contents = (
     <IonItem
       mode="ios" // Use iOS style activatable tap highlight
+      {...itemLinkProps}
       className={cx(
         styles.item,
         !read && styles.itemUnread,
         isTouchDevice() && "ion-activatable",
+        itemLinkProps.className,
       )}
-      routerLink={getLink()}
+      onClick={(e) => {
+        itemLinkProps.onClick(e);
+        markRead();
+      }}
       href={undefined}
       detail={false}
-      onClick={markRead}
       {...bind()}
     >
       <div className={styles.container}>

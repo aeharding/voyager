@@ -1,23 +1,25 @@
 import { useIonActionSheet } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "threadiverse";
 
-import { isNative } from "#/helpers/device";
+import {
+  buildGoVoyagerLink,
+  GO_VOYAGER_HOST,
+} from "#/features/share/fediRedirect";
+import { useShare } from "#/features/share/share";
 import {
   buildLemmyCommentLink,
   buildLemmyPostLink,
   isPost,
 } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
-import { shareUrl } from "#/helpers/share";
 import {
   buildResolveCommentFailed,
   buildResolvePostFailed,
 } from "#/helpers/toastMessages";
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
+import { getClient } from "#/services/client";
 import { OPostCommentShareType } from "#/services/db";
-import { getClient } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {
@@ -30,6 +32,8 @@ export function useSharePostComment(itemView: PostView | CommentView) {
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
 
+  const share = useShare();
+
   function onAsk() {
     const instanceCandidates = generateInstanceCandidates(
       itemView,
@@ -37,10 +41,18 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     );
 
     presentActionSheet({
-      header: "Share post link via...",
+      header: `Share ${isPost(itemView) ? "post" : "comment"} link via...`,
       buttons: instanceCandidates.map((instance) => ({
         text: instance,
         handler: () => {
+          if (instance === GO_VOYAGER_HOST) {
+            const voyagerLink = buildGoVoyagerLink(
+              (isPost(itemView) ? itemView.post : itemView.comment).ap_id,
+            );
+            if (voyagerLink) share(voyagerLink);
+            return;
+          }
+
           shareInstance(instance);
         },
       })),
@@ -60,17 +72,30 @@ export function useSharePostComment(itemView: PostView | CommentView) {
     switch (instance) {
       // optimization: sync way to get link at ap_id instance
       case apHostname: {
-        return shareFromUrl(item.ap_id);
+        return share(item.ap_id);
       }
       // optimization: sync way to get link at connectedInstance
       case connectedInstance: {
-        return shareFromUrl(buildLink(instance, item.id));
+        return share(buildLink(instance, item.id));
       }
       default: {
-        const { post: resolvedPost, comment: resolvedComment } =
-          await getClient(instance).resolveObject({
-            q: item.ap_id,
-          });
+        let resolvedPost, resolvedComment;
+
+        const client = getClient(instance);
+
+        try {
+          ({ post: resolvedPost, comment: resolvedComment } =
+            await client.resolveObject({
+              q: item.ap_id,
+            }));
+        } catch (error) {
+          presentToast(
+            isPost(itemView)
+              ? buildResolvePostFailed(instance)
+              : buildResolveCommentFailed(instance),
+          );
+          throw error;
+        }
 
         if (isPost(itemView)) {
           if (!resolvedPost) {
@@ -82,7 +107,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
           const url = buildLemmyPostLink(instance, _resolvedPost.post.id);
 
-          shareFromUrl(url);
+          share(url);
         } else {
           if (!resolvedComment) {
             presentToast(buildResolveCommentFailed(instance));
@@ -96,41 +121,16 @@ export function useSharePostComment(itemView: PostView | CommentView) {
             _resolvedComment.comment.id,
           );
 
-          shareFromUrl(url);
+          share(url);
         }
       }
     }
   }
 
-  async function shareFromUrl(url: string) {
-    try {
-      await shareUrl(url);
-    } catch (error) {
-      if (isNative()) throw error;
-
-      if (error instanceof DOMException) {
-        switch (error.name) {
-          case "NotAllowedError":
-            presentToast({
-              message: `Tap to share`,
-              onClick: () => shareFromUrl(url),
-            });
-            return;
-          case "AbortError":
-            return;
-        }
-      }
-
-      await copyToClipboard(url);
-
-      return;
-    }
-  }
-
-  async function share() {
+  async function onShare() {
     switch (defaultShare) {
       case OPostCommentShareType.ApId:
-        await shareFromUrl(
+        await share(
           isPost(itemView) ? itemView.post.ap_id : itemView.comment.ap_id,
         );
         break;
@@ -138,39 +138,26 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         await onAsk();
         break;
       case OPostCommentShareType.Community: {
-        const instance = parseUrl(getApId(itemView.community))?.hostname;
+        const instance = parseUrl(itemView.community.actor_id)?.hostname;
         if (instance) await shareInstance(instance);
         break;
       }
       case OPostCommentShareType.Local:
         await shareInstance(connectedInstance);
         break;
+      case OPostCommentShareType.DeepLink:
+        await share(
+          buildGoVoyagerLink(
+            (isPost(itemView) ? itemView.post : itemView.comment).ap_id,
+          )!,
+        );
+        break;
     }
-  }
-
-  async function copyToClipboard(url: string) {
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "NotAllowedError") {
-        presentToast({
-          message: `Tap to copy`,
-          onClick: () => shareFromUrl(url),
-        });
-        return;
-      }
-
-      throw error;
-    }
-
-    presentToast({
-      message: "Copied link!",
-    });
   }
 
   return {
     onAsk,
-    share,
+    share: onShare,
   };
 }
 
@@ -178,12 +165,12 @@ function generateInstanceCandidates(
   postOrComment: PostView | CommentView,
   connectedInstance: string,
 ) {
-  const candidates: string[] = [];
+  const candidates: string[] = [GO_VOYAGER_HOST];
 
   candidates.push(connectedInstance);
 
   const communityActorHostname = parseUrl(
-    getApId(postOrComment.community),
+    postOrComment.community.actor_id,
   )?.hostname;
   if (communityActorHostname) candidates.push(communityActorHostname);
 

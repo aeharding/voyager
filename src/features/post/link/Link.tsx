@@ -3,6 +3,7 @@ import { chevronForward } from "ionicons/icons";
 import { MouseEvent, useEffect, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
+import CachedImg from "#/features/media/CachedImg";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
 import Url from "#/features/shared/Url";
@@ -14,7 +15,6 @@ import {
   forceSecureUrl,
   isUrlImage,
 } from "#/helpers/url";
-import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import LinkPreview from "./LinkPreview";
@@ -113,9 +113,12 @@ export default function Link({
 
     if (commentType === "image" || isUrlImage(url, undefined))
       return (
-        <img
+        <CachedImg
           className={styles.thumbnailImg}
-          src={getImageSrc(forceSecureUrl(url), { size: 50 })}
+          src={forceSecureUrl(url)}
+          pictrsOptions={{
+            size: 100,
+          }}
           onError={onError}
         />
       );
@@ -124,11 +127,14 @@ export default function Link({
       return <LinkPreview type={linkType} />;
 
     return (
-      <img
+      <CachedImg
         className={styles.thumbnailImg}
         src={forceSecureUrl(
           typeof thumbnail === "string" ? thumbnail : thumbnail.sm,
         )}
+        pictrsOptions={{
+          size: 100,
+        }}
         onError={onError}
       />
     );
@@ -145,7 +151,7 @@ export default function Link({
       draggable="false"
     >
       {!compact && thumbnail && !error && (
-        <img
+        <CachedImg
           src={forceSecureUrl(
             typeof thumbnail === "string" ? thumbnail : thumbnail.lg,
           )}

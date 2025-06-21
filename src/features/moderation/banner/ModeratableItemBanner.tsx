@@ -1,4 +1,4 @@
-import { Comment, CommentView, Post, PostView } from "lemmy-js-client";
+import { Comment, CommentView, Post, PostView } from "threadiverse";
 
 import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";

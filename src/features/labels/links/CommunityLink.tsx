@@ -6,9 +6,9 @@ import {
   removeCircleOutline,
   tabletPortraitOutline,
 } from "ionicons/icons";
-import { Community, SubscribedType } from "lemmy-js-client";
 import { createContext, use } from "react";
 import { Link } from "react-router-dom";
+import { Community, SubscribedType } from "threadiverse";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
 import useCommunityActions from "#/features/community/useCommunityActions";
@@ -155,6 +155,7 @@ export default function CommunityLink({
 
 const onStart: LongPressOptions["onStart"] = (e) => {
   e.stopPropagation();
+  e.preventDefault();
 };
 
 function useShowSubscribedIcon() {

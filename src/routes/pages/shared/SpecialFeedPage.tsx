@@ -1,5 +1,5 @@
-import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
-import { ListingType } from "lemmy-js-client";
+import { IonBackButton, IonButtons, IonToolbar } from "@ionic/react";
+import { ListingType } from "threadiverse";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
 import ModActions from "#/features/community/mod/ModActions";
@@ -30,13 +30,14 @@ import PostAppearanceProvider, {
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
+import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
-import FeedContent from "./FeedContent";
+import { FeedContentWithColorContext } from "./FeedContent";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -89,8 +90,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
     const potentialCommunity =
       communityByHandle[getHandle(item.community).toLowerCase()];
-    if (potentialCommunity)
-      return potentialCommunity.subscribed === "NotSubscribed";
+    if (potentialCommunity) return !potentialCommunity.subscribed;
 
     return !followIds.includes(item.community.id);
   }
@@ -124,7 +124,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
       <ShowHiddenPostsProvider>
         <PostAppearanceProvider feed={postFeed}>
           <FeedContextProvider>
-            <IonPage>
+            <AppPage>
               <AppHeader>
                 <IonToolbar>
                   <IonButtons slot="start">
@@ -146,12 +146,12 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                   </TitleSearch>
                 </IonToolbar>
               </AppHeader>
-              <FeedContent>
+              <FeedContentWithColorContext>
                 {feed}
                 <TitleSearchResults />
                 <PostFabs forceRefresh={notifyFeedUpdated} />
-              </FeedContent>
-            </IonPage>
+              </FeedContentWithColorContext>
+            </AppPage>
           </FeedContextProvider>
         </PostAppearanceProvider>
       </ShowHiddenPostsProvider>

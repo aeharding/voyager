@@ -1,5 +1,5 @@
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { useCallback, useEffect, useState } from "react";
+import { CommentSortType, PostSortType } from "threadiverse";
 
 import { VgerCommentSortType } from "#/features/comment/CommentSort";
 import useSupported from "#/helpers/useSupported";

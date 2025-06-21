@@ -16,7 +16,6 @@ import { use, useState } from "react";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import Markdown from "#/features/shared/markdown/Markdown";
-import { getApId } from "#/helpers/lemmyCompat";
 import { useAppSelector } from "#/store";
 
 import Join from "./Join";
@@ -45,7 +44,7 @@ export default function Question() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent color="light-bg">
         <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account application</IonTitle>
@@ -62,7 +61,7 @@ export default function Question() {
         <IonList inset className="ion-padding">
           <Markdown
             className="collapse-md-margins"
-            id={`site-application-question-${getApId(site?.site_view.site)}`}
+            id={`site-application-question-${site?.site_view.site.actor_id}`}
           >
             {site?.site_view.local_site.application_question}
           </Markdown>

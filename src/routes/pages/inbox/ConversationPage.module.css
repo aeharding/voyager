@@ -1,6 +1,4 @@
 .container {
-  composes: maxWidth from "#/features/shared/shared.module.css";
-
   height: 100%;
   height: 100%;
 
@@ -10,11 +8,15 @@
   flex-direction: column;
 }
 
-.flexItem {
+.messageContainer {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
   display: flex;
   flex-direction: column;
+
+  padding: 0 16px;
+
   overflow: hidden;
-  padding: 0 16px !important;
 }
 
 .footer {

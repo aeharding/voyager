@@ -21,7 +21,7 @@ export default [
       "https://lemmy.ml/c/linux",
       "https://lemmy.world/c/linux",
       "https://lemmy.ml/c/privacy",
-      "https://lemmy.one/c/privacyguides",
+      "https://lemmy.ca/c/privacy",
       "https://lemmy.ml/c/opensource",
       "https://lemmy.world/c/selfhosted",
       "https://lemmy.ml/c/selfhost",
@@ -31,6 +31,8 @@ export default [
       "https://lemmy.ml/c/programmerhumor",
       "https://programming.dev/c/programmer_humor",
       "https://lemmy.world/c/sysadmin",
+      "https://lemmy.world/c/hardware",
+      "https://programming.dev/c/raspberry_pi",
     ],
   },
   {
@@ -119,13 +121,16 @@ export default [
   },
   {
     title: "Movies, TV, & Pop Culture",
-    description: "movies, futurama, startrek, sciencefiction",
+    description: "movies, tv, trailers, sciencefiction",
     icon: filmOutline,
     communities: [
+      "https://lemmy.world/c/movies",
       "https://lemmy.ml/c/movies",
-      "https://lemmy.world/c/futurama",
-      "https://startrek.website/c/startrek",
+      "https://piefed.social/c/television",
+      "https://lemmy.blahaj.zone/c/trailers",
+      "https://lemmy.world/c/filmsframes",
       "https://lemmy.world/c/sciencefiction",
+      "https://startrek.website/c/startrek",
     ],
   },
   {

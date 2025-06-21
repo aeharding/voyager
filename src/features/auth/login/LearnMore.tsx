@@ -21,7 +21,10 @@ export default function LearnMore() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent className={cx("ion-padding", styles.content)}>
+      <IonContent
+        className={cx("ion-padding", styles.content)}
+        color="light-bg"
+      >
         <h2>How does this app work?</h2>
         <p>
           Lemmy is a decentralized <strong>network of communities</strong> where
@@ -91,7 +94,7 @@ export default function LearnMore() {
                   <strong>lemmy.world</strong>
                 </IonText>
                 <IonText color="secondary">
-                  <strong>lemm.ee</strong>
+                  <strong>lemmy.zip</strong>
                 </IonText>
               </div>
               <div>vs</div>

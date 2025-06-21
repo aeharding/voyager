@@ -10,18 +10,18 @@ import {
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { use } from "react";
+import { PostView } from "threadiverse";
 
-import { PageContext } from "#/features/auth/PageContext";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { airplay, pip } from "#/features/icons";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { savePost } from "#/features/post/postSlice";
+import { useShare } from "#/features/share/share";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative, ua } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { shareUrl } from "#/helpers/share";
 import {
   photoCopied,
   photoSaved,
@@ -29,6 +29,7 @@ import {
   saveSuccess,
   videoSaved,
 } from "#/helpers/toastMessages";
+import { getVideoSrcForUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -52,11 +53,13 @@ export default function GalleryActions({
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
-  const { presentLoginIfNeeded } = use(PageContext);
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
+
+  const share = useShare();
 
   function openActions() {
     const mySaved = post
@@ -70,7 +73,7 @@ export default function GalleryActions({
               text: "Share Link",
               icon: getShareIcon(),
               handler: () => {
-                shareUrl(post!.post.ap_id);
+                share(post!.post.ap_id);
               },
             },
             {
@@ -79,10 +82,10 @@ export default function GalleryActions({
               handler: () => {
                 (async () => {
                   try {
-                    await StashMedia.saveVideo({ url: src });
+                    await StashMedia.saveVideo({ url: getVideoSrcForUrl(src) });
                   } catch (error) {
                     presentToast({
-                      message: "Error saving video to device",
+                      message: "Error downloading video",
                       color: "danger",
                       position: "top",
                       fullscreen: true,
@@ -127,7 +130,7 @@ export default function GalleryActions({
               handler: () => {
                 (async () => {
                   if (!isNative()) {
-                    shareUrl(src);
+                    share(src);
                     return;
                   }
 

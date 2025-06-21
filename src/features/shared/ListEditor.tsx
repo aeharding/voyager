@@ -65,7 +65,7 @@ export function RemoveItemButton() {
 
   return (
     <IonButton
-      color="none"
+      fill="clear"
       slot="start"
       ref={ref}
       onClick={(e) => {
