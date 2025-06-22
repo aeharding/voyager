@@ -31,6 +31,7 @@ import {
   SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 import Login from "#/features/auth/login/login/Login";
+import useValidateLoginTo from "#/features/auth/login/login/useValidateLoginTo";
 import CachedImg from "#/features/media/CachedImg";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
@@ -55,6 +56,8 @@ export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();
 
   const { dismiss, setCanDismiss } = use(DynamicDismissableModalContext);
+
+  const validateLoginTo = useValidateLoginTo();
 
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
@@ -196,13 +199,24 @@ export default function PickJoinServer() {
         {
           text: "Log In",
           handler: () => {
-            const icon = allInstances.find(
-              ({ url }) => url === selectedUrl,
-            )?.icon;
+            (async () => {
+              setSubmitting(true);
 
-            contentRef.current
-              ?.closest("ion-nav")
-              ?.push(() => <Login url={selectedUrl} siteIcon={icon} />);
+              try {
+                await validateLoginTo(selectedUrl, (site) => {
+                  contentRef.current
+                    ?.closest("ion-nav")
+                    ?.push(() => (
+                      <Login
+                        url={selectedUrl}
+                        siteIcon={site.site_view.site.icon}
+                      />
+                    ));
+                });
+              } finally {
+                setSubmitting(false);
+              }
+            })();
           },
         },
         !alreadyLoggedIn && {
@@ -212,13 +226,19 @@ export default function PickJoinServer() {
               setSubmitting(true);
 
               try {
-                await dispatch(addGuestInstance(selectedUrl));
+                await validateLoginTo(selectedUrl, async () => {
+                  try {
+                    await dispatch(addGuestInstance(selectedUrl));
+                  } finally {
+                    setSubmitting(false);
+                  }
+
+                  setCanDismiss(true);
+                  dismiss();
+                });
               } finally {
                 setSubmitting(false);
               }
-
-              setCanDismiss(true);
-              dismiss();
             })();
           },
         },

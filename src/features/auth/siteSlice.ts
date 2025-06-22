@@ -1,5 +1,9 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GetSiteResponse, ProviderInfo } from "threadiverse";
+import {
+  GetSiteResponse,
+  ProviderInfo,
+  UnsupportedSoftwareError,
+} from "threadiverse";
 
 import { customBackOff } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
@@ -11,6 +15,7 @@ interface SiteState {
   loading: boolean;
   response: GetSiteResponse | undefined;
   software: ProviderInfo | undefined;
+  unsupportedSoftware: boolean;
 }
 
 const initialState: SiteState = {
@@ -18,6 +23,7 @@ const initialState: SiteState = {
   loading: false,
   response: undefined,
   software: undefined,
+  unsupportedSoftware: false,
 };
 
 export const siteSlice = createSlice({
@@ -39,6 +45,9 @@ export const siteSlice = createSlice({
     receivedSoftware(state, action: PayloadAction<ProviderInfo>) {
       state.software = action.payload;
     },
+    receivedUnsupportedSoftware(state) {
+      state.unsupportedSoftware = true;
+    },
     resetSite() {
       return initialState;
     },
@@ -51,6 +60,7 @@ export const {
   failedSite,
   receivedSite,
   receivedSoftware,
+  receivedUnsupportedSoftware,
   resetSite,
 } = siteSlice.actions;
 
@@ -104,7 +114,17 @@ export const getSiteIfNeeded =
 export const getSoftware =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const reqId = siteReqIdSelector(getState());
-    const software = await clientSelector(getState()).getSoftware();
+    let software;
+
+    try {
+      software = await clientSelector(getState()).getSoftware();
+    } catch (error) {
+      if (error instanceof UnsupportedSoftwareError) {
+        dispatch(receivedUnsupportedSoftware());
+      }
+
+      throw error;
+    }
 
     // Site or user changed before software response resolved
     if (reqId !== siteReqIdSelector(getState())) return;
