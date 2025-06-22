@@ -75,7 +75,6 @@ export default function buildSort<S extends AnyVgerSort>(
 
   return { Sort, useSelectSort, formatSort };
 
-  // TODO: Remove this once we've migrated to the new sort options
   function useSortOptions(defaultMode?: ThreadiverseMode) {
     const mode = useMode() ?? defaultMode;
 

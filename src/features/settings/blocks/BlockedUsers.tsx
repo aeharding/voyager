@@ -16,22 +16,6 @@ import { blockUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-/**
- * TODO remove once we drop support for lemmy 0.19
- */
-interface PersonBlockView {
-  target: Person;
-}
-
-/**
- * TODO remove - Lemmy 0.19 returned user block view. v0.20 returns user.
- */
-function getPerson(potentialPerson: PersonBlockView | Person): Person {
-  if ("target" in potentialPerson) return potentialPerson.target;
-
-  return potentialPerson;
-}
-
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
@@ -41,7 +25,6 @@ export default function BlockedUsers() {
   );
 
   const sortedUsers = users
-    ?.map(getPerson)
     ?.slice()
     .sort((a, b) => a.name.localeCompare(b.name));
 
