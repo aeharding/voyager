@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GetSiteResponse } from "threadiverse";
+import { GetSiteResponse, ProviderInfo } from "threadiverse";
 
 import { customBackOff } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
@@ -10,12 +10,14 @@ interface SiteState {
   failedAttempt: number;
   loading: boolean;
   response: GetSiteResponse | undefined;
+  software: ProviderInfo | undefined;
 }
 
 const initialState: SiteState = {
   failedAttempt: 0,
   loading: false,
   response: undefined,
+  software: undefined,
 };
 
 export const siteSlice = createSlice({
@@ -34,6 +36,9 @@ export const siteSlice = createSlice({
       state.loading = false;
       state.failedAttempt = 0;
     },
+    receivedSoftware(state, action: PayloadAction<ProviderInfo>) {
+      state.software = action.payload;
+    },
     resetSite() {
       return initialState;
     },
@@ -41,8 +46,13 @@ export const siteSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { loadingSite, failedSite, receivedSite, resetSite } =
-  siteSlice.actions;
+export const {
+  loadingSite,
+  failedSite,
+  receivedSite,
+  receivedSoftware,
+  resetSite,
+} = siteSlice.actions;
 
 export default siteSlice.reducer;
 
@@ -87,7 +97,19 @@ export const getSiteIfNeeded =
     if (getState().site.response) return;
     if (getState().site.loading) return;
 
+    dispatch(getSoftware());
     dispatch(getSite());
+  };
+
+export const getSoftware =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const reqId = siteReqIdSelector(getState());
+    const software = await clientSelector(getState()).getSoftware();
+
+    // Site or user changed before software response resolved
+    if (reqId !== siteReqIdSelector(getState())) return;
+
+    dispatch(receivedSoftware(software));
   };
 
 export const getSite =

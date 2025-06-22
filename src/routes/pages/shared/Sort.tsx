@@ -76,8 +76,8 @@ export default function buildSort<S extends AnyVgerSort>(
   return { Sort, useSelectSort, formatSort };
 
   // TODO: Remove this once we've migrated to the new sort options
-  function useSortOptions() {
-    const mode = useMode();
+  function useSortOptions(defaultMode?: ThreadiverseMode) {
+    const mode = useMode() ?? defaultMode;
 
     if (!mode) return [];
 
@@ -91,7 +91,9 @@ export default function buildSort<S extends AnyVgerSort>(
 
   function Sort({ sort, setSort }: SortProps<S>) {
     const getAppScrollable = useGetAppScrollable();
-    const sortOptions = useSortOptions();
+
+    // Proactively assume lemmy v1 sorts until site software is resolved
+    const sortOptions = useSortOptions("lemmyv1");
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);

@@ -88,6 +88,8 @@ export default function Comments({
 
   const sortParams = useFeedSortParams("comments", sort);
 
+  const ready = !!sortParams;
+
   const preservePositionFromBottomInScrollView =
     usePreservePositionFromBottomInScrollView(
       scrollViewContainerRef,
@@ -215,6 +217,8 @@ export default function Comments({
 
   const fetchComments = useCallback(
     async (refresh = false) => {
+      if (!ready) return;
+
       if (refresh) {
         if (page === 0 && loadingRef.current) return; // Still loading first page
         finishedPagingRef.current = false;
@@ -312,6 +316,7 @@ export default function Comments({
       postId,
       presentToast,
       sortParams,
+      ready,
     ],
   );
 

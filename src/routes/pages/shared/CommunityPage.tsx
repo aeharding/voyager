@@ -17,7 +17,7 @@ import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResu
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
@@ -102,6 +102,8 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
+
+    if (!sortParams) throw new AbortLoadError();
 
     const { posts, next_page } = await client.getPosts(
       {

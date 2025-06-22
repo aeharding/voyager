@@ -8,7 +8,7 @@ import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearc
 import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
 import EmptyHomeFeed from "#/features/feed/empty/home/EmptyHomeFeed";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
@@ -69,6 +69,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
+
+    if (!sortParams) throw new AbortLoadError();
 
     const { posts, next_page } = await client.getPosts(
       {

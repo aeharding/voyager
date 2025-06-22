@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
 import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
@@ -25,6 +25,8 @@ export default function ProfileFeedCommentsPage() {
   const sortParams = useFeedSortParams("search", sort);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    if (!sortParams) throw new AbortLoadError();
+
     const { comments } = await client.getPersonDetails(
       {
         ...pageData,

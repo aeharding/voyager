@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CommunityView, ListingType } from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import ListingTypeFilter from "#/features/feed/ListingType";
 import useFeedSort, {
   useFeedSortParams,
@@ -29,6 +29,8 @@ export default function CommunitiesExplorePage() {
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
+    if (!sortParams) throw new AbortLoadError();
+
     const response = await client.listCommunities(
       {
         limit: LIMIT,

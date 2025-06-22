@@ -4,7 +4,7 @@ import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
@@ -44,6 +44,8 @@ export default function SearchFeedResultsPage({
   const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    if (!sortParams) throw new AbortLoadError();
+
     const response = await client.search(
       {
         ...pageData,
