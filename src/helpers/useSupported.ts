@@ -1,6 +1,5 @@
 import { compare, CompareOperator } from "compare-versions";
 import { memoize } from "es-toolkit";
-import { CommentSortType, PostSortType } from "threadiverse";
 
 import { lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
@@ -60,19 +59,4 @@ export default function useSupported(feature: Feature): boolean {
   }
 
   return memoizedCompare([version, lemmyVersion, comparator]);
-}
-
-export function is019Sort(
-  sort: PostSortType | CommentSortType | undefined,
-): boolean {
-  switch (sort) {
-    case "Controversial":
-    case "TopNineMonths":
-    case "TopThreeMonths":
-    case "TopSixMonths":
-    case "Scaled":
-      return true;
-    default:
-      return false;
-  }
 }

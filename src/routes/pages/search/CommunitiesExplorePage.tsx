@@ -1,12 +1,6 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { CommunityView, ListingType } from "lemmy-js-client";
+import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useState } from "react";
+import { CommunityView, ListingType } from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { FetchFn } from "#/features/feed/Feed";
@@ -15,6 +9,7 @@ import useFeedSort, {
   useFeedSortParams,
 } from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
+import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -30,7 +25,7 @@ export default function CommunitiesExplorePage() {
     { internal: "CommunitiesExplore" },
     "Subscribers",
   );
-  const sortParams = useFeedSortParams("communities", sort, "posts");
+  const sortParams = useFeedSortParams("communities", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
@@ -39,8 +34,7 @@ export default function CommunitiesExplorePage() {
         limit: LIMIT,
         type_: listingType,
         ...pageData,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fix with lemmy-js-client v1
-        ...(sortParams as any),
+        ...sortParams,
       },
       ...rest,
     );
@@ -52,7 +46,7 @@ export default function CommunitiesExplorePage() {
   };
 
   return (
-    <IonPage>
+    <AppPage>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -76,6 +70,6 @@ export default function CommunitiesExplorePage() {
       <FeedContent>
         <CommunityFeed fetchFn={fetchFn} />
       </FeedContent>
-    </IonPage>
+    </AppPage>
   );
 }

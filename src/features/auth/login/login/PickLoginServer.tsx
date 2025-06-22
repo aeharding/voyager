@@ -14,15 +14,11 @@ import {
 } from "@ionic/react";
 import { uniq } from "es-toolkit";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { GetSiteResponse } from "threadiverse";
+import { GetSiteResponse, UnsupportedSoftwareError } from "threadiverse";
 import { VList, VListHandle } from "virtua";
 
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
 import AppHeader from "#/features/shared/AppHeader";
-import {
-  isMinimumSupportedLemmyVersion,
-  MINIMUM_LEMMY_VERSION,
-} from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { getCustomServers } from "#/services/app";
@@ -96,26 +92,23 @@ export default function PickLoginServer() {
         fullscreen: true,
       });
 
+      if (error instanceof UnsupportedSoftwareError) {
+        presentToast({
+          message: error.message,
+          color: "danger",
+          fullscreen: true,
+          duration: 6_000,
+        });
+
+        return;
+      }
+
       throw error;
     } finally {
       setLoading(false);
     }
 
-    if (
-      client.name === "lemmy" &&
-      !isMinimumSupportedLemmyVersion(site.version)
-    ) {
-      presentToast({
-        message: `${potentialServer} is running Lemmy v${site.version}. Voyager requires at least v${MINIMUM_LEMMY_VERSION}`,
-        color: "danger",
-        fullscreen: true,
-        duration: 6_000,
-      });
-
-      return;
-    }
-
-    if (client.name === "piefed") {
+    if (client.software.name === "piefed") {
       presentAlert({
         header: "⚠️ Piefed support is experimental",
         message:

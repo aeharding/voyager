@@ -22,7 +22,7 @@ export default function ProfileFeedPostsPage() {
     },
     "New",
   );
-  const sortParams = useFeedSortParams("search", sort ?? "New", "posts");
+  const sortParams = useFeedSortParams("search", sort ?? "New");
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     const { posts } = await client.getPersonDetails(

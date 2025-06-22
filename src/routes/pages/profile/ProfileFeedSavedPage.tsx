@@ -18,7 +18,6 @@ export default function ProfileFeedSavedPage() {
         ...pageData,
         limit: LIMIT,
         username: handle,
-        sort: "New",
         saved_only: true,
       },
       ...rest,

@@ -36,7 +36,6 @@ import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
 import { blurOnEnter } from "#/helpers/dom";
-import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
 import { getClient } from "#/services/client";
@@ -142,9 +141,6 @@ export default function PickJoinServer() {
       `https://${searchHostname.toLowerCase()}/`
     )
       return;
-
-    // Unsupported version
-    if (!isMinimumSupportedLemmyVersion(site.version)) return;
 
     setCustomInstance(site);
   }, [customSearchHostnameInvalid, searchHostname]);

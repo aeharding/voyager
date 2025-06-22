@@ -39,7 +39,7 @@ export default function SearchFeedResultsPage({
   const [sort, setSort] = useFeedSort("search", {
     internal: `${type}Search`,
   });
-  const sortParams = useFeedSortParams("search", sort, "posts");
+  const sortParams = useFeedSortParams("search", sort);
 
   const search = decodeURIComponent(_encodedSearch);
 

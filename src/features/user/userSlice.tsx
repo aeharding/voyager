@@ -56,7 +56,6 @@ export const getUser =
     const personResponse = await clientSelector(getState())?.getPersonDetails({
       username: handle,
       limit: LIMIT,
-      sort: "New",
     });
 
     dispatch(receivedUsers([personResponse.person_view.person]));

@@ -51,7 +51,6 @@ export default function Profile({ person, onPull }: ProfileProps) {
         ...pageData,
         limit: LIMIT,
         username: getHandle(person.person_view.person),
-        sort: "New",
       },
       ...rest,
     );

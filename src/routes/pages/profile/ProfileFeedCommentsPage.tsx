@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { CommentSortType, PostSortType } from "threadiverse";
 
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
@@ -23,7 +22,7 @@ export default function ProfileFeedCommentsPage() {
     },
     "New",
   );
-  const sortParams = useFeedSortParams("search", sort, "posts");
+  const sortParams = useFeedSortParams("search", sort);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     const { comments } = await client.getPersonDetails(

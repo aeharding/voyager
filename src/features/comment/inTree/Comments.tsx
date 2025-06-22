@@ -10,7 +10,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { CommentSortType, CommentView } from "threadiverse";
+import { CommentView } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
@@ -32,6 +32,7 @@ import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { receivedComments } from "../commentSlice";
+import { VgerCommentSortType } from "../CommentSort";
 import { CommentsContext } from "./CommentsContext";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import LoadParentComments from "./LoadParentComments";
@@ -50,7 +51,7 @@ interface CommentsProps {
   postId: number;
   commentPath?: string;
   threadCommentId?: string;
-  sort: CommentSortType;
+  sort: VgerCommentSortType;
   bottomPadding?: number;
 
   ref: React.RefObject<CommentsHandle | undefined>;

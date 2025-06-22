@@ -1,9 +1,21 @@
-import { CommentSortType } from "threadiverse";
-
 import { arrayOfAll } from "#/helpers/array";
-import buildSort, { SortOptions } from "#/routes/pages/shared/Sort";
+import buildSort, {
+  SortOptions,
+  SortOptionsByMode,
+} from "#/routes/pages/shared/Sort";
 
-export type VgerCommentSortType = CommentSortType;
+export type VgerCommentSortType =
+  | "Hot"
+  | "Top"
+  | "New"
+  | "Controversial"
+  | "Old";
+
+export const COMMENT_SORT_BY_MODE = {
+  lemmyv0: ["Hot", "Top", "New", "Controversial", "Old"],
+  lemmyv1: ["Hot", "Top", "New", "Controversial", "Old"],
+  piefed: ["Hot", "Top", "New", "Old"],
+} as const satisfies SortOptionsByMode<VgerCommentSortType>;
 
 export const ALL_COMMENT_SORTS = arrayOfAll<VgerCommentSortType>()([
   "Hot",
@@ -14,4 +26,4 @@ export const ALL_COMMENT_SORTS = arrayOfAll<VgerCommentSortType>()([
 ] as const satisfies SortOptions<VgerCommentSortType>);
 
 export const { Sort: CommentSort, useSelectSort: useSelectCommentSort } =
-  buildSort(ALL_COMMENT_SORTS);
+  buildSort(COMMENT_SORT_BY_MODE);

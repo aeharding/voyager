@@ -1,4 +1,3 @@
-import { compare } from "compare-versions";
 import {
   Comment,
   CommentView,
@@ -365,12 +364,6 @@ export function sortPostCommentByPublished(
   b: PostView | CommentView,
 ): number {
   return getPublishedDate(b).localeCompare(getPublishedDate(a));
-}
-
-export const MINIMUM_LEMMY_VERSION = "0.19.0";
-
-export function isMinimumSupportedLemmyVersion(version: string) {
-  return compare(version, MINIMUM_LEMMY_VERSION, ">=");
 }
 
 export function buildLemmyPostLink(instance: string, id: number) {

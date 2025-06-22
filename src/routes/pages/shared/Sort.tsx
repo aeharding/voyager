@@ -19,9 +19,9 @@ import {
   trendingUpOutline,
   trophyOutline,
 } from "ionicons/icons";
-import { use } from "react";
+import { ThreadiverseMode } from "threadiverse";
 
-import { AppContext } from "#/features/auth/AppContext";
+import useMode from "#/core/useMode";
 import { VgerCommentSortType } from "#/features/comment/CommentSort";
 import { isControversialSort } from "#/features/feed/sort/controversialSorts";
 import { VgerPostSortType } from "#/features/feed/sort/PostSort";
@@ -40,7 +40,10 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+
+export type SortOptionsByMode<S> = Record<ThreadiverseMode, SortOptions<S>>;
 
 export type SortOptions<S> = readonly (ChildrenSortOption<S, S> | S)[];
 
@@ -64,10 +67,11 @@ interface UseSortOptions {
 }
 
 export default function buildSort<S extends AnyVgerSort>(
-  _sortOptions: SortOptions<S>,
-  sortOptionsSupport?: Record<S, string[]>,
+  sortOptionsByMode: SortOptionsByMode<S>,
 ) {
-  const newSortOptions = hydrateSortOptions(_sortOptions);
+  const allSortOptions = hydrateSortOptions(
+    Object.values(sortOptionsByMode).flat(),
+  );
 
   return { Sort, useSelectSort, formatSort };
 
@@ -75,10 +79,9 @@ export default function buildSort<S extends AnyVgerSort>(
   function useSortOptions() {
     const mode = useMode();
 
-    // TODO: Filter out sort options that are not supported in the current mode
-    // via sortOptionsSupport
+    if (!mode) return [];
 
-    return newSortOptions;
+    return hydrateSortOptions(sortOptionsByMode[mode]);
   }
 
   interface SortProps<S> {
@@ -87,12 +90,12 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   function Sort({ sort, setSort }: SortProps<S>) {
-    const { activePageRef } = use(AppContext);
+    const getAppScrollable = useGetAppScrollable();
     const sortOptions = useSortOptions();
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);
-      scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+      scrollUpIfNeeded(getAppScrollable(), 0, "auto");
     });
 
     const sortIcon = findSortOption(sort, sortOptions)?.icon;
@@ -170,7 +173,7 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   function formatSort(sort: S) {
-    for (const option of newSortOptions) {
+    for (const option of allSortOptions) {
       if ("children" in option) {
         const child = option.children.find((child) => child.value === sort);
         if (child) return `${option.label}: ${child.label}`;
@@ -178,9 +181,6 @@ export default function buildSort<S extends AnyVgerSort>(
 
       if ("value" in option && option.value === sort) return option.label;
     }
-
-    // TODO: Return is only needed for legacy sort options
-    return sort;
   }
 }
 
@@ -197,7 +197,25 @@ function findSortOption<S>(sort: S, sortOptions: HydratedSortOptions<S>) {
   }
 }
 
-type AnyVgerSort =
+export function findSortOptionUnhydrated<S>(
+  sort: S,
+  sortOptions: SortOptions<S>,
+) {
+  for (const option of sortOptions) {
+    if (typeof option === "string") {
+      if (option === sort) return option;
+    } else if (
+      typeof option === "object" &&
+      option !== null &&
+      "children" in option
+    ) {
+      const matchingChild = option.children.find((child) => child === sort);
+      if (matchingChild) return matchingChild;
+    }
+  }
+}
+
+export type AnyVgerSort =
   | VgerPostSortType
   | VgerCommentSortType
   | VgerSearchSortType
@@ -335,7 +353,10 @@ export function formatSortLabel(sort: AnyVgerSort): string {
 }
 
 // Preserve explicit array tuple (ex: Arr[0] = specific string)
-type FlattenSortOptions<T> = T extends readonly [infer First, ...infer Rest]
+export type FlattenSortOptions<T> = T extends readonly [
+  infer First,
+  ...infer Rest,
+]
   ? First extends { children: readonly unknown[] }
     ? [...FlattenSortOptions<First["children"]>, ...FlattenSortOptions<Rest>]
     : [First, ...FlattenSortOptions<Rest>]
