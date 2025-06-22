@@ -183,7 +183,9 @@ export default function Feed<I>({
         });
       } catch (error) {
         // Aborted requests are expected. Silently return to avoid spamming console with DOM errors
-        // Also don't set loading to false, component will unmount
+        // Also don't set loading to false, component will unmount (or shortly rerender)
+
+        if (error instanceof AbortLoadError) return; // Aborted by implementation
         if (
           abortController.signal.aborted &&
           abortController.signal.reason === ABORT_REASON_UNMOUNT
@@ -192,6 +194,8 @@ export default function Feed<I>({
 
         setLoading(false);
         setLoadFailed(true);
+        if (refresh) setItems([]);
+
         throw error;
       } finally {
         if (abortControllerRef.current === abortController)
@@ -215,27 +219,32 @@ export default function Feed<I>({
       setLoadFailed(false);
       setInitialLoad(false);
 
+      function updateFilteredNewPageItems() {
+        if (!filteredNewPageItems.length) {
+          requestLoopRef.current++;
+        } else {
+          requestLoopRef.current = 0;
+        }
+      }
+
       if (refresh) {
         setAtEnd(false);
         setItems(filteredNewPageItems);
+        updateFilteredNewPageItems();
       } else {
         setItems((existingItems) => {
           const newItems = getIndex
             ? differenceBy(filteredNewPageItems, existingItems, getIndex)
             : filteredNewPageItems;
 
+          updateFilteredNewPageItems();
+
+          if (!newItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
+            setAtEnd(true);
+
           return [...existingItems, ...newItems];
         });
       }
-
-      if (!filteredNewPageItems.length) {
-        requestLoopRef.current++;
-      } else {
-        requestLoopRef.current = 0;
-      }
-
-      if (!newPageItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
-        setAtEnd(true);
 
       setNumberedPage((numberedPage) => (refresh ? 1 : numberedPage + 1));
       setPage(currentPage);
@@ -398,3 +407,5 @@ export function isFirstPage(pageData: PageData): boolean {
 }
 
 export const InFeedContext = createContext(false);
+
+export class AbortLoadError extends Error {}

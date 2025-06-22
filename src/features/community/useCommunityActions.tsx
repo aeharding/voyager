@@ -1,6 +1,6 @@
 import { useIonActionSheet } from "@ionic/react";
-import { Community, SubscribedType } from "lemmy-js-client";
 import { use } from "react";
+import { Community, SubscribedType } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import {

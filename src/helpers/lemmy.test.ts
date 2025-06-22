@@ -1,4 +1,4 @@
-import { Post } from "lemmy-js-client";
+import { Post } from "threadiverse";
 import { describe, expect, it } from "vitest";
 
 import {

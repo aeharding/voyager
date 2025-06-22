@@ -1,7 +1,8 @@
 import { useIonViewDidEnter } from "@ionic/react";
-import { CommentSortType, PostView } from "lemmy-js-client";
 import { useEffect, useRef, useState } from "react";
+import { PostView } from "threadiverse";
 
+import { VgerCommentSortType } from "#/features/comment/CommentSort";
 import Comments, { CommentsHandle } from "#/features/comment/inTree/Comments";
 import JumpFab from "#/features/comment/inTree/JumpFab";
 import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
@@ -13,7 +14,7 @@ import ViewAllComments from "./ViewAllComments";
 
 interface PostDetailProps {
   post: PostView;
-  sort: CommentSortType;
+  sort: VgerCommentSortType;
 
   commentPath: string | undefined;
   threadCommentId: string | undefined;

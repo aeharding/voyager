@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
-import { Comment, CommentView } from "lemmy-js-client";
 import { RefObject } from "react";
+import { Comment, CommentView } from "threadiverse";
 
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";
@@ -14,7 +14,6 @@ import ActionsContainer from "#/features/post/actions/ActionsContainer";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
 import { cx } from "#/helpers/css";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
@@ -79,7 +78,7 @@ export default function CommentHeader({
         {collapsed && (
           <>
             <div className={styles.amountCollapsed}>
-              {getCounts(commentView).child_count +
+              {commentView.counts.child_count +
                 (showCollapsedComment || stub ? 0 : 1)}
             </div>
             <IonIcon

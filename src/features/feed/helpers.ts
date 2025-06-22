@@ -1,4 +1,4 @@
-import { ListingType } from "lemmy-js-client";
+import { ListingType } from "threadiverse";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 

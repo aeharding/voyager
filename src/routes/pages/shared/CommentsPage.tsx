@@ -1,5 +1,5 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { ListingType } from "lemmy-js-client";
+import { ListingType } from "threadiverse";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { FetchFn } from "#/features/feed/Feed";

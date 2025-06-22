@@ -1,4 +1,4 @@
-import { GetComments, GetPosts } from "lemmy-js-client";
+import { GetComments, GetPosts } from "threadiverse";
 
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
@@ -21,7 +21,6 @@ export default function ProfileFeedVotedPage({
     const requestPayload: GetPosts & GetComments = {
       ...pageData,
       limit: Math.floor(LIMIT / 2),
-      sort: "New",
       liked_only: type === "Upvoted",
       disliked_only: type === "Downvoted",
       show_read: true,

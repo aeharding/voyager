@@ -1,6 +1,6 @@
 import { useIonAlert } from "@ionic/react";
-import { Person } from "lemmy-js-client";
 import React from "react";
+import { Person } from "threadiverse";
 
 import { getTextColorFor } from "#/helpers/color";
 import { stopIonicTapClick } from "#/helpers/ionic";

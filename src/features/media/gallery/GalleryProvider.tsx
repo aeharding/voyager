@@ -1,6 +1,5 @@
 import { StatusBar } from "@capacitor/status-bar";
 import { asyncNoop, compact, noop } from "es-toolkit";
-import { PostView } from "lemmy-js-client";
 import type { PreparedPhotoSwipeOptions, ZoomLevelOption } from "photoswipe";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import React, {
@@ -15,6 +14,7 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import { useLocation } from "react-router";
+import { PostView } from "threadiverse";
 
 import { OutPortalPlayer } from "#/features/media/video/PortaledPlayer";
 import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";

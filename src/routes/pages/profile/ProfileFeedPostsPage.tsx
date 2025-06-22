@@ -1,45 +1,56 @@
 import { useParams } from "react-router-dom";
 
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
+import { getUserIfNeeded } from "#/features/user/userSlice";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch } from "#/store";
 
 import BaseProfileFeedItemsPage from "./BaseProfileFeedItemsPage";
 
 export default function ProfileFeedPostsPage() {
   const client = useClient();
   const { handle } = useParams<{ handle: string }>();
+  const dispatch = useAppDispatch();
 
   const [sort, setSort] = useFeedSort(
-    "posts",
+    "search",
     {
       internal: `ProfilePosts`,
     },
     "New",
   );
+  const sortParams = useFeedSortParams("search", sort ?? "New");
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const { posts } = await client.getPersonDetails(
+    if (!sortParams) throw new AbortLoadError();
+
+    const person = await dispatch(getUserIfNeeded(handle));
+
+    const { content } = await client.listPersonContent(
       {
         ...pageData,
+        type: "Posts",
         limit: LIMIT,
-        username: handle,
-        sort: sort ?? "New",
+        person_id: person.id,
+        ...sortParams,
       },
       ...rest,
     );
 
-    return posts;
+    return content;
   };
 
   return (
     <BaseProfileFeedItemsPage
       label="Posts"
       fetchFn={fetchFn}
-      sortComponent={<PostSort sort={sort} setSort={setSort} />}
+      sortComponent={<SearchSort sort={sort} setSort={setSort} />}
     />
   );
 }

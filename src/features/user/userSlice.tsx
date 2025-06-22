@@ -1,12 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BanFromCommunity, Person } from "lemmy-js-client";
+import { BanFromCommunity, Person } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";
-import { receivedComments } from "#/features/comment/commentSlice";
 import { resetMessages, syncMessages } from "#/features/inbox/inboxSlice";
 import { getHandle } from "#/helpers/lemmy";
-import { LIMIT } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
 interface CommentState {
@@ -55,14 +53,22 @@ export const getUser =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const personResponse = await clientSelector(getState())?.getPersonDetails({
       username: handle,
-      limit: LIMIT,
-      sort: "New",
     });
 
     dispatch(receivedUsers([personResponse.person_view.person]));
-    dispatch(receivedComments(personResponse.comments));
 
     return personResponse;
+  };
+
+export const getUserIfNeeded =
+  (handle: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const user = getState().user.userByHandle[handle];
+
+    if (user) return user;
+
+    const response = await dispatch(getUser(handle));
+    return response.person_view.person;
   };
 
 export const blockUser =
@@ -100,7 +106,7 @@ export const banUser =
       Partial<Pick<BanFromCommunity, "ban">>,
   ) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const response = await clientSelector(getState())?.banFromCommunity({
+    await clientSelector(getState())?.banFromCommunity({
       ban: true,
       ...payload,
     });
@@ -109,7 +115,7 @@ export const banUser =
       updateBanned({
         communityId: payload.community_id,
         userId: payload.person_id,
-        banned: response.banned,
+        banned: true,
       }),
     );
   };

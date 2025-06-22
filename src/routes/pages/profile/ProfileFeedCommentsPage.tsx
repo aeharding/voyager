@@ -1,58 +1,56 @@
-import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { useParams } from "react-router-dom";
 
-import CommentSort from "#/features/comment/CommentSort";
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
+import { getUserIfNeeded } from "#/features/user/userSlice";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch } from "#/store";
 
 import BaseProfileFeedItemsPage from "./BaseProfileFeedItemsPage";
 
 export default function ProfileFeedCommentsPage() {
   const client = useClient();
   const { handle } = useParams<{ handle: string }>();
+  const dispatch = useAppDispatch();
 
   const [sort, setSort] = useFeedSort(
-    "comments",
+    "search",
     {
       internal: `ProfileComments`,
     },
     "New",
   );
+  const sortParams = useFeedSortParams("search", sort);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const { comments } = await client.getPersonDetails(
+    if (!sortParams) throw new AbortLoadError();
+
+    const person = await dispatch(getUserIfNeeded(handle));
+
+    const { content } = await client.listPersonContent(
       {
         ...pageData,
+        type: "Comments",
         limit: LIMIT,
-        username: handle,
-        sort: sort ? convertCommentSortToPostSort(sort) : "New",
+        person_id: person.id,
+        ...sortParams,
       },
       ...rest,
     );
 
-    return comments;
+    return content;
   };
 
   return (
     <BaseProfileFeedItemsPage
       label="Comments"
       fetchFn={fetchFn}
-      sortComponent={<CommentSort sort={sort} setSort={setSort} />}
+      sortComponent={<SearchSort sort={sort} setSort={setSort} />}
     />
   );
-}
-
-function convertCommentSortToPostSort(sort: CommentSortType): PostSortType {
-  switch (sort) {
-    case "Controversial":
-    case "Hot":
-    case "New":
-    case "Old":
-      return sort;
-    case "Top":
-      return "TopAll";
-  }
 }

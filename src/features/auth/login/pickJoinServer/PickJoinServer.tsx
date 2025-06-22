@@ -22,8 +22,8 @@ import {
   ellipsisHorizontalCircleOutline,
   ellipsisVertical,
 } from "ionicons/icons";
-import { GetSiteResponse } from "lemmy-js-client";
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GetSiteResponse } from "threadiverse";
 import { VList } from "virtua";
 
 import {
@@ -31,16 +31,15 @@ import {
   SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 import Login from "#/features/auth/login/login/Login";
+import useValidateLoginTo from "#/features/auth/login/login/useValidateLoginTo";
 import CachedImg from "#/features/media/CachedImg";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
 import { blurOnEnter } from "#/helpers/dom";
-import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
-import { getApId } from "#/helpers/lemmyCompat";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { LVInstance } from "#/services/lemmyverse";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -57,6 +56,8 @@ export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();
 
   const { dismiss, setCanDismiss } = use(DynamicDismissableModalContext);
+
+  const validateLoginTo = useValidateLoginTo();
 
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
@@ -139,13 +140,10 @@ export default function PickJoinServer() {
 
     // User changed search before request resolved
     if (
-      getApId(site.site_view.site) !==
+      site.site_view.site.actor_id !==
       `https://${searchHostname.toLowerCase()}/`
     )
       return;
-
-    // Unsupported version
-    if (!isMinimumSupportedLemmyVersion(site.version)) return;
 
     setCustomInstance(site);
   }, [customSearchHostnameInvalid, searchHostname]);
@@ -201,13 +199,24 @@ export default function PickJoinServer() {
         {
           text: "Log In",
           handler: () => {
-            const icon = allInstances.find(
-              ({ url }) => url === selectedUrl,
-            )?.icon;
+            (async () => {
+              setSubmitting(true);
 
-            contentRef.current
-              ?.closest("ion-nav")
-              ?.push(() => <Login url={selectedUrl} siteIcon={icon} />);
+              try {
+                await validateLoginTo(selectedUrl, (site) => {
+                  contentRef.current
+                    ?.closest("ion-nav")
+                    ?.push(() => (
+                      <Login
+                        url={selectedUrl}
+                        siteIcon={site.site_view.site.icon}
+                      />
+                    ));
+                });
+              } finally {
+                setSubmitting(false);
+              }
+            })();
           },
         },
         !alreadyLoggedIn && {
@@ -217,13 +226,19 @@ export default function PickJoinServer() {
               setSubmitting(true);
 
               try {
-                await dispatch(addGuestInstance(selectedUrl));
+                await validateLoginTo(selectedUrl, async () => {
+                  try {
+                    await dispatch(addGuestInstance(selectedUrl));
+                  } finally {
+                    setSubmitting(false);
+                  }
+
+                  setCanDismiss(true);
+                  dismiss();
+                });
               } finally {
                 setSubmitting(false);
               }
-
-              setCanDismiss(true);
-              dismiss();
             })();
           },
         },
@@ -371,7 +386,7 @@ function normalize(instance: GetSiteResponse | LVInstance): Instance {
   }
 
   return {
-    url: new URL(getApId(instance.site_view.site)).hostname,
+    url: new URL(instance.site_view.site.actor_id).hostname,
     icon: instance.site_view.site.icon,
     description: instance.site_view.site.description,
     open: instance.site_view.local_site.registration_mode === "Open",

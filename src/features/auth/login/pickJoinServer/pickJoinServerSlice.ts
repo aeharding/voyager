@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ThreadiverseClient } from "threadiverse";
 
 import { WHITELISTED_SERVERS } from "#/features/auth/login/data/servers";
 import { buildPrioritizeAndSortFn } from "#/helpers/array";
-import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { getCustomServers } from "#/services/app";
 import * as lemmyverse from "#/services/lemmyverse";
 import { AppDispatch } from "#/store";
@@ -38,7 +38,12 @@ export const getInstances = () => async (dispatch: AppDispatch) => {
     .filter(({ baseurl }) => serverWhitelist.includes(baseurl))
     .sort((a, b) => b.trust.score - a.trust.score)
     .filter(
-      (server) => server.open && isMinimumSupportedLemmyVersion(server.version),
+      (server) =>
+        server.open &&
+        ThreadiverseClient.resolveClient({
+          version: server.version,
+          name: "lemmy",
+        }),
     );
 
   const customSortFn = buildPrioritizeAndSortFn(

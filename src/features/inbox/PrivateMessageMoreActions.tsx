@@ -6,8 +6,8 @@ import {
   personOutline,
   textOutline,
 } from "ionicons/icons";
-import { PrivateMessageView } from "lemmy-js-client";
 import { use, useCallback, useImperativeHandle } from "react";
+import { PrivateMessageView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
@@ -56,7 +56,7 @@ export default function PrivateMessageMoreActions({
                   recipient:
                     item.private_message.creator_id ===
                     store.getState().site.response?.my_user?.local_user_view
-                      ?.local_user?.person_id
+                      ?.person.id
                       ? item.recipient
                       : item.creator,
                 },

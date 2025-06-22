@@ -5,13 +5,13 @@ import {
   IonSpinner,
   useIonAlert,
 } from "@ionic/react";
-import { GetPersonDetailsResponse } from "lemmy-js-client";
 import {
   useCallback,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useState,
 } from "react";
+import { GetPersonDetailsResponse } from "threadiverse";
 
 import Profile from "#/features/user/Profile";
 import { getUser } from "#/features/user/userSlice";
@@ -101,7 +101,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
 
   return (
     <FeedContent color="light-bg">
-      <Profile person={person} onPull={load} />
+      <Profile person={person.person_view} onPull={load} />
     </FeedContent>
   );
 }

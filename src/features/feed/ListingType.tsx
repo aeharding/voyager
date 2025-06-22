@@ -13,8 +13,8 @@ import {
   peopleOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
-import { ListingType } from "lemmy-js-client";
 import { useState } from "react";
+import { ListingType } from "threadiverse";
 
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";

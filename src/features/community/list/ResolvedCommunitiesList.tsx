@@ -1,6 +1,5 @@
 import { IonList } from "@ionic/react";
 import { compact, sortBy } from "es-toolkit";
-import { Community } from "lemmy-js-client";
 import {
   createContext,
   memo,
@@ -11,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Community } from "threadiverse";
 import {
   CustomContainerComponent,
   CustomItemComponentProps,

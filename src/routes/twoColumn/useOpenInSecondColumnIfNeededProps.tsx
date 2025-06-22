@@ -1,5 +1,5 @@
-import { Comment, Community, Post } from "lemmy-js-client";
 import { use } from "react";
+import { Comment, Community, Post } from "threadiverse";
 
 import { buildCommentLink, buildPostLink } from "#/helpers/appLinkBuilder";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";

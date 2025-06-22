@@ -91,7 +91,19 @@ export const WHITELISTED_SERVERS = uniq(
   Object.values(SERVERS_BY_CATEGORY).flat(),
 );
 
+const PIEFED_INSTANCES = [
+  "piefed.social",
+  "preferred.social",
+  "feddit.online",
+  "piefed.blahaj.zone",
+  "piefed.world",
+  "piefed.zip",
+  "piefed.ca",
+  "feddit.fr",
+];
+
 const ADDITIONAL_LOGIN_INSTANCES = [
+  ...PIEFED_INSTANCES,
   "lemmy.ml",
   "lemmygrad.ml",
   "lemmynsfw.com",

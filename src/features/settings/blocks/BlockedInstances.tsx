@@ -8,30 +8,14 @@ import {
   IonLoading,
   useIonModal,
 } from "@ionic/react";
-import { Instance } from "lemmy-js-client";
 import { useState } from "react";
+import { Instance } from "threadiverse";
 
 import { blockInstance } from "#/features/auth/siteSlice";
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { RemoveItemButton } from "#/features/shared/ListEditor";
 import InstanceSelectorModal from "#/features/shared/selectorModals/InstanceSelectorModal";
 import { useAppDispatch, useAppSelector } from "#/store";
-
-/**
- * lemmy v0.19 version
- */
-interface InstanceView {
-  instance: Instance;
-}
-
-/**
- * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.
- */
-function getInstance(potentialInstance: InstanceView | Instance): Instance {
-  if ("instance" in potentialInstance) return potentialInstance.instance;
-
-  return potentialInstance;
-}
 
 export default function BlockedInstances() {
   const dispatch = useAppDispatch();
@@ -55,7 +39,6 @@ export default function BlockedInstances() {
   );
 
   const sortedInstances = instances
-    ?.map(getInstance)
     ?.slice()
     .sort((a, b) => a.domain.localeCompare(b.domain));
 

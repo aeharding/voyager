@@ -1,5 +1,5 @@
-import { CommentView, PostView } from "lemmy-js-client";
 import { ComponentProps, use, useCallback, useMemo } from "react";
+import { CommentView, PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isStubComment } from "#/features/comment/CommentHeader";

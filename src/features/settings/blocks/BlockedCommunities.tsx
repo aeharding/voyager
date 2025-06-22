@@ -7,25 +7,14 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { Community, CommunityView } from "lemmy-js-client";
 import { useState } from "react";
+import { Community } from "threadiverse";
 
 import { blockCommunity } from "#/features/community/communitySlice";
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { RemoveItemButton } from "#/features/shared/ListEditor";
 import { getHandle } from "#/helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
-
-/**
- * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.
- */
-function getCommunity(
-  potentialCommunity: CommunityView | Community,
-): Community {
-  if ("community" in potentialCommunity) return potentialCommunity.community;
-
-  return potentialCommunity;
-}
 
 export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
@@ -36,7 +25,6 @@ export default function BlockedCommunities() {
   );
 
   const sortedCommunities = communities
-    ?.map(getCommunity)
     ?.slice()
     .sort((a, b) => a.name.localeCompare(b.name));
 

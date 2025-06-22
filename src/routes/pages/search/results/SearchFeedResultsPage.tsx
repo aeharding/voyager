@@ -3,12 +3,14 @@ import { useParams } from "react-router";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
-import { FetchFn } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { SearchSort } from "#/features/feed/sort/SearchSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import { receivedPosts } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
@@ -32,13 +34,16 @@ export default function SearchFeedResultsPage({
   }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = useFeedSort("posts", {
+  const [sort, setSort] = useFeedSort("search", {
     internal: `${type}Search`,
   });
+  const sortParams = useFeedSortParams("search", sort);
 
   const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    if (!sortParams) throw new AbortLoadError();
+
     const response = await client.search(
       {
         ...pageData,
@@ -46,10 +51,11 @@ export default function SearchFeedResultsPage({
         q: search,
         type_: type,
         community_name: community,
-        sort,
+        ...sortParams,
       },
       ...rest,
     );
+
     dispatch(receivedPosts(response.posts));
     dispatch(receivedComments(response.comments));
     return [...response.posts, ...response.comments];
@@ -69,7 +75,7 @@ export default function SearchFeedResultsPage({
           <IonTitle>“{search}”</IonTitle>
 
           <IonButtons slot="end">
-            <PostSort sort={sort} setSort={setSort} />
+            <SearchSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>

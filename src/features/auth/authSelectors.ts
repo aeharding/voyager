@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 
 import { parseLemmyJWT } from "#/helpers/lemmy";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { RootState } from "#/store";
 
 export const activeAccount = createSelector(

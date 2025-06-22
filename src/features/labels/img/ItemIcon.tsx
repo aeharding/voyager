@@ -1,5 +1,5 @@
-import { Community, Person } from "lemmy-js-client";
 import { useState } from "react";
+import { Community, Person } from "threadiverse";
 
 import CachedImg from "#/features/media/CachedImg";
 import FakeIcon from "#/features/shared/FakeIcon";

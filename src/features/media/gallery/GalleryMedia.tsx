@@ -1,6 +1,6 @@
-import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { ComponentProps, MouseEvent, use } from "react";
+import { PostView } from "threadiverse";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";

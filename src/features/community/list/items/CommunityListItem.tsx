@@ -5,8 +5,8 @@ import {
   IonItemSliding,
 } from "@ionic/react";
 import { star } from "ionicons/icons";
-import { Community } from "lemmy-js-client";
 import { useMemo } from "react";
+import { Community } from "threadiverse";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import ItemIcon from "#/features/labels/img/ItemIcon";

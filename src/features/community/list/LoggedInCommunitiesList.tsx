@@ -1,7 +1,7 @@
 import { IonRefresher, IonRefresherContent } from "@ionic/react";
 import { compact, uniqBy } from "es-toolkit";
-import { CommunityFollowerView, CommunityView } from "lemmy-js-client";
 import { useState } from "react";
+import { CommunityFollowerView, CommunityView } from "threadiverse";
 
 import { getSite } from "#/features/auth/siteSlice";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";

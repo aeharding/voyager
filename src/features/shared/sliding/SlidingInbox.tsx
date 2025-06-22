@@ -2,7 +2,7 @@ import {
   CommentReplyView,
   PersonMentionView,
   PrivateMessageView,
-} from "lemmy-js-client";
+} from "threadiverse";
 
 import { useAppSelector } from "#/store";
 

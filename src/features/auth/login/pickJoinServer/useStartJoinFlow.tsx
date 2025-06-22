@@ -1,11 +1,14 @@
 import { useIonAlert } from "@ionic/react";
-import { GetSiteResponse } from "lemmy-js-client";
 import { RefObject } from "react";
+import { GetSiteResponse } from "threadiverse";
 
-import { requestJoinSiteData } from "#/features/auth/login/join/joinSlice";
+import {
+  joinClientSelector,
+  requestJoinSiteData,
+} from "#/features/auth/login/join/joinSlice";
 import Legal from "#/features/auth/login/join/Legal";
 import useAppToast from "#/helpers/useAppToast";
-import { useAppDispatch } from "#/store";
+import store, { useAppDispatch } from "#/store";
 
 export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
   const presentToast = useAppToast();
@@ -26,6 +29,17 @@ export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
       });
 
       throw error;
+    }
+
+    if (
+      site &&
+      (await joinClientSelector(store.getState())?.getMode()) === "piefed"
+    ) {
+      presentAlert(
+        `Voyager doesn't support signups via Piefed right now, apologies!`,
+      );
+
+      return;
     }
 
     if (site?.site_view.local_site.registration_mode === "Closed") {

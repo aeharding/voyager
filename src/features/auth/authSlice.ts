@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ApplicationContext } from "capacitor-application-context";
 import { uniqBy } from "es-toolkit";
-import { Register } from "lemmy-js-client";
+import { Register } from "threadiverse";
 
 import { resetComments } from "#/features/comment/commentSlice";
 import { resetCommunities } from "#/features/community/communitySlice";
@@ -14,7 +14,7 @@ import { setDefaultFeed } from "#/features/settings/settingsSlice";
 import { resetUsers } from "#/features/user/userSlice";
 import { getRemoteHandle, parseLemmyJWT } from "#/helpers/lemmy";
 import { getDefaultServer } from "#/services/app";
-import { getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
 import { AppDispatch, RootState } from "#/store";
 
 import { getInstanceFromHandle, instanceSelector } from "./authSelectors";

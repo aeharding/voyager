@@ -1,7 +1,7 @@
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import { IonActionSheet, IonAlert } from "@ionic/react";
-import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { useImperativeHandle, useState } from "react";
+import { CommentView, PostView, PrivateMessageView } from "threadiverse";
 
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { buildReported } from "#/helpers/toastMessages";

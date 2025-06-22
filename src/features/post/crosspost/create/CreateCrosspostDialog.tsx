@@ -8,8 +8,8 @@ import {
   IonText,
   useIonModal,
 } from "@ionic/react";
-import { CommunityView, PostView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
+import { CommunityView, PostView } from "threadiverse";
 
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
 import { buildPostLink } from "#/helpers/appLinkBuilder";

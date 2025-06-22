@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
-import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
+import { PostView } from "threadiverse";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";

@@ -1,7 +1,7 @@
 import { ImpactStyle } from "@capacitor/haptics";
-import { CommentView } from "lemmy-js-client";
-import { PostView } from "lemmy-js-client";
 import { use } from "react";
+import { CommentView } from "threadiverse";
+import { PostView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";

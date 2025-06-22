@@ -1,8 +1,8 @@
 {
   "recommendations": [
-    "ionic.ionic",
     "esbenp.prettier-vscode",
     "github.vscode-github-actions",
-    "clinyong.vscode-css-modules"
+    "clinyong.vscode-css-modules",
+    "Webnative.webnative"
   ]
 }

@@ -12,27 +12,23 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { GetSiteResponse } from "lemmy-js-client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VList, VListHandle } from "virtua";
 
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
 import AppHeader from "#/features/shared/AppHeader";
-import {
-  isMinimumSupportedLemmyVersion,
-  MINIMUM_LEMMY_VERSION,
-} from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { getCustomServers } from "#/services/app";
-import { getClient } from "#/services/lemmy";
 
 import Login from "./Login";
+import useValidateLoginTo from "./useValidateLoginTo";
 
 import styles from "./PickLoginServer.module.css";
 
 export default function PickLoginServer() {
   const presentToast = useAppToast();
+  const validateLoginTo = useValidateLoginTo();
   const [search, setSearch] = useState("");
   const [shouldSubmit, setShouldSubmit] = useState(false);
   const searchHostname = stripProtocol(search.trim());
@@ -82,39 +78,18 @@ export default function PickLoginServer() {
 
     setLoading(true);
 
-    let site: GetSiteResponse;
-
     try {
-      site = await getClient(potentialServer).getSite();
-    } catch (error) {
-      presentToast({
-        message: `Problem connecting to ${potentialServer}. Please try again`,
-        color: "danger",
-        fullscreen: true,
+      await validateLoginTo(potentialServer, (site) => {
+        ref.current
+          ?.closest("ion-nav")
+          ?.push(() => (
+            <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
+          ));
       });
-
-      throw error;
     } finally {
       setLoading(false);
     }
-
-    if (!isMinimumSupportedLemmyVersion(site.version)) {
-      presentToast({
-        message: `${potentialServer} is running Lemmy v${site.version}. Voyager requires at least v${MINIMUM_LEMMY_VERSION}`,
-        color: "danger",
-        fullscreen: true,
-        duration: 6_000,
-      });
-
-      return;
-    }
-
-    ref.current
-      ?.closest("ion-nav")
-      ?.push(() => (
-        <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
-      ));
-  }, [instances, loading, presentToast, search, searchHostname]);
+  }, [instances, loading, search, searchHostname, validateLoginTo]);
 
   useEffect(() => {
     if (!shouldSubmit) return;

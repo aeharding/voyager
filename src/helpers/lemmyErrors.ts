@@ -1,4 +1,4 @@
-import { LemmyErrorType, Person } from "lemmy-js-client";
+import { LemmyErrorType, Person } from "threadiverse";
 
 type LemmyErrorValue = LemmyErrorType["error"];
 

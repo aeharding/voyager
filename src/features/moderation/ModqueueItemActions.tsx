@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { checkmarkCircleOutline, trashOutline } from "ionicons/icons";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "threadiverse";
 
 import { modRemoveComment } from "#/features/comment/commentSlice";
 import { ActionButton } from "#/features/post/actions/ActionButton";

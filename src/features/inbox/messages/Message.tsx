@@ -1,5 +1,4 @@
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
-import { PrivateMessageView } from "lemmy-js-client";
 import {
   use,
   useCallback,
@@ -8,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { PrivateMessageView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
@@ -16,7 +16,7 @@ import { cx } from "#/helpers/css";
 import useClient from "#/helpers/useClient";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import { getInboxCounts, receivedMessages } from "../inboxSlice";
+import { getInboxCounts, setReadStatus } from "../inboxSlice";
 
 import styles from "./Message.module.css";
 
@@ -29,8 +29,7 @@ export default function Message({ message, first }: MessageProps) {
   const dispatch = useAppDispatch();
   const { presentReport } = use(SharedDialogContext);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
 
   const thisIsMyMessage = message.private_message.creator_id === myUserId;
@@ -57,10 +56,8 @@ export default function Message({ message, first }: MessageProps) {
 
     setLoading(true);
 
-    let response;
-
     try {
-      response = await client.markPrivateMessageAsRead({
+      await client.markPrivateMessageAsRead({
         private_message_id: message.private_message.id,
         read: true,
       });
@@ -68,7 +65,7 @@ export default function Message({ message, first }: MessageProps) {
       setLoading(false);
     }
 
-    await dispatch(receivedMessages([response.private_message_view]));
+    await dispatch(setReadStatus({ item: message, read: true }));
     await dispatch(getInboxCounts(true));
   });
 

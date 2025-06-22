@@ -5,7 +5,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { PrivateMessageView } from "lemmy-js-client";
 import {
   use,
   useCallback,
@@ -17,6 +16,7 @@ import {
 } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { PrivateMessageView } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
@@ -69,8 +69,7 @@ export default function ConversationPage() {
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const tabContext = use(TabContext);
   const [tab, setTab] = useState<string | undefined>();

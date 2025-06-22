@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ResolveObjectResponse } from "lemmy-js-client";
+import { ResolveObjectResponse } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
@@ -13,6 +13,7 @@ import {
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import { isPiefedError } from "#/helpers/piefedErrors";
 import resolveFedilink from "#/services/activitypub";
 import { AppDispatch, RootState } from "#/store";
 
@@ -78,7 +79,8 @@ export const resolveObject =
         isLemmyError(error, "couldnt_find_person" as never) ||
         isLemmyError(error, "couldnt_find_community" as never) ||
         // TODO END
-        isLemmyError(error, "not_found")
+        isLemmyError(error, "not_found") ||
+        isPiefedError(error, "No object found.")
       ) {
         try {
           // FINE. We'll do it the hard/insecure way and ask original instance >:(
@@ -101,7 +103,8 @@ export const resolveObject =
             isLemmyError(error, "couldnt_find_person" as never) ||
             isLemmyError(error, "couldnt_find_community" as never) ||
             // TODO END
-            isLemmyError(error, "not_found")
+            isLemmyError(error, "not_found") ||
+            isPiefedError(error, "No object found.")
           ) {
             dispatch(couldNotFindUrl(url));
           }

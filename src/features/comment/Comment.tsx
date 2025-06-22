@@ -1,7 +1,7 @@
 import { IonItem } from "@ionic/react";
-import { CommentView } from "lemmy-js-client";
 import React, { MouseEvent, useRef } from "react";
 import AnimateHeight from "react-animate-height";
+import { CommentView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import Save from "#/features/labels/Save";
@@ -15,7 +15,6 @@ import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
-import { getCounts } from "#/helpers/lemmyCompat";
 import { filterEvents } from "#/helpers/longPress";
 import { useAppSelector } from "#/store";
 
@@ -76,7 +75,7 @@ export default function Comment({
   const stub = isStubComment(comment, canModerate);
 
   const cannotCollapse =
-    (showCollapsedComment || stub) && !getCounts(commentView).child_count;
+    (showCollapsedComment || stub) && !commentView.counts.child_count;
 
   const collapsed = cannotCollapse ? false : _collapsed;
 

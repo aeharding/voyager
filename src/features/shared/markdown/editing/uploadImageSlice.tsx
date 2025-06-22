@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UploadImageResponse } from "lemmy-js-client";
+import { UploadImageResponse } from "threadiverse";
 
 import {
   activeAccount,
   getInstanceFromHandle,
 } from "#/features/auth/authSelectors";
 import { Credential } from "#/features/auth/authSlice";
-import { _uploadImage, getClient } from "#/services/lemmy";
+import { getClient } from "#/services/client";
+import { _uploadImage } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
 export type UploadImageContext = "body" | "post-content";
@@ -48,7 +49,8 @@ export const uploadImageSlice = createSlice({
       }
 
       state.pendingSubmitImages = state.pendingSubmitImages.filter(
-        (img) => action.payload !== img.url,
+        (img) =>
+          !action.payload?.some((handledImg) => handledImg.url === img.url),
       );
     },
   },
@@ -92,8 +94,8 @@ export const deletePendingImageUploads =
     try {
       await Promise.all(
         toRemove.map(async (img) => {
-          const file = img.files?.[0];
-          if (!file) return;
+          const delete_token = img.delete_token;
+          if (!delete_token) return;
 
           const account = getState().auth.accountData?.accounts.find(
             ({ handle }) => handle === img._handle,
@@ -106,10 +108,7 @@ export const deletePendingImageUploads =
             account.jwt,
           );
 
-          await client.deleteImage({
-            token: file.delete_token,
-            filename: file.file,
-          });
+          await client.deleteImage({ url: img.url, delete_token });
         }),
       );
     } finally {

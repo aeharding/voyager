@@ -1,36 +1,6 @@
-import { LemmyHttp } from "lemmy-js-client";
+import { ThreadiverseClient } from "threadiverse";
 
-import { isNative } from "#/helpers/device";
 import { reduceFileSize } from "#/helpers/imageCompress";
-
-import nativeFetch from "./nativeFetch";
-
-const usingNativeFetch = isNative();
-
-const BASE_HEADERS = {
-  ["User-Agent"]: "VoyagerApp/1.0",
-} as const;
-
-export function buildBaseLemmyUrl(url: string): string {
-  if (import.meta.env.VITE_FORCE_LEMMY_INSECURE) {
-    return `http://${url}`;
-  }
-
-  return `https://${url}`;
-}
-
-export function getClient(url: string, jwt?: string): LemmyHttp {
-  return new LemmyHttp(buildBaseLemmyUrl(url), {
-    fetchFunction: usingNativeFetch ? nativeFetch : fetch.bind(globalThis),
-    headers: jwt
-      ? {
-          ...BASE_HEADERS,
-          Authorization: `Bearer ${jwt}`,
-          ["Cache-Control"]: "no-cache", // otherwise may get back cached site response (despite JWT)
-        }
-      : BASE_HEADERS,
-  });
-}
 
 export const LIMIT = 50;
 
@@ -56,7 +26,7 @@ const DEFAULT_LIMIT: CustomLimit = {
  */
 export async function _uploadImage(
   instance: string,
-  client: LemmyHttp,
+  client: ThreadiverseClient,
   image: File,
 ) {
   let compressedImageIfNeeded;
@@ -77,12 +47,15 @@ export async function _uploadImage(
   }
 
   const response = await client.uploadImage({
-    image: compressedImageIfNeeded as File,
+    file: compressedImageIfNeeded as File,
   });
 
   // lemm.ee uses response.message for error messages (e.g. account too new)
   if (!response.url)
-    throw new Error(response.msg ?? (response as unknown as Error).message);
+    throw new Error(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (response as any).msg ?? (response as unknown as Error).message,
+    );
 
   return response;
 }

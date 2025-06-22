@@ -1,5 +1,6 @@
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import {
   Comment,
   CommentView,
@@ -7,8 +8,7 @@ import {
   Person,
   PostView,
   PrivateMessageView,
-} from "lemmy-js-client";
-import React, { createContext, useEffect, useRef, useState } from "react";
+} from "threadiverse";
 
 import { changeAccount } from "#/features/auth/authSlice";
 import BanUserModal from "#/features/moderation/ban/BanUserModal";
