@@ -39,9 +39,6 @@ export default function CommunitiesExplorePage() {
       ...rest,
     );
 
-    // TODO Remove `as` once upgraded to lemmy-js-client v1
-    if ("results" in response) return response.results as CommunityView[];
-
     return response.communities;
   };
 
