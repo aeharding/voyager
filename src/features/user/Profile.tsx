@@ -8,9 +8,10 @@ import {
   eyeOffOutline,
 } from "ionicons/icons";
 import { ComponentProps } from "react";
-import { GetPersonDetailsResponse } from "threadiverse";
+import { CommentView, PersonView } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
+import { receivedComments } from "#/features/comment/commentSlice";
 import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
@@ -26,13 +27,13 @@ import { getHandle, getRemoteHandle, isPost } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
-import { useAppSelector } from "#/store";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 import Scores from "./Scores";
 
 interface ProfileProps
   extends Pick<ComponentProps<typeof PostCommentFeed>, "onPull"> {
-  person: GetPersonDetailsResponse;
+  person: Pick<PersonView, "person" | "counts">;
 }
 
 export default function Profile({ person, onPull }: ProfileProps) {
@@ -42,34 +43,41 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });
+  const dispatch = useAppDispatch();
 
-  const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
+  const isSelf = getRemoteHandle(person.person) === myHandle;
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const response = await client.getPersonDetails(
+    const response = await client.listPersonContent(
       {
         ...pageData,
         limit: LIMIT,
-        username: getHandle(person.person_view.person),
+        person_id: person.person.id,
       },
       ...rest,
     );
-    return [...response.posts, ...response.comments].sort(
-      (a, b) =>
-        getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
+
+    const content = response.content;
+
+    dispatch(
+      receivedComments(
+        response.content.filter((c) => !isPost(c)) as CommentView[],
+      ),
     );
+
+    return content;
   };
 
   const header = (
     <MaxWidthContainer>
       <Scores
-        aggregates={person.person_view.counts}
-        accountCreated={person.person_view.person.published}
+        aggregates={person.counts}
+        accountCreated={person.person.published}
       />
       <IonList inset>
         <IonItem
           routerLink={buildGeneralBrowseLink(
-            `/u/${getHandle(person.person_view.person)}/posts`,
+            `/u/${getHandle(person.person)}/posts`,
           )}
           detail
         >
@@ -78,7 +86,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
         </IonItem>
         <IonItem
           routerLink={buildGeneralBrowseLink(
-            `/u/${getHandle(person.person_view.person)}/comments`,
+            `/u/${getHandle(person.person)}/comments`,
           )}
           detail
         >
@@ -89,7 +97,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
           <>
             <IonItem
               routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person_view.person)}/saved`,
+                `/u/${getHandle(person.person)}/saved`,
               )}
               detail
             >
@@ -98,7 +106,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person_view.person)}/upvoted`,
+                `/u/${getHandle(person.person)}/upvoted`,
               )}
               detail
             >
@@ -107,7 +115,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person_view.person)}/downvoted`,
+                `/u/${getHandle(person.person)}/downvoted`,
               )}
               detail
             >
@@ -116,7 +124,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person_view.person)}/hidden`,
+                `/u/${getHandle(person.person)}/hidden`,
               )}
               detail
             >
@@ -152,9 +160,4 @@ export default function Profile({ person, onPull }: ProfileProps) {
       onPull={onPull}
     />
   );
-}
-
-function getPostCommentItemCreatedDate(item: PostCommentItem): number {
-  if (isPost(item)) return Date.parse(item.post.published);
-  return Date.parse(item.comment.published);
 }

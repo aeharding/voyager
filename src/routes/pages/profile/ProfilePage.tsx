@@ -1,6 +1,7 @@
 import {
   IonButton,
   IonButtons,
+  IonContent,
   IonIcon,
   IonTitle,
   IonToolbar,
@@ -15,9 +16,10 @@ import {
 } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
-import AsyncProfile from "#/features/user/AsyncProfile";
 import LoggedOut from "#/features/user/LoggedOut";
+import Profile from "#/features/user/Profile";
 import ProfilePageActions from "#/features/user/ProfilePageActions";
 import { AppPage } from "#/helpers/AppPage";
 import { isIosTheme } from "#/helpers/device";
@@ -33,7 +35,24 @@ export default function ProfilePage() {
 
   const { presentAccountSwitcher } = use(SharedDialogContext);
 
+  const myPerson = useAppSelector((state) => state.site.response?.my_user);
+
   const title = handle ?? connectedInstance;
+
+  function renderContent() {
+    if (!handle) return <LoggedOut />;
+
+    if (!myPerson) return <CenteredSpinner />;
+
+    return (
+      <Profile
+        person={{
+          person: myPerson.local_user_view.person,
+          counts: myPerson.local_user_view.counts,
+        }}
+      />
+    );
+  }
 
   return (
     <AppPage>
@@ -62,7 +81,7 @@ export default function ProfilePage() {
         </IonToolbar>
       </AppHeader>
 
-      {handle ? <AsyncProfile handle={handle} /> : <LoggedOut />}
+      <IonContent>{renderContent()}</IonContent>
     </AppPage>
   );
 }

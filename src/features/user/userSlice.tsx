@@ -3,10 +3,8 @@ import { BanFromCommunity, Person } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";
-import { receivedComments } from "#/features/comment/commentSlice";
 import { resetMessages, syncMessages } from "#/features/inbox/inboxSlice";
 import { getHandle } from "#/helpers/lemmy";
-import { LIMIT } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
 interface CommentState {
@@ -55,11 +53,9 @@ export const getUser =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const personResponse = await clientSelector(getState())?.getPersonDetails({
       username: handle,
-      limit: LIMIT,
     });
 
     dispatch(receivedUsers([personResponse.person_view.person]));
-    dispatch(receivedComments(personResponse.comments));
 
     return personResponse;
   };

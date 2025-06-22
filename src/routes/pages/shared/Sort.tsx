@@ -232,16 +232,17 @@ function hydrateSortOptions<S extends AnyVgerSort>(
     return {
       ...option,
       icon: option.icon ?? getSortIcon(option.label as AnyVgerSort),
-      children: option.children.map(hydrateSortOption),
+      children: option.children.map((child) => hydrateSortOption(child, true)),
     };
   }) as HydratedSortOptions<S>;
 }
 
 function hydrateSortOption(
   option: AnyVgerSort,
+  nested = false,
 ): SelectableSortOption<AnyVgerSort> {
   return {
-    label: formatSortLabel(option),
+    label: formatSortLabel(option, nested),
     icon: getSortIcon(option),
     value: option,
   } as SelectableSortOption<AnyVgerSort>;
@@ -315,7 +316,7 @@ export function getSortIcon(sort: AnyVgerSort): string {
   return helpCircleOutline;
 }
 
-export function formatSortLabel(sort: AnyVgerSort): string {
+export function formatSortLabel(sort: AnyVgerSort, nested = false): string {
   switch (sort) {
     case "TopHour":
     case "ControversialHour":
@@ -348,7 +349,7 @@ export function formatSortLabel(sort: AnyVgerSort): string {
       return "Year";
     case "TopAll":
     case "ControversialAll":
-      return "All Time";
+      return nested ? "All Time" : "Controversial";
     default:
       return startCase(sort);
   }

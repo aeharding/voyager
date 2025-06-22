@@ -101,7 +101,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
 
   return (
     <FeedContent color="light-bg">
-      <Profile person={person} onPull={load} />
+      <Profile person={person.person_view} onPull={load} />
     </FeedContent>
   );
 }
