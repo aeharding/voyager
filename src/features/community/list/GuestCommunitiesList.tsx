@@ -4,12 +4,13 @@ import {
   experimental_useEffectEvent as useEffectEvent,
   useState,
 } from "react";
-import { Community } from "threadiverse";
+import { Community, CommunitySortType } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
+import { AbortLoadError } from "#/features/feed/Feed";
 import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
-import useSupported from "#/helpers/useSupported";
+import { useMode } from "#/helpers/threadiverse";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppSelector } from "#/store";
 
@@ -29,17 +30,38 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const client = useAppSelector(clientSelector);
   const [isListAtTop, setIsListAtTop] = useState(true);
   const commonPostFeedParams = useCommonPostFeedParams();
-  const newSort = useSupported("New Sorting");
+  const mode = useMode();
 
   async function update() {
+    if (!mode) throw new AbortLoadError();
+
+    const sortParams: CommunitySortType = (() => {
+      switch (mode) {
+        case "lemmyv0":
+          return {
+            mode,
+            sort: "TopAll",
+          };
+        case "lemmyv1":
+          return {
+            mode,
+            sort: "ActiveSixMonths",
+          };
+        case "piefed":
+          return {
+            mode,
+            sort: "Active",
+          };
+      }
+    })();
+
     let communities;
 
     try {
       ({ communities } = await client.listCommunities({
         ...commonPostFeedParams,
         type_: SHOW_LOCAL_ONLY.includes(actor) ? "Local" : "All",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: Remove any once we've migrated to lemmy-js-client v1
-        sort: newSort ? ("ActiveSixMonths" as any) : "TopAll",
+        ...sortParams,
         limit: 50,
       }));
     } catch (error) {

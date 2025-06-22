@@ -4,10 +4,10 @@ import { clientSelector } from "#/features/auth/authSelectors";
 import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useMode } from "#/helpers/threadiverse";
 import { randomCommunityFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
-import useSupported from "#/helpers/useSupported";
 import store from "#/store";
 
 const RANDOM_CHUNK = 20;
@@ -16,13 +16,13 @@ export default function useGetRandomCommunity() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
-  const randomCommunityApiSupport = useSupported("Random community API");
+  const mode = useMode();
 
   return async () => {
     let chosenRandomCommunity;
     const client = clientSelector(store.getState());
 
-    if (randomCommunityApiSupport) {
+    if (mode === "lemmyv1") {
       let response;
 
       try {

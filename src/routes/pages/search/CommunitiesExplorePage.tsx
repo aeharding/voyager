@@ -20,11 +20,9 @@ import { CommunitySort } from "./results/CommunitySort";
 export default function CommunitiesExplorePage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = useFeedSort(
-    "communities",
-    { internal: "CommunitiesExplore" },
-    "TopAll",
-  );
+  const [sort, setSort] = useFeedSort("communities", {
+    internal: "CommunitiesExplore",
+  });
   const sortParams = useFeedSortParams("communities", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
 

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   CommentSortType,
+  CommunitySortType,
   CommunitySortTypeByMode,
   PostSortType,
   PostSortTypeByMode,
+  SearchSortType,
   SearchSortTypeByMode,
   ThreadiverseMode,
 } from "threadiverse";
@@ -41,6 +43,13 @@ interface VgerSorts {
   comments: VgerCommentSortType;
   search: VgerSearchSortType;
   communities: VgerCommunitySortType;
+}
+
+interface Sorts {
+  posts: PostSortType;
+  comments: CommentSortType;
+  search: SearchSortType;
+  communities: CommunitySortType;
 }
 
 export default function useFeedSort<
@@ -120,7 +129,10 @@ export default function useFeedSort<
 
 export function useFeedSortParams<
   Context extends "posts" | "comments" | "search" | "communities",
->(context: Context, sort: VgerSorts[Context] | undefined) {
+>(
+  context: Context,
+  sort: VgerSorts[Context] | undefined,
+): Sorts[Context] | undefined {
   const mode = useMode();
 
   if (!sort || !mode) return;
@@ -158,9 +170,10 @@ function convertCommunitySortToParams(
         mode: "lemmyv1",
       };
     case "piefed":
-      return convertPostSortToPiefedParams(
-        sort as VgerCommunitySortTypeByMode["piefed"],
-      );
+      return {
+        sort: sort as VgerCommunitySortTypeByMode["piefed"],
+        mode: "piefed",
+      };
   }
 }
 
