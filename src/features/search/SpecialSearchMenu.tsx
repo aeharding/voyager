@@ -14,14 +14,14 @@ export default function SpecialSearchMenu() {
   // Prevent shift of content
   if (trendingCommunities === undefined) return;
 
-  if (!communitiesCount) return;
-
   return (
     <IonList inset color="primary">
-      <IonItem routerLink="/search/random">
-        <IonIcon icon={shuffle} color="primary" slot="start" />
-        <IonLabel className="ion-text-nowrap">Random Community</IonLabel>
-      </IonItem>
+      {communitiesCount && (
+        <IonItem routerLink="/search/random">
+          <IonIcon icon={shuffle} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">Random Community</IonLabel>
+        </IonItem>
+      )}
       <IonItem routerLink="/search/explore">
         <IonIcon icon={planetOutline} color="primary" slot="start" />
         <IonLabel className="ion-text-nowrap">Explore</IonLabel>

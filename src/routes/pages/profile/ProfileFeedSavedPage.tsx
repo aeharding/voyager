@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
-import { sortPostCommentByPublished } from "#/helpers/lemmy";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 
@@ -13,17 +12,16 @@ export default function ProfileFeedSavedPage() {
   const client = useClient();
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const { comments, posts } = await client.getPersonDetails(
+    const { content } = await client.listPersonSaved(
       {
         ...pageData,
-        limit: LIMIT,
         username: handle,
-        saved_only: true,
+        limit: LIMIT,
       },
       ...rest,
     );
 
-    return [...comments, ...posts].sort(sortPostCommentByPublished);
+    return content;
   };
 
   return <BaseProfileFeedItemsPage label="Saved" fetchFn={fetchFn} />;

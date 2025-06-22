@@ -1,17 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  CommentSortTypeByMode,
+  CommentSortType,
+  CommunitySortTypeByMode,
+  PostSortType,
   PostSortTypeByMode,
+  SearchSortTypeByMode,
   ThreadiverseMode,
 } from "threadiverse";
 
-import useMode from "#/core/useMode";
 import {
-  COMMENT_SORT_BY_MODE,
   VgerCommentSortType,
+  VgerCommentSortTypeByMode,
 } from "#/features/comment/CommentSort";
-import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
-import { FlattenSortOptions } from "#/routes/pages/shared/Sort";
+import { useMode } from "#/helpers/threadiverse";
+import {
+  VgerCommunitySortType,
+  VgerCommunitySortTypeByMode,
+} from "#/routes/pages/search/results/CommunitySort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
@@ -27,8 +32,8 @@ import {
   setFeedSort,
   SetSortActionPayload,
 } from "./feedSortSlice";
-import { POST_SORT_BY_MODE, VgerPostSortType } from "./PostSort";
-import { VgerSearchSortType } from "./SearchSort";
+import { VgerPostSortType, VgerPostSortTypeByMode } from "./PostSort";
+import { VgerSearchSortType, VgerSearchSortTypeByMode } from "./SearchSort";
 import { isTopSort, topSortToDuration, VgerTopSort } from "./topSorts";
 
 interface VgerSorts {
@@ -48,14 +53,15 @@ export default function useFeedSort<
   type Sort = VgerSorts[Context];
 
   const dispatch = useAppDispatch();
+  const mode = useMode();
 
   const feedSort = useAppSelector(getFeedSortSelectorBuilder(feed, context)) as
     | Sort
     | null
     | undefined;
-  const defaultSort = useAppSelector(
-    (state) => state.settings.general[context].sort,
-  ) as Sort;
+  const defaultSort = useAppSelector((state) =>
+    mode ? state.settings.general[context].sort[mode] : undefined,
+  ) as Sort | undefined;
   const rememberCommunitySort = useAppSelector(
     (state) => state.settings.general[context].rememberCommunitySort,
   );
@@ -81,8 +87,12 @@ export default function useFeedSort<
   }, [feed, dispatch, rememberCommunitySort, context, defaultSort]);
 
   useEffect(() => {
-    if (!rememberCommunitySort) return;
     if (sort) return;
+    if (!rememberCommunitySort) {
+      // If default sort not loaded yet, update to use it
+      _setSort(defaultSort);
+      return;
+    }
     if (feedSort === undefined) return; // null = loaded, but custom community sort not found
 
     _setSort(feedSort ?? defaultSort);
@@ -123,55 +133,132 @@ function convertSortToLemmyParams<
 >(context: Context, sort: VgerSorts[Context], mode: ThreadiverseMode) {
   switch (context) {
     case "posts":
-      return convertPostSortToParams(sort as VgerPostSortType, mode);
+      return convertPostSortToParams(sort as VgerSorts["posts"], mode);
     case "comments":
-      return convertCommentSortToParams(sort as VgerCommentSortType, mode);
-    // case "search":
-    //   return SEARCH_SORT_SUPPORT[sort].find((p) => p.mode === mode);
-    // case "communities":
-    //   return COMMUNITY_SORT_SUPPORT[sort].find((p) => p.mode === mode);
+      return convertCommentSortToParams(sort as VgerSorts["comments"], mode);
+    case "search":
+      return convertSearchSortToParams(sort as VgerSearchSortType, mode);
+    case "communities":
+      return convertCommunitySortToParams(sort as VgerCommunitySortType, mode);
   }
 }
 
-type PiefedCommentSorts = FlattenSortOptions<
-  (typeof COMMENT_SORT_BY_MODE)["piefed"]
->[number];
+function convertCommunitySortToParams(
+  sort: VgerCommunitySortType,
+  mode: ThreadiverseMode,
+): CommunitySortTypeByMode[ThreadiverseMode] {
+  switch (mode) {
+    case "lemmyv0":
+      return convertPostSortToLemmyV0Params(
+        sort as VgerCommunitySortTypeByMode["lemmyv0"],
+      );
+    case "lemmyv1":
+      return {
+        sort: sort as VgerCommunitySortTypeByMode["lemmyv1"],
+        mode: "lemmyv1",
+      };
+    case "piefed":
+      return convertPostSortToPiefedParams(
+        sort as VgerCommunitySortTypeByMode["piefed"],
+      );
+  }
+}
+
+function convertSearchSortToParams(
+  sort: VgerSearchSortType,
+  mode: ThreadiverseMode,
+): SearchSortTypeByMode[ThreadiverseMode] {
+  switch (mode) {
+    case "lemmyv0":
+      return convertPostSortToLemmyV0Params(
+        sort as VgerPostSortTypeByMode["lemmyv0"],
+      );
+    case "lemmyv1":
+      return convertSearchSortToLemmyV1Params(
+        sort as VgerSearchSortTypeByMode["lemmyv1"],
+      );
+    case "piefed":
+      return convertSearchSortToPiefedParams(
+        sort as VgerSearchSortTypeByMode["piefed"],
+      );
+  }
+}
+
+function convertSearchSortToLemmyV1Params(
+  sort: VgerSearchSortTypeByMode["lemmyv1"],
+): SearchSortTypeByMode["lemmyv1"] {
+  switch (sort) {
+    case "Old":
+    case "New":
+      return { sort, mode: "lemmyv1" };
+    default:
+      if (isTopSort(sort)) {
+        return {
+          ...convertTopToLemmyParams(sort),
+          mode: "lemmyv1",
+        };
+      }
+
+      throw new Error(`Invalid sort: ${sort}`);
+  }
+}
+
+function convertSearchSortToPiefedParams(
+  sort: VgerSearchSortTypeByMode["piefed"],
+): SearchSortTypeByMode["piefed"] {
+  switch (sort) {
+    case "New":
+    case "TopDay":
+    case "TopHour":
+    case "TopMonth":
+    case "TopSixHour":
+    case "TopTwelveHour":
+    case "TopWeek":
+    case "Active":
+    case "Hot":
+    case "Scaled":
+      return { sort, mode: "piefed" };
+  }
+}
 
 function convertCommentSortToParams(
   sort: VgerCommentSortType,
   mode: ThreadiverseMode,
-): CommentSortTypeByMode[ThreadiverseMode] {
+): CommentSortType {
   switch (mode) {
     case "lemmyv0":
       return { sort, mode: "lemmyv0" };
     case "lemmyv1":
       return { sort, mode: "lemmyv1" };
     case "piefed":
-      return { sort: sort as PiefedCommentSorts, mode: "piefed" };
+      return {
+        sort: sort as VgerCommentSortTypeByMode["piefed"],
+        mode: "piefed",
+      };
   }
 }
 
 function convertPostSortToParams(
   sort: VgerPostSortType,
   mode: ThreadiverseMode,
-): PostSortTypeByMode[ThreadiverseMode] {
+): PostSortType {
   switch (mode) {
     case "lemmyv0":
-      return convertPostSortToLemmyV0Params(sort as LemmyV0PostSorts);
+      return convertPostSortToLemmyV0Params(
+        sort as VgerPostSortTypeByMode["lemmyv0"],
+      );
     case "lemmyv1":
       return convertPostSortToLemmyV1Params(sort);
     case "piefed": {
-      return convertPostSortToPiefedParams(sort as PiefedPostSorts);
+      return convertPostSortToPiefedParams(
+        sort as VgerPostSortTypeByMode["piefed"],
+      );
     }
   }
 }
 
-type LemmyV0PostSorts = FlattenSortOptions<
-  (typeof POST_SORT_BY_MODE)["lemmyv0"]
->[number];
-
 function convertPostSortToLemmyV0Params(
-  sort: LemmyV0PostSorts,
+  sort: VgerPostSortTypeByMode["lemmyv0"],
 ): PostSortTypeByMode["lemmyv0"] {
   switch (sort) {
     case "Active":
@@ -198,7 +285,7 @@ function convertPostSortToLemmyV0Params(
 }
 
 function convertPostSortToLemmyV1Params(
-  sort: FlattenSortOptions<(typeof POST_SORT_BY_MODE)["lemmyv1"]>[number],
+  sort: VgerPostSortTypeByMode["lemmyv1"],
 ): PostSortTypeByMode["lemmyv1"] {
   switch (sort) {
     case "Active":
@@ -227,12 +314,8 @@ function convertPostSortToLemmyV1Params(
   }
 }
 
-type PiefedPostSorts = FlattenSortOptions<
-  (typeof POST_SORT_BY_MODE)["piefed"]
->[number];
-
 function convertPostSortToPiefedParams(
-  sort: PiefedPostSorts,
+  sort: VgerPostSortTypeByMode["piefed"],
 ): PostSortTypeByMode["piefed"] {
   switch (sort) {
     case "Active":

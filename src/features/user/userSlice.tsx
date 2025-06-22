@@ -60,6 +60,17 @@ export const getUser =
     return personResponse;
   };
 
+export const getUserIfNeeded =
+  (handle: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const user = getState().user.userByHandle[handle];
+
+    if (user) return user;
+
+    const response = await dispatch(getUser(handle));
+    return response.person_view.person;
+  };
+
 export const blockUser =
   (block: boolean, id: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {

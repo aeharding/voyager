@@ -8,10 +8,12 @@ import { FederatedInstances } from "threadiverse";
 import {
   ALL_COMMENT_SORTS,
   VgerCommentSortType,
+  VgerCommentSortTypeByMode,
 } from "#/features/comment/CommentSort";
 import {
   ALL_POST_SORTS,
   VgerPostSortType,
+  VgerPostSortTypeByMode,
 } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
 import { get, LOCALSTORAGE_KEYS, set } from "#/features/settings/syncStorage";
@@ -368,9 +370,13 @@ export interface GlobalSettingValueTypes {
   compact_show_voting_buttons: boolean;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_thumbnail_size: CompactThumbnailSizeType;
-  default_comment_sort: CommentDefaultSort;
+  default_comment_sort_lemmyv0: VgerCommentSortTypeByMode["lemmyv0"];
+  default_comment_sort_lemmyv1: VgerCommentSortTypeByMode["lemmyv1"];
+  default_comment_sort_piefed: VgerCommentSortTypeByMode["piefed"];
   default_community_sort_by_feed: VgerCommunitySortType;
-  default_post_sort: VgerPostSortType;
+  default_post_sort_lemmyv0: VgerPostSortTypeByMode["lemmyv0"];
+  default_post_sort_lemmyv1: VgerPostSortTypeByMode["lemmyv1"];
+  default_post_sort_piefed: VgerPostSortTypeByMode["piefed"];
   default_search_sort_by_feed: VgerSearchSortType;
   default_share: PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
@@ -453,8 +459,12 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "compact_show_voting_buttons",
   "compact_thumbnail_position_type",
   "compact_thumbnail_size",
-  "default_comment_sort",
-  "default_post_sort",
+  "default_comment_sort_lemmyv0",
+  "default_comment_sort_lemmyv1",
+  "default_comment_sort_piefed",
+  "default_post_sort_lemmyv0",
+  "default_post_sort_lemmyv1",
+  "default_post_sort_piefed",
   "disable_auto_hide_in_communities",
   "disable_marking_posts_read",
   "embed_crossposts",
@@ -711,6 +721,18 @@ export class WefwefDB extends Dexie {
 
         location.reload();
       }
+    });
+
+    this.version(11).upgrade(async () => {
+      await this.settings
+        .where("key")
+        .equals("default_post_sort")
+        .modify({ key: "default_post_sort_lemmyv0" });
+
+      await this.settings
+        .where("key")
+        .equals("default_comment_sort")
+        .modify({ key: "default_comment_sort_lemmyv0" });
     });
   }
 

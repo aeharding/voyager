@@ -11,13 +11,21 @@ import {
 import Dexie from "dexie";
 import { merge, zipObject } from "es-toolkit";
 import { produce } from "immer";
+import { ThreadiverseMode } from "threadiverse";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
-import { VgerPostSortType } from "#/features/feed/sort/PostSort";
-import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
+import {
+  VgerCommentSortType,
+  VgerCommentSortTypeByMode,
+} from "#/features/comment/CommentSort";
+import {
+  VgerPostSortType,
+  VgerPostSortTypeByMode,
+} from "#/features/feed/sort/PostSort";
+import { VgerSearchSortTypeByMode } from "#/features/feed/sort/SearchSort";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
-import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
+import { VgerCommunitySortTypeByMode } from "#/routes/pages/search/results/CommunitySort";
 import {
   ALL_GLOBAL_SETTINGS,
   AppThemeType,
@@ -34,7 +42,6 @@ import {
   JumpButtonPositionType,
   LinkHandlerType,
   OAutoplayMediaType,
-  OCommentDefaultSort,
   OCommentThreadCollapse,
   OCompactThumbnailPositionType,
   OCompactThumbnailSizeType,
@@ -128,7 +135,7 @@ export interface SettingsState {
     comments: {
       collapseCommentThreads: CommentThreadCollapse;
       tapToCollapse: TapToCollapseType;
-      sort: CommentDefaultSort;
+      sort: VgerCommentSortTypeByMode;
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
       highlightNewAccount: boolean;
@@ -138,7 +145,7 @@ export interface SettingsState {
       rememberCommunitySort: boolean;
     };
     posts: {
-      sort: VgerPostSortType;
+      sort: VgerPostSortTypeByMode;
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
@@ -152,11 +159,11 @@ export interface SettingsState {
       autoplayMedia: AutoplayMediaType;
     };
     search: {
-      sort: VgerSearchSortType;
+      sort: VgerSearchSortTypeByMode;
       rememberCommunitySort: boolean;
     };
     communities: {
-      sort: VgerCommunitySortType;
+      sort: VgerCommunitySortTypeByMode;
       rememberCommunitySort: boolean;
     };
     safari: {
@@ -248,13 +255,21 @@ const baseState: SettingsState = {
       showCollapsed: false,
       showCommentImages: true,
       showJumpButton: false,
-      sort: OCommentDefaultSort.Hot,
+      sort: {
+        lemmyv0: "Hot",
+        lemmyv1: "Hot",
+        piefed: "Hot",
+      },
       tapToCollapse: OTapToCollapseType.Both,
       touchFriendlyLinks: true,
     },
     communities: {
       rememberCommunitySort: false,
-      sort: "ActiveSixMonths",
+      sort: {
+        lemmyv0: "TopAll",
+        lemmyv1: "ActiveSixMonths",
+        piefed: "Active",
+      },
     },
     defaultFeed: undefined,
     // TODO: Enable by default in late June 2025
@@ -281,7 +296,11 @@ const baseState: SettingsState = {
       rememberCommunitySort: false,
       showHiddenInCommunities: false,
       showHideReadButton: false,
-      sort: "Active",
+      sort: {
+        lemmyv0: "Active",
+        lemmyv1: "Active",
+        piefed: "Hot",
+      },
       upvoteOnSave: false,
     },
     preferNativeApps: true,
@@ -290,7 +309,11 @@ const baseState: SettingsState = {
     },
     search: {
       rememberCommunitySort: false,
-      sort: "TopAll",
+      sort: {
+        lemmyv0: "TopAll",
+        lemmyv1: "TopAll",
+        piefed: "Active",
+      },
     },
     thumbnailinatorEnabled: true,
   },
@@ -377,17 +400,37 @@ export const settingsSlice = createSlice({
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
     },
-    setDefaultCommentSort(state, action: PayloadAction<CommentDefaultSort>) {
-      state.general.comments.sort = action.payload;
-      db.setSetting("default_comment_sort", action.payload);
+    setDefaultCommentSort(
+      state,
+      action: PayloadAction<{
+        mode: ThreadiverseMode;
+        sort: CommentDefaultSort;
+      }>,
+    ) {
+      (state.general.comments.sort[
+        action.payload.mode
+      ] as VgerCommentSortType) = action.payload.sort;
+
+      db.setSetting(
+        `default_comment_sort_${action.payload.mode}`,
+        action.payload.sort,
+      );
     },
     setDefaultFeed(state, action: PayloadAction<DefaultFeedType | undefined>) {
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
-    setDefaultPostSort(state, action: PayloadAction<VgerPostSortType>) {
-      state.general.posts.sort = action.payload;
-      db.setSetting("default_post_sort", action.payload);
+    setDefaultPostSort(
+      state,
+      action: PayloadAction<{ mode: ThreadiverseMode; sort: VgerPostSortType }>,
+    ) {
+      (state.general.posts.sort[action.payload.mode] as VgerPostSortType) =
+        action.payload.sort;
+
+      db.setSetting(
+        `default_post_sort_${action.payload.mode}`,
+        action.payload.sort,
+      );
     },
     setDefaultShare(state, action: PayloadAction<PostCommentShareType>) {
       state.general.defaultShare = action.payload;
@@ -940,7 +983,11 @@ function hydrateStateWithGlobalSettings(
         showCollapsed: settings.show_collapsed_comment,
         showCommentImages: settings.show_comment_images,
         showJumpButton: settings.show_jump_button,
-        sort: settings.default_comment_sort,
+        sort: {
+          lemmyv0: settings.default_comment_sort_lemmyv0,
+          lemmyv1: settings.default_comment_sort_lemmyv1,
+          piefed: settings.default_comment_sort_piefed,
+        },
         tapToCollapse: settings.tap_to_collapse,
         touchFriendlyLinks: settings.touch_friendly_links,
       },
@@ -963,7 +1010,11 @@ function hydrateStateWithGlobalSettings(
         rememberCommunitySort: settings.remember_community_post_sort,
         showHiddenInCommunities: settings.show_hidden_in_communities,
         showHideReadButton: settings.show_hide_read_button,
-        sort: settings.default_post_sort,
+        sort: {
+          lemmyv0: settings.default_post_sort_lemmyv0,
+          lemmyv1: settings.default_post_sort_lemmyv1,
+          piefed: settings.default_post_sort_piefed,
+        },
         upvoteOnSave: settings.upvote_on_save,
       },
       preferNativeApps: settings.prefer_native_apps,

@@ -21,7 +21,6 @@ import {
 } from "ionicons/icons";
 import { ThreadiverseMode } from "threadiverse";
 
-import useMode from "#/core/useMode";
 import { VgerCommentSortType } from "#/features/comment/CommentSort";
 import { isControversialSort } from "#/features/feed/sort/controversialSorts";
 import { VgerPostSortType } from "#/features/feed/sort/PostSort";
@@ -40,6 +39,7 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+import { OPTIMISTIC_MODE, useMode } from "#/helpers/threadiverse";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
@@ -92,13 +92,15 @@ export default function buildSort<S extends AnyVgerSort>(
   function Sort({ sort, setSort }: SortProps<S>) {
     const getAppScrollable = useGetAppScrollable();
 
-    // Proactively assume lemmy v1 sorts until site software is resolved
-    const sortOptions = useSortOptions("lemmyv1");
+    // Proactively assume for render until site software is resolved
+    const sortOptions = useSortOptions(OPTIMISTIC_MODE);
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);
       scrollUpIfNeeded(getAppScrollable(), 0, "auto");
     });
+
+    if (!sort) return;
 
     const sortIcon = findSortOption(sort, sortOptions)?.icon;
 

@@ -1,30 +1,17 @@
 import { arrayOfAll } from "#/helpers/array";
 import buildSort, {
+  FlattenSortOptions,
   flattenSortOptions,
-  SortOptionsByMode,
 } from "#/routes/pages/shared/Sort";
 
 import { CONTROVERSIAL_SORTS } from "./controversialSorts";
-import { TOP_SORTS } from "./topSorts";
-
-export type VgerPostSortType =
-  // Desired vanilla lemmy sort types
-  | "Active"
-  | "Hot"
-  | "New"
-  | "Scaled"
-  | "MostComments"
-  | "NewComments"
-  // Plus voyager top sorts
-  | (typeof TOP_SORTS)["children"][number]
-  // Plus voyager controversial sorts
-  | (typeof CONTROVERSIAL_SORTS)["children"][number];
+import { LEMMY_TOP_SORTS, PIEFED_TOP_SORTS } from "./topSorts";
 
 export const POST_SORT_BY_MODE = {
   lemmyv0: [
     "Active",
     "Hot",
-    TOP_SORTS,
+    LEMMY_TOP_SORTS,
     "New",
     "ControversialAll",
     "Scaled",
@@ -34,31 +21,24 @@ export const POST_SORT_BY_MODE = {
   lemmyv1: [
     "Active",
     "Hot",
-    TOP_SORTS,
+    LEMMY_TOP_SORTS,
     "New",
     CONTROVERSIAL_SORTS,
     "Scaled",
     "MostComments",
     "NewComments",
   ],
-  piefed: [
-    "Hot",
-    {
-      label: "Top",
-      children: [
-        "TopHour",
-        "TopSixHour",
-        "TopTwelveHour",
-        "TopDay",
-        "TopWeek",
-        "TopMonth",
-      ],
-    },
-    "New",
-    "Active",
-    "Scaled",
-  ],
-} as const satisfies SortOptionsByMode<VgerPostSortType>;
+  piefed: ["Hot", PIEFED_TOP_SORTS, "New", "Active", "Scaled"],
+} as const;
+
+export type VgerPostSortTypeByMode = {
+  [K in keyof typeof POST_SORT_BY_MODE]: FlattenSortOptions<
+    (typeof POST_SORT_BY_MODE)[K]
+  >[number];
+};
+
+export type VgerPostSortType =
+  VgerPostSortTypeByMode[keyof VgerPostSortTypeByMode];
 
 // TODO: lemmy v1 might not contain all the sorts. Dedupe in typescript??
 const flattenedSortOptions = flattenSortOptions(POST_SORT_BY_MODE.lemmyv1);

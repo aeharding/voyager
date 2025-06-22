@@ -6,14 +6,17 @@ import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
   useFeedSortParams,
 } from "#/features/feed/sort/useFeedSort";
+import { getUserIfNeeded } from "#/features/user/userSlice";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch } from "#/store";
 
 import BaseProfileFeedItemsPage from "./BaseProfileFeedItemsPage";
 
 export default function ProfileFeedPostsPage() {
   const client = useClient();
   const { handle } = useParams<{ handle: string }>();
+  const dispatch = useAppDispatch();
 
   const [sort, setSort] = useFeedSort(
     "search",
@@ -27,17 +30,20 @@ export default function ProfileFeedPostsPage() {
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     if (!sortParams) throw new AbortLoadError();
 
-    const { posts } = await client.getPersonDetails(
+    const person = await dispatch(getUserIfNeeded(handle));
+
+    const { content } = await client.listPersonContent(
       {
         ...pageData,
+        type: "Posts",
         limit: LIMIT,
-        username: handle,
+        person_id: person.id,
         ...sortParams,
       },
       ...rest,
     );
 
-    return posts;
+    return content;
   };
 
   return (

@@ -1,38 +1,8 @@
-import buildSort, { SortOptionsByMode } from "#/routes/pages/shared/Sort";
+import { POST_SORT_BY_MODE } from "#/features/feed/sort/PostSort";
+import buildSort, { FlattenSortOptions } from "#/routes/pages/shared/Sort";
 
-export type VgerCommunitySortType =
-  | "ActiveSixMonths"
-  | "ActiveMonthly"
-  | "ActiveWeekly"
-  | "ActiveDaily"
-  | "Hot"
-  | "New"
-  | "Old"
-  | "NameAsc"
-  | "NameDesc"
-  | "Comments"
-  | "Posts"
-  | "Subscribers"
-  | "SubscribersLocal";
-
-const sortOptionsByMode = {
-  lemmyv0: [
-    {
-      label: "Active",
-      children: [
-        "ActiveSixMonths",
-        "ActiveMonthly",
-        "ActiveWeekly",
-        "ActiveDaily",
-      ],
-    },
-    "Subscribers",
-    "Hot",
-    "Posts",
-    "Comments",
-    "New",
-    "Old",
-  ],
+export const COMMUNITY_SORT_BY_MODE = {
+  lemmyv0: POST_SORT_BY_MODE["lemmyv0"],
   lemmyv1: [
     {
       label: "Active",
@@ -53,26 +23,17 @@ const sortOptionsByMode = {
     "NameDesc",
     "SubscribersLocal",
   ],
-  piefed: [
-    {
-      label: "Active",
-      children: [
-        "ActiveSixMonths",
-        "ActiveMonthly",
-        "ActiveWeekly",
-        "ActiveDaily",
-      ],
-    },
-    "Subscribers",
-    "Hot",
-    "Posts",
-    "Comments",
-    "New",
-    "Old",
-    "NameAsc",
-    "NameDesc",
-  ],
-} as const satisfies SortOptionsByMode<VgerCommunitySortType>;
+  piefed: POST_SORT_BY_MODE["piefed"],
+} as const;
+
+export type VgerCommunitySortTypeByMode = {
+  [K in keyof typeof COMMUNITY_SORT_BY_MODE]: FlattenSortOptions<
+    (typeof COMMUNITY_SORT_BY_MODE)[K]
+  >[number];
+};
+
+export type VgerCommunitySortType =
+  VgerCommunitySortTypeByMode[keyof VgerCommunitySortTypeByMode];
 
 export const { Sort: CommunitySort, useSelectSort: useSelectCommunitySort } =
-  buildSort(sortOptionsByMode);
+  buildSort(COMMUNITY_SORT_BY_MODE);

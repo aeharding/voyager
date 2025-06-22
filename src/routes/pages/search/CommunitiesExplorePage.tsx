@@ -23,7 +23,7 @@ export default function CommunitiesExplorePage() {
   const [sort, setSort] = useFeedSort(
     "communities",
     { internal: "CommunitiesExplore" },
-    "Subscribers",
+    "TopAll",
   );
   const sortParams = useFeedSortParams("communities", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
