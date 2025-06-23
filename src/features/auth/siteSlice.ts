@@ -107,7 +107,6 @@ export const getSiteIfNeeded =
     if (getState().site.response) return;
     if (getState().site.loading) return;
 
-    dispatch(getSoftware());
     dispatch(getSite());
   };
 
@@ -133,14 +132,17 @@ export const getSoftware =
   };
 
 export const getSite =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (existingSite?: GetSiteResponse) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(getSoftware());
+
     const reqId = siteReqIdSelector(getState());
     let site;
 
     dispatch(loadingSite());
 
     try {
-      site = await clientSelector(getState()).getSite();
+      site = existingSite ?? (await clientSelector(getState()).getSite());
     } catch (error) {
       dispatch(failedSite());
 

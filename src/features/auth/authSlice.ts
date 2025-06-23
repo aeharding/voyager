@@ -18,7 +18,7 @@ import { getClient } from "#/services/client";
 import { AppDispatch, RootState } from "#/store";
 
 import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
-import { receivedSite, resetSite } from "./siteSlice";
+import { getSite, resetSite } from "./siteSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -193,14 +193,10 @@ export const register =
 
 export const addGuestInstance =
   (url: string) => async (dispatch: AppDispatch) => {
-    const client = getClient(url);
-
-    const site = await client.getSite();
-
     dispatch(resetAccountSpecificStoreData());
-    dispatch(receivedSite(site));
     dispatch(addAccount({ handle: url }));
     dispatch(updateConnectedInstance(url));
+    dispatch(getSite());
   };
 
 const addJwt =
@@ -213,9 +209,9 @@ const addJwt =
     if (!myUser) throw new Error("broke");
 
     dispatch(resetAccountSpecificStoreData());
-    dispatch(receivedSite(site));
     dispatch(addAccount({ jwt, handle: getRemoteHandle(myUser) }));
     dispatch(updateConnectedInstance(parseLemmyJWT(jwt).iss));
+    dispatch(getSite(site));
   };
 
 const resetAccountSpecificStoreData = () => (dispatch: AppDispatch) => {
