@@ -35,7 +35,8 @@
     "patchedDependencies": {
       "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
       "@capacitor/android": "patches/@capacitor__android.patch",
-      "@capacitor/haptics": "patches/@capacitor__haptics.patch"
+      "@capacitor/haptics": "patches/@capacitor__haptics.patch",
+      "openapi-fetch": "patches/openapi-fetch.patch"
     },
     "updateConfig": {
       "ignoreDependencies": [
