@@ -22,7 +22,6 @@ export default function MentionsPage() {
       {
         ...pageData,
         limit: LIMIT,
-        sort: "New",
         unread_only: false,
       },
       ...rest,

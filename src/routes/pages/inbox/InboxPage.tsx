@@ -31,16 +31,11 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   const fetchFn: FetchFn<InboxItemView> = async (pageData, ...rest) => {
     if (!myUserId) throw new Error("Logged out");
 
-    const params = {
-      limit: 50,
-      ...pageData,
-      unread_only: !showRead,
-    };
-
     const notifications = await client.getNotifications(
       {
-        ...params,
-        sort: "New",
+        limit: 50,
+        ...pageData,
+        unread_only: !showRead,
       },
       ...rest,
     );

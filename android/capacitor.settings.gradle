@@ -9,7 +9,7 @@ include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@7.0.1_@capacitor+core@7.3.0/node_modules/@capacitor/app/android')
 
 include ':capacitor-filesystem'
-project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@7.1.1_@capacitor+core@7.3.0/node_modules/@capacitor/filesystem/android')
+project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@7.0.1_@capacitor+core@7.3.0/node_modules/@capacitor/filesystem/android')
 
 include ':capacitor-haptics'
 project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@7.0.1_patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed1_3439a3b934d52dc01c7dc2fa93d3def4/node_modules/@capacitor/haptics/android')
