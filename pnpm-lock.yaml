@@ -17,6 +17,9 @@ patchedDependencies:
   '@capacitor/keyboard':
     hash: a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f71586ecd0859f11
     path: patches/@capacitor__keyboard.patch
+  openapi-fetch:
+    hash: f10d2ca11911663a3f2be4b8da2ce6bf70a27bfc059fea2bccb6d97309426616
+    path: patches/openapi-fetch.patch
 
 importers:
 
@@ -12721,7 +12724,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openapi-fetch@0.14.0:
+  openapi-fetch@0.14.0(patch_hash=f10d2ca11911663a3f2be4b8da2ce6bf70a27bfc059fea2bccb6d97309426616):
     dependencies:
       openapi-typescript-helpers: 0.0.15
 
@@ -13997,7 +14000,7 @@ snapshots:
       compare-versions: 6.1.1
       lemmy-js-client: 0.20.0-alpha.18
       lemmy-js-client-v1: lemmy-js-client@1.0.0-dont-return-actions.1
-      openapi-fetch: 0.14.0
+      openapi-fetch: 0.14.0(patch_hash=f10d2ca11911663a3f2be4b8da2ce6bf70a27bfc059fea2bccb6d97309426616)
     transitivePeerDependencies:
       - supports-color
 

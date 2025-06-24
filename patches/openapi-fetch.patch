@@ -1,0 +1,13 @@
+diff --git a/src/index.js b/src/index.js
+index 4b226c87020cd9c75f79b1a1a22e89564022f756..e2b6ea578a120c438e370b10353fd8d8db61fdb7 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -227,7 +227,7 @@ export default function createClient(clientOptions) {
+     }
+ 
+     // handle empty content
+-    if (response.status === 204 || request.method === "HEAD" || response.headers.get("Content-Length") === "0") {
++    if (response.status === 204 || request.method === "HEAD") {
+       return response.ok ? { data: undefined, response } : { error: undefined, response };
+     }
+ 
