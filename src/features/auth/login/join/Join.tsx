@@ -110,7 +110,8 @@ export default function Join({ answer }: JoinProps) {
     if (!nav) return;
 
     nav.push(
-      () => <Joined verifyEmailSent={verify_email_sent} />,
+      // TODO: On Piefed verify_email_sent is missing
+      () => <Joined verifyEmailSent={!!verify_email_sent} />,
       null,
       null,
       async (hasCompleted, requiresTransition, entering) => {
