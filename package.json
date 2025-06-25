@@ -35,7 +35,8 @@
     "patchedDependencies": {
       "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
       "@capacitor/android": "patches/@capacitor__android.patch",
-      "@capacitor/haptics": "patches/@capacitor__haptics.patch"
+      "@capacitor/haptics": "patches/@capacitor__haptics.patch",
+      "openapi-fetch": "patches/openapi-fetch.patch"
     },
     "updateConfig": {
       "ignoreDependencies": [
@@ -114,7 +115,7 @@
     "rehype-remark": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "threadiverse": "link:../threadiverse",
+    "threadiverse": "^0.2.5",
     "ua-parser-js": "^2.0.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",

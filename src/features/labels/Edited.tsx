@@ -1,9 +1,11 @@
 import { useIonAlert } from "@ionic/react";
+import { differenceInMinutes } from "date-fns";
 import { pencil } from "ionicons/icons";
 import { MouseEvent } from "react";
 import { CommentView, PostView } from "threadiverse";
 
 import Stat from "#/features/post/detail/Stat";
+import { isPost } from "#/helpers/lemmy";
 
 import { formatRelativeToNow } from "./Ago";
 
@@ -18,28 +20,31 @@ interface EditedProps {
 export default function Edited({ item, showDate, className }: EditedProps) {
   const [present] = useIonAlert();
 
-  const edited = "comment" in item ? item.comment.updated : item.post.updated;
+  const updated = isPost(item) ? item.post.updated : item.comment.updated;
 
   const editedLabelIfNeeded = (() => {
-    if (!edited) return;
+    if (!updated) return;
     if (!showDate) return;
 
-    const createdLabel = formatRelativeToNow(new Date(item.counts.published));
-    const editedLabel = formatRelativeToNow(new Date(edited));
+    const created = new Date(item.counts.published);
+    const edited = new Date(updated);
 
-    if (createdLabel === editedLabel) return;
+    // Don't show as edited if changed within 5 minutes of creation
+    if (differenceInMinutes(created, edited) < 5) return;
+
+    const editedLabel = formatRelativeToNow(edited);
 
     return editedLabel;
   })();
 
-  if (!edited) return;
+  if (!editedLabelIfNeeded) return;
 
   function presentEdited(e: MouseEvent) {
     e.stopPropagation();
 
-    if (!edited) return;
+    if (!updated) return;
 
-    const date = new Date(edited);
+    const date = new Date(updated);
 
     present({
       header: `Edited ${formatRelativeToNow(date)} Ago`,

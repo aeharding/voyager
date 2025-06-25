@@ -1,7 +1,6 @@
 import {
   IonButton,
   IonButtons,
-  IonContent,
   IonIcon,
   IonTitle,
   IonToolbar,
@@ -15,6 +14,7 @@ import {
   userHandleSelector,
 } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
+import { getSite } from "#/features/auth/siteSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
@@ -23,7 +23,8 @@ import Profile from "#/features/user/Profile";
 import ProfilePageActions from "#/features/user/ProfilePageActions";
 import { AppPage } from "#/helpers/AppPage";
 import { isIosTheme } from "#/helpers/device";
-import { useAppSelector } from "#/store";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export default function ProfilePage() {
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
@@ -32,6 +33,7 @@ export default function ProfilePage() {
     (state) => state.auth.connectedInstance,
   );
   const loggedIn = useAppSelector(loggedInSelector);
+  const dispatch = useAppDispatch();
 
   const { presentAccountSwitcher } = use(SharedDialogContext);
 
@@ -50,6 +52,7 @@ export default function ProfilePage() {
           person: myPerson.local_user_view.person,
           counts: myPerson.local_user_view.counts,
         }}
+        onPull={() => dispatch(getSite()) satisfies Promise<void>}
       />
     );
   }
@@ -81,7 +84,7 @@ export default function ProfilePage() {
         </IonToolbar>
       </AppHeader>
 
-      <IonContent>{renderContent()}</IonContent>
+      <FeedContent>{renderContent()}</FeedContent>
     </AppPage>
   );
 }
