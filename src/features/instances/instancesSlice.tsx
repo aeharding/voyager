@@ -45,17 +45,21 @@ export const {
 
 export default instancesSlice.reducer;
 
-export const knownInstancesSelector = createSelector(
+export const knownLemmyInstancesSelector = createSelector(
   [
     (state: RootState) => state.instances.knownInstances,
     (state: RootState) => state.auth.connectedInstance,
+    (state: RootState) => state.site.software,
   ],
-  (knownInstances, connectedInstance) => {
+  (knownInstances, connectedInstance, software) => {
+    const initialLemmyInstances =
+      !software || software.name === "lemmy" ? [connectedInstance] : [];
+
     if (!knownInstances || knownInstances === "pending")
-      return [connectedInstance];
+      return initialLemmyInstances;
 
     return [
-      connectedInstance,
+      ...initialLemmyInstances,
       ...knownInstances.linked
         .filter((instance) => instance.software === "lemmy")
         .map((instance) => instance.domain),
@@ -64,13 +68,24 @@ export const knownInstancesSelector = createSelector(
 );
 
 export const knownPiefedInstancesSelector = createSelector(
-  [(state: RootState) => state.instances.knownInstances],
-  (knownInstances) => {
-    if (!knownInstances || knownInstances === "pending") return [];
+  [
+    (state: RootState) => state.instances.knownInstances,
+    (state: RootState) => state.auth.connectedInstance,
+    (state: RootState) => state.site.software,
+  ],
+  (knownInstances, connectedInstance, software) => {
+    const initialPiefedInstances =
+      !software || software.name === "piefed" ? [connectedInstance] : [];
 
-    return knownInstances.linked
-      .filter((instance) => instance.software === "piefed")
-      .map((instance) => instance.domain);
+    if (!knownInstances || knownInstances === "pending")
+      return initialPiefedInstances;
+
+    return [
+      ...initialPiefedInstances,
+      ...knownInstances.linked
+        .filter((instance) => instance.software === "piefed")
+        .map((instance) => instance.domain),
+    ];
   },
 );
 

@@ -1,15 +1,12 @@
-import { ThreadiverseClient, ThreadiverseMode } from "threadiverse";
+import { ThreadiverseMode } from "threadiverse";
 
+import { modeSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
 
 export const OPTIMISTIC_MODE: ThreadiverseMode = "lemmyv0";
 
 export function useMode() {
-  const software = useAppSelector((state) => state.site.software);
-
-  return software
-    ? ThreadiverseClient.resolveClient(software)?.mode
-    : undefined;
+  return useAppSelector(modeSelector);
 }
 
 export function formatMode(mode: ThreadiverseMode): string {

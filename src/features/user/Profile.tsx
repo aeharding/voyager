@@ -25,6 +25,7 @@ import useModZoneActions from "#/features/moderation/useModZoneActions";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import { getHandle, getRemoteHandle, isPost } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useMode } from "#/helpers/threadiverse";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -38,6 +39,7 @@ interface ProfileProps
 
 export default function Profile({ person, onPull }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const mode = useMode();
   const client = useClient();
   const myHandle = useAppSelector(userHandleSelector);
   const { present: presentModZoneActions, role } = useModZoneActions({
@@ -95,33 +97,41 @@ export default function Profile({ person, onPull }: ProfileProps) {
         </IonItem>
         {isSelf && (
           <>
-            <IonItem
-              routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person)}/saved`,
-              )}
-              detail
-            >
-              <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
-              <IonLabel className="ion-text-nowrap">Saved</IonLabel>
-            </IonItem>
-            <IonItem
-              routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person)}/upvoted`,
-              )}
-              detail
-            >
-              <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
-              <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
-            </IonItem>
-            <IonItem
-              routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person)}/downvoted`,
-              )}
-              detail
-            >
-              <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
-              <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
-            </IonItem>
+            {mode !== "piefed" && (
+              <>
+                <IonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person)}/saved`,
+                  )}
+                  detail
+                >
+                  <IonIcon
+                    icon={bookmarkOutline}
+                    color="primary"
+                    slot="start"
+                  />{" "}
+                  <IonLabel className="ion-text-nowrap">Saved</IonLabel>
+                </IonItem>
+                <IonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person)}/upvoted`,
+                  )}
+                  detail
+                >
+                  <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
+                  <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
+                </IonItem>
+                <IonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person)}/downvoted`,
+                  )}
+                  detail
+                >
+                  <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
+                  <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
+                </IonItem>
+              </>
+            )}
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person)}/hidden`,

@@ -1,11 +1,11 @@
 import {
-  knownInstancesSelector,
+  knownLemmyInstancesSelector,
   knownPiefedInstancesSelector,
 } from "#/features/instances/instancesSlice";
 import store, { useAppSelector } from "#/store";
 
 export default function useDetermineSoftware() {
-  const knownInstances = useAppSelector(knownInstancesSelector);
+  const knownInstances = useAppSelector(knownLemmyInstancesSelector);
   const knownPiefedInstances = useAppSelector(knownPiefedInstancesSelector);
 
   return buildDetermineSoftware(knownInstances, knownPiefedInstances);
@@ -13,11 +13,11 @@ export default function useDetermineSoftware() {
 
 export function getDetermineSoftware(url: URL) {
   const state = store.getState();
-  const knownInstances = knownInstancesSelector(state);
+  const knownLemmyInstances = knownLemmyInstancesSelector(state);
   const knownPiefedInstances = knownPiefedInstancesSelector(state);
 
   const knownInstanceSoftware = buildDetermineSoftware(
-    knownInstances,
+    knownLemmyInstances,
     knownPiefedInstances,
   )(url);
 
@@ -25,12 +25,12 @@ export function getDetermineSoftware(url: URL) {
 }
 
 function buildDetermineSoftware(
-  knownInstances: string[],
+  knownLemmyInstances: string[],
   knownPiefedInstances: string[],
 ) {
   return function determineSoftwareFromUrl(url: URL) {
     if (knownPiefedInstances.includes(url.hostname)) return "piefed";
-    if (knownInstances.includes(url.hostname)) return "lemmy";
+    if (knownLemmyInstances.includes(url.hostname)) return "lemmy";
     return "unknown";
   };
 }

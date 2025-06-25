@@ -50,7 +50,7 @@ export default function EndPost({
 }
 
 export function getSortDuration(
-  sort: VgerTopSort | string | undefined,
+  sort: VgerTopSort | string | null | undefined,
 ): string | undefined {
   switch (sort as VgerTopSort) {
     case "TopDay":

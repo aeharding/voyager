@@ -45,6 +45,13 @@ interface VgerSorts {
   communities: VgerCommunitySortType;
 }
 
+interface VgerSortsByMode {
+  posts: VgerPostSortTypeByMode;
+  comments: VgerCommentSortTypeByMode;
+  search: VgerSearchSortTypeByMode;
+  communities: VgerCommunitySortTypeByMode;
+}
+
 interface Sorts {
   posts: PostSortType;
   comments: CommentSortType;
@@ -57,12 +64,18 @@ export type FeedSortContext = "posts" | "comments" | "search" | "communities";
 export default function useFeedSort<Context extends FeedSortContext>(
   context: Context,
   feed?: AnyFeed | undefined,
-  overrideSort?: VgerSorts[Context],
+  overrideSort?: VgerSortsByMode[Context] | VgerSorts[Context],
 ) {
   type Sort = VgerSorts[Context];
 
   const dispatch = useAppDispatch();
   const mode = useMode();
+
+  function getSort(mode: ThreadiverseMode): Sort | null | undefined {
+    if (typeof overrideSort === "string") return overrideSort;
+    if (!mode) return undefined;
+    return (overrideSort?.[mode] as Sort) ?? null;
+  }
 
   const feedSort = useAppSelector(getFeedSortSelectorBuilder(feed, context)) as
     | Sort
@@ -77,11 +90,12 @@ export default function useFeedSort<Context extends FeedSortContext>(
         .rememberCommunitySort,
   );
 
-  const [sort, _setSort] = useState<Sort | undefined>(
-    !rememberCommunitySort
-      ? (overrideSort ?? defaultSort)
-      : (feedSort ?? overrideSort),
-  );
+  const [sort, _setSort] = useState<Sort | null | undefined>(() => {
+    if (!mode) return undefined;
+    if (!rememberCommunitySort) return getSort(mode) ?? defaultSort;
+    if (feedSort) return feedSort;
+    return getSort(mode);
+  });
 
   useEffect(() => {
     (async () => {
@@ -151,15 +165,21 @@ function findFeedContext(
   }
 }
 
+/**
+ * @param context What kind of feed is this?
+ * @param sort The Voyager sort to convert to threadiverse sort params
+ * @returns The sort, null if loaded but no result. Null if still loading async.
+ */
 export function useFeedSortParams<Context extends FeedSortContext>(
   context: Context,
-  sort: VgerSorts[Context] | undefined,
-): Sorts[Context] | undefined {
+  sort: VgerSorts[Context] | null | undefined,
+): Sorts[Context] | null | undefined {
   const mode = useMode();
 
-  if (!sort || !mode) return;
+  if (!mode) return undefined; // not loaded
+  if (!sort) return null; // loaded, but not found
 
-  return convertSortToLemmyParams(context, sort, mode);
+  return convertSortToLemmyParams(context, sort, mode) ?? null;
 }
 
 function convertSortToLemmyParams<Context extends FeedSortContext>(
@@ -173,9 +193,12 @@ function convertSortToLemmyParams<Context extends FeedSortContext>(
     case "comments":
       return convertCommentSortToParams(sort as VgerSorts["comments"], mode);
     case "search":
-      return convertSearchSortToParams(sort as VgerSearchSortType, mode);
+      return convertSearchSortToParams(sort as VgerSorts["search"], mode);
     case "communities":
-      return convertCommunitySortToParams(sort as VgerCommunitySortType, mode);
+      return convertCommunitySortToParams(
+        sort as VgerSorts["communities"],
+        mode,
+      );
   }
 }
 

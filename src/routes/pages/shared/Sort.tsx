@@ -84,7 +84,7 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   interface SortProps<S> {
-    sort: S | undefined;
+    sort: S | null | undefined;
     setSort: (sort: S) => void;
   }
 

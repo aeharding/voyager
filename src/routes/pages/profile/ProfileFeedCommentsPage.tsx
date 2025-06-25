@@ -28,7 +28,7 @@ export default function ProfileFeedCommentsPage() {
   const sortParams = useFeedSortParams("search", sort);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    if (!sortParams) throw new AbortLoadError();
+    if (sortParams === undefined) throw new AbortLoadError();
 
     const person = await dispatch(getUserIfNeeded(handle));
 

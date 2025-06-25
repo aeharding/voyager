@@ -103,7 +103,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
 
-    if (!sortParams) throw new AbortLoadError();
+    if (sortParams === undefined) throw new AbortLoadError();
 
     const { posts, next_page } = await client.getPosts(
       {

@@ -2,6 +2,7 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   GetSiteResponse,
   ProviderInfo,
+  ThreadiverseClient,
   UnsupportedSoftwareError,
 } from "threadiverse";
 
@@ -192,3 +193,12 @@ function getSiteReqId(instance: string, handle: string | undefined) {
 
   return `${instance}-${handle}`;
 }
+
+export const modeSelector = createSelector(
+  [(state: RootState) => state.site.software],
+  (software) => {
+    return software
+      ? ThreadiverseClient.resolveClient(software)?.mode
+      : undefined;
+  },
+);
