@@ -27,7 +27,6 @@ export default function RepliesPage({ type }: RepliesPageProps) {
       {
         ...pageData,
         limit: 50,
-        sort: "New",
         unread_only: false,
       },
       ...rest,
