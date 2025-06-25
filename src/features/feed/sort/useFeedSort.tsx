@@ -52,9 +52,9 @@ interface Sorts {
   communities: CommunitySortType;
 }
 
-export default function useFeedSort<
-  Context extends "posts" | "comments" | "search" | "communities",
->(
+export type FeedSortContext = "posts" | "comments" | "search" | "communities";
+
+export default function useFeedSort<Context extends FeedSortContext>(
   context: Context,
   feed?: AnyFeed | undefined,
   overrideSort?: VgerSorts[Context],
@@ -72,7 +72,9 @@ export default function useFeedSort<
     mode ? state.settings.general[context].sort[mode] : undefined,
   ) as Sort | undefined;
   const rememberCommunitySort = useAppSelector(
-    (state) => state.settings.general[context].rememberCommunitySort,
+    (state) =>
+      state.settings.general[findFeedContext(feed) ?? context]
+        .rememberCommunitySort,
   );
 
   const [sort, _setSort] = useState<Sort | undefined>(
@@ -127,9 +129,29 @@ export default function useFeedSort<
   return [sort, setSort] as const;
 }
 
-export function useFeedSortParams<
-  Context extends "posts" | "comments" | "search" | "communities",
->(
+function findFeedContext(
+  feed: AnyFeed | undefined,
+): FeedSortContext | undefined {
+  if (!feed) return;
+  if (!("internal" in feed)) return;
+
+  switch (feed.internal) {
+    case "CommentsSearch":
+      return "comments";
+    case "PostsSearch":
+      return "posts";
+    case "CommunitiesSearch":
+      return "communities";
+    case "CommunitiesExplore":
+      return "communities";
+    case "ProfilePosts":
+      return "posts";
+    case "ProfileComments":
+      return "comments";
+  }
+}
+
+export function useFeedSortParams<Context extends FeedSortContext>(
   context: Context,
   sort: VgerSorts[Context] | undefined,
 ): Sorts[Context] | undefined {
@@ -140,9 +162,11 @@ export function useFeedSortParams<
   return convertSortToLemmyParams(context, sort, mode);
 }
 
-function convertSortToLemmyParams<
-  Context extends "posts" | "comments" | "search" | "communities",
->(context: Context, sort: VgerSorts[Context], mode: ThreadiverseMode) {
+function convertSortToLemmyParams<Context extends FeedSortContext>(
+  context: Context,
+  sort: VgerSorts[Context],
+  mode: ThreadiverseMode,
+) {
   switch (context) {
     case "posts":
       return convertPostSortToParams(sort as VgerSorts["posts"], mode);

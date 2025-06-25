@@ -8,6 +8,7 @@ import { RootState } from "#/store";
 import { AnyFeed, serializeFeedName } from "../helpers";
 import { VgerPostSortType } from "./PostSort";
 import { VgerSearchSortType } from "./SearchSort";
+import { FeedSortContext } from "./useFeedSort";
 
 interface PostSortState {
   /**
@@ -81,13 +82,7 @@ export default feedSortSlice.reducer;
 
 export const getFeedSort = createAsyncThunk(
   "feedSort/getFeedSort",
-  async ({
-    feed,
-    context,
-  }: {
-    feed: AnyFeed;
-    context: "posts" | "comments" | "search" | "communities";
-  }) => {
+  async ({ feed, context }: { feed: AnyFeed; context: FeedSortContext }) => {
     const feedName = serializeFeedName(feed);
     const sort =
       (await db.getSetting(getDefaultSortSettingForContext(context), {
@@ -103,18 +98,13 @@ export const getFeedSort = createAsyncThunk(
 );
 
 export const getFeedSortSelectorBuilder =
-  (
-    feed: AnyFeed | undefined,
-    context: "posts" | "comments" | "search" | "communities",
-  ) =>
+  (feed: AnyFeed | undefined, context: FeedSortContext) =>
   (state: RootState) =>
     feed
       ? state.feedSort.sortByContextByFeedName[context][serializeFeedName(feed)]
       : null;
 
-function getDefaultSortSettingForContext(
-  context: "posts" | "comments" | "search" | "communities",
-) {
+function getDefaultSortSettingForContext(context: FeedSortContext) {
   switch (context) {
     case "comments":
       return "default_comment_sort_by_feed";
