@@ -221,8 +221,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: ^0.2.5
-        version: 0.2.5
+        specifier: ^0.3.1
+        version: 0.3.1
       ua-parser-js:
         specifier: ^2.0.3
         version: 2.0.3
@@ -6237,8 +6237,8 @@ packages:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
 
-  threadiverse@0.2.5:
-    resolution: {integrity: sha512-4bpWiJ9UaJrV9/JeWX0cotzANXxWnm5OYGiCSERjj66lY4sIUUletd4wEHZdFZSQuyGKPMGaAyrqYYE+Dj1/dA==}
+  threadiverse@0.3.1:
+    resolution: {integrity: sha512-4eNissUXBjWVx91R42fJ9GXukP28y9SMwoAkZ03tugLUbD6bojtjd6foc5mgDqTDCaRXRA0aC33TLnQxrbVekA==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -6995,6 +6995,9 @@ packages:
 
   zod@3.25.64:
     resolution: {integrity: sha512-hbP9FpSZf7pkS7hRVUrOjhwKJNyampPgtXKc3AN6DsWtoHsg2Sb4SQaS4Tcay380zSwd2VPo9G9180emBACp5g==}
+
+  zod@3.25.67:
+    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -13985,12 +13988,13 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.2.5:
+  threadiverse@0.3.1:
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client: 0.20.0-alpha.18
       lemmy-js-client-v1: lemmy-js-client@1.0.0-dont-return-actions.1
       openapi-fetch: 0.14.0(patch_hash=8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67)
+      zod: 3.25.67
     transitivePeerDependencies:
       - supports-color
 
@@ -14813,5 +14817,7 @@ snapshots:
       zod: 3.25.64
 
   zod@3.25.64: {}
+
+  zod@3.25.67: {}
 
   zwitch@2.0.4: {}
