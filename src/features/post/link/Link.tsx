@@ -4,8 +4,8 @@ import { MouseEvent, useEffect, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
 import CachedImg from "#/features/media/CachedImg";
-import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import Url from "#/features/shared/Url";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { cx } from "#/helpers/css";
@@ -164,7 +164,7 @@ export default function Link({
         {buildCompactIcon()}
         <div className={styles.urlContainer}>
           <div className={styles.text}>
-            <InlineMarkdown parseBlocks={false}>{text ?? ""}</InlineMarkdown>
+            <PostTitleMarkdown>{text ?? ""}</PostTitleMarkdown>
           </div>
           <Url>{url}</Url>
         </div>

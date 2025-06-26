@@ -12,6 +12,7 @@ import CommentMarkdown from "#/features/comment/CommentMarkdown";
 import Ago from "#/features/labels/Ago";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import SlidingInbox from "#/features/shared/sliding/SlidingInbox";
 import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
@@ -64,7 +65,9 @@ export default function InboxItem({ item }: InboxItemProps) {
       return (
         <>
           <strong>{item.creator.name}</strong> mentioned you on the post{" "}
-          <strong>{item.post.name}</strong>
+          <strong>
+            <PostTitleMarkdown>{item.post.name}</PostTitleMarkdown>
+          </strong>
         </>
       );
     }
@@ -73,14 +76,18 @@ export default function InboxItem({ item }: InboxItemProps) {
         return (
           <>
             <strong>{item.creator.name}</strong> replied to your post{" "}
-            <strong>{item.post.name}</strong>
+            <strong>
+              <PostTitleMarkdown>{item.post.name}</PostTitleMarkdown>
+            </strong>
           </>
         );
       } else {
         return (
           <>
             <strong>{item.creator.name}</strong> replied to your comment in{" "}
-            <strong>{item.post.name}</strong>
+            <strong>
+              <PostTitleMarkdown>{item.post.name}</PostTitleMarkdown>
+            </strong>
           </>
         );
       }
