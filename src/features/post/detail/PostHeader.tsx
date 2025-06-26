@@ -18,8 +18,8 @@ import PostLink from "#/features/post/link/PostLink";
 import { togglePostCollapse } from "#/features/post/postSlice";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import useIsPostUrlMedia from "#/features/post/useIsPostUrlMedia";
-import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import Markdown from "#/features/shared/markdown/Markdown";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import { cx } from "#/helpers/css";
 import { findIonContentScrollView } from "#/helpers/ionic";
 import { postLocked } from "#/helpers/toastMessages";
@@ -177,9 +177,7 @@ export default function PostHeader({
             <ModeratableItemBannerOutlet />
             <div>
               <div className={styles.title} ref={titleRef}>
-                <InlineMarkdown parseBlocks={false}>
-                  {post.post.name}
-                </InlineMarkdown>{" "}
+                <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
               </div>
               {showPostText && text && (

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Community, Post } from "threadiverse";
 
-import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import { getHandle } from "#/helpers/lemmy";
 import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
@@ -30,7 +30,7 @@ export default function PostContext({ post, community }: PostContextProps) {
       }}
     >
       <div className={styles.name}>
-        <InlineMarkdown parseBlocks={false}>{post.name}</InlineMarkdown>
+        <PostTitleMarkdown>{post.name}</PostTitleMarkdown>
       </div>
       <div className={styles.communityName}>{getHandle(community)}</div>
     </Link>

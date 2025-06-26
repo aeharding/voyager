@@ -16,7 +16,7 @@ import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { VoteButton } from "#/features/post/shared/VoteButton";
-import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import { cx, sv } from "#/helpers/css";
 import { isUrlImage, parseUrlForDisplay } from "#/helpers/url";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
@@ -76,9 +76,7 @@ export default function CompactPost({ post }: PostProps) {
               </div>
             )}
             <span className={styles.title}>
-              <InlineMarkdown parseBlocks={false}>
-                {post.post.name}
-              </InlineMarkdown>{" "}
+              <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
               {domain && (
                 <>
                   <span className={styles.domain}>

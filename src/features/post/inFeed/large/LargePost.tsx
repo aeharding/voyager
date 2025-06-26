@@ -15,7 +15,7 @@ import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { VoteButton } from "#/features/post/shared/VoteButton";
-import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import { cx } from "#/helpers/css";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
@@ -82,9 +82,7 @@ export default function LargePost({ post }: PostProps) {
           )}
 
           <div className={styles.title}>
-            <InlineMarkdown parseBlocks={false}>
-              {post.post.name}
-            </InlineMarkdown>{" "}
+            <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
             {isNsfw(post) && <Nsfw />}
           </div>
         </div>
