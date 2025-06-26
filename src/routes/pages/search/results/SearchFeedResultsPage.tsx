@@ -2,7 +2,6 @@ import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
 
 import { receivedComments } from "#/features/comment/commentSlice";
-import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
@@ -17,6 +16,7 @@ import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
+import { formatSortLabel } from "#/routes/pages/shared/Sort";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 
@@ -82,7 +82,7 @@ export default function SearchFeedResultsPage({
       <FeedContent>
         <PostCommentFeed
           fetchFn={fetchFn}
-          sortDuration={getSortDuration(sort)}
+          sortDuration={formatSortLabel(sort)}
           filterHiddenPosts={false}
           filterKeywordsAndWebsites={false}
         />

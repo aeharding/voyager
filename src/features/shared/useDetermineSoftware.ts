@@ -1,36 +1,35 @@
 import {
-  knownLemmyInstancesSelector,
-  knownPiefedInstancesSelector,
+  InstancesBySoftware,
+  knownInstancesSelectorBySoftware,
 } from "#/features/instances/instancesSlice";
 import store, { useAppSelector } from "#/store";
 
 export default function useDetermineSoftware() {
-  const knownInstances = useAppSelector(knownLemmyInstancesSelector);
-  const knownPiefedInstances = useAppSelector(knownPiefedInstancesSelector);
+  const knownInstancesBySoftware = useAppSelector(
+    knownInstancesSelectorBySoftware,
+  );
 
-  return buildDetermineSoftware(knownInstances, knownPiefedInstances);
+  return buildDetermineSoftware(knownInstancesBySoftware);
 }
 
 export function getDetermineSoftware(url: URL) {
   const state = store.getState();
-  const knownLemmyInstances = knownLemmyInstancesSelector(state);
-  const knownPiefedInstances = knownPiefedInstancesSelector(state);
+  const knownInstancesBySoftware = knownInstancesSelectorBySoftware(state);
 
   const knownInstanceSoftware = buildDetermineSoftware(
-    knownLemmyInstances,
-    knownPiefedInstances,
+    knownInstancesBySoftware,
   )(url);
 
   return knownInstanceSoftware;
 }
 
-function buildDetermineSoftware(
-  knownLemmyInstances: string[],
-  knownPiefedInstances: string[],
-) {
+function buildDetermineSoftware(knownInstancesBySoftware: InstancesBySoftware) {
   return function determineSoftwareFromUrl(url: URL) {
-    if (knownPiefedInstances.includes(url.hostname)) return "piefed";
-    if (knownLemmyInstances.includes(url.hostname)) return "lemmy";
+    for (const software in knownInstancesBySoftware) {
+      if (knownInstancesBySoftware[software]?.includes(url.hostname))
+        return software;
+    }
+
     return "unknown";
   };
 }

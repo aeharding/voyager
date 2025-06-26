@@ -45,47 +45,19 @@ export const {
 
 export default instancesSlice.reducer;
 
-export const knownLemmyInstancesSelector = createSelector(
+const KNOWN_SOFTWARE = ["lemmy", "piefed"];
+
+export const knownInstancesSelectorBySoftware = createSelector(
   [
     (state: RootState) => state.instances.knownInstances,
     (state: RootState) => state.auth.connectedInstance,
     (state: RootState) => state.site.software,
   ],
   (knownInstances, connectedInstance, software) => {
-    const initialLemmyInstances =
-      !software || software.name === "lemmy" ? [connectedInstance] : [];
-
     if (!knownInstances || knownInstances === "pending")
-      return initialLemmyInstances;
+      return { [software?.name ?? "lemmy"]: [connectedInstance] };
 
-    return [
-      ...initialLemmyInstances,
-      ...knownInstances.linked
-        .filter((instance) => instance.software === "lemmy")
-        .map((instance) => instance.domain),
-    ];
-  },
-);
-
-export const knownPiefedInstancesSelector = createSelector(
-  [
-    (state: RootState) => state.instances.knownInstances,
-    (state: RootState) => state.auth.connectedInstance,
-    (state: RootState) => state.site.software,
-  ],
-  (knownInstances, connectedInstance, software) => {
-    const initialPiefedInstances =
-      !software || software.name === "piefed" ? [connectedInstance] : [];
-
-    if (!knownInstances || knownInstances === "pending")
-      return initialPiefedInstances;
-
-    return [
-      ...initialPiefedInstances,
-      ...knownInstances.linked
-        .filter((instance) => instance.software === "piefed")
-        .map((instance) => instance.domain),
-    ];
+    return groupKnownInstancesBySoftware(knownInstances, KNOWN_SOFTWARE);
   },
 );
 
@@ -137,3 +109,26 @@ export const getInstances =
 
     dispatch(receivedInstances(federated_instances));
   };
+
+export type InstancesBySoftware = Record<string, string[]>;
+
+function groupKnownInstancesBySoftware(
+  knownInstances: FederatedInstances,
+  knownSoftware: string[],
+): InstancesBySoftware {
+  const result: InstancesBySoftware = Object.fromEntries(
+    knownSoftware.map((software) => [software, []]),
+  );
+
+  for (const instance of knownInstances.linked) {
+    if (!instance.software) continue;
+
+    const potentialInstanceSoftwareArr = result[instance.software];
+
+    if (!potentialInstanceSoftwareArr) continue;
+
+    potentialInstanceSoftwareArr.push(instance.domain);
+  }
+
+  return result;
+}
