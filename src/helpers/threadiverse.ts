@@ -1,4 +1,5 @@
-import { ThreadiverseMode } from "threadiverse";
+import { uniq } from "es-toolkit";
+import { ThreadiverseClient, ThreadiverseMode } from "threadiverse";
 
 import { modeSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
@@ -18,3 +19,7 @@ export function formatMode(mode: ThreadiverseMode): string {
       return "Piefed";
   }
 }
+
+export const KNOWN_SOFTWARE = uniq(
+  ThreadiverseClient.supportedSoftware.map((client) => client.softwareName),
+);

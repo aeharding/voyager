@@ -2,6 +2,7 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FederatedInstances } from "threadiverse";
 
 import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
+import { KNOWN_SOFTWARE } from "#/helpers/threadiverse";
 import { db } from "#/services/db";
 import { customBackOff } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
@@ -44,8 +45,6 @@ export const {
 } = instancesSlice.actions;
 
 export default instancesSlice.reducer;
-
-const KNOWN_SOFTWARE = ["lemmy", "piefed"];
 
 export const knownInstancesSelectorBySoftware = createSelector(
   [
