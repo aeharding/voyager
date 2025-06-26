@@ -7,7 +7,6 @@ import TitleSearch from "#/features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
 import EmptyHomeFeed from "#/features/feed/empty/home/EmptyHomeFeed";
-import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
@@ -38,6 +37,7 @@ import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import { FeedContentWithColorContext } from "./FeedContent";
+import { formatSortLabel } from "./Sort";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -70,7 +70,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
 
-    if (!sortParams) throw new AbortLoadError();
+    if (sortParams === undefined) throw new AbortLoadError();
 
     const { posts, next_page } = await client.getPosts(
       {
@@ -109,7 +109,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
               fetchFn={fetchFn}
-              sortDuration={getSortDuration(sort)}
+              sortDuration={formatSortLabel(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
               renderCustomEmptyContent={
                 type === "Subscribed" ? () => <EmptyHomeFeed /> : undefined

@@ -88,7 +88,7 @@ export default function Comments({
 
   const sortParams = useFeedSortParams("comments", sort);
 
-  const ready = !!sortParams;
+  const ready = sortParams !== undefined;
 
   const preservePositionFromBottomInScrollView =
     usePreservePositionFromBottomInScrollView(
