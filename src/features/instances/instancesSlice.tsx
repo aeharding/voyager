@@ -54,10 +54,15 @@ export const knownInstancesSelectorBySoftware = createSelector(
     (state: RootState) => state.site.software,
   ],
   (knownInstances, connectedInstance, software) => {
-    if (!knownInstances || knownInstances === "pending")
-      return { [software?.name ?? "lemmy"]: [connectedInstance] };
+    const initialResult = { [software?.name ?? "lemmy"]: [connectedInstance] };
 
-    return groupKnownInstancesBySoftware(knownInstances, KNOWN_SOFTWARE);
+    if (!knownInstances || knownInstances === "pending") return initialResult;
+
+    return groupKnownInstancesBySoftware(
+      knownInstances,
+      KNOWN_SOFTWARE,
+      initialResult,
+    );
   },
 );
 
@@ -115,10 +120,12 @@ export type InstancesBySoftware = Record<string, string[]>;
 function groupKnownInstancesBySoftware(
   knownInstances: FederatedInstances,
   knownSoftware: string[],
+  initialResult?: InstancesBySoftware,
 ): InstancesBySoftware {
-  const result: InstancesBySoftware = Object.fromEntries(
-    knownSoftware.map((software) => [software, []]),
-  );
+  const result: InstancesBySoftware = {
+    ...Object.fromEntries(knownSoftware.map((software) => [software, []])),
+    ...initialResult,
+  };
 
   for (const instance of knownInstances.linked) {
     if (!instance.software) continue;
