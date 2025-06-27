@@ -17,10 +17,10 @@ export default function MentionsPage() {
   const dispatch = useAppDispatch();
   const client = useClient();
 
-  const fetchFn: FetchFn<PersonMentionView> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PersonMentionView> = async (page_cursor, ...rest) => {
     const response = await client.getPersonMentions(
       {
-        ...pageData,
+        page_cursor,
         limit: LIMIT,
         unread_only: false,
       },

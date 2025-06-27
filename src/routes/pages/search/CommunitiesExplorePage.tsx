@@ -26,14 +26,14 @@ export default function CommunitiesExplorePage() {
   const sortParams = useFeedSortParams("communities", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
 
-  const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<CommunityView> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
 
     return client.listCommunities(
       {
         limit: LIMIT,
         type_: listingType,
-        ...pageData,
+        page_cursor,
         ...sortParams,
       },
       ...rest,

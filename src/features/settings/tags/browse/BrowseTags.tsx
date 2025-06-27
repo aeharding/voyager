@@ -18,11 +18,10 @@ export default function BrowseTags({ filter }: BrowseTagsProps) {
     {},
   );
 
-  const fetchFn: FetchFn<UserTagType> = async (pageData) => {
-    if (typeof pageData.page_cursor === "string")
-      throw new Error("Invalid page data");
+  const fetchFn: FetchFn<UserTagType> = async (cursor) => {
+    if (typeof cursor === "string") throw new Error("Invalid page data");
 
-    const page = pageData.page_cursor ?? 0;
+    const page = cursor ?? 1;
 
     const data = await db.getUserTagsPaginated(
       page,
@@ -31,7 +30,7 @@ export default function BrowseTags({ filter }: BrowseTagsProps) {
     );
 
     // Reset removed state on refresh
-    if (!pageData.page_cursor) setRemovedByHandle({});
+    if (!cursor) setRemovedByHandle({});
 
     return { data, next_page: page + 1 };
   };

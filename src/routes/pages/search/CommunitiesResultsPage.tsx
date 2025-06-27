@@ -39,10 +39,10 @@ export default function CommunitiesResultsPage({
   const sortParams = useFeedSortParams("search", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
 
-  const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<CommunityView> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
 
-    if (!pageData.page_cursor && search?.includes("@")) {
+    if (!page_cursor && search?.includes("@")) {
       const exactCommunity = await findExactCommunity(search, client);
       return { data: compact([exactCommunity]) };
     }
@@ -53,7 +53,7 @@ export default function CommunitiesResultsPage({
         q: search,
         type_: "Communities",
         listing_type: listingType,
-        ...pageData,
+        page_cursor,
         ...sortParams,
       },
       ...rest,

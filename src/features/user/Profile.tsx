@@ -49,10 +49,10 @@ export default function Profile({ person, onPull }: ProfileProps) {
 
   const isSelf = getRemoteHandle(person.person) === myHandle;
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     const response = await client.listPersonContent(
       {
-        ...pageData,
+        page_cursor,
         limit: LIMIT,
         person_id: person.person.id,
       },

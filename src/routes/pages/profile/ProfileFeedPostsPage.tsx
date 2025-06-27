@@ -27,14 +27,14 @@ export default function ProfileFeedPostsPage() {
   );
   const sortParams = useFeedSortParams("search", sort ?? "New");
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
 
     const person = await dispatch(getUserIfNeeded(handle));
 
     return client.listPersonContent(
       {
-        ...pageData,
+        page_cursor,
         type: "Posts",
         limit: LIMIT,
         person_id: person.id,

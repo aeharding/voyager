@@ -71,10 +71,10 @@ function Modlog({ community, user }: ModlogProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
 
-  const fetchFn: FetchFn<ModlogItemType> = async (pageData, ...rest) =>
+  const fetchFn: FetchFn<ModlogItemType> = async (page_cursor, ...rest) =>
     client.getModlog(
       {
-        ...pageData,
+        page_cursor,
         limit: LIMIT,
         community_id: community?.id,
         other_person_id: user?.id,

@@ -58,10 +58,10 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
   const client = useClient();
   const dispatch = useAppDispatch();
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     const response = await client.listReports(
       {
-        ...pageData,
+        page_cursor,
         limit: LIMIT,
         community_id: community?.id,
         unresolved_only: true,
@@ -69,7 +69,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
       ...rest,
     );
 
-    let needsSync = !pageData.page_cursor;
+    let needsSync = !page_cursor;
 
     const reportsByCommentId = reportsByCommentIdSelector(store.getState());
     const reportsByPostId = reportsByPostIdSelector(store.getState());

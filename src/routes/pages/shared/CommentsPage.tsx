@@ -32,10 +32,10 @@ export default function CommentsPage(props: CommentsPageProps) {
   const communityNameIfAvailable =
     "communityName" in props ? props.communityName : undefined;
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) =>
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) =>
     client.getComments(
       {
-        ...pageData,
+        page_cursor,
         limit: LIMIT,
         community_name: communityNameIfAvailable,
         type_: "type" in props ? props.type : undefined,

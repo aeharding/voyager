@@ -42,12 +42,12 @@ export default function SearchFeedResultsPage({
 
   const search = decodeURIComponent(_encodedSearch);
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
 
     const response = await client.search(
       {
-        ...pageData,
+        page_cursor,
         limit: LIMIT,
         q: search,
         type_: type,

@@ -32,12 +32,8 @@ import { useRangeChange } from "./useRangeChange";
 
 const ABORT_REASON_UNMOUNT = "unmount";
 
-interface PageData {
-  page_cursor?: PageCursor;
-}
-
 export type FetchFn<I> = (
-  pageData: PageData,
+  page_cursor: PageCursor | undefined,
   options?: Pick<RequestInit, "signal">,
 ) => Promise<FetchFnResult<I>>;
 
@@ -176,12 +172,9 @@ export default function Feed<I>({
       abortControllerRef.current = abortController;
 
       try {
-        result = await fetchFn(
-          { page_cursor: currentCursor },
-          {
-            signal: abortController.signal,
-          },
-        );
+        result = await fetchFn(currentCursor, {
+          signal: abortController.signal,
+        });
       } catch (error) {
         // Aborted requests are expected. Silently return to avoid spamming console with DOM errors
         // Also don't set loading to false, component will unmount (or shortly rerender)

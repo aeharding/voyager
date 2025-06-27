@@ -99,7 +99,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
 
@@ -107,7 +107,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
     return client.getPosts(
       {
-        ...pageData,
+        page_cursor,
         ...commonPostFeedParams,
         limit: LIMIT,
         community_name: community,
