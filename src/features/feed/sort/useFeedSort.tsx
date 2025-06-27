@@ -166,16 +166,28 @@ function convertSortToLemmyParams<Context extends FeedSortContext>(
   context: Context,
   sort: VgerSorts[Context],
   mode: ThreadiverseMode,
-) {
+): Sorts[Context] | undefined {
   switch (context) {
     case "posts":
-      return convertPostSortToParams(sort as VgerSorts["posts"], mode);
+      return convertPostSortToParams(
+        sort as VgerSorts["posts"],
+        mode,
+      ) as Sorts[typeof context];
     case "comments":
-      return convertCommentSortToParams(sort as VgerSorts["comments"], mode);
+      return convertCommentSortToParams(
+        sort as VgerSorts["comments"],
+        mode,
+      ) as Sorts[typeof context];
     case "search":
-      return convertSearchSortToParams(sort as VgerSearchSortType, mode);
+      return convertSearchSortToParams(
+        sort as VgerSorts["search"],
+        mode,
+      ) as Sorts[typeof context];
     case "communities":
-      return convertCommunitySortToParams(sort as VgerCommunitySortType, mode);
+      return convertCommunitySortToParams(
+        sort as VgerSorts["communities"],
+        mode,
+      ) as Sorts[typeof context];
   }
 }
 
