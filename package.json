@@ -30,7 +30,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@8.6.1"
+      "@ionic/core": "npm:voyager-ionic-core@8.5.7"
     },
     "patchedDependencies": {
       "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
@@ -65,9 +65,9 @@
     "@capacitor/splash-screen": "^7.0.1",
     "@capacitor/status-bar": "^6.0.2",
     "@github/markdown-toolbar-element": "^2.2.3",
-    "@ionic/core": "npm:voyager-ionic-core@8.6.1",
-    "@ionic/react": "8.6.1",
-    "@ionic/react-router": "8.6.1",
+    "@ionic/core": "npm:voyager-ionic-core@8.5.7",
+    "@ionic/react": "8.5.7",
+    "@ionic/react-router": "8.5.7",
     "@mantine/hooks": "^8.1.0",
     "@reduxjs/toolkit": "^2.8.2",
     "capacitor-android-nav-mode": "^2.0.0",
