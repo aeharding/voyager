@@ -2,6 +2,7 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FederatedInstances } from "threadiverse";
 
 import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
+import { KNOWN_SOFTWARE } from "#/helpers/threadiverse";
 import { db } from "#/services/db";
 import { customBackOff } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
@@ -45,32 +46,22 @@ export const {
 
 export default instancesSlice.reducer;
 
-export const knownInstancesSelector = createSelector(
+export const knownInstancesSelectorBySoftware = createSelector(
   [
     (state: RootState) => state.instances.knownInstances,
     (state: RootState) => state.auth.connectedInstance,
+    (state: RootState) => state.site.software,
   ],
-  (knownInstances, connectedInstance) => {
-    if (!knownInstances || knownInstances === "pending")
-      return [connectedInstance];
+  (knownInstances, connectedInstance, software) => {
+    const initialResult = { [software?.name ?? "lemmy"]: [connectedInstance] };
 
-    return [
-      connectedInstance,
-      ...knownInstances.linked
-        .filter((instance) => instance.software === "lemmy")
-        .map((instance) => instance.domain),
-    ];
-  },
-);
+    if (!knownInstances || knownInstances === "pending") return initialResult;
 
-export const knownPiefedInstancesSelector = createSelector(
-  [(state: RootState) => state.instances.knownInstances],
-  (knownInstances) => {
-    if (!knownInstances || knownInstances === "pending") return [];
-
-    return knownInstances.linked
-      .filter((instance) => instance.software === "piefed")
-      .map((instance) => instance.domain);
+    return groupKnownInstancesBySoftware(
+      knownInstances,
+      KNOWN_SOFTWARE,
+      initialResult,
+    );
   },
 );
 
@@ -122,3 +113,28 @@ export const getInstances =
 
     dispatch(receivedInstances(federated_instances));
   };
+
+export type InstancesBySoftware = Record<string, string[]>;
+
+function groupKnownInstancesBySoftware(
+  knownInstances: FederatedInstances,
+  knownSoftware: string[],
+  initialResult?: InstancesBySoftware,
+): InstancesBySoftware {
+  const result: InstancesBySoftware = {
+    ...Object.fromEntries(knownSoftware.map((software) => [software, []])),
+    ...initialResult,
+  };
+
+  for (const instance of knownInstances.linked) {
+    if (!instance.software) continue;
+
+    const potentialInstanceSoftwareArr = result[instance.software];
+
+    if (!potentialInstanceSoftwareArr) continue;
+
+    potentialInstanceSoftwareArr.push(instance.domain);
+  }
+
+  return result;
+}

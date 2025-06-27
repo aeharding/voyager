@@ -84,7 +84,7 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   interface SortProps<S> {
-    sort: S | undefined;
+    sort: S | null | undefined;
     setSort: (sort: S) => void;
   }
 
@@ -317,7 +317,12 @@ export function getSortIcon(sort: AnyVgerSort): string {
   return helpCircleOutline;
 }
 
-export function formatSortLabel(sort: AnyVgerSort, nested = false): string {
+export function formatSortLabel(
+  sort: AnyVgerSort | null | undefined,
+  nested = false,
+): string | undefined {
+  if (!sort) return;
+
   switch (sort) {
     case "TopHour":
     case "ControversialHour":

@@ -30,13 +30,17 @@ export default function CommunitiesResultsPage({
   const [sort, setSort] = useFeedSort(
     "search",
     { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
-    "TopAll",
+    {
+      lemmyv0: "TopAll",
+      lemmyv1: "TopAll",
+      piefed: "Active",
+    },
   );
   const sortParams = useFeedSortParams("search", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
-    if (!sortParams) throw new AbortLoadError();
+    if (sortParams === undefined) throw new AbortLoadError();
 
     if (!pageData.page_cursor && search?.includes("@")) {
       const exactCommunity = await findExactCommunity(search, client);

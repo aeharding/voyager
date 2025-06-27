@@ -1,19 +1,17 @@
+import { uniq } from "es-toolkit";
 import {
   SearchSortType,
   ThreadiverseClient,
   ThreadiverseMode,
 } from "threadiverse";
 
+import { modeSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
 
 export const OPTIMISTIC_MODE: ThreadiverseMode = "lemmyv0";
 
 export function useMode() {
-  const software = useAppSelector((state) => state.site.software);
-
-  return software
-    ? ThreadiverseClient.resolveClient(software)?.mode
-    : undefined;
+  return useAppSelector(modeSelector);
 }
 
 export function formatMode(mode: ThreadiverseMode): string {
@@ -36,3 +34,7 @@ export function getTopAllSearchSort(mode: ThreadiverseMode): SearchSortType {
       return { sort: "Active", mode } as const;
   }
 }
+
+export const KNOWN_SOFTWARE = uniq(
+  ThreadiverseClient.supportedSoftware.map((client) => client.softwareName),
+);

@@ -16,7 +16,6 @@ import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearc
 import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
-import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
@@ -48,6 +47,7 @@ import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import FeedContent from "./FeedContent";
+import { formatSortLabel } from "./Sort";
 
 import styles from "./CommunityPage.module.css";
 interface CommunityPageParams {
@@ -103,7 +103,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     fetchFnLastUpdated;
 
-    if (!sortParams) throw new AbortLoadError();
+    if (sortParams === undefined) throw new AbortLoadError();
 
     return client.getPosts(
       {
@@ -165,7 +165,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
             <PostCommentFeed
               fetchFn={fetchFn}
               communityName={community}
-              sortDuration={getSortDuration(sort)}
+              sortDuration={formatSortLabel(sort)}
               header={header}
               filterHiddenPosts={!showHiddenInCommunities}
               onPull={onPull}
