@@ -17,7 +17,7 @@ export default function ProfileFeedSavedPage() {
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     const person = await dispatch(getUserIfNeeded(handle));
 
-    const { content } = await client.listPersonSaved(
+    return client.listPersonSaved(
       {
         ...pageData,
         person_id: person.id,
@@ -25,8 +25,6 @@ export default function ProfileFeedSavedPage() {
       },
       ...rest,
     );
-
-    return content;
   };
 
   return <BaseProfileFeedItemsPage label="Saved" fetchFn={fetchFn} />;

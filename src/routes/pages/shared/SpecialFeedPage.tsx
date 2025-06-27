@@ -72,7 +72,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
     if (!sortParams) throw new AbortLoadError();
 
-    const { posts, next_page } = await client.getPosts(
+    return client.getPosts(
       {
         ...pageData,
         ...commonPostFeedParams,
@@ -83,8 +83,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
       },
       ...rest,
     );
-
-    return { data: posts, next_page };
   };
 
   function filterSubscribedFn(item: PostCommentItem) {

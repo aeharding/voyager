@@ -44,7 +44,7 @@ export default function useGetRandomCommunity() {
         response = await client.listCommunities({
           type_: "All",
           limit: RANDOM_CHUNK,
-          page: Math.floor(
+          page_cursor: Math.floor(
             (Math.random() * totalCommunitiesCount) / RANDOM_CHUNK,
           ),
         });
@@ -54,7 +54,7 @@ export default function useGetRandomCommunity() {
         throw error;
       }
 
-      const randomCommunitiesByPosts = sortBy(response.communities, [
+      const randomCommunitiesByPosts = sortBy(response.data, [
         (c) => -c.counts.posts,
       ]);
 

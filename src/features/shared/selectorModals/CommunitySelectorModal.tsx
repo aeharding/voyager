@@ -1,4 +1,4 @@
-import { CommunityView } from "threadiverse";
+import { CommunityView, SearchSortType } from "threadiverse";
 
 import { getHandle } from "#/helpers/lemmy";
 import useClient from "#/helpers/useClient";
@@ -16,14 +16,27 @@ export default function CommunitySelectorModal(
   const client = useClient();
 
   async function search(query: string) {
+    const mode = await client.getMode();
+
+    const sort: SearchSortType = (() => {
+      switch (mode) {
+        case "lemmyv0":
+          return { sort: "Top", mode } as const;
+        case "lemmyv1":
+          return { sort: "TopAll", mode } as const;
+        case "piefed":
+          return { sort: "TopMonth", mode } as const;
+      }
+    })();
+
     const result = await client.search({
       q: query,
       type_: "Communities",
-      sort: "TopAll",
+      ...sort,
       limit: LIMIT,
     });
 
-    return result.communities;
+    return result.data as CommunityView[];
   }
 
   return (

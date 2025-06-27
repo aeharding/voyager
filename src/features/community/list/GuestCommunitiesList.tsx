@@ -58,7 +58,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
     let communities;
 
     try {
-      ({ communities } = await client.listCommunities({
+      ({ data: communities } = await client.listCommunities({
         ...commonPostFeedParams,
         type_: SHOW_LOCAL_ONLY.includes(actor) ? "Local" : "All",
         ...sortParams,

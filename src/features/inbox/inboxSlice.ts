@@ -1,6 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
-import { GetUnreadCountResponse, PrivateMessageView } from "threadiverse";
+import {
+  GetUnreadCountResponse,
+  PageCursor,
+  PrivateMessageView,
+} from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { receivedUsers } from "#/features/user/userSlice";
@@ -146,7 +150,8 @@ export const syncMessages =
       case "synced": {
         dispatch(sync());
 
-        let page = 1;
+        let page_cursor: PageCursor | undefined;
+        let fetchedPageCount = 0;
 
         while (true) {
           let privateMessages;
@@ -156,14 +161,16 @@ export const syncMessages =
               {
                 limit: (() => {
                   if (syncState === "init") return 50; // initial sync, expect many messages
-                  if (page === 1) return 1; // poll to check for new messages
+                  if (!page_cursor) return 1; // poll to check for new messages
 
                   return 20; // detected new messages, kick off sync
                 })(),
-                page,
+                page_cursor,
               },
             );
-            privateMessages = results.private_messages;
+            privateMessages = results.data;
+            fetchedPageCount++;
+            page_cursor = results.next_page;
           } catch (e) {
             dispatch(syncFail());
             throw e;
@@ -179,8 +186,7 @@ export const syncMessages =
           dispatch(receivedUsers(privateMessages.map((msg) => msg.creator)));
           dispatch(receivedUsers(privateMessages.map((msg) => msg.recipient)));
 
-          if (!newMessages.length || page > 10) break;
-          page++;
+          if (!newMessages.length || fetchedPageCount > 10) break;
         }
 
         dispatch(syncComplete());

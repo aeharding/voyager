@@ -11,7 +11,7 @@ import {
 } from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
-import { FetchFn, isFirstPage } from "#/features/feed/Feed";
+import { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import PostCommentFeed, {
   PostCommentItem,
@@ -59,7 +59,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
   const dispatch = useAppDispatch();
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const { reports } = await client.listReports(
+    const response = await client.listReports(
       {
         ...pageData,
         limit: LIMIT,
@@ -69,12 +69,12 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
       ...rest,
     );
 
-    let needsSync = isFirstPage(pageData);
+    let needsSync = !pageData.page_cursor;
 
     const reportsByCommentId = reportsByCommentIdSelector(store.getState());
     const reportsByPostId = reportsByPostIdSelector(store.getState());
 
-    for (const report of reports) {
+    for (const report of response.data) {
       if (
         "comment_report" in report &&
         !reportsByCommentId[report.comment.id]
@@ -89,11 +89,11 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
       await dispatch(syncReports(true));
     }
 
-    const views = uniqBy(reports, (r) => getUniqueReportId(r)).map(
+    const data = uniqBy(response.data, (r) => getUniqueReportId(r)).map(
       convertReportToPostCommentView,
     );
 
-    return views;
+    return { ...response, data };
   };
 
   return (

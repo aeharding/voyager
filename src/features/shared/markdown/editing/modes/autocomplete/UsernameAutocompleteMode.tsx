@@ -1,4 +1,4 @@
-import { Person } from "threadiverse";
+import { Person, PersonView } from "threadiverse";
 
 import { getRemoteHandle } from "#/helpers/lemmy";
 import useClient from "#/helpers/useClient";
@@ -11,13 +11,13 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   const client = useClient();
 
   async function fetchFn(q: string) {
-    const { users } = await client.search({
+    const { data: users } = await client.search({
       q,
       type_: "Users",
       sort: "TopAll",
     });
 
-    return users.map((u) => u.person);
+    return (users as PersonView[]).map((u) => u.person);
   }
 
   return (

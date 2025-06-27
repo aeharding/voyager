@@ -57,15 +57,13 @@ export default function Profile({ person, onPull }: ProfileProps) {
       ...rest,
     );
 
-    const content = response.content;
-
     dispatch(
       receivedComments(
-        response.content.filter((c) => !isPost(c)) as CommentView[],
+        response.data.filter((c) => !isPost(c)) as CommentView[],
       ),
     );
 
-    return content;
+    return response;
   };
 
   const header = (

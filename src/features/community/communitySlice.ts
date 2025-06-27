@@ -160,5 +160,5 @@ export const getTrendingCommunities =
       limit: 6,
     });
 
-    dispatch(recievedTrendingCommunities(trendingCommunities.communities));
+    dispatch(recievedTrendingCommunities(trendingCommunities.data));
   };

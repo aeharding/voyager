@@ -32,7 +32,7 @@ export default function ProfileFeedCommentsPage() {
 
     const person = await dispatch(getUserIfNeeded(handle));
 
-    const { content } = await client.listPersonContent(
+    return client.listPersonContent(
       {
         ...pageData,
         type: "Comments",
@@ -42,8 +42,6 @@ export default function ProfileFeedCommentsPage() {
       },
       ...rest,
     );
-
-    return content;
   };
 
   return (

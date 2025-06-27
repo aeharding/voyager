@@ -58,7 +58,8 @@ export default function SearchFeedResultsPage({
 
     dispatch(receivedPosts(response.posts));
     dispatch(receivedComments(response.comments));
-    return [...response.posts, ...response.comments];
+
+    return response;
   };
 
   return (

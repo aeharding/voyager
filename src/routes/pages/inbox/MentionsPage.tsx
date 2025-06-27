@@ -29,7 +29,7 @@ export default function MentionsPage() {
 
     dispatch(receivedInboxItems(response.mentions));
 
-    return response.mentions;
+    return response;
   };
 
   return (

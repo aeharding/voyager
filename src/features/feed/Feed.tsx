@@ -15,6 +15,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { PageCursor } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
@@ -31,20 +32,19 @@ import { useRangeChange } from "./useRangeChange";
 
 const ABORT_REASON_UNMOUNT = "unmount";
 
-type PageData =
-  | {
-      page: number;
-    }
-  | {
-      page_cursor: string;
-    };
+interface PageData {
+  page_cursor?: PageCursor;
+}
 
 export type FetchFn<I> = (
   pageData: PageData,
   options?: Pick<RequestInit, "signal">,
 ) => Promise<FetchFnResult<I>>;
 
-type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
+interface FetchFnResult<I> {
+  data: I[];
+  next_page?: PageCursor;
+}
 
 export interface FeedProps<I>
   extends Partial<
@@ -109,7 +109,7 @@ export default function Feed<I>({
   onRemovedFromTop,
   onPull,
 }: FeedProps<I>) {
-  const [page, setPage] = useState<number | string>(0);
+  const [cursor, setCursor] = useState<PageCursor | undefined>();
   const [numberedPage, setNumberedPage] = useState(0);
   const [items, setItems] = useState<I[]>([]);
 
@@ -164,12 +164,10 @@ export default function Feed<I>({
 
       setLoading(true);
 
-      let currentPage = (() => {
-        if (refresh) return 1;
+      let currentCursor = (() => {
+        if (refresh) return;
 
-        if (typeof page === "number") return page + 1;
-
-        return page;
+        return cursor;
       })();
 
       let result;
@@ -178,9 +176,12 @@ export default function Feed<I>({
       abortControllerRef.current = abortController;
 
       try {
-        result = await fetchFn(withPageData(currentPage), {
-          signal: abortController.signal,
-        });
+        result = await fetchFn(
+          { page_cursor: currentCursor },
+          {
+            signal: abortController.signal,
+          },
+        );
       } catch (error) {
         // Aborted requests are expected. Silently return to avoid spamming console with DOM errors
         // Also don't set loading to false, component will unmount (or shortly rerender)
@@ -207,7 +208,7 @@ export default function Feed<I>({
       if (Array.isArray(result)) newPageItems = result;
       else {
         newPageItems = result.data;
-        if (result.next_page) currentPage = result.next_page;
+        if (result.next_page) currentCursor = result.next_page;
       }
 
       setLoading(false);
@@ -247,9 +248,9 @@ export default function Feed<I>({
       }
 
       setNumberedPage((numberedPage) => (refresh ? 1 : numberedPage + 1));
-      setPage(currentPage);
+      setCursor(currentCursor);
     },
-    [fetchFn, page, getIndex, filterOnRxFn],
+    [fetchFn, cursor, getIndex, filterOnRxFn],
   );
 
   useEffect(() => {
@@ -272,7 +273,7 @@ export default function Feed<I>({
       return;
 
     fetchMore();
-  }, [filteredItems, items, page, loading, limit, loadFailed, fetchMore]);
+  }, [filteredItems, items, cursor, loading, limit, loadFailed, fetchMore]);
 
   const virtuaHandle = useRef<VListHandle>(null);
 
@@ -394,16 +395,6 @@ export default function Feed<I>({
       </InFeedContext>
     </>
   );
-}
-
-function withPageData(page: number | string): PageData {
-  if (typeof page === "number") return { page };
-  return { page_cursor: page };
-}
-
-export function isFirstPage(pageData: PageData): boolean {
-  if ("page" in pageData) return pageData.page === 1;
-  return !pageData.page_cursor;
 }
 
 export const InFeedContext = createContext(false);

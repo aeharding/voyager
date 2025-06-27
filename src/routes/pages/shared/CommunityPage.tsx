@@ -105,7 +105,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
     if (!sortParams) throw new AbortLoadError();
 
-    const { posts, next_page } = await client.getPosts(
+    return client.getPosts(
       {
         ...pageData,
         ...commonPostFeedParams,
@@ -116,7 +116,6 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
       },
       ...rest,
     );
-    return { data: posts, next_page };
   };
 
   const onPull = async () => {

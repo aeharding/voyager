@@ -31,7 +31,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   const fetchFn: FetchFn<InboxItemView> = async (pageData, ...rest) => {
     if (!myUserId) throw new Error("Logged out");
 
-    const notifications = await client.getNotifications(
+    const response = await client.getNotifications(
       {
         limit: 50,
         ...pageData,
@@ -40,28 +40,26 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       ...rest,
     );
 
-    const filteredNotifications = notifications.notifications.filter(
-      (notification) => {
-        if ("private_message" in notification) {
-          return (
-            notification.creator.id !== myUserId ||
-            notification.creator.id === notification.recipient.id
-          ); // if you message yourself, show it (lemmy returns as a notification)
-        }
+    const filteredData = response.data.filter((notification) => {
+      if ("private_message" in notification) {
+        return (
+          notification.creator.id !== myUserId ||
+          notification.creator.id === notification.recipient.id
+        ); // if you message yourself, show it (lemmy returns as a notification)
+      }
 
-        return true;
-      },
-    );
+      return true;
+    });
 
-    dispatch(receivedInboxItems(filteredNotifications));
+    dispatch(receivedInboxItems(filteredData));
     dispatch(
       receivedUsers([
-        ...filteredNotifications.map(({ creator }) => creator),
-        ...filteredNotifications.map(({ recipient }) => recipient),
+        ...filteredData.map(({ creator }) => creator),
+        ...filteredData.map(({ recipient }) => recipient),
       ]),
     );
 
-    return filteredNotifications;
+    return { ...response, data: filteredData };
   };
 
   return (

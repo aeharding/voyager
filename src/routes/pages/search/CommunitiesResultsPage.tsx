@@ -38,11 +38,11 @@ export default function CommunitiesResultsPage({
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
     if (!sortParams) throw new AbortLoadError();
 
-    if (isFirstPage(pageData) && search?.includes("@")) {
+    if (!pageData.page_cursor && search?.includes("@")) {
       return compact([await findExactCommunity(search, client)]);
     }
 
-    const response = await client.search(
+    return client.search(
       {
         limit: LIMIT,
         q: search,
@@ -53,8 +53,6 @@ export default function CommunitiesResultsPage({
       },
       ...rest,
     );
-
-    return response.communities;
   };
 
   return (

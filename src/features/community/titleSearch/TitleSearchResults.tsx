@@ -176,7 +176,7 @@ export default function TitleSearchResults() {
       sort: "TopAll",
     });
 
-    setSearchPayload(result.communities);
+    setSearchPayload(result.data as CommunityView[]);
   });
 
   useEffect(() => {
