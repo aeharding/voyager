@@ -239,13 +239,10 @@ export default function Comments({
         response = await client.getComments({
           post_id: reqPostId,
           parent_id: parentCommentId,
-          limit: 60,
           ...sortParams,
           type_: "All",
-
+          limit: 60,
           max_depth: maxDepth,
-
-          saved_only: false,
           page_cursor: currentPage,
         });
       } catch (error) {
