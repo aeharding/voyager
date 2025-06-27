@@ -43,11 +43,11 @@ export default function ProfileFeedHiddenPostsPage() {
   const lastPageNumberRef = useRef(1);
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     postHiddenById; // eslint-disable-line @typescript-eslint/no-unused-expressions -- Trigger rerender when this changes
 
     if (!handle) return { data: [] };
-    const page = pageData.page_cursor ?? 1;
+    const page = page_cursor ?? 1;
     if (typeof page === "string") return { data: [] };
 
     const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(

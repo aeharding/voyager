@@ -14,12 +14,12 @@ export default function ProfileFeedSavedPage() {
   const client = useClient();
   const dispatch = useAppDispatch();
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     const person = await dispatch(getUserIfNeeded(handle));
 
     return client.listPersonSaved(
       {
-        ...pageData,
+        page_cursor,
         person_id: person.id,
         limit: LIMIT,
       },

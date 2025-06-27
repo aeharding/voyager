@@ -49,5 +49,7 @@ export function convertDurationToSeconds(duration: VgerDuration) {
       return 2147483647;
     case "All":
       return undefined;
+    default:
+      duration satisfies never; // type exhaustiveness check
   }
 }

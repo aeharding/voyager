@@ -20,12 +20,12 @@ export default function RepliesPage({ type }: RepliesPageProps) {
   const dispatch = useAppDispatch();
   const client = useClient();
 
-  const fetchFn: FetchFn<CommentReplyView> = async (pageData, ...rest) => {
+  const fetchFn: FetchFn<CommentReplyView> = async (page_cursor, ...rest) => {
     // TODO - actually paginate properly if Lemmy implements
     // reply pagination filtering by comment and post
     const response = await client.getReplies(
       {
-        ...pageData,
+        page_cursor,
         limit: 50,
         unread_only: false,
       },

@@ -14,8 +14,8 @@ export default function ProfileFeedVotedPage({
 }: ProfileFeedVotedPageProps) {
   const client = useClient();
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    return client.listPersonLiked({ ...pageData, type, limit: LIMIT }, ...rest);
+  const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
+    return client.listPersonLiked({ page_cursor, type, limit: LIMIT }, ...rest);
   };
 
   return <BaseProfileFeedItemsPage label={type} fetchFn={fetchFn} />;
