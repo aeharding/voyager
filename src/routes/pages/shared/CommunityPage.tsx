@@ -47,7 +47,7 @@ import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import FeedContent from "./FeedContent";
-import { formatSortLabel } from "./Sort";
+import { formatTimeLimitedSort } from "./Sort";
 
 import styles from "./CommunityPage.module.css";
 interface CommunityPageParams {
@@ -165,7 +165,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
             <PostCommentFeed
               fetchFn={fetchFn}
               communityName={community}
-              sortDuration={formatSortLabel(sort)}
+              formatSortDuration={() => formatTimeLimitedSort(sort)}
               header={header}
               filterHiddenPosts={!showHiddenInCommunities}
               onPull={onPull}

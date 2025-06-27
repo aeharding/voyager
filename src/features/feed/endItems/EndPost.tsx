@@ -10,7 +10,7 @@ export interface EndPostProps {
    *
    * Examples: `"1 hour"` `"6 months"` `"1 week"`
    */
-  sortDuration: string | undefined;
+  formatSortDuration: (() => string | undefined) | undefined;
 
   renderCustomEmptyContent?: () => React.ReactNode;
 }
@@ -18,13 +18,15 @@ export interface EndPostProps {
 export default function EndPost({
   empty,
   communityName,
-  sortDuration,
+  formatSortDuration,
   renderCustomEmptyContent,
 }: EndPostProps) {
   const feedName = communityName ? `c/${communityName}` : "this feed";
 
   function renderError() {
     if (empty) {
+      const sortDuration = formatSortDuration?.();
+
       if (sortDuration)
         return (
           <div className={styles.container}>

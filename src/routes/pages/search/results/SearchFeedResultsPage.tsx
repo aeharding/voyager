@@ -17,7 +17,7 @@ import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
-import { formatSortLabel } from "#/routes/pages/shared/Sort";
+import { formatTimeLimitedSort } from "#/routes/pages/shared/Sort";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 
@@ -94,7 +94,7 @@ export default function SearchFeedResultsPage({
       <FeedContent>
         <PostCommentFeed
           fetchFn={fetchFn}
-          sortDuration={formatSortLabel(sort)}
+          formatSortDuration={() => formatTimeLimitedSort(sort)}
           filterHiddenPosts={false}
           filterKeywordsAndWebsites={false}
         />

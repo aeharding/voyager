@@ -19,6 +19,7 @@ import {
   VgerCommunitySortType,
   VgerCommunitySortTypeByMode,
 } from "#/routes/pages/search/results/CommunitySort";
+import { AnyVgerSort } from "#/routes/pages/shared/Sort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
@@ -423,4 +424,16 @@ function convertControversialToLemmyParams(sort: VgerControversialSort): {
       controversialSortToDuration(sort),
     ),
   };
+}
+
+export function isTimeBoundedSort(sort: AnyVgerSort) {
+  if (isControversialSort(sort)) {
+    return (
+      convertDurationToSeconds(controversialSortToDuration(sort)) !== undefined
+    );
+  }
+
+  if (isTopSort(sort)) {
+    return convertDurationToSeconds(topSortToDuration(sort)) !== undefined;
+  }
 }

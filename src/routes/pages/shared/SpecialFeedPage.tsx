@@ -37,7 +37,7 @@ import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import { FeedContentWithColorContext } from "./FeedContent";
-import { formatSortLabel } from "./Sort";
+import { formatTimeLimitedSort } from "./Sort";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -107,7 +107,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
               fetchFn={fetchFn}
-              sortDuration={formatSortLabel(sort)}
+              formatSortDuration={() => formatTimeLimitedSort(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
               renderCustomEmptyContent={
                 type === "Subscribed" ? () => <EmptyHomeFeed /> : undefined

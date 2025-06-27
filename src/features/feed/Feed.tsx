@@ -48,7 +48,7 @@ interface FetchFnResult<I> {
 
 export interface FeedProps<I>
   extends Partial<
-    Pick<EndPostProps, "sortDuration" | "renderCustomEmptyContent">
+    Pick<EndPostProps, "formatSortDuration" | "renderCustomEmptyContent">
   > {
   itemsRef?: React.RefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
@@ -104,7 +104,7 @@ export default function Feed<I>({
   communityName,
   getIndex,
   limit = DEFAULT_LIMIT,
-  sortDuration,
+  formatSortDuration,
   renderCustomEmptyContent,
   onRemovedFromTop,
   onPull,
@@ -203,13 +203,8 @@ export default function Feed<I>({
           abortControllerRef.current = undefined;
       }
 
-      let newPageItems;
-
-      if (Array.isArray(result)) newPageItems = result;
-      else {
-        newPageItems = result.data;
-        if (result.next_page) currentCursor = result.next_page;
-      }
+      const newPageItems = result.data;
+      currentCursor = result.next_page;
 
       setLoading(false);
 
@@ -229,7 +224,7 @@ export default function Feed<I>({
       }
 
       if (refresh) {
-        setAtEnd(false);
+        setAtEnd(!currentCursor);
         setItems(filteredNewPageItems);
         updateFilteredNewPageItems();
       } else {
@@ -240,7 +235,11 @@ export default function Feed<I>({
 
           updateFilteredNewPageItems();
 
-          if (!newItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
+          if (
+            !currentCursor ||
+            !newItems.length ||
+            requestLoopRef.current > MAX_REQUEST_LOOP
+          )
             setAtEnd(true);
 
           return [...existingItems, ...newItems];
@@ -326,7 +325,7 @@ export default function Feed<I>({
         <EndPost
           empty={!items.length}
           communityName={communityName}
-          sortDuration={sortDuration}
+          formatSortDuration={formatSortDuration}
           renderCustomEmptyContent={renderCustomEmptyContent}
           key="footer"
         />
