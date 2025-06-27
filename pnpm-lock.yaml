@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@8.6.1
+  '@ionic/core': npm:voyager-ionic-core@8.5.7
 
 patchedDependencies:
   '@capacitor/android':
@@ -71,14 +71,14 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
       '@ionic/core':
-        specifier: npm:voyager-ionic-core@8.6.1
-        version: voyager-ionic-core@8.6.1
+        specifier: npm:voyager-ionic-core@8.5.7
+        version: voyager-ionic-core@8.5.7
       '@ionic/react':
-        specifier: 8.6.1
-        version: 8.6.1(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)
+        specifier: 8.5.7
+        version: 8.5.7(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)
       '@ionic/react-router':
-        specifier: 8.6.1
-        version: 8.6.1(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react-router-dom@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react-router@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)
+        specifier: 8.5.7
+        version: 8.5.7(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react-router-dom@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react-router@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)
       '@mantine/hooks':
         specifier: ^8.1.0
         version: 8.1.0(react@0.0.0-experimental-12bc60f5-20250613)
@@ -1423,16 +1423,16 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@ionic/react-router@8.6.1':
-    resolution: {integrity: sha512-P3cnVuiBA8HLuodYgxEafcFAJOLs/PVerOiwO2OY9cJ1s/LKi6nBtQkk1xoJeZ9iBi3rD0gtS/FxI3VDWj39gg==}
+  '@ionic/react-router@8.5.7':
+    resolution: {integrity: sha512-REEnLRIWh23DnqTugNT7VIO2D49GtmSHvxOmmTmaFTjhMXQ1ilzM35oh+Fr2pWU5NmCqD8am+RLfITQhIJI1hA==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
 
-  '@ionic/react@8.6.1':
-    resolution: {integrity: sha512-UREU/xTH2aJO7FpK8A7GkHQbwquemH71INYmYi7TdUuSd59TJi9/s7lMXC6H7xLhT+D+N8Uui0PlYyTPWFOT2g==}
+  '@ionic/react@8.5.7':
+    resolution: {integrity: sha512-AgX4iu6SfuBhNgYr0H+K3oGsp7ESkCsnaqZdHRO2+GtKTmo4akMrFPihGj4LrZB/IaYwcvYQR/bPWHuZGJYsnw==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
@@ -1933,8 +1933,8 @@ packages:
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
-  '@stencil/core@4.33.1':
-    resolution: {integrity: sha512-12k9xhAJBkpg598it+NRmaYIdEe6TSnsL/v6/KRXDcUyTK11VYwZQej2eHnMWtqot+znJ+GNTqb5YbiXi+5Low==}
+  '@stencil/core@4.20.0':
+    resolution: {integrity: sha512-WPrTHFngvN081RY+dJPneKQLwnOFD60OMCOQGmmSHfCW0f4ujPMzzhwWU1gcSwXPWXz5O+8cBiiCaxAbJU7kAg==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
@@ -6718,8 +6718,8 @@ packages:
       jsdom:
         optional: true
 
-  voyager-ionic-core@8.6.1:
-    resolution: {integrity: sha512-dRm/10NbvBBUACoglp+4419xmzOcAFi9gzHN7gNW4NYgGGvbeFAaJvocC1VsQlJGcMY1mGhp+rlkhzlvKPTg5Q==}
+  voyager-ionic-core@8.5.7:
+    resolution: {integrity: sha512-vnw+NZiaXL3JiSk8RQ9yrUFdRu8+nQ19xLQjhylReSEKblQSV5hBmawcj6hirVrAMY4t76shpLTvNMjHCdfM+w==}
 
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
@@ -8283,18 +8283,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/react-router@8.6.1(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react-router-dom@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react-router@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)':
+  '@ionic/react-router@8.5.7(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react-router-dom@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react-router@5.3.4(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)':
     dependencies:
-      '@ionic/react': 8.6.1(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)
+      '@ionic/react': 8.5.7(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)
       react: 0.0.0-experimental-12bc60f5-20250613
       react-dom: 0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613)
       react-router: 5.3.4(react@0.0.0-experimental-12bc60f5-20250613)
       react-router-dom: 5.3.4(react@0.0.0-experimental-12bc60f5-20250613)
       tslib: 2.8.1
 
-  '@ionic/react@8.6.1(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)':
+  '@ionic/react@8.5.7(react-dom@0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613))(react@0.0.0-experimental-12bc60f5-20250613)':
     dependencies:
-      '@ionic/core': voyager-ionic-core@8.6.1
+      '@ionic/core': voyager-ionic-core@8.5.7
       ionicons: 7.4.0
       react: 0.0.0-experimental-12bc60f5-20250613
       react-dom: 0.0.0-experimental-12bc60f5-20250613(react@0.0.0-experimental-12bc60f5-20250613)
@@ -8811,16 +8811,7 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@stencil/core@4.33.1':
-    optionalDependencies:
-      '@rollup/rollup-darwin-arm64': 4.34.9
-      '@rollup/rollup-darwin-x64': 4.34.9
-      '@rollup/rollup-linux-arm64-gnu': 4.34.9
-      '@rollup/rollup-linux-arm64-musl': 4.34.9
-      '@rollup/rollup-linux-x64-gnu': 4.34.9
-      '@rollup/rollup-linux-x64-musl': 4.34.9
-      '@rollup/rollup-win32-arm64-msvc': 4.34.9
-      '@rollup/rollup-win32-x64-msvc': 4.34.9
+  '@stencil/core@4.20.0': {}
 
   '@stencil/core@4.35.0':
     optionalDependencies:
@@ -14462,9 +14453,9 @@ snapshots:
       - tsx
       - yaml
 
-  voyager-ionic-core@8.6.1:
+  voyager-ionic-core@8.5.7:
     dependencies:
-      '@stencil/core': 4.33.1
+      '@stencil/core': 4.20.0
       ionicons: 7.4.0
       tslib: 2.8.1
 
