@@ -32,7 +32,7 @@ export default function ProfileFeedPostsPage() {
 
     const person = await dispatch(getUserIfNeeded(handle));
 
-    const { content } = await client.listPersonContent(
+    return client.listPersonContent(
       {
         ...pageData,
         type: "Posts",
@@ -42,8 +42,6 @@ export default function ProfileFeedPostsPage() {
       },
       ...rest,
     );
-
-    return content;
   };
 
   return (

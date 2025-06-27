@@ -6,12 +6,12 @@ import {
   personOutline,
 } from "ionicons/icons";
 import { useCallback, useImperativeHandle } from "react";
+import { ModlogItem as ModlogItemType } from "threadiverse";
 
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
 
 import { getModIcon, ModeratorRole } from "../useCanModerate";
-import { ModlogItemType } from "./helpers";
 
 import styles from "./ModlogItemMoreActions.module.css";
 

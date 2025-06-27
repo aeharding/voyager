@@ -14,6 +14,7 @@ import { Community, CommunityView } from "threadiverse";
 import useShowModeratorFeed from "#/features/community/list/useShowModeratorFeed";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { getTopAllSearchSort } from "#/helpers/threadiverse";
 import useClient from "#/helpers/useClient";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
@@ -173,10 +174,10 @@ export default function TitleSearchResults() {
       limit: 20,
       type_: "Communities",
       listing_type: "All",
-      sort: "TopAll",
+      ...getTopAllSearchSort(await client.getMode()),
     });
 
-    setSearchPayload(result.communities);
+    setSearchPayload(result.data as CommunityView[]);
   });
 
   useEffect(() => {

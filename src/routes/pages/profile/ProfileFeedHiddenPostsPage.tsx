@@ -46,9 +46,9 @@ export default function ProfileFeedHiddenPostsPage() {
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     postHiddenById; // eslint-disable-line @typescript-eslint/no-unused-expressions -- Trigger rerender when this changes
 
-    if (!handle) return [];
-    if (!("page" in pageData)) return [];
-    const { page } = pageData;
+    if (!handle) return { data: [] };
+    const page = pageData.page_cursor ?? 1;
+    if (typeof page === "string") return { data: [] };
 
     const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(
       handle,
@@ -88,9 +88,12 @@ export default function ProfileFeedHiddenPostsPage() {
       }),
     );
 
-    return compact(result).map((post) =>
-      "post_view" in post ? post.post_view : post,
-    );
+    return {
+      data: compact(result).map((post) =>
+        "post_view" in post ? post.post_view : post,
+      ),
+      next_page: page + 1,
+    };
   };
 
   return (

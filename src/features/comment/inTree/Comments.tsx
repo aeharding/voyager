@@ -10,7 +10,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { CommentView } from "threadiverse";
+import { CommentView, PageCursor } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
@@ -70,7 +70,7 @@ export default function Comments({
   virtualEnabled,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
-  const [page, setPage] = useState(0);
+  const [cursor, setCursor] = useState<PageCursor | undefined>();
   const [loading, _setLoading] = useState(true);
   const loadingRef = useRef(false);
   const finishedPagingRef = useRef(false);
@@ -220,7 +220,7 @@ export default function Comments({
       if (!ready) return;
 
       if (refresh) {
-        if (page === 0 && loadingRef.current) return; // Still loading first page
+        if (!cursor && loadingRef.current) return; // Still loading first page
         finishedPagingRef.current = false;
       } else {
         if (loadingRef.current) return;
@@ -229,7 +229,7 @@ export default function Comments({
 
       let response;
 
-      const currentPage = refresh ? 1 : page + 1;
+      const currentPage = refresh ? undefined : cursor;
 
       const reqPostId = postId;
       const reqCommentId = parentCommentId;
@@ -239,14 +239,11 @@ export default function Comments({
         response = await client.getComments({
           post_id: reqPostId,
           parent_id: parentCommentId,
-          limit: 60,
           ...sortParams,
           type_: "All",
-
+          limit: 60,
           max_depth: maxDepth,
-
-          saved_only: false,
-          page: currentPage,
+          page_cursor: currentPage,
         });
       } catch (error) {
         if (reqPostId === postId && reqCommentId === parentCommentId)
@@ -258,7 +255,7 @@ export default function Comments({
         setLoadFailed(true);
         if (refresh) {
           setComments([]);
-          setPage(0);
+          setCursor(undefined);
         }
 
         throw error;
@@ -266,7 +263,7 @@ export default function Comments({
         setLoading(false);
       }
 
-      dispatch(receivedComments(response.comments));
+      dispatch(receivedComments(response.data));
 
       if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
 
@@ -274,7 +271,7 @@ export default function Comments({
 
       // Remove comments that are already received
       let newComments = differenceBy(
-        response.comments,
+        response.data,
         existingComments,
         (c) => c.comment.id,
       );
@@ -301,7 +298,7 @@ export default function Comments({
       );
 
       setComments(potentialComments);
-      setPage(currentPage);
+      setCursor(response.next_page);
       setLoadFailed(false);
 
       if (refresh) scrolledRef.current = false;
@@ -311,7 +308,7 @@ export default function Comments({
       comments,
       dispatch,
       maxDepth,
-      page,
+      cursor,
       parentCommentId,
       postId,
       presentToast,

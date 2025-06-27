@@ -59,15 +59,13 @@ export default function Profile({ person, onPull }: ProfileProps) {
       ...rest,
     );
 
-    const content = response.content;
-
     dispatch(
       receivedComments(
-        response.content.filter((c) => !isPost(c)) as CommentView[],
+        response.data.filter((c) => !isPost(c)) as CommentView[],
       ),
     );
 
-    return content;
+    return response;
   };
 
   const header = (
@@ -97,21 +95,17 @@ export default function Profile({ person, onPull }: ProfileProps) {
         </IonItem>
         {isSelf && (
           <>
+            <IonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person)}/saved`,
+              )}
+              detail
+            >
+              <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Saved</IonLabel>
+            </IonItem>
             {mode !== "piefed" && (
               <>
-                <IonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person)}/saved`,
-                  )}
-                  detail
-                >
-                  <IonIcon
-                    icon={bookmarkOutline}
-                    color="primary"
-                    slot="start"
-                  />{" "}
-                  <IonLabel className="ion-text-nowrap">Saved</IonLabel>
-                </IonItem>
                 <IonItem
                   routerLink={buildGeneralBrowseLink(
                     `/u/${getHandle(person.person)}/upvoted`,

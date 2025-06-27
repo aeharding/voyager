@@ -214,7 +214,7 @@ export const modNukeCommentChain =
 
     if (!client) throw new Error("Not authorized");
 
-    const { comments } = await client.getComments({
+    const { data: comments } = await client.getComments({
       parent_id: commentId,
       max_depth: 100,
     });
@@ -265,7 +265,7 @@ export const getCommentContent = createAsyncThunk(
 
     const log = await client.getModlog({ comment_id: commentId });
 
-    return log.modlog.filter((l) => "mod_remove_comment" in l)[0]?.comment
+    return log.data.filter((l) => "mod_remove_comment" in l)[0]?.comment
       .content;
   },
   {

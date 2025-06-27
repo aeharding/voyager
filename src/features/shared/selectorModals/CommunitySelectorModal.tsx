@@ -1,6 +1,7 @@
 import { CommunityView } from "threadiverse";
 
 import { getHandle } from "#/helpers/lemmy";
+import { getTopAllSearchSort } from "#/helpers/threadiverse";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 
@@ -19,11 +20,11 @@ export default function CommunitySelectorModal(
     const result = await client.search({
       q: query,
       type_: "Communities",
-      sort: "TopAll",
+      ...getTopAllSearchSort(await client.getMode()),
       limit: LIMIT,
     });
 
-    return result.communities;
+    return result.data as CommunityView[];
   }
 
   return (

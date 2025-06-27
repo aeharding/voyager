@@ -72,7 +72,7 @@ export default function CommentExpander({
       setLoading(false);
     }
 
-    if (response.comments.length === 0) {
+    if (response.data.length === 0) {
       presentToast({
         message: `Uh-oh. Looks like Lemmy returned 0 comments, but there's actually ${missing}`,
         color: "danger",
@@ -87,7 +87,7 @@ export default function CommentExpander({
     });
 
     // Only append comment that are direct descendants of the current comment, and unhydrated
-    const newComments = response.comments.filter((c) => {
+    const newComments = response.data.filter((c) => {
       // Say we have a tree like this. Parenthesis are missing from frontend:
       // 1
       // 1.1

@@ -1,9 +1,6 @@
-import { GetModlogResponse } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
-export type ModlogItemType =
-  GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
-
-export function getLogIndex(item: ModlogItemType): string {
+export function getLogIndex(item: ModlogItem): string {
   switch (true) {
     case "mod_remove_comment" in item:
       return `mod_remove_comment-${item.mod_remove_comment.id}`;

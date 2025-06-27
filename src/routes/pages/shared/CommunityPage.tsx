@@ -47,7 +47,7 @@ import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import FeedContent from "./FeedContent";
-import { formatSortLabel } from "./Sort";
+import { formatTimeLimitedSort } from "./Sort";
 
 import styles from "./CommunityPage.module.css";
 interface CommunityPageParams {
@@ -105,7 +105,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
     if (sortParams === undefined) throw new AbortLoadError();
 
-    const { posts, next_page } = await client.getPosts(
+    return client.getPosts(
       {
         ...pageData,
         ...commonPostFeedParams,
@@ -116,7 +116,6 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
       },
       ...rest,
     );
-    return { data: posts, next_page };
   };
 
   const onPull = async () => {
@@ -166,7 +165,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
             <PostCommentFeed
               fetchFn={fetchFn}
               communityName={community}
-              sortDuration={formatSortLabel(sort)}
+              formatSortDuration={() => formatTimeLimitedSort(sort)}
               header={header}
               filterHiddenPosts={!showHiddenInCommunities}
               onPull={onPull}

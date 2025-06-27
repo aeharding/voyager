@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CommunityView, ListingType, ThreadiverseClient } from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
-import { AbortLoadError, FetchFn, isFirstPage } from "#/features/feed/Feed";
+import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import ListingTypeFilter from "#/features/feed/ListingType";
 import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
@@ -42,8 +42,9 @@ export default function CommunitiesResultsPage({
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
 
-    if (isFirstPage(pageData) && search?.includes("@")) {
-      return compact([await findExactCommunity(search, client)]);
+    if (!pageData.page_cursor && search?.includes("@")) {
+      const exactCommunity = await findExactCommunity(search, client);
+      return { data: compact([exactCommunity]) };
     }
 
     const response = await client.search(
@@ -58,7 +59,10 @@ export default function CommunitiesResultsPage({
       ...rest,
     );
 
-    return response.communities;
+    return {
+      ...response,
+      data: response.data as CommunityView[],
+    };
   };
 
   return (

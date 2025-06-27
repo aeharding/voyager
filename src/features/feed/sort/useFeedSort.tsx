@@ -19,6 +19,7 @@ import {
   VgerCommunitySortType,
   VgerCommunitySortTypeByMode,
 } from "#/routes/pages/search/results/CommunitySort";
+import { AnyVgerSort } from "#/routes/pages/shared/Sort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
@@ -188,25 +189,28 @@ function convertSortToLemmyParams<Context extends FeedSortContext>(
   context: Context,
   sort: VgerSortsByContext[Context],
   mode: ThreadiverseMode,
-) {
+): Sorts[Context] | undefined {
   switch (context) {
     case "posts":
-      return convertPostSortToParams(sort as VgerSortsByContext["posts"], mode);
+      return convertPostSortToParams(
+        sort as VgerSortsByContext["posts"],
+        mode,
+      ) as Sorts[typeof context];
     case "comments":
       return convertCommentSortToParams(
         sort as VgerSortsByContext["comments"],
         mode,
-      );
+      ) as Sorts[typeof context];
     case "search":
       return convertSearchSortToParams(
         sort as VgerSortsByContext["search"],
         mode,
-      );
+      ) as Sorts[typeof context];
     case "communities":
       return convertCommunitySortToParams(
         sort as VgerSortsByContext["communities"],
         mode,
-      );
+      ) as Sorts[typeof context];
   }
 }
 
@@ -420,4 +424,16 @@ function convertControversialToLemmyParams(sort: VgerControversialSort): {
       controversialSortToDuration(sort),
     ),
   };
+}
+
+export function isTimeBoundedSort(sort: AnyVgerSort) {
+  if (isControversialSort(sort)) {
+    return (
+      convertDurationToSeconds(controversialSortToDuration(sort)) !== undefined
+    );
+  }
+
+  if (isTopSort(sort)) {
+    return convertDurationToSeconds(topSortToDuration(sort)) !== undefined;
+  }
 }

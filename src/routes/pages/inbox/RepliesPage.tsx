@@ -32,13 +32,13 @@ export default function RepliesPage({ type }: RepliesPageProps) {
       ...rest,
     );
 
-    const replies = response.replies.filter((reply) =>
+    const data = response.data.filter((reply) =>
       type === "Post" ? isPostReply(reply) : !isPostReply(reply),
     );
 
-    dispatch(receivedInboxItems(replies));
+    dispatch(receivedInboxItems(data));
 
-    return replies;
+    return { ...response, data };
   };
 
   return (

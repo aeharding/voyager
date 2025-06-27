@@ -2,7 +2,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { timerOutline } from "ionicons/icons";
 import { useCallback } from "react";
 import { useRef } from "react";
-import { Person } from "threadiverse";
+import { ModlogItem as ModLogItemType, Person } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import Ago from "#/features/labels/Ago";
@@ -14,7 +14,6 @@ import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 import { ModeratorRole } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
-import { ModlogItemType } from "./helpers";
 import ModlogItemMoreActions, {
   ModlogItemMoreActionsHandle,
 } from "./ModlogItemMoreActions";
@@ -39,7 +38,7 @@ import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ModlogItem.module.css";
 
 interface ModLogItemProps {
-  item: ModlogItemType;
+  item: ModLogItemType;
 }
 
 export interface LogEntryData {
@@ -54,7 +53,7 @@ export interface LogEntryData {
   link?: string;
 }
 
-function renderModlogData(item: ModlogItemType): LogEntryData {
+function renderModlogData(item: ModLogItemType): LogEntryData {
   switch (true) {
     case "mod_remove_comment" in item:
       return removeComment(item);

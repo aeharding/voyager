@@ -1,6 +1,7 @@
-import { Community } from "threadiverse";
+import { Community, CommunityView } from "threadiverse";
 
 import { getRemoteHandle } from "#/helpers/lemmy";
+import { getTopAllSearchSort } from "#/helpers/threadiverse";
 import useClient from "#/helpers/useClient";
 
 import GenericAutocompleteMode, {
@@ -11,13 +12,13 @@ export default function CommunityAutocomplete(props: AutocompleteModeProps) {
   const client = useClient();
 
   const fetchFn = async (q: string) => {
-    const { communities } = await client.search({
+    const { data } = await client.search({
       q,
       type_: "Communities",
-      sort: "TopAll",
+      ...getTopAllSearchSort(await client.getMode()),
     });
 
-    return communities.map((u) => u.community);
+    return (data as CommunityView[]).map((view) => view.community);
   };
 
   return (

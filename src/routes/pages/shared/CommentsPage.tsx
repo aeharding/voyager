@@ -32,8 +32,8 @@ export default function CommentsPage(props: CommentsPageProps) {
   const communityNameIfAvailable =
     "communityName" in props ? props.communityName : undefined;
 
-  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
-    const { comments } = await client.getComments(
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) =>
+    client.getComments(
       {
         ...pageData,
         limit: LIMIT,
@@ -43,8 +43,6 @@ export default function CommentsPage(props: CommentsPageProps) {
       },
       ...rest,
     );
-    return comments;
-  };
 
   const feedName = (() => {
     if ("communityName" in props) return props.communityName;

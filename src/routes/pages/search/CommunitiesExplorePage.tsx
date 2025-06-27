@@ -29,7 +29,7 @@ export default function CommunitiesExplorePage() {
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
 
-    const response = await client.listCommunities(
+    return client.listCommunities(
       {
         limit: LIMIT,
         type_: listingType,
@@ -38,8 +38,6 @@ export default function CommunitiesExplorePage() {
       },
       ...rest,
     );
-
-    return response.communities;
   };
 
   return (

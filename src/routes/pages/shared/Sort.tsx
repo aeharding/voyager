@@ -25,6 +25,7 @@ import { VgerCommentSortType } from "#/features/comment/CommentSort";
 import { isControversialSort } from "#/features/feed/sort/controversialSorts";
 import { VgerPostSortType } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortType } from "#/features/feed/sort/SearchSort";
+import { isTimeBoundedSort } from "#/features/feed/sort/useFeedSort";
 import {
   alphabeticalAsc,
   alphabeticalDesc,
@@ -359,6 +360,13 @@ export function formatSortLabel(
     default:
       return startCase(sort);
   }
+}
+
+export function formatTimeLimitedSort(sort: AnyVgerSort | null | undefined) {
+  if (!sort) return;
+  if (!isTimeBoundedSort(sort)) return;
+
+  return formatSortLabel(sort);
 }
 
 // Preserve explicit array tuple (ex: Arr[0] = specific string)

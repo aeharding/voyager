@@ -1,5 +1,6 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
+import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
@@ -16,7 +17,7 @@ import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
-import { formatSortLabel } from "#/routes/pages/shared/Sort";
+import { formatTimeLimitedSort } from "#/routes/pages/shared/Sort";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 
@@ -56,9 +57,20 @@ export default function SearchFeedResultsPage({
       ...rest,
     );
 
-    dispatch(receivedPosts(response.posts));
-    dispatch(receivedComments(response.comments));
-    return [...response.posts, ...response.comments];
+    const data = response.data as PostCommentItem[];
+
+    switch (type) {
+      case "Posts":
+        dispatch(receivedPosts(data as PostView[]));
+        break;
+      case "Comments":
+        dispatch(receivedComments(data as CommentView[]));
+    }
+
+    return {
+      ...response,
+      data,
+    };
   };
 
   return (
@@ -82,7 +94,7 @@ export default function SearchFeedResultsPage({
       <FeedContent>
         <PostCommentFeed
           fetchFn={fetchFn}
-          sortDuration={formatSortLabel(sort)}
+          formatSortDuration={() => formatTimeLimitedSort(sort)}
           filterHiddenPosts={false}
           filterKeywordsAndWebsites={false}
         />

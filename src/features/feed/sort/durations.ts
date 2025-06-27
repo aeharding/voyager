@@ -50,6 +50,4 @@ export function convertDurationToSeconds(duration: VgerDuration) {
     case "All":
       return undefined;
   }
-
-  duration satisfies never;
 }

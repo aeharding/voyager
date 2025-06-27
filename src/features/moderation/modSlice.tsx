@@ -1,7 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isBefore, subSeconds } from "date-fns";
 import { groupBy } from "es-toolkit";
-import { CommentReport, PostReport } from "threadiverse";
+import { CommentReport, PageCursor, PostReport } from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { AppDispatch, RootState } from "#/store";
@@ -122,7 +122,8 @@ export const syncReports =
     }
 
     async function syncCommentReports() {
-      let page = 1;
+      let page_cursor: PageCursor | undefined;
+      let fetchedPageCount = 0;
       const cumulatedReports: CommentReport[] = [];
 
       while (true) {
@@ -131,11 +132,13 @@ export const syncReports =
         try {
           const results = await clientSelector(getState()).listCommentReports({
             limit: REPORT_LIMIT,
-            page,
+            page_cursor,
             unresolved_only: true,
           });
 
-          reports = results.comment_reports;
+          fetchedPageCount++;
+          page_cursor = results.next_page;
+          reports = results.data;
         } catch (e) {
           dispatch(syncFail());
           throw e;
@@ -143,17 +146,16 @@ export const syncReports =
 
         cumulatedReports.push(...reports.map((r) => r.comment_report));
 
-        if (reports.length !== REPORT_LIMIT || page > 10) {
+        if (reports.length !== REPORT_LIMIT || fetchedPageCount > 10) {
           dispatch(receivedCommentReports(cumulatedReports));
           break;
         }
-
-        page++;
       }
     }
 
     async function syncPostReports() {
-      let page = 1;
+      let page_cursor: PageCursor | undefined;
+      let fetchedPageCount = 0;
       const cumulatedReports: PostReport[] = [];
 
       while (true) {
@@ -162,11 +164,13 @@ export const syncReports =
         try {
           const results = await clientSelector(getState()).listPostReports({
             limit: REPORT_LIMIT,
-            page,
+            page_cursor,
             unresolved_only: true,
           });
 
-          reports = results.post_reports;
+          fetchedPageCount++;
+          page_cursor = results.next_page;
+          reports = results.data;
         } catch (e) {
           dispatch(syncFail());
           throw e;
@@ -174,12 +178,10 @@ export const syncReports =
 
         cumulatedReports.push(...reports.map((r) => r.post_report));
 
-        if (reports.length !== REPORT_LIMIT || page > 10) {
+        if (reports.length !== REPORT_LIMIT || fetchedPageCount > 10) {
           dispatch(receivedPostReports(cumulatedReports));
           break;
         }
-
-        page++;
       }
     }
   };
