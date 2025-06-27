@@ -255,7 +255,7 @@ export default function Comments({
         setLoadFailed(true);
         if (refresh) {
           setComments([]);
-          setCursor(0);
+          setCursor(undefined);
         }
 
         throw error;
