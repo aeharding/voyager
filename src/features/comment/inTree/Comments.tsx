@@ -301,7 +301,7 @@ export default function Comments({
       );
 
       setComments(potentialComments);
-      setCursor(currentPage);
+      setCursor(response.next_page);
       setLoadFailed(false);
 
       if (refresh) scrolledRef.current = false;

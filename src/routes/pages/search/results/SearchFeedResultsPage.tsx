@@ -1,5 +1,6 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
+import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import { getSortDuration } from "#/features/feed/endItems/EndPost";
@@ -56,10 +57,20 @@ export default function SearchFeedResultsPage({
       ...rest,
     );
 
-    dispatch(receivedPosts(response.posts));
-    dispatch(receivedComments(response.comments));
+    const data = response.data as PostCommentItem[];
 
-    return response;
+    switch (type) {
+      case "Posts":
+        dispatch(receivedPosts(data as PostView[]));
+        break;
+      case "Comments":
+        dispatch(receivedComments(data as CommentView[]));
+    }
+
+    return {
+      ...response,
+      data,
+    };
   };
 
   return (

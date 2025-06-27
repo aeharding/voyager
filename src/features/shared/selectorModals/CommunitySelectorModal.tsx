@@ -1,4 +1,4 @@
-import { CommunityView, SearchSortType } from "threadiverse";
+import { CommunityView } from "threadiverse";
 
 import { getHandle } from "#/helpers/lemmy";
 import { getTopAllSearchSort } from "#/helpers/threadiverse";

@@ -27,7 +27,7 @@ export default function MentionsPage() {
       ...rest,
     );
 
-    dispatch(receivedInboxItems(response.mentions));
+    dispatch(receivedInboxItems(response.data));
 
     return response;
   };

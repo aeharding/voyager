@@ -156,7 +156,7 @@ export const getTrendingCommunities =
       getState(),
     )?.listCommunities({
       type_: "All",
-      sort: "Hot",
+      sort: "Hot" as never, // TODO Piefed doesn't support Hot for communities sort, ignore for now and hopefully supported soon
       limit: 6,
     });
 
