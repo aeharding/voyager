@@ -95,21 +95,17 @@ export default function Profile({ person, onPull }: ProfileProps) {
         </IonItem>
         {isSelf && (
           <>
+            <IonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person)}/saved`,
+              )}
+              detail
+            >
+              <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Saved</IonLabel>
+            </IonItem>
             {mode !== "piefed" && (
               <>
-                <IonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person)}/saved`,
-                  )}
-                  detail
-                >
-                  <IonIcon
-                    icon={bookmarkOutline}
-                    color="primary"
-                    slot="start"
-                  />{" "}
-                  <IonLabel className="ion-text-nowrap">Saved</IonLabel>
-                </IonItem>
                 <IonItem
                   routerLink={buildGeneralBrowseLink(
                     `/u/${getHandle(person.person)}/upvoted`,
