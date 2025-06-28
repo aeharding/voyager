@@ -33,7 +33,8 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const mode = useMode();
 
   async function update() {
-    if (!mode) throw new AbortLoadError();
+    if (mode === undefined) throw new AbortLoadError();
+    if (mode === null) throw new Error("Unsupported software");
 
     const sortParams: CommunitySortType = (() => {
       switch (mode) {

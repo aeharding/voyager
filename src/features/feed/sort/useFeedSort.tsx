@@ -74,9 +74,9 @@ export default function useFeedSort<Context extends FeedSortContext>(
   const dispatch = useAppDispatch();
   const mode = useMode();
 
-  function getOverrideSort(mode: ThreadiverseMode): Sort | null | undefined {
+  function getOverrideSort(): Sort | null | undefined {
     if (typeof overrideSort === "string") return overrideSort;
-    if (!mode) return undefined;
+    if (!mode) return mode;
     return (overrideSort?.[mode] as Sort) ?? null;
   }
 
@@ -85,7 +85,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
     | null
     | undefined;
   const defaultSort = useAppSelector((state) =>
-    mode ? state.settings.general[context].sort[mode] : undefined,
+    mode ? state.settings.general[context].sort[mode] : mode,
   ) as Sort | undefined;
   const rememberCommunitySort = useAppSelector(
     (state) =>
@@ -94,10 +94,9 @@ export default function useFeedSort<Context extends FeedSortContext>(
   );
 
   const [sort, _setSort] = useState<Sort | null | undefined>(() => {
-    if (!mode) return undefined;
-    if (!rememberCommunitySort) return getOverrideSort(mode) ?? defaultSort;
+    if (!rememberCommunitySort) return getOverrideSort() ?? defaultSort;
     if (feedSort) return feedSort;
-    return getOverrideSort(mode);
+    return getOverrideSort();
   });
 
   useEffect(() => {
@@ -122,9 +121,10 @@ export default function useFeedSort<Context extends FeedSortContext>(
       return;
     }
     if (feedSort === undefined) return; // null = loaded, but custom community sort not found
+    if (mode === undefined) return; // not loaded yet
 
     _setSort(feedSort ?? defaultSort);
-  }, [feedSort, sort, defaultSort, rememberCommunitySort]);
+  }, [feedSort, sort, defaultSort, rememberCommunitySort, mode]);
 
   const setSort = useCallback(
     (sort: Sort) => {
@@ -179,8 +179,9 @@ export function useFeedSortParams<Context extends FeedSortContext>(
 ): Sorts[Context] | null | undefined {
   const mode = useMode();
 
-  if (!mode) return undefined; // not loaded
+  if (mode === undefined) return undefined; // not loaded
   if (!sort) return null; // loaded, but not found
+  if (mode === null) return null; // loaded, but failed to resolve software
 
   return convertSortToLemmyParams(context, sort, mode) ?? null;
 }

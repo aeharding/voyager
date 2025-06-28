@@ -40,7 +40,7 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
-import { OPTIMISTIC_MODE, useMode } from "#/helpers/threadiverse";
+import { useMode } from "#/helpers/threadiverse";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
@@ -76,8 +76,8 @@ export default function buildSort<S extends AnyVgerSort>(
 
   return { Sort, useSelectSort, formatSort };
 
-  function useSortOptions(defaultMode?: ThreadiverseMode) {
-    const mode = useMode() ?? defaultMode;
+  function useSortOptions() {
+    const mode = useMode();
 
     if (!mode) return [];
 
@@ -91,9 +91,7 @@ export default function buildSort<S extends AnyVgerSort>(
 
   function Sort({ sort, setSort }: SortProps<S>) {
     const getAppScrollable = useGetAppScrollable();
-
-    // Proactively assume for render until site software is resolved
-    const sortOptions = useSortOptions(OPTIMISTIC_MODE);
+    const sortOptions = useSortOptions();
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);

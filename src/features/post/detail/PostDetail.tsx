@@ -14,7 +14,7 @@ import ViewAllComments from "./ViewAllComments";
 
 interface PostDetailProps {
   post: PostView;
-  sort: VgerCommentSortType;
+  sort: VgerCommentSortType | null | undefined;
 
   commentPath: string | undefined;
   threadCommentId: string | undefined;
