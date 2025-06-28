@@ -110,7 +110,7 @@ export function PostPageContent({
         </>
       );
 
-    if (!sort) return;
+    if (sort === undefined) return;
 
     return (
       <>

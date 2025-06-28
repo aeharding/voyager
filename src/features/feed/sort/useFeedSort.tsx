@@ -74,9 +74,11 @@ export default function useFeedSort<Context extends FeedSortContext>(
   const dispatch = useAppDispatch();
   const mode = useMode();
 
-  function getOverrideSort(mode: ThreadiverseMode): Sort | null | undefined {
+  function getOverrideSort(
+    mode: ThreadiverseMode | null | undefined,
+  ): Sort | null | undefined {
     if (typeof overrideSort === "string") return overrideSort;
-    if (!mode) return undefined;
+    if (!mode) return mode;
     return (overrideSort?.[mode] as Sort) ?? null;
   }
 
@@ -85,7 +87,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
     | null
     | undefined;
   const defaultSort = useAppSelector((state) =>
-    mode ? state.settings.general[context].sort[mode] : undefined,
+    mode ? state.settings.general[context].sort[mode] : mode,
   ) as Sort | undefined;
   const rememberCommunitySort = useAppSelector(
     (state) =>
@@ -94,7 +96,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
   );
 
   const [sort, _setSort] = useState<Sort | null | undefined>(() => {
-    if (!mode) return undefined;
+    if (!mode) return mode;
     if (!rememberCommunitySort) return getOverrideSort(mode) ?? defaultSort;
     if (feedSort) return feedSort;
     return getOverrideSort(mode);
@@ -179,7 +181,7 @@ export function useFeedSortParams<Context extends FeedSortContext>(
 ): Sorts[Context] | null | undefined {
   const mode = useMode();
 
-  if (!mode) return undefined; // not loaded
+  if (!mode) return mode;
   if (!sort) return null; // loaded, but not found
 
   return convertSortToLemmyParams(context, sort, mode) ?? null;

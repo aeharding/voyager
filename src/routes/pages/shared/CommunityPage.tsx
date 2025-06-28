@@ -35,7 +35,6 @@ import PostAppearanceProvider, {
 } from "#/features/post/appearance/PostAppearanceProvider";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppTitleHandle } from "#/features/shared/AppTitle";
-import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
 import { AppPage } from "#/helpers/AppPage";
 import { cx } from "#/helpers/css";
@@ -156,8 +155,6 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     );
 
   const feed = (() => {
-    if (!sort) return <CenteredSpinner />;
-
     return (
       <FeedSearchContext value={{ setScrolledPastSearch }}>
         <PageTypeContext value="community">

@@ -51,7 +51,7 @@ interface CommentsProps {
   postId: number;
   commentPath?: string;
   threadCommentId?: string;
-  sort: VgerCommentSortType;
+  sort: VgerCommentSortType | null | undefined;
   bottomPadding?: number;
 
   ref: React.RefObject<CommentsHandle | undefined>;

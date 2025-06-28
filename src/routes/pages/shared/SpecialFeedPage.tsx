@@ -99,7 +99,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     // We need the site response to know follows in order to filter
     // subscribed communities before rendering the feed
     if (filterSubscribed && !site) return <CenteredSpinner />;
-    if (!sort) return <CenteredSpinner />;
 
     return (
       <ShowSubscribedIconContext value={type === "All" || type === "Local"}>

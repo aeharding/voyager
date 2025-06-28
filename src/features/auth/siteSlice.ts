@@ -15,8 +15,12 @@ interface SiteState {
   failedAttempt: number;
   loading: boolean;
   response: GetSiteResponse | undefined;
+
   software: ProviderInfo | undefined;
+  softwareError: boolean;
   unsupportedSoftware: boolean;
+
+  ignoreInstanceOffline: boolean;
 }
 
 const initialState: SiteState = {
@@ -24,7 +28,9 @@ const initialState: SiteState = {
   loading: false,
   response: undefined,
   software: undefined,
+  softwareError: false,
   unsupportedSoftware: false,
+  ignoreInstanceOffline: false,
 };
 
 export const siteSlice = createSlice({
@@ -43,11 +49,23 @@ export const siteSlice = createSlice({
       state.loading = false;
       state.failedAttempt = 0;
     },
+    loadingSoftware(state) {
+      state.software = undefined;
+    },
     receivedSoftware(state, action: PayloadAction<ProviderInfo>) {
       state.software = action.payload;
+      state.softwareError = false;
+    },
+    failedSoftware(state) {
+      state.software = undefined;
+      state.softwareError = true;
     },
     receivedUnsupportedSoftware(state) {
       state.unsupportedSoftware = true;
+      state.softwareError = true;
+    },
+    setIgnoreInstanceOffline(state) {
+      state.ignoreInstanceOffline = true;
     },
     resetSite() {
       return initialState;
@@ -63,6 +81,9 @@ export const {
   receivedSoftware,
   receivedUnsupportedSoftware,
   resetSite,
+  setIgnoreInstanceOffline,
+  loadingSoftware,
+  failedSoftware,
 } = siteSlice.actions;
 
 export default siteSlice.reducer;
@@ -116,11 +137,18 @@ export const getSoftware =
     const reqId = siteReqIdSelector(getState());
     let software;
 
+    dispatch(loadingSoftware());
+
     try {
       software = await clientSelector(getState()).getSoftware();
     } catch (error) {
+      // Site or user changed before site response resolved
+      if (reqId !== siteReqIdSelector(getState())) return;
+
       if (error instanceof UnsupportedSoftwareError) {
         dispatch(receivedUnsupportedSoftware());
+      } else {
+        dispatch(failedSoftware());
       }
 
       throw error;
@@ -195,10 +223,14 @@ function getSiteReqId(instance: string, handle: string | undefined) {
 }
 
 export const modeSelector = createSelector(
-  [(state: RootState) => state.site.software],
-  (software) => {
-    return software
-      ? ThreadiverseClient.resolveClient(software)?.mode
-      : undefined;
+  [
+    (state: RootState) => state.site.software,
+    (state: RootState) => state.site.softwareError,
+  ],
+  (software, softwareError) => {
+    if (softwareError) return null;
+    if (!software) return undefined;
+
+    return ThreadiverseClient.resolveClient(software)?.mode ?? null;
   },
 );

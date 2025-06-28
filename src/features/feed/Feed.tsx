@@ -391,4 +391,11 @@ export default function Feed<I>({
 
 export const InFeedContext = createContext(false);
 
+/**
+ * When thrown in fetchFn, it will be caught and the
+ * loading state will continue.
+ *
+ * It is assumed that fetchFn will be updated very shortly
+ * after this error is thrown, once all deps are ready.
+ */
 export class AbortLoadError extends Error {}

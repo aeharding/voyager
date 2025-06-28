@@ -4,6 +4,7 @@ import AndroidBackButton from "./AndroidBackButton";
 import AppUrlListener from "./AppUrlListener";
 import DatabaseErrorListener from "./DatabaseErrorListener";
 import HapticsListener from "./HapticsListener";
+import ServerConnectivity from "./ServerConnectivity";
 // Listeners
 import "./androidSafeArea";
 import "./db";
@@ -21,6 +22,7 @@ export default function Listeners() {
       <AppUrlListener />
       <TextRecoveryStartupPrompt />
       <DatabaseErrorListener />
+      <ServerConnectivity />
     </>
   );
 }

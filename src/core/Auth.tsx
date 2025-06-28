@@ -1,4 +1,3 @@
-import { useIonAlert } from "@ionic/react";
 import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import React, {
   useCallback,
@@ -21,24 +20,6 @@ export default function Auth({ children }: React.PropsWithChildren) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const unsupportedSoftware = useAppSelector(
-    (state) => state.site.unsupportedSoftware,
-  );
-  const [presentAlert] = useIonAlert();
-
-  useEffect(() => {
-    if (!unsupportedSoftware) return;
-
-    presentAlert({
-      header: "Unsupported instance",
-      message: `Voyager can't connect to ${connectedInstance} because it's not running a supported version of Lemmy or Piefed. Please try connecting to a different instance.`,
-      buttons: [
-        {
-          text: "OK",
-        },
-      ],
-    });
-  }, [unsupportedSoftware, presentAlert, connectedInstance]);
 
   useEffect(() => {
     dispatch(getSiteIfNeeded());

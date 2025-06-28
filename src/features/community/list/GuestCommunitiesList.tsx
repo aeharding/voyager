@@ -7,7 +7,6 @@ import {
 import { Community, CommunitySortType } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
-import { AbortLoadError } from "#/features/feed/Feed";
 import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { useMode } from "#/helpers/threadiverse";
@@ -33,7 +32,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const mode = useMode();
 
   async function update() {
-    if (!mode) throw new AbortLoadError();
+    if (!mode) return;
 
     const sortParams: CommunitySortType = (() => {
       switch (mode) {
@@ -78,7 +77,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
     setCommunities(undefined);
 
     updateEvent();
-  }, [client, actor]);
+  }, [client, actor, mode]);
 
   if (communities === undefined) return <CenteredSpinner />;
 
