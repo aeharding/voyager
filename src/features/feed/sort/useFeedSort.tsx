@@ -74,7 +74,9 @@ export default function useFeedSort<Context extends FeedSortContext>(
   const dispatch = useAppDispatch();
   const mode = useMode();
 
-  function getOverrideSort(): Sort | null | undefined {
+  function getOverrideSort(
+    mode: ThreadiverseMode | null | undefined,
+  ): Sort | null | undefined {
     if (typeof overrideSort === "string") return overrideSort;
     if (!mode) return mode;
     return (overrideSort?.[mode] as Sort) ?? null;
@@ -93,10 +95,21 @@ export default function useFeedSort<Context extends FeedSortContext>(
         .rememberCommunitySort,
   );
 
+  const latchedMode = useMode(true);
+  const latchedDefaultSort = useAppSelector((state) =>
+    latchedMode ? state.settings.general[context].sort[latchedMode] : mode,
+  ) as Sort | undefined;
+  const [optimisticallyLoadedSort] = useState(() => {
+    if (!latchedMode) return latchedMode;
+    if (rememberCommunitySort && feedSort) return feedSort;
+    return getOverrideSort(latchedMode) ?? latchedDefaultSort;
+  });
+
   const [sort, _setSort] = useState<Sort | null | undefined>(() => {
-    if (!rememberCommunitySort) return getOverrideSort() ?? defaultSort;
+    if (!mode) return mode;
+    if (!rememberCommunitySort) return getOverrideSort(mode) ?? defaultSort;
     if (feedSort) return feedSort;
-    return getOverrideSort();
+    return getOverrideSort(mode);
   });
 
   useEffect(() => {
@@ -121,7 +134,6 @@ export default function useFeedSort<Context extends FeedSortContext>(
       return;
     }
     if (feedSort === undefined) return; // null = loaded, but custom community sort not found
-    if (mode === undefined) return; // not loaded yet
 
     _setSort(feedSort ?? defaultSort);
   }, [feedSort, sort, defaultSort, rememberCommunitySort, mode]);
@@ -143,7 +155,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
     [context, dispatch, feed, rememberCommunitySort],
   );
 
-  return [sort, setSort] as const;
+  return [sort, setSort, optimisticallyLoadedSort] as const;
 }
 
 function findFeedContext(
@@ -179,9 +191,8 @@ export function useFeedSortParams<Context extends FeedSortContext>(
 ): Sorts[Context] | null | undefined {
   const mode = useMode();
 
-  if (mode === undefined) return undefined; // not loaded
+  if (!mode) return mode;
   if (!sort) return null; // loaded, but not found
-  if (mode === null) return null; // loaded, but failed to resolve software
 
   return convertSortToLemmyParams(context, sort, mode) ?? null;
 }

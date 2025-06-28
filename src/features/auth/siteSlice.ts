@@ -17,6 +17,7 @@ interface SiteState {
   response: GetSiteResponse | undefined;
 
   software: ProviderInfo | undefined;
+  latchedSoftware: ProviderInfo | undefined;
   softwareError: boolean;
   unsupportedSoftware: boolean;
 
@@ -28,6 +29,7 @@ const initialState: SiteState = {
   loading: false,
   response: undefined,
   software: undefined,
+  latchedSoftware: undefined,
   softwareError: false,
   unsupportedSoftware: false,
   ignoreInstanceOffline: false,
@@ -54,14 +56,17 @@ export const siteSlice = createSlice({
     },
     receivedSoftware(state, action: PayloadAction<ProviderInfo>) {
       state.software = action.payload;
+      state.latchedSoftware = action.payload;
       state.softwareError = false;
     },
     failedSoftware(state) {
       state.software = undefined;
+      state.latchedSoftware = undefined;
       state.softwareError = true;
     },
     receivedUnsupportedSoftware(state) {
       state.unsupportedSoftware = true;
+      state.latchedSoftware = undefined;
       state.softwareError = true;
     },
     setIgnoreInstanceOffline(state) {
@@ -142,6 +147,9 @@ export const getSoftware =
     try {
       software = await clientSelector(getState()).getSoftware();
     } catch (error) {
+      // Site or user changed before site response resolved
+      if (reqId !== siteReqIdSelector(getState())) return;
+
       if (error instanceof UnsupportedSoftwareError) {
         dispatch(receivedUnsupportedSoftware());
       } else {
@@ -222,6 +230,19 @@ function getSiteReqId(instance: string, handle: string | undefined) {
 export const modeSelector = createSelector(
   [
     (state: RootState) => state.site.software,
+    (state: RootState) => state.site.softwareError,
+  ],
+  (software, softwareError) => {
+    if (softwareError) return null;
+    if (!software) return undefined;
+
+    return ThreadiverseClient.resolveClient(software)?.mode ?? null;
+  },
+);
+
+export const latchedModeSelector = createSelector(
+  [
+    (state: RootState) => state.site.latchedSoftware,
     (state: RootState) => state.site.softwareError,
   ],
   (software, softwareError) => {

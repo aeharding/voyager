@@ -90,6 +90,7 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   function Sort({ sort, setSort }: SortProps<S>) {
+    const mode = useMode();
     const getAppScrollable = useGetAppScrollable();
     const sortOptions = useSortOptions();
 
@@ -98,9 +99,13 @@ export default function buildSort<S extends AnyVgerSort>(
       scrollUpIfNeeded(getAppScrollable(), 0, "auto");
     });
 
+    console.log("sort", sort);
+
     if (!sort) return;
 
-    const sortIcon = findSortOption(sort, sortOptions)?.icon;
+    const sortIcon = !mode
+      ? getSortIcon(sort) // when server unknown, assume the sort is valid to prevent flicker
+      : findSortOption(sort, sortOptions)?.icon;
 
     return (
       <IonButton onClick={() => sort && present(sort)}>
