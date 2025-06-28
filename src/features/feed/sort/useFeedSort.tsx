@@ -95,16 +95,6 @@ export default function useFeedSort<Context extends FeedSortContext>(
         .rememberCommunitySort,
   );
 
-  const latchedMode = useMode(true);
-  const latchedDefaultSort = useAppSelector((state) =>
-    latchedMode ? state.settings.general[context].sort[latchedMode] : mode,
-  ) as Sort | undefined;
-  const [optimisticallyLoadedSort] = useState(() => {
-    if (!latchedMode) return latchedMode;
-    if (rememberCommunitySort && feedSort) return feedSort;
-    return getOverrideSort(latchedMode) ?? latchedDefaultSort;
-  });
-
   const [sort, _setSort] = useState<Sort | null | undefined>(() => {
     if (!mode) return mode;
     if (!rememberCommunitySort) return getOverrideSort(mode) ?? defaultSort;
@@ -136,7 +126,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
     if (feedSort === undefined) return; // null = loaded, but custom community sort not found
 
     _setSort(feedSort ?? defaultSort);
-  }, [feedSort, sort, defaultSort, rememberCommunitySort, mode]);
+  }, [feedSort, sort, defaultSort, rememberCommunitySort]);
 
   const setSort = useCallback(
     (sort: Sort) => {
@@ -155,7 +145,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
     [context, dispatch, feed, rememberCommunitySort],
   );
 
-  return [sort, setSort, optimisticallyLoadedSort] as const;
+  return [sort, setSort] as const;
 }
 
 function findFeedContext(

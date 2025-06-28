@@ -50,10 +50,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const commonPostFeedParams = useCommonPostFeedParams();
 
   const postFeed = { listingType: type };
-  const [sort, setSort, optimisticallyLoadedSort] = useFeedSort(
-    "posts",
-    postFeed,
-  );
+  const [sort, setSort] = useFeedSort("posts", postFeed);
   const sortParams = useFeedSortParams("posts", sort);
 
   const followIds = useAppSelector(followIdsSelector);
@@ -142,10 +139,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                   <TitleSearch name={listingTypeTitle(type)}>
                     <IonButtons slot="end">
                       {type === "ModeratorView" && <ModActions type={type} />}
-                      <PostSort
-                        sort={sort ?? optimisticallyLoadedSort}
-                        setSort={setSort}
-                      />
+                      <PostSort sort={sort} setSort={setSort} />
                       <SpecialFeedMoreActions type={type} />
                     </IonButtons>
                   </TitleSearch>

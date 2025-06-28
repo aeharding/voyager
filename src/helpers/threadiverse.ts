@@ -5,13 +5,13 @@ import {
   ThreadiverseMode,
 } from "threadiverse";
 
-import { latchedModeSelector, modeSelector } from "#/features/auth/siteSlice";
+import { modeSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
 
 export const OPTIMISTIC_MODE: ThreadiverseMode = "lemmyv0";
 
-export function useMode(latched = false) {
-  return useAppSelector(latched ? latchedModeSelector : modeSelector);
+export function useMode() {
+  return useAppSelector(modeSelector);
 }
 
 export function formatMode(mode: ThreadiverseMode): string {

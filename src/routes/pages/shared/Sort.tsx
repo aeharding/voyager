@@ -40,7 +40,7 @@ import {
   clockBadgeTwelve,
 } from "#/features/icons";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
-import { useMode } from "#/helpers/threadiverse";
+import { OPTIMISTIC_MODE, useMode } from "#/helpers/threadiverse";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
@@ -76,8 +76,8 @@ export default function buildSort<S extends AnyVgerSort>(
 
   return { Sort, useSelectSort, formatSort };
 
-  function useSortOptions() {
-    const mode = useMode();
+  function useSortOptions(defaultMode?: ThreadiverseMode) {
+    const mode = useMode() ?? defaultMode;
 
     if (!mode) return [];
 
@@ -90,22 +90,19 @@ export default function buildSort<S extends AnyVgerSort>(
   }
 
   function Sort({ sort, setSort }: SortProps<S>) {
-    const mode = useMode();
     const getAppScrollable = useGetAppScrollable();
-    const sortOptions = useSortOptions();
+
+    // Proactively assume for render until site software is resolved
+    const sortOptions = useSortOptions(OPTIMISTIC_MODE);
 
     const present = useSelectSort((newValue) => {
       setSort(newValue);
       scrollUpIfNeeded(getAppScrollable(), 0, "auto");
     });
 
-    console.log("sort", sort);
-
     if (!sort) return;
 
-    const sortIcon = !mode
-      ? getSortIcon(sort) // when server unknown, assume the sort is valid to prevent flicker
-      : findSortOption(sort, sortOptions)?.icon;
+    const sortIcon = findSortOption(sort, sortOptions)?.icon;
 
     return (
       <IonButton onClick={() => sort && present(sort)}>
