@@ -22,22 +22,29 @@ export default function Edited({ item, showDate, className }: EditedProps) {
 
   const updated = isPost(item) ? item.post.updated : item.comment.updated;
 
-  const editedLabelIfNeeded = (() => {
-    if (!updated) return;
-    if (!showDate) return;
+  const created = new Date(item.counts.published);
 
-    const created = new Date(item.counts.published);
+  const edited = (() => {
+    if (!updated) return;
+
     const edited = new Date(updated);
 
     // Don't show as edited if changed within 5 minutes of creation
-    if (differenceInMinutes(created, edited) < 5) return;
+    if (differenceInMinutes(edited, created) < 5) return;
+
+    return edited;
+  })();
+
+  const editedLabelIfNeeded = (() => {
+    if (!showDate) return;
+    if (!edited) return;
 
     const editedLabel = formatRelativeToNow(edited);
 
     return editedLabel;
   })();
 
-  if (!editedLabelIfNeeded) return;
+  if (!edited) return;
 
   function presentEdited(e: MouseEvent) {
     e.stopPropagation();
