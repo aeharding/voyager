@@ -84,7 +84,7 @@ export default function ProfilePage() {
         </IonToolbar>
       </AppHeader>
 
-      <FeedContent>{renderContent()}</FeedContent>
+      <FeedContent color="light-bg">{renderContent()}</FeedContent>
     </AppPage>
   );
 }
