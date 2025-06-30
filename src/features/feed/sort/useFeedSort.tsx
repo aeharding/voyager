@@ -74,14 +74,6 @@ export default function useFeedSort<Context extends FeedSortContext>(
   const dispatch = useAppDispatch();
   const mode = useMode();
 
-  function getOverrideSort(
-    mode: ThreadiverseMode | null | undefined,
-  ): Sort | null | undefined {
-    if (typeof overrideSort === "string") return overrideSort;
-    if (!mode) return mode;
-    return (overrideSort?.[mode] as Sort) ?? null;
-  }
-
   const feedSort = useAppSelector(getFeedSortSelectorBuilder(feed, context)) as
     | Sort
     | null
@@ -95,38 +87,53 @@ export default function useFeedSort<Context extends FeedSortContext>(
         .rememberCommunitySort,
   );
 
-  const [sort, _setSort] = useState<Sort | null | undefined>(() => {
-    if (!mode) return mode;
-    if (!rememberCommunitySort) return getOverrideSort(mode) ?? defaultSort;
-    if (feedSort) return feedSort;
-    return getOverrideSort(mode);
-  });
+  const getOverrideSort = useCallback(
+    (mode: ThreadiverseMode): Sort | null | undefined => {
+      if (!overrideSort) return null;
+      if (typeof overrideSort === "string") return overrideSort;
+      return overrideSort[mode] as Sort;
+    },
+    [overrideSort],
+  );
+
+  const onSortUpdate = useCallback(
+    (dbFailure = false) => {
+      if (!mode) return mode;
+
+      // If there is an active remember feed sort (or it's loading), return it
+      if (rememberCommunitySort && feedSort !== null && !dbFailure)
+        return feedSort;
+
+      const override = getOverrideSort(mode);
+
+      // If there is no override/it's not loading either, return default sort
+      if (override !== null) return override;
+
+      return defaultSort;
+    },
+    [feedSort, rememberCommunitySort, defaultSort, mode, getOverrideSort],
+  );
+
+  const [sort, _setSort] = useState<Sort | null | undefined>(onSortUpdate);
 
   useEffect(() => {
-    (async () => {
-      if (!rememberCommunitySort) return;
-      if (!feed) return;
+    if (sort) return; // Latch an existing sort
+    if (!rememberCommunitySort) return;
+    if (!feed) return;
 
+    (async () => {
       try {
         await dispatch(getFeedSort({ feed, context })).unwrap(); // unwrap to catch dispatched error (db failure)
       } catch (error) {
-        _setSort((_sort) => _sort ?? defaultSort); // fallback if indexeddb unavailable
+        _setSort((_sort) => _sort ?? onSortUpdate(true)); // fallback if indexeddb unavailable
         throw error;
       }
     })();
-  }, [feed, dispatch, rememberCommunitySort, context, defaultSort]);
+  }, [feed, dispatch, rememberCommunitySort, context, onSortUpdate, sort]);
 
   useEffect(() => {
-    if (sort) return;
-    if (!rememberCommunitySort) {
-      // If default sort not loaded yet, update to use it
-      _setSort(defaultSort);
-      return;
-    }
-    if (feedSort === undefined) return; // null = loaded, but custom community sort not found
-
-    _setSort(feedSort ?? defaultSort);
-  }, [feedSort, sort, defaultSort, rememberCommunitySort]);
+    _setSort((_sort) => _sort ?? onSortUpdate());
+  }, [onSortUpdate]);
 
   const setSort = useCallback(
     (sort: Sort) => {

@@ -95,7 +95,7 @@ export function PostPageContent({
   }
 
   function renderPost() {
-    if (!post) return <CenteredSpinner />;
+    if (!post || sort === undefined) return <CenteredSpinner />;
     if (
       post === "not-found" || // 404 from lemmy
       post.post.deleted || // post marked deleted from lemmy
@@ -109,8 +109,6 @@ export function PostPageContent({
           <div className="ion-padding ion-text-center">Post not found</div>
         </>
       );
-
-    if (sort === undefined) return;
 
     return (
       <>
