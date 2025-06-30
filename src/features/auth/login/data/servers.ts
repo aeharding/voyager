@@ -109,7 +109,6 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmynsfw.com",
   "hexbear.net",
   "vger.social",
-  "lemm.ee", // TODO: remove once lemm.ee is shut down (Jul 1st 2025)
 ];
 
 export const LOGIN_SERVERS = uniq([

@@ -10,7 +10,7 @@ import { setIgnoreInstanceOffline } from "#/features/auth/siteSlice";
 import { defaultServersUntouched } from "#/services/app";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-const DEAD_SERVERS = ["lemm.ee", "example.com"];
+const DEAD_SERVERS = ["lemm.ee"];
 
 export default function ServerConnectivity() {
   const dispatch = useAppDispatch();
