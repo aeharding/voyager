@@ -96,19 +96,23 @@ export default function useFeedSort<Context extends FeedSortContext>(
     [overrideSort],
   );
 
-  const onSortUpdate = useCallback(() => {
-    if (!mode) return mode;
+  const onSortUpdate = useCallback(
+    (dbFailure = false) => {
+      if (!mode) return mode;
 
-    // If there is an active remember feed sort (or it's loading), return it
-    if (rememberCommunitySort && feedSort !== null) return feedSort;
+      // If there is an active remember feed sort (or it's loading), return it
+      if (rememberCommunitySort && feedSort !== null && !dbFailure)
+        return feedSort;
 
-    const override = getOverrideSort(mode);
+      const override = getOverrideSort(mode);
 
-    // If there is no override/it's not loading either, return default sort
-    if (override !== null) return override;
+      // If there is no override/it's not loading either, return default sort
+      if (override !== null) return override;
 
-    return defaultSort;
-  }, [feedSort, rememberCommunitySort, defaultSort, mode, getOverrideSort]);
+      return defaultSort;
+    },
+    [feedSort, rememberCommunitySort, defaultSort, mode, getOverrideSort],
+  );
 
   const [sort, _setSort] = useState<Sort | null | undefined>(onSortUpdate);
 
@@ -121,17 +125,15 @@ export default function useFeedSort<Context extends FeedSortContext>(
       try {
         await dispatch(getFeedSort({ feed, context })).unwrap(); // unwrap to catch dispatched error (db failure)
       } catch (error) {
-        _setSort((_sort) => _sort ?? onSortUpdate()); // fallback if indexeddb unavailable
+        _setSort((_sort) => _sort ?? onSortUpdate(true)); // fallback if indexeddb unavailable
         throw error;
       }
     })();
   }, [feed, dispatch, rememberCommunitySort, context, onSortUpdate, sort]);
 
   useEffect(() => {
-    if (sort) return; // Latch an existing sort
-
-    _setSort(onSortUpdate());
-  }, [onSortUpdate, sort]);
+    _setSort((_sort) => _sort ?? onSortUpdate());
+  }, [onSortUpdate]);
 
   const setSort = useCallback(
     (sort: Sort) => {
