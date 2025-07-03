@@ -52,17 +52,14 @@ export default function useLemmyUrlHandler() {
     (state) => state.auth.connectedInstance,
   );
   const connectedInstanceUrl = buildBaseClientUrl(connectedInstance);
-  const objectByUrl = useAppSelector((state) => state.resolve.objectByUrl);
   const {
     navigateToComment,
     navigateToCommunity,
     navigateToPost,
     navigateToUser,
-  } = useAppNavigation();
+  } = useAppNavigation(true);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
-  const dispatch = useAppDispatch();
-  const presentToast = useAppToast();
 
   function handleCommunityClickIfNeeded(url: URL, e?: MouseEvent) {
     const matchedCommunityHandle = matchLemmyOrPiefedCommunity(url.pathname);
@@ -114,52 +111,14 @@ export default function useLemmyUrlHandler() {
     url: URL,
     e?: MouseEvent,
   ): Promise<"already-there" | "not-found" | "success"> {
-    const cachedResolvedObject = objectByUrl[url.toString()];
-    if (cachedResolvedObject === "couldnt_find_object") return "not-found";
-
     e?.preventDefault();
     e?.stopPropagation();
 
-    let object = cachedResolvedObject;
-
-    if (!object) {
-      try {
-        object = await dispatch(resolveObject(url.toString()));
-      } catch (error) {
-        if (
-          // TODO START lemmy 0.19 and less support
-          isLemmyError(error, "couldnt_find_object" as never) ||
-          isLemmyError(error, "couldnt_find_post" as never) ||
-          isLemmyError(error, "couldnt_find_comment" as never) ||
-          isLemmyError(error, "couldnt_find_person" as never) ||
-          isLemmyError(error, "couldnt_find_community" as never) ||
-          // TODO END
-          isLemmyError(error, "not_found")
-        ) {
-          presentToast({
-            message: `Could not find ${getObjectName(
-              url.pathname,
-            )} on your instance. Try again to open in browser.`,
-            duration: 3500,
-            color: "warning",
-          });
-        }
-
-        throw error;
-      }
-    }
-
-    if (object.post) {
-      return navigateToPost(object.post);
-    } else if (object.community) {
-      return navigateToCommunity(object.community);
-    } else if (object.person) {
-      return navigateToUser(object.person);
-    } else if (object.comment) {
-      return navigateToComment(object.comment);
-    }
-
-    return "not-found";
+    router.push(
+      buildGeneralBrowseLink(
+        "/resolve?url=" + encodeURIComponent(url.toString()),
+      ),
+    );
   }
 
   function getUrl(link: string) {

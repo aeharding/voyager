@@ -40,12 +40,14 @@ export default function PostPage() {
     useParams<PostPageParams>();
 
   return (
-    <PostPageContent
-      id={id}
-      commentPath={commentPath}
-      community={community}
-      threadCommentId={threadCommentId}
-    />
+    <AppPage>
+      <PostPageContent
+        id={id}
+        commentPath={commentPath}
+        community={community}
+        threadCommentId={threadCommentId}
+      />
+    </AppPage>
   );
 }
 
@@ -135,7 +137,7 @@ export function PostPageContent({
   })();
 
   return (
-    <AppPage className={className}>
+    <>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -152,7 +154,7 @@ export function PostPageContent({
         </IonToolbar>
       </AppHeader>
       <Content>{renderPost()}</Content>
-    </AppPage>
+    </>
   );
 }
 
