@@ -61,11 +61,6 @@ export default function Toast({ ref, onClose }: ToastProps) {
     }
   }, [open, start]);
 
-  useImperativeHandle(ref, () => ({
-    open: handleOpen,
-    close: handleClose,
-  }));
-
   async function handleClose() {
     clear();
 
@@ -83,6 +78,11 @@ export default function Toast({ ref, onClose }: ToastProps) {
     setOptions(options);
     setOpen(true);
   }
+
+  useImperativeHandle(ref, () => ({
+    open: handleOpen,
+    close: handleClose,
+  }));
 
   if (!open) return;
 

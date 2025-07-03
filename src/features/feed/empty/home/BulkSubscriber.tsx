@@ -41,10 +41,6 @@ export default function BulkSubscriber({
 
   const pendingRef = useRef<string[]>([]);
 
-  useImperativeHandle(ref, () => ({
-    submit,
-  }));
-
   function submit(packs: PackType[]) {
     setIsLoading(true);
 
@@ -117,6 +113,10 @@ export default function BulkSubscriber({
 
     onNext();
   }
+
+  useImperativeHandle(ref, () => ({
+    submit,
+  }));
 
   return (
     <IonLoading isOpen={isLoading} message={`Subscribing ${processingLabel}`} />

@@ -12,6 +12,11 @@ export default function useMediaLoadObserver(src: string | undefined) {
   const mediaRef = useRef<ComponentRef<typeof GalleryMedia>>(null);
   const resizeObserverRef = useRef<ResizeObserver | undefined>(undefined);
 
+  function destroyObserver() {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = undefined;
+  }
+
   useEffect(() => {
     let destroyed = false;
 
@@ -52,11 +57,6 @@ export default function useMediaLoadObserver(src: string | undefined) {
       destroyObserver();
     };
   }, [imageData, dispatch, src]);
-
-  function destroyObserver() {
-    resizeObserverRef.current?.disconnect();
-    resizeObserverRef.current = undefined;
-  }
 
   return [mediaRef, imageData] as const;
 }
