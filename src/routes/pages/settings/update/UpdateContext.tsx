@@ -46,6 +46,29 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
 
   const registration = useRef<ServiceWorkerRegistration>(undefined);
 
+  async function checkForUpdates() {
+    const r = registration.current;
+
+    if (!r) {
+      if (status === "not-enabled") return;
+      setStatus("error");
+      return;
+    }
+
+    try {
+      await r.update();
+    } catch (error) {
+      setStatus("error");
+      throw error;
+    }
+
+    setStatus((status) => {
+      if (status === "outdated") return status;
+
+      return r.waiting || r.installing ? "outdated" : "current";
+    });
+  }
+
   const registerSW = useRegisterSW({
     onRegistered(r) {
       setStatus("loading");
@@ -74,29 +97,6 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
 
     checkForUpdatesEvent();
   }, [documentState]);
-
-  async function checkForUpdates() {
-    const r = registration.current;
-
-    if (!r) {
-      if (status === "not-enabled") return;
-      setStatus("error");
-      return;
-    }
-
-    try {
-      await r.update();
-    } catch (error) {
-      setStatus("error");
-      throw error;
-    }
-
-    setStatus((status) => {
-      if (status === "outdated") return status;
-
-      return r.waiting || r.installing ? "outdated" : "current";
-    });
-  }
 
   return (
     <UpdateContext

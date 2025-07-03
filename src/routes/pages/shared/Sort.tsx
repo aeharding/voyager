@@ -121,6 +121,24 @@ export default function buildSort<S extends AnyVgerSort>(
     const sortOptions = useSortOptions();
 
     function present(sort: S) {
+      function presentSub(rootSort: ChildrenSortOption<S>) {
+        presentTopSortActionSheet({
+          header: `Sort by ${rootSort.label} for...`,
+          cssClass: "left-align-buttons",
+          buttons: rootSort.children.map((b) => ({
+            ...b,
+            data: b.value,
+            text: b.label,
+            role: sort === b.value ? "selected" : undefined,
+          })),
+          onWillDismiss: (e: CustomEvent<OverlayEventDetail<S>>) => {
+            if (!e.detail.data) return;
+
+            onSelected(e.detail.data);
+          },
+        });
+      }
+
       presentInitialSortActionSheet({
         header: options?.title ?? "Sort by...",
         cssClass: "left-align-buttons",
@@ -153,24 +171,6 @@ export default function buildSort<S extends AnyVgerSort>(
           }
         },
       });
-
-      function presentSub(rootSort: ChildrenSortOption<S>) {
-        presentTopSortActionSheet({
-          header: `Sort by ${rootSort.label} for...`,
-          cssClass: "left-align-buttons",
-          buttons: rootSort.children.map((b) => ({
-            ...b,
-            data: b.value,
-            text: b.label,
-            role: sort === b.value ? "selected" : undefined,
-          })),
-          onWillDismiss: (e: CustomEvent<OverlayEventDetail<S>>) => {
-            if (!e.detail.data) return;
-
-            onSelected(e.detail.data);
-          },
-        });
-      }
     }
 
     return present;
