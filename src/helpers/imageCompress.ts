@@ -26,7 +26,7 @@ export async function reduceFileSize(
   maxWidth: number,
   maxHeight: number,
   quality = 0.7,
-): Promise<Blob | File> {
+): Promise<File> {
   if (file.type.startsWith("video/")) return file;
 
   if (file.size <= acceptFileSize) {
@@ -70,7 +70,12 @@ export async function reduceFileSize(
               (blob ? blob.size >> 10 : "???") +
               "kB",
           );
-          if (blob) resolve(blob);
+          if (blob)
+            resolve(
+              new File([blob], "vger-compressed.jpg", {
+                type: "image/jpeg",
+              }),
+            );
           else resolve(file);
         },
         "image/jpeg",

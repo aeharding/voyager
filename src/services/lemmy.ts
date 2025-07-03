@@ -47,7 +47,7 @@ export async function _uploadImage(
   }
 
   const response = await client.uploadImage({
-    file: compressedImageIfNeeded as File,
+    file: compressedImageIfNeeded,
   });
 
   // lemm.ee uses response.message for error messages (e.g. account too new)
