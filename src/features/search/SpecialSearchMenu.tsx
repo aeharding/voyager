@@ -16,7 +16,7 @@ export default function SpecialSearchMenu() {
 
   return (
     <IonList inset color="primary">
-      {communitiesCount && (
+      {!!communitiesCount && (
         <IonItem routerLink="/search/random">
           <IonIcon icon={shuffle} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">Random Community</IonLabel>
