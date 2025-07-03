@@ -18,12 +18,6 @@ export default function useValidateLoginTo() {
     try {
       site = await client.getSite();
     } catch (error) {
-      presentToast({
-        message: `Problem connecting to ${potentialServer}. Please try again`,
-        color: "danger",
-        fullscreen: true,
-      });
-
       if (error instanceof UnsupportedSoftwareError) {
         presentToast({
           message: error.message,
@@ -34,6 +28,12 @@ export default function useValidateLoginTo() {
 
         return;
       }
+
+      presentToast({
+        message: `Problem connecting to ${potentialServer}. Please try again`,
+        color: "danger",
+        fullscreen: true,
+      });
 
       throw error;
     }
