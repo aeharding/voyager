@@ -17,7 +17,10 @@ export const FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS = [
   GO_VOYAGER_HOST,
   "lemmyverse.link",
   THREADIVERSE_HOST,
+  "lemsha.re",
 ];
+
+const SUPPORTS_SCHEMA_PREFIX = ["lemsha.re"];
 
 export function buildFediRedirectLink(fediRedirectHost: string, apId: string) {
   const url = parseUrl(apId);
@@ -35,11 +38,19 @@ export function extractLemmyLinkFromPotentialFediRedirectService(
 
   if (!potentialUrl) return;
 
-  if (
-    services.includes(potentialUrl.hostname) &&
-    potentialUrl.pathname.split("/")[1]?.includes(".")
+  const potentialFediRedirectServiceHost = potentialUrl.hostname;
+
+  if (!services.includes(potentialFediRedirectServiceHost)) return;
+
+  const endpoint = potentialUrl.pathname.slice(1);
+
+  if (endpoint.split("/")[0]?.includes(".")) {
+    return `https://${endpoint}`;
+  } else if (
+    endpoint.startsWith("https://") &&
+    SUPPORTS_SCHEMA_PREFIX.includes(potentialFediRedirectServiceHost)
   ) {
-    return `https:/${potentialUrl.pathname}`;
+    return `https://${endpoint.slice(8)}`;
   }
 }
 
