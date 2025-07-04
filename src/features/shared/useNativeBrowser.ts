@@ -10,6 +10,8 @@ import {
 import { isAndroid } from "#/helpers/device";
 import store from "#/store";
 
+import { shouldOpenWithInAppBrowser } from "./InAppExternalLink";
+
 export default function useNativeBrowser() {
   const isDark = use(DarkContext);
 
@@ -57,5 +59,18 @@ export default function useNativeBrowser() {
       notifyStatusTapThatBrowserWasClosed();
       throw e;
     }
+  };
+}
+
+export function useOpenNativeBrowserIfPreferred() {
+  const _openNativeBrowser = useNativeBrowser();
+
+  return async function openNativeBrowser(href: string) {
+    if (shouldOpenWithInAppBrowser(href)) {
+      _openNativeBrowser(href);
+      return;
+    }
+
+    window.open(href, "_blank");
   };
 }

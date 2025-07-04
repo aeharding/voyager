@@ -43,17 +43,18 @@ export default function CrosspostContainer({
 
     // Virtua initially tries to render all feed items,
     // so do a poor man's debounce
+    const abortCtrl = new AbortController();
 
-    let visible = true;
+    let timeoutId: NodeJS.Timeout | null = setTimeout(() => {
+      timeoutId = null;
+      if (abortCtrl.signal.aborted) return;
 
-    setTimeout(() => {
-      if (!visible) return;
-
-      dispatch(resolveObject(url));
+      dispatch(resolveObject(url, abortCtrl.signal));
     }, 250);
 
     return () => {
-      visible = false;
+      abortCtrl.abort();
+      if (timeoutId != null) clearTimeout(timeoutId);
     };
   }, [url, dispatch, object]);
 
