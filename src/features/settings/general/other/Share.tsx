@@ -28,7 +28,7 @@ function getLabel(option: PostCommentShareType) {
     case OPostCommentShareType.ApId:
       return "Author Instance";
     case OPostCommentShareType.DeepLink:
-      return "Voyager App";
+      return "Voyager App (vger.to)";
     case OPostCommentShareType.Threadiverse:
       return "threadiverse.link";
     case OPostCommentShareType.Community:
