@@ -5,6 +5,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:go.getvoyager.app</string>
+		<string>applinks:vger.to</string>
 	</array>
 </dict>
 </plist>

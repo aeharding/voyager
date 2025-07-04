@@ -10,7 +10,7 @@ import {
 describe("buildGoVoyagerLink", () => {
   it("builds a valid goVoyager link from a Lemmy URL", () => {
     const input = "https://lemmy.world/post/123";
-    const expected = `https://go.getvoyager.app/lemmy.world/post/123`;
+    const expected = `https://vger.to/lemmy.world/post/123`;
     expect(buildFediRedirectLink(GO_VOYAGER_HOST, input)).toBe(expected);
   });
 
