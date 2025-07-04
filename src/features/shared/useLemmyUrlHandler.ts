@@ -1,4 +1,3 @@
-import { useIonLoading } from "@ionic/react";
 import { MouseEvent } from "react";
 
 import {
@@ -15,6 +14,7 @@ import { buildBaseClientUrl } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import useDetermineSoftware from "./useDetermineSoftware";
+import { useLoadingIndicator } from "./useLoadingIndicator";
 import { useOpenNativeBrowserIfPreferred } from "./useNativeBrowser";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
@@ -66,7 +66,7 @@ export default function useLemmyUrlHandler() {
   const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const [presentLoading, dismissLoading] = useIonLoading();
+  const { showLoading, hideLoading } = useLoadingIndicator();
   const openNativeBrowser = useOpenNativeBrowserIfPreferred();
 
   function handleCommunityClickIfNeeded(url: URL, e?: MouseEvent) {
@@ -130,20 +130,10 @@ export default function useLemmyUrlHandler() {
     if (!object) {
       const abortCtrl = new AbortController();
 
-      const loadingIndicatorShownTime = Date.now();
-
-      // Wait a minimum of 200ms before showing loading indicator
-      // to avoid flashing the loading indicator when the link is resolved quickly
-      let showLoadingTimeoutId: NodeJS.Timeout | null = setTimeout(() => {
-        showLoadingTimeoutId = null;
-
-        presentLoading({
-          backdropDismiss: true,
-          onWillDismiss: () => {
-            abortCtrl.abort();
-          },
-        });
-      }, 200);
+      // Show loading indicator with abort callback
+      showLoading(() => {
+        abortCtrl.abort();
+      });
 
       try {
         object = await dispatch(
@@ -170,18 +160,7 @@ export default function useLemmyUrlHandler() {
 
         throw error;
       } finally {
-        if (showLoadingTimeoutId != null) clearTimeout(showLoadingTimeoutId);
-
-        if (Date.now() - loadingIndicatorShownTime > 600) {
-          dismissLoading();
-        } else {
-          setTimeout(
-            () => {
-              dismissLoading();
-            },
-            600 - (Date.now() - loadingIndicatorShownTime),
-          );
-        }
+        hideLoading();
       }
 
       if (abortCtrl.signal.aborted) return "aborted";
