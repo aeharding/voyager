@@ -1,10 +1,12 @@
+import { useIonLoading } from "@ionic/react";
 import { MouseEvent } from "react";
 
 import {
+  couldNotFindUrl,
   resolveObject,
   unfurlRedirectServiceIfNeeded,
 } from "#/features/resolve/resolveSlice";
-import { isLemmyError } from "#/helpers/lemmyErrors";
+import { isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppNavigation from "#/helpers/useAppNavigation";
 import useAppToast from "#/helpers/useAppToast";
@@ -13,6 +15,7 @@ import { buildBaseClientUrl } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import useDetermineSoftware from "./useDetermineSoftware";
+import { useOpenNativeBrowserIfPreferred } from "./useNativeBrowser";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
 
@@ -63,6 +66,8 @@ export default function useLemmyUrlHandler() {
   const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
+  const [presentLoading, dismissLoading] = useIonLoading();
+  const openNativeBrowser = useOpenNativeBrowserIfPreferred();
 
   function handleCommunityClickIfNeeded(url: URL, e?: MouseEvent) {
     const matchedCommunityHandle = matchLemmyOrPiefedCommunity(url.pathname);
@@ -113,7 +118,7 @@ export default function useLemmyUrlHandler() {
   async function handleObjectIfNeeded(
     url: URL,
     e?: MouseEvent,
-  ): Promise<"already-there" | "not-found" | "success"> {
+  ): Promise<"already-there" | "not-found" | "success" | "aborted"> {
     const cachedResolvedObject = objectByUrl[url.toString()];
     if (cachedResolvedObject === "couldnt_find_object") return "not-found";
 
@@ -123,19 +128,37 @@ export default function useLemmyUrlHandler() {
     let object = cachedResolvedObject;
 
     if (!object) {
+      const abortCtrl = new AbortController();
+
+      const loadingIndicatorShownTime = Date.now();
+
+      // Wait a minimum of 200ms before showing loading indicator
+      // to avoid flashing the loading indicator when the link is resolved quickly
+      let showLoadingTimeoutId: NodeJS.Timeout | null = setTimeout(() => {
+        showLoadingTimeoutId = null;
+
+        presentLoading({
+          backdropDismiss: true,
+          onWillDismiss: () => {
+            abortCtrl.abort();
+          },
+        });
+      }, 200);
+
       try {
-        object = await dispatch(resolveObject(url.toString()));
+        object = await dispatch(
+          resolveObject(url.toString(), abortCtrl.signal),
+        );
       } catch (error) {
-        if (
-          // TODO START lemmy 0.19 and less support
-          isLemmyError(error, "couldnt_find_object" as never) ||
-          isLemmyError(error, "couldnt_find_post" as never) ||
-          isLemmyError(error, "couldnt_find_comment" as never) ||
-          isLemmyError(error, "couldnt_find_person" as never) ||
-          isLemmyError(error, "couldnt_find_community" as never) ||
-          // TODO END
-          isLemmyError(error, "not_found")
-        ) {
+        if (abortCtrl.signal.aborted) return "aborted";
+
+        if (isNative()) {
+          openNativeBrowser(url.toString());
+        } else {
+          // Force a not found state so next time
+          // the link will be opened in browser
+          dispatch(couldNotFindUrl(url.toString()));
+
           presentToast({
             message: `Could not find ${getObjectName(
               url.pathname,
@@ -146,7 +169,22 @@ export default function useLemmyUrlHandler() {
         }
 
         throw error;
+      } finally {
+        if (showLoadingTimeoutId != null) clearTimeout(showLoadingTimeoutId);
+
+        if (Date.now() - loadingIndicatorShownTime > 600) {
+          dismissLoading();
+        } else {
+          setTimeout(
+            () => {
+              dismissLoading();
+            },
+            600 - (Date.now() - loadingIndicatorShownTime),
+          );
+        }
       }
+
+      if (abortCtrl.signal.aborted) return "aborted";
     }
 
     if (object.post) {
@@ -206,7 +244,7 @@ export default function useLemmyUrlHandler() {
      * (this helps with new instances that aren't well federated yet)
      */
     forceResolveObject = false,
-  ): Promise<"not-found" | "already-there" | "success"> {
+  ): Promise<"not-found" | "already-there" | "success" | "aborted"> {
     const url = getUrl(link);
 
     if (!url) return "not-found";

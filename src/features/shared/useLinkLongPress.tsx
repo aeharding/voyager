@@ -4,8 +4,7 @@ import { copyOutline, earthOutline } from "ionicons/icons";
 import { useLongPress } from "use-long-press";
 
 import { shareUrl } from "#/features/share/share";
-import { shouldOpenWithInAppBrowser } from "#/features/shared/InAppExternalLink";
-import useNativeBrowser from "#/features/shared/useNativeBrowser";
+import { useOpenNativeBrowserIfPreferred } from "#/features/shared/useNativeBrowser";
 import {
   getShareIcon,
   isAndroid,
@@ -21,7 +20,7 @@ import {
 import useAppToast from "#/helpers/useAppToast";
 
 function useLinkLongPressAndroid(url: string | undefined) {
-  const openNativeBrowser = useNativeBrowser();
+  const openNativeBrowser = useOpenNativeBrowserIfPreferred();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
 
@@ -63,12 +62,7 @@ function useLinkLongPressAndroid(url: string | undefined) {
           icon: earthOutline,
           text: "Open in browser",
           handler: () => {
-            if (shouldOpenWithInAppBrowser(url)) {
-              openNativeBrowser(url);
-              return;
-            }
-
-            window.open(_url, "_blank");
+            openNativeBrowser(url);
           },
         },
         ("share" in navigator || isNative()) && {

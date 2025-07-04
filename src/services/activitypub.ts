@@ -1,5 +1,11 @@
-export default async function resolveFedilink(url: string): Promise<string> {
-  const response = await fetch(url, {
+import nativeFetch from "./nativeFetch";
+
+export default async function resolveFedilink(
+  url: string,
+  requestInit: Pick<RequestInit, "signal">,
+): Promise<string> {
+  const response = await nativeFetch(url, {
+    ...requestInit,
     headers: { Accept: "application/activity+json" },
   });
 

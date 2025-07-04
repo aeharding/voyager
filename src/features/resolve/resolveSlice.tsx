@@ -57,7 +57,7 @@ export default resolveSlice.reducer;
  * @returns The object, if found
  */
 export const resolveObject =
-  (url: string) =>
+  (url: string, signal?: AbortSignal) =>
   async (
     dispatch: AppDispatch,
     getState: () => RootState,
@@ -67,47 +67,33 @@ export const resolveObject =
     const q = normalizeObjectUrl(findFedilinkFromQuirkUrl(url));
 
     try {
-      object = await clientSelector(getState()).resolveObject({
-        q,
-      });
+      object = await clientSelector(getState()).resolveObject(
+        {
+          q,
+        },
+        { signal },
+      );
     } catch (error) {
-      if (
-        // TODO START lemmy 0.19 and less support
-        isLemmyError(error, "couldnt_find_object" as never) ||
-        isLemmyError(error, "couldnt_find_post" as never) ||
-        isLemmyError(error, "couldnt_find_comment" as never) ||
-        isLemmyError(error, "couldnt_find_person" as never) ||
-        isLemmyError(error, "couldnt_find_community" as never) ||
-        // TODO END
-        isLemmyError(error, "not_found") ||
-        isPiefedError(error, "No object found.")
-      ) {
+      if (isNotFoundError(error)) {
         try {
           // FINE. We'll do it the hard/insecure way and ask original instance >:(
-          const fedilink = await resolveFedilink(q);
+          const fedilink = await resolveFedilink(q, { signal });
 
           if (!fedilink) {
-            dispatch(couldNotFindUrl(url));
             throw new Error("Could not find fedilink");
           }
 
-          object = await clientSelector(getState()).resolveObject({
-            q: fedilink,
-          });
+          object = await clientSelector(getState()).resolveObject(
+            {
+              q: fedilink,
+            },
+            { signal },
+          );
         } catch (error) {
-          if (
-            // TODO START lemmy 0.19 and less support
-            isLemmyError(error, "couldnt_find_object" as never) ||
-            isLemmyError(error, "couldnt_find_post" as never) ||
-            isLemmyError(error, "couldnt_find_comment" as never) ||
-            isLemmyError(error, "couldnt_find_person" as never) ||
-            isLemmyError(error, "couldnt_find_community" as never) ||
-            // TODO END
-            isLemmyError(error, "not_found") ||
-            isPiefedError(error, "No object found.")
-          ) {
+          if (isNotFoundError(error)) {
             dispatch(couldNotFindUrl(url));
           }
+
           throw error;
         }
       } else {
@@ -217,4 +203,19 @@ function findPiefedCommentIdFromUrl(url: URL): number | undefined {
 
   if (PIEFED_COMMENT_PATH_AND_HASH.test(slug))
     return +slug.match(PIEFED_COMMENT_PATH_AND_HASH)![1]!;
+}
+
+function isNotFoundError(error: unknown): boolean {
+  return (
+    // TODO START lemmy 0.19 and less support
+    isLemmyError(error, "couldnt_find_object" as never) ||
+    isLemmyError(error, "couldnt_find_post" as never) ||
+    isLemmyError(error, "couldnt_find_comment" as never) ||
+    isLemmyError(error, "couldnt_find_person" as never) ||
+    isLemmyError(error, "couldnt_find_community" as never) ||
+    // TODO END
+    isLemmyError(error, "not_found") ||
+    isPiefedError(error, "No object found.") ||
+    false
+  );
 }
