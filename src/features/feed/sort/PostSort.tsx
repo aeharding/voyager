@@ -1,8 +1,4 @@
-import { arrayOfAll } from "#/helpers/array";
-import buildSort, {
-  FlattenSortOptions,
-  flattenSortOptions,
-} from "#/routes/pages/shared/Sort";
+import buildSort, { FlattenSortOptions } from "#/routes/pages/shared/Sort";
 
 import { CONTROVERSIAL_SORTS } from "./controversialSorts";
 import { LEMMY_TOP_SORTS, PIEFED_TOP_SORTS } from "./topSorts";
@@ -39,12 +35,6 @@ export type VgerPostSortTypeByMode = {
 
 export type VgerPostSortType =
   VgerPostSortTypeByMode[keyof VgerPostSortTypeByMode];
-
-// TODO: lemmy v1 might not contain all the sorts. Dedupe in typescript??
-const flattenedSortOptions = flattenSortOptions(POST_SORT_BY_MODE.lemmyv1);
-
-export const ALL_POST_SORTS =
-  arrayOfAll<VgerPostSortType>()(flattenedSortOptions);
 
 export const {
   Sort: PostSort,

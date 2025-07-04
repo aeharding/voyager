@@ -1,5 +1,8 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OPostCommentShareType, PostCommentShareType } from "#/services/db";
+import {
+  OPostCommentShareType,
+  PostCommentShareType,
+} from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setDefaultShare } from "../../settingsSlice";

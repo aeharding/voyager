@@ -16,7 +16,7 @@ import {
 } from "#/helpers/ionic";
 import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { OInstanceUrlDisplayMode } from "#/services/db";
+import { OInstanceUrlDisplayMode } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";

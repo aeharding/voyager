@@ -22,7 +22,7 @@ import {
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { getClient } from "#/services/client";
-import { OPostCommentShareType } from "#/services/db";
+import { OPostCommentShareType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {

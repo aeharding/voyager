@@ -1,17 +1,13 @@
 /* eslint perfectionist/sort-interfaces: ["warn", { partitionByNewLine: true }] */
-
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
-import { zipObject } from "es-toolkit";
 import { FederatedInstances } from "threadiverse";
 
 import {
-  ALL_COMMENT_SORTS,
   VgerCommentSortType,
   VgerCommentSortTypeByMode,
 } from "#/features/comment/CommentSort";
 import {
-  ALL_POST_SORTS,
   VgerPostSortType,
   VgerPostSortTypeByMode,
 } from "#/features/feed/sort/PostSort";
@@ -21,337 +17,7 @@ import { arrayOfAll } from "#/helpers/array.js";
 import { isAndroid } from "#/helpers/device";
 import { VgerCommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
-export interface IPostMetadata {
-  post_id: number;
-  user_handle: string;
-
-  hidden: 0 | 1; // Not boolean because dexie doesn't support booleans for indexes
-
-  hidden_updated_at?: number;
-}
-
-export interface InstanceData {
-  data: FederatedInstances;
-  domain: string;
-  updated: Date;
-}
-
-export const OAppThemeType = {
-  Default: "default",
-  FieryMario: "mario",
-  Pistachio: "pistachio",
-  SpookyPumpkin: "pumpkin",
-  UV: "uv",
-  Mint: "mint",
-  Dracula: "dracula",
-  Tangerine: "tangerine",
-  Sunset: "sunset",
-  Outrun: "outrun",
-} as const;
-
-export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
-
-export const OCommentsThemeType = {
-  Rainbow: "rainbow",
-  UnoReverse: "uno-reverse",
-  Pastel: "pastel",
-  Mauve: "mauve",
-  Electric: "electric",
-  Citrus: "citrus",
-  Blush: "blush",
-} as const;
-
-export type CommentsThemeType =
-  (typeof OCommentsThemeType)[keyof typeof OCommentsThemeType];
-
-export const OVotesThemeType = {
-  Lemmy: "lemmy",
-  Reddit: "reddit",
-} as const;
-
-export type VotesThemeType =
-  (typeof OVotesThemeType)[keyof typeof OVotesThemeType];
-
-export const OPostAppearanceType = {
-  Compact: "compact",
-  Large: "large",
-} as const;
-
-export type PostAppearanceType =
-  (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
-
-export const OCompactThumbnailPositionType = {
-  Left: "left",
-  Right: "right",
-} as const;
-
-export type CompactThumbnailPositionType =
-  (typeof OCompactThumbnailPositionType)[keyof typeof OCompactThumbnailPositionType];
-
-export const OCompactThumbnailSizeType = {
-  Hidden: "hidden",
-
-  /**
-   * Default
-   */
-  Small: "small",
-
-  Medium: "medium",
-  Large: "large",
-} as const;
-
-export type CompactThumbnailSizeType =
-  (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
-
-export const OCommentThreadCollapse = {
-  Never: "never",
-  RootOnly: "root_only",
-  All: "all",
-} as const;
-
-export type CommentThreadCollapse =
-  (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
-
-export const OPostBlurNsfw = {
-  InFeed: "in_feed",
-  Never: "never",
-} as const;
-
-export type CommentDefaultSort = VgerCommentSortType;
-export const OCommentDefaultSort = zipObject(
-  ALL_COMMENT_SORTS,
-  ALL_COMMENT_SORTS,
-);
-
-export const OSortType = zipObject(ALL_POST_SORTS, ALL_POST_SORTS);
-
-export type PostBlurNsfwType =
-  (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
-
-export const OInstanceUrlDisplayMode = {
-  WhenRemote: "when-remote",
-  Never: "never",
-} as const;
-
-export type InstanceUrlDisplayMode =
-  (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
-
-export const OVoteDisplayMode = {
-  /**
-   * Show upvotes and downvotes separately
-   */
-  Separate: "separate",
-
-  /**
-   * Show total score (upvotes + downvotes)
-   */
-  Total: "total",
-
-  /**
-   * Hide scores
-   */
-  Hide: "hide",
-} as const;
-
-export type VoteDisplayMode =
-  (typeof OVoteDisplayMode)[keyof typeof OVoteDisplayMode];
-
-export const OProfileLabelType = {
-  /**
-   * e.g. aeharding@lemmy.world
-   */
-  Handle: "handle",
-
-  /**
-   * e.g. aeharding
-   */
-  Username: "username",
-
-  /**
-   * e.g. lemmy.world
-   */
-  Instance: "instance",
-
-  /**
-   * e.g. Profile
-   */
-  Hide: "hide",
-} as const;
-
-export type LinkHandlerType =
-  (typeof OLinkHandlerType)[keyof typeof OLinkHandlerType];
-
-export const OLinkHandlerType = {
-  DefaultBrowser: "default-browser",
-  InApp: "in-app",
-} as const;
-
-export type ShowSubscribedIcon =
-  (typeof OShowSubscribedIcon)[keyof typeof OShowSubscribedIcon];
-
-export const OShowSubscribedIcon = {
-  Never: "never",
-  OnlyAllLocal: "all-local",
-  Everywhere: "everywhere",
-} as const;
-
-export type DefaultFeedType =
-  | {
-      type:
-        | typeof ODefaultFeedType.All
-        | typeof ODefaultFeedType.Home
-        | typeof ODefaultFeedType.Local
-        | typeof ODefaultFeedType.CommunityList
-        | typeof ODefaultFeedType.Moderating;
-    }
-  | {
-      type: typeof ODefaultFeedType.Community;
-
-      /**
-       * Community handle. If remote, "community@instance.com".
-       * If local, "community"
-       */
-      name: string;
-    };
-
-export const ODefaultFeedType = {
-  Home: "home",
-  All: "all",
-  Local: "local",
-  Moderating: "moderating",
-  CommunityList: "community-list",
-  Community: "community",
-} as const;
-
-export type JumpButtonPositionType =
-  (typeof OJumpButtonPositionType)[keyof typeof OJumpButtonPositionType];
-
-export const OJumpButtonPositionType = {
-  LeftTop: "left-top",
-  LeftMiddle: "left-middle",
-  LeftBottom: "left-bottom",
-  Center: "center",
-  RightTop: "right-top",
-  RightMiddle: "right-middle",
-  RightBottom: "right-bottom",
-} as const;
-
-export type TapToCollapseType =
-  (typeof OTapToCollapseType)[keyof typeof OTapToCollapseType];
-
-export const OTapToCollapseType = {
-  OnlyComments: "only-comments",
-  OnlyHeaders: "only-headers",
-  Both: "both",
-  Neither: "neither",
-} as const;
-
-export type AutoplayMediaType =
-  (typeof OAutoplayMediaType)[keyof typeof OAutoplayMediaType];
-
-export const OAutoplayMediaType = {
-  WifiOnly: "wifi-only",
-  Always: "always",
-  Never: "never",
-} as const;
-
-export type ProfileLabelType =
-  (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
-
-export const OTwoColumnLayout = {
-  On: "on",
-  LandscapeOnly: "landscape-only",
-  Off: "off",
-} as const;
-
-export type TwoColumnLayout =
-  (typeof OTwoColumnLayout)[keyof typeof OTwoColumnLayout];
-
-export const OLongSwipeTriggerPointType = {
-  Normal: "normal",
-  Later: "later",
-} as const;
-
-export type LongSwipeTriggerPointType =
-  (typeof OLongSwipeTriggerPointType)[keyof typeof OLongSwipeTriggerPointType];
-
-const OSwipeActionBase = {
-  None: "none",
-  Upvote: "upvote",
-  Downvote: "downvote",
-  Reply: "reply",
-  Save: "save",
-  Share: "share",
-} as const;
-
-export const OSwipeActionPost = {
-  ...OSwipeActionBase,
-  Hide: "hide",
-} as const;
-
-export const OSwipeActionComment = {
-  ...OSwipeActionBase,
-  CollapseToTop: "collapse-to-top",
-  Collapse: "collapse",
-} as const;
-
-export const OSwipeActionInbox = {
-  ...OSwipeActionBase,
-  MarkUnread: "mark-unread",
-} as const;
-
-export const OSwipeActionAll = {
-  ...OSwipeActionPost,
-  ...OSwipeActionComment,
-  ...OSwipeActionInbox,
-} as const;
-
-export type SwipeAction =
-  (typeof OSwipeActionAll)[keyof typeof OSwipeActionAll];
-
-export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
-export type SwipeActions = Record<SwipeDirection, SwipeAction>;
-
-type Provider = "redgifs";
-
-interface ProviderData<Name extends string, Data> {
-  name: Name;
-
-  data: Data;
-}
-
-export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
-
-type ProvidersData = RedgifsProvider;
-
-export interface UserTag {
-  handle: string;
-
-  downvotes: number;
-  upvotes: number;
-
-  text?: string;
-
-  color?: string;
-
-  /**
-   * The URL of the Lemmy post or comment this tag was created from.
-   * (Will only be set if `saveSource` is enabled.)
-   */
-  sourceUrl?: string;
-}
-
-export const OPostCommentShareType = {
-  DeepLink: "deep-link",
-  Threadiverse: "threadiverse",
-  Local: "local",
-  Community: "community",
-  ApId: "ap-id",
-  Ask: "ask",
-} as const;
-
-export type PostCommentShareType =
-  (typeof OPostCommentShareType)[keyof typeof OPostCommentShareType];
+import * as types from "./types";
 
 /**
 
@@ -362,15 +28,15 @@ export interface GlobalSettingValueTypes {
   always_show_author: boolean;
   always_use_reader_mode: boolean;
   auto_hide_read: boolean;
-  autoplay_media: AutoplayMediaType;
-  blur_nsfw: PostBlurNsfwType;
-  collapse_comment_threads: CommentThreadCollapse;
-  comments_theme: CommentsThemeType;
+  autoplay_media: types.AutoplayMediaType;
+  blur_nsfw: types.PostBlurNsfwType;
+  collapse_comment_threads: types.CommentThreadCollapse;
+  comments_theme: types.CommentsThemeType;
   community_at_top: boolean;
   compact_show_self_post_thumbnails: boolean;
   compact_show_voting_buttons: boolean;
-  compact_thumbnail_position_type: CompactThumbnailPositionType;
-  compact_thumbnail_size: CompactThumbnailSizeType;
+  compact_thumbnail_position_type: types.CompactThumbnailPositionType;
+  compact_thumbnail_size: types.CompactThumbnailSizeType;
   default_comment_sort_lemmyv0: VgerCommentSortTypeByMode["lemmyv0"];
   default_comment_sort_lemmyv1: VgerCommentSortTypeByMode["lemmyv1"];
   default_comment_sort_piefed: VgerCommentSortTypeByMode["piefed"];
@@ -379,7 +45,7 @@ export interface GlobalSettingValueTypes {
   default_post_sort_lemmyv1: VgerPostSortTypeByMode["lemmyv1"];
   default_post_sort_piefed: VgerPostSortTypeByMode["piefed"];
   default_search_sort_by_feed: VgerSearchSortType;
-  default_share: PostCommentShareType;
+  default_share: types.PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
   disable_marking_posts_read: boolean;
   embed_crossposts: boolean;
@@ -390,15 +56,15 @@ export interface GlobalSettingValueTypes {
   hide_alt_text: boolean;
   highlight_new_account: boolean;
   infinite_scrolling: boolean;
-  jump_button_position: JumpButtonPositionType;
+  jump_button_position: types.JumpButtonPositionType;
   large_show_voting_buttons: boolean;
-  link_handler: LinkHandlerType;
+  link_handler: types.LinkHandlerType;
   mark_read_on_scroll: boolean;
   never_show_read_posts: boolean;
   no_subscribed_in_feed: boolean;
-  post_appearance_type: PostAppearanceType;
+  post_appearance_type: types.PostAppearanceType;
   prefer_native_apps: boolean;
-  profile_label: ProfileLabelType;
+  profile_label: types.ProfileLabelType;
   quick_switch_dark_mode: boolean;
   remember_community_comment_sort: boolean;
   remember_community_post_sort: boolean;
@@ -410,19 +76,19 @@ export interface GlobalSettingValueTypes {
   show_hidden_in_communities: boolean;
   show_hide_read_button: boolean;
   show_jump_button: boolean;
-  subscribed_icon: ShowSubscribedIcon;
+  subscribed_icon: types.ShowSubscribedIcon;
   tags_enabled: boolean;
   tags_hide_instance: boolean;
   tags_save_source: boolean;
   tags_track_votes: boolean;
-  tap_to_collapse: TapToCollapseType;
+  tap_to_collapse: types.TapToCollapseType;
   thumbnailinator_enabled: boolean;
   touch_friendly_links: boolean;
-  two_column_layout: TwoColumnLayout;
+  two_column_layout: types.TwoColumnLayout;
   upvote_on_save: boolean;
-  user_instance_url_display: InstanceUrlDisplayMode;
-  vote_display_mode: VoteDisplayMode;
-  votes_theme: VotesThemeType;
+  user_instance_url_display: types.InstanceUrlDisplayMode;
+  vote_display_mode: types.VoteDisplayMode;
+  votes_theme: types.VotesThemeType;
 }
 
 /**
@@ -430,16 +96,16 @@ export interface GlobalSettingValueTypes {
  */
 interface DynamicSettingValueTypes {
   default_comment_sort_by_feed: VgerCommentSortType;
-  default_feed: DefaultFeedType;
+  default_feed: types.DefaultFeedType;
   default_post_sort_by_feed: VgerPostSortType;
   disable_left_swipes: boolean;
   disable_right_swipes: boolean;
   favorite_communities: string[];
-  gesture_swipe_comment: SwipeActions;
-  gesture_swipe_inbox: SwipeActions;
-  gesture_swipe_post: SwipeActions;
+  gesture_swipe_comment: types.SwipeActions;
+  gesture_swipe_inbox: types.SwipeActions;
+  gesture_swipe_post: types.SwipeActions;
   has_presented_block_nsfw_tip: boolean;
-  long_swipe_trigger_point: LongSwipeTriggerPointType;
+  long_swipe_trigger_point: types.LongSwipeTriggerPointType;
   migration_links: string[];
 }
 
@@ -533,11 +199,11 @@ export const CompoundKeys = {
 };
 
 export class WefwefDB extends Dexie {
-  postMetadatas!: Table<IPostMetadata, number>;
+  postMetadatas!: Table<types.IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
-  cachedFederatedInstanceData!: Table<InstanceData, number>;
-  providers!: Table<ProvidersData, Provider>;
-  userTags!: Table<UserTag, number>;
+  cachedFederatedInstanceData!: Table<types.InstanceData, number>;
+  providers!: Table<types.ProvidersData, types.Provider>;
+  userTags!: Table<types.UserTag, number>;
 
   constructor() {
     super("WefwefDB");
@@ -568,7 +234,7 @@ export class WefwefDB extends Dexie {
     });
 
     this.version(3).upgrade(async () => {
-      await this.setSetting("blur_nsfw", OPostBlurNsfw.InFeed);
+      await this.setSetting("blur_nsfw", types.OPostBlurNsfw.InFeed);
     });
 
     this.version(4).stores({
@@ -740,11 +406,11 @@ export class WefwefDB extends Dexie {
   /*
    * Providers
    */
-  async getProvider(providerName: ProvidersData["name"]) {
+  async getProvider(providerName: types.ProvidersData["name"]) {
     return await this.providers.where("name").equals(providerName).first();
   }
 
-  async setProvider(payload: ProvidersData) {
+  async setProvider(payload: types.ProvidersData) {
     return await this.transaction("rw", this.providers, async () => {
       await this.providers.where("name").equals(payload.name).delete();
 
@@ -768,7 +434,7 @@ export class WefwefDB extends Dexie {
       .toArray();
   }
 
-  async upsertPostMetadata(postMetadata: IPostMetadata) {
+  async upsertPostMetadata(postMetadata: types.IPostMetadata) {
     const { post_id, user_handle } = postMetadata;
 
     await this.transaction("rw", this.postMetadatas, async () => {
@@ -795,9 +461,9 @@ export class WefwefDB extends Dexie {
     user_handle: string,
     page: number,
     limit: number,
-    lastPageItems?: IPostMetadata[],
+    lastPageItems?: types.IPostMetadata[],
   ) {
-    const filterFn = (metadata: IPostMetadata) =>
+    const filterFn = (metadata: types.IPostMetadata) =>
       metadata.user_handle === user_handle && metadata.hidden === 1;
 
     if (page === 1) {
@@ -876,7 +542,7 @@ export class WefwefDB extends Dexie {
     domain: string,
     federatedInstances: FederatedInstances,
   ) {
-    const payload: InstanceData = {
+    const payload: types.InstanceData = {
       updated: new Date(),
       domain,
       data: federatedInstances,
@@ -902,7 +568,7 @@ export class WefwefDB extends Dexie {
     return await this.userTags.where("handle").anyOf(handles).toArray();
   }
 
-  async updateTag(tag: UserTag) {
+  async updateTag(tag: types.UserTag) {
     return await this.transaction("rw", this.userTags, async () => {
       await this.userTags.where("handle").equals(tag.handle).delete();
 
@@ -910,7 +576,7 @@ export class WefwefDB extends Dexie {
     });
   }
 
-  async removeTag(tag: UserTag) {
+  async removeTag(tag: types.UserTag) {
     return await this.transaction("rw", this.userTags, async () => {
       await this.userTags.where("handle").equals(tag.handle).delete();
     });

@@ -1,5 +1,8 @@
 import { parseUrl } from "#/helpers/url";
-import { OPostCommentShareType, PostCommentShareType } from "#/services/db";
+import {
+  OPostCommentShareType,
+  PostCommentShareType,
+} from "#/services/db/types";
 
 export const GO_VOYAGER_HOST = "go.getvoyager.app";
 export const THREADIVERSE_HOST = "threadiverse.link";

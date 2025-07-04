@@ -1,6 +1,6 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { OInstanceUrlDisplayMode } from "#/services/db";
+import { OInstanceUrlDisplayMode } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setUserInstanceUrlDisplay } from "../../settingsSlice";

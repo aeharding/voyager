@@ -13,7 +13,8 @@ import {
 } from "#/features/tags/userTagSlice";
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { isLemmyError } from "#/helpers/lemmyErrors";
-import { db, IPostMetadata } from "#/services/db";
+import { db } from "#/services/db";
+import { IPostMetadata } from "#/services/db/types";
 import { AppDispatch, RootState } from "#/store";
 
 interface PostHiddenData {

@@ -8,7 +8,7 @@ import {
 import { startCase } from "es-toolkit";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
-import { OCommentsThemeType } from "#/services/db";
+import { OCommentsThemeType } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setCommentsTheme } from "../../../settingsSlice";

@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import Route from "#/routes/common/Route";
 import CommunitiesPage from "#/routes/pages/posts/CommunitiesPage";
 import { getDefaultServer } from "#/services/app";
-import { DefaultFeedType } from "#/services/db";
+import { DefaultFeedType } from "#/services/db/types";
 
 interface Props {
   defaultFeed: DefaultFeedType | undefined;

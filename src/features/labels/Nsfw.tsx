@@ -1,7 +1,7 @@
 import { PostView } from "threadiverse";
 
 import { getItemActorName } from "#/helpers/lemmy";
-import { OPostBlurNsfw, PostBlurNsfwType } from "#/services/db";
+import { OPostBlurNsfw, PostBlurNsfwType } from "#/services/db/types";
 
 import styles from "./Nsfw.module.css";
 

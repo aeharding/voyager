@@ -1,7 +1,7 @@
 import { IonText } from "@ionic/react";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OTwoColumnLayout } from "#/services/db";
+import { OTwoColumnLayout } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setTwoColumnLayout } from "../../settingsSlice";

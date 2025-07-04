@@ -1,5 +1,5 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OProfileLabelType, ProfileLabelType } from "#/services/db";
+import { OProfileLabelType, ProfileLabelType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setProfileLabel } from "../../settingsSlice";

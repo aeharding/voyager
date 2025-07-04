@@ -21,7 +21,7 @@ import {
 } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { OShowSubscribedIcon } from "#/services/db";
+import { OShowSubscribedIcon } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";

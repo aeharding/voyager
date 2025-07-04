@@ -3,7 +3,7 @@ import { HTMLAttributes, use } from "react";
 import { DarkContext } from "#/core/GlobalStyles";
 import { getThemeByStyle } from "#/core/theme/AppThemes";
 import { sv } from "#/helpers/css";
-import { AppThemeType } from "#/services/db";
+import { AppThemeType } from "#/services/db/types";
 
 import styles from "./AppThemePreview.module.css";
 

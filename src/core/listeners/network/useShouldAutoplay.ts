@@ -1,4 +1,4 @@
-import { OAutoplayMediaType } from "#/services/db";
+import { OAutoplayMediaType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 export default function useShouldAutoplay() {

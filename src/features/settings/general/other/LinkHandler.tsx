@@ -2,7 +2,7 @@ import { openOutline, readerOutline } from "ionicons/icons";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
 import { isNative } from "#/helpers/device";
-import { OLinkHandlerType } from "#/services/db";
+import { OLinkHandlerType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setLinkHandler } from "../../settingsSlice";

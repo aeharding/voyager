@@ -9,7 +9,7 @@ import {
   isCommunity,
 } from "#/helpers/lemmy";
 import { parseUrl } from "#/helpers/url";
-import { OPostCommentShareType } from "#/services/db";
+import { OPostCommentShareType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import {

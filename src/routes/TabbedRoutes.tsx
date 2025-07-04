@@ -9,7 +9,7 @@ import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { getDefaultServer } from "#/services/app";
-import { DefaultFeedType, ODefaultFeedType } from "#/services/db";
+import { DefaultFeedType, ODefaultFeedType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { usingActorRedirect } from "./common/ActorRedirect";

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { db } from "#/services/db";
 import {
-  db,
   LongSwipeTriggerPointType,
   OLongSwipeTriggerPointType,
   OSwipeActionComment,
@@ -9,7 +9,7 @@ import {
   OSwipeActionPost,
   SwipeAction,
   SwipeActions,
-} from "#/services/db";
+} from "#/services/db/types";
 
 interface GestureState {
   swipe: {

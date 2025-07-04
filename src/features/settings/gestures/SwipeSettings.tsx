@@ -31,7 +31,7 @@ import {
   OSwipeActionPost,
   SwipeAction,
   SwipeActions,
-} from "#/services/db";
+} from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import {

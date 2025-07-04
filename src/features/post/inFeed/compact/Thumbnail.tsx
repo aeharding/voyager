@@ -12,7 +12,7 @@ import { forceSecureUrl } from "#/helpers/url";
 import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
-} from "#/services/db";
+} from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../../postSlice";

@@ -22,7 +22,8 @@ import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
-import { db, IPostMetadata } from "#/services/db";
+import { db } from "#/services/db";
+import { IPostMetadata } from "#/services/db/types";
 import store, { useAppSelector } from "#/store";
 
 // Currently, we have to fetch each post with a separate API call.

@@ -1,4 +1,4 @@
-import { AppThemeType } from "#/services/db";
+import { AppThemeType } from "#/services/db/types";
 
 interface Theme {
   light: Colors;

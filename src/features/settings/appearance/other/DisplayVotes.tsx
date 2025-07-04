@@ -1,5 +1,5 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OVoteDisplayMode } from "#/services/db";
+import { OVoteDisplayMode } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setVoteDisplayMode } from "../../settingsSlice";
