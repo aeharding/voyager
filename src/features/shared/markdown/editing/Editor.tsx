@@ -9,7 +9,10 @@ import {
   useRef,
 } from "react";
 
-import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
+import {
+  extractLemmyLinkFromPotentialFediRedirectService,
+  GO_VOYAGER_HOST,
+} from "#/features/share/fediRedirect";
 import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
@@ -113,6 +116,7 @@ export default function Editor({
 
       const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(
         urls[0]!,
+        [GO_VOYAGER_HOST],
       );
 
       if (!potentialUrl) return;
@@ -127,8 +131,10 @@ export default function Editor({
     const text = e.clipboardData.getData("text");
 
     if (text) {
-      const potentialUrl =
-        extractLemmyLinkFromPotentialFediRedirectService(text);
+      const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(
+        text,
+        [GO_VOYAGER_HOST],
+      );
 
       if (!potentialUrl) return;
 

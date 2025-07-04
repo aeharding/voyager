@@ -342,10 +342,11 @@ export interface UserTag {
 }
 
 export const OPostCommentShareType = {
+  DeepLink: "deep-link",
+  Threadiverse: "threadiverse",
   Local: "local",
   Community: "community",
   ApId: "ap-id",
-  DeepLink: "deep-link",
   Ask: "ask",
 } as const;
 

@@ -1,21 +1,22 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  buildGoVoyagerLink,
+  buildFediRedirectLink,
   extractLemmyLinkFromPotentialFediRedirectService,
   FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS,
+  GO_VOYAGER_HOST,
 } from "./fediRedirect";
 
 describe("buildGoVoyagerLink", () => {
   it("builds a valid goVoyager link from a Lemmy URL", () => {
     const input = "https://lemmy.world/post/123";
     const expected = `https://go.getvoyager.app/lemmy.world/post/123`;
-    expect(buildGoVoyagerLink(input)).toBe(expected);
+    expect(buildFediRedirectLink(GO_VOYAGER_HOST, input)).toBe(expected);
   });
 
   it("returns undefined for invalid URLs", () => {
-    expect(buildGoVoyagerLink("not-a-url")).toBeUndefined();
-    expect(buildGoVoyagerLink("")).toBeUndefined();
+    expect(buildFediRedirectLink(GO_VOYAGER_HOST, "not-a-url")).toBeUndefined();
+    expect(buildFediRedirectLink(GO_VOYAGER_HOST, "")).toBeUndefined();
   });
 });
 

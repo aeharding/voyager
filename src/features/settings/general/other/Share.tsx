@@ -9,13 +9,13 @@ export default function Share() {
 
   return (
     <SettingSelector
-      title="Share Link Instance"
-      openTitle="Share Link Lemmy Instance"
+      title="Share Links"
+      openTitle="Share links to content with..."
       selected={share}
       setSelected={setDefaultShare}
       options={OPostCommentShareType}
       getOptionLabel={getLabel}
-      getSelectedLabel={getLabel}
+      getSelectedLabel={getShortLabel}
     />
   );
 }
@@ -23,10 +23,20 @@ export default function Share() {
 function getLabel(option: PostCommentShareType) {
   switch (option) {
     case OPostCommentShareType.ApId:
-      return "Author";
+      return "Author Instance";
     case OPostCommentShareType.DeepLink:
-      return "Voyager";
+      return "Voyager App";
+    case OPostCommentShareType.Threadiverse:
+      return "threadiverse.link";
+    case OPostCommentShareType.Community:
+      return "Community Instance";
+    case OPostCommentShareType.Local:
+      return "Local Instance";
     default:
       return undefined;
   }
+}
+
+function getShortLabel(option: PostCommentShareType) {
+  return getLabel(option)?.split(" ")[0];
 }
