@@ -4,7 +4,7 @@ import {
   PostCommentShareType,
 } from "#/services/db/types";
 
-export const GO_VOYAGER_HOST = "go.getvoyager.app";
+export const GO_VOYAGER_HOST = "vger.to";
 export const THREADIVERSE_HOST = "threadiverse.link";
 
 /**
@@ -15,6 +15,7 @@ export const THREADIVERSE_HOST = "threadiverse.link";
  */
 export const FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS = [
   GO_VOYAGER_HOST,
+  "go.getvoyager.app",
   "lemmyverse.link",
   THREADIVERSE_HOST,
   "lemsha.re",
