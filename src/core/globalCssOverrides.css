@@ -179,6 +179,9 @@ ion-action-sheet ion-icon {
     rgba(0, 0, 0, 1) calc(100% - 16px),
     transparent 100%
   );
+
+  padding: 5px 0;
+  margin: -5px 0;
 }
 
 /* photoswipe */
