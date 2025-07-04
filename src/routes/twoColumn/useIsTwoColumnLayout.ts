@@ -1,4 +1,4 @@
-import { OTwoColumnLayout } from "#/services/db";
+import { OTwoColumnLayout } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import useIsLandscape from "./useIsLandscape";

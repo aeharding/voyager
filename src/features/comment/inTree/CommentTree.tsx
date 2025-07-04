@@ -5,7 +5,7 @@ import { CommentNodeI } from "#/helpers/lemmy";
 import useGetAppScrollable, {
   AppScrollable,
 } from "#/helpers/useGetAppScrollable";
-import { OTapToCollapseType } from "#/services/db";
+import { OTapToCollapseType } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { toggleCommentCollapseState } from "../commentSlice";

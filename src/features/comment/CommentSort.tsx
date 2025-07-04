@@ -1,8 +1,4 @@
-import { arrayOfAll } from "#/helpers/array";
-import buildSort, {
-  FlattenSortOptions,
-  SortOptions,
-} from "#/routes/pages/shared/Sort";
+import buildSort, { FlattenSortOptions } from "#/routes/pages/shared/Sort";
 
 export const COMMENT_SORT_BY_MODE = {
   lemmyv0: ["Hot", "Top", "New", "Controversial", "Old"],
@@ -18,14 +14,6 @@ export type VgerCommentSortTypeByMode = {
 
 export type VgerCommentSortType =
   VgerCommentSortTypeByMode[keyof VgerCommentSortTypeByMode];
-
-export const ALL_COMMENT_SORTS = arrayOfAll<VgerCommentSortType>()([
-  "Hot",
-  "Top",
-  "New",
-  "Controversial",
-  "Old",
-] as const satisfies SortOptions<VgerCommentSortType>);
 
 export const {
   Sort: CommentSort,

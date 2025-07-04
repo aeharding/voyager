@@ -10,7 +10,7 @@ import React, {
 
 import { cx } from "#/helpers/css";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
-import { OLongSwipeTriggerPointType } from "#/services/db";
+import { OLongSwipeTriggerPointType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import ActionContents from "./ActionContents";

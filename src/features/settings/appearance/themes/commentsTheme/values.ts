@@ -1,4 +1,4 @@
-import { CommentsThemeType, OCommentsThemeType } from "#/services/db";
+import { CommentsThemeType, OCommentsThemeType } from "#/services/db/types";
 
 const COMMENT_THEMES: Record<CommentsThemeType, string[]> = {
   [OCommentsThemeType.Rainbow]: [

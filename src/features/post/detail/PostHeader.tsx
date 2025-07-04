@@ -25,7 +25,7 @@ import { findIonContentScrollView } from "#/helpers/ionic";
 import { postLocked } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";
-import { OTapToCollapseType } from "#/services/db";
+import { OTapToCollapseType } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import AnnouncementIcon from "./AnnouncementIcon";

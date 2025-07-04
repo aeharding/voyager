@@ -1,5 +1,5 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OJumpButtonPositionType } from "#/services/db";
+import { OJumpButtonPositionType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setJumpButtonPosition } from "../../settingsSlice";

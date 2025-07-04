@@ -1,5 +1,5 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OPostBlurNsfw } from "#/services/db";
+import { OPostBlurNsfw } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setBlurNsfwState } from "../../settingsSlice";

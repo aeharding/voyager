@@ -28,16 +28,17 @@ import { DeepPartial } from "#/helpers/typescript";
 import { VgerCommunitySortTypeByMode } from "#/routes/pages/search/results/CommunitySort";
 import {
   ALL_GLOBAL_SETTINGS,
+  db,
+  GlobalSettingValueTypes,
+} from "#/services/db";
+import {
   AppThemeType,
   AutoplayMediaType,
-  CommentDefaultSort,
   CommentsThemeType,
   CommentThreadCollapse,
   CompactThumbnailPositionType,
   CompactThumbnailSizeType,
-  db,
   DefaultFeedType,
-  GlobalSettingValueTypes,
   InstanceUrlDisplayMode,
   JumpButtonPositionType,
   LinkHandlerType,
@@ -66,7 +67,7 @@ import {
   TwoColumnLayout,
   VoteDisplayMode,
   VotesThemeType,
-} from "#/services/db";
+} from "#/services/db/types";
 import { AppDispatch, RootState } from "#/store";
 
 import {
@@ -82,7 +83,7 @@ export {
   OCommentThreadCollapse,
   OPostAppearanceType,
   OCompactThumbnailPositionType,
-} from "#/services/db";
+} from "#/services/db/types";
 
 export interface SettingsState {
   ready: boolean;
@@ -404,7 +405,7 @@ export const settingsSlice = createSlice({
       state,
       action: PayloadAction<{
         mode: ThreadiverseMode;
-        sort: CommentDefaultSort;
+        sort: VgerCommentSortType;
       }>,
     ) {
       (state.general.comments.sort[

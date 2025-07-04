@@ -9,10 +9,15 @@ import {
   isCommunity,
 } from "#/helpers/lemmy";
 import { parseUrl } from "#/helpers/url";
-import { OPostCommentShareType } from "#/services/db";
+import { OPostCommentShareType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
-import { buildGoVoyagerLink, GO_VOYAGER_HOST } from "./fediRedirect";
+import {
+  buildFediRedirectLink,
+  FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS,
+  getFediRedirectHostFromShareType,
+  GO_VOYAGER_HOST,
+} from "./fediRedirect";
 import { useShare } from "./share";
 
 export default function useShareUserCommunity(
@@ -41,9 +46,9 @@ export default function useShareUserCommunity(
       buttons: instanceCandidates.map((instance) => ({
         text: instance,
         handler: () => {
-          if (instance === GO_VOYAGER_HOST) {
-            const voyagerLink = buildGoVoyagerLink(item.actor_id);
-            if (voyagerLink) share(voyagerLink);
+          if (FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS.includes(instance)) {
+            const fediLink = buildFediRedirectLink(instance, item.actor_id);
+            if (fediLink) share(fediLink);
             return;
           }
 
@@ -86,8 +91,13 @@ export default function useShareUserCommunity(
         await shareInstance(connectedInstance);
         break;
       case OPostCommentShareType.DeepLink:
-        await share(buildGoVoyagerLink(item.actor_id)!);
+      case OPostCommentShareType.Threadiverse: {
+        const fediRedirectHost = getFediRedirectHostFromShareType(defaultShare);
+        if (!fediRedirectHost) break;
+
+        await share(buildFediRedirectLink(fediRedirectHost, item.actor_id)!);
         break;
+      }
     }
   }
 

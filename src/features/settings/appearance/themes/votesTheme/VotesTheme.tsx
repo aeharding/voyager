@@ -10,7 +10,7 @@ import { startCase } from "es-toolkit";
 import { arrowDownOutline, arrowUpOutline } from "ionicons/icons";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
-import { OVotesThemeType } from "#/services/db";
+import { OVotesThemeType } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setVotesTheme } from "../../../settingsSlice";

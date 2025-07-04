@@ -4,7 +4,7 @@ import { Person } from "threadiverse";
 import { DarkContext } from "#/core/GlobalStyles";
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { formatNumber } from "#/helpers/number";
-import { UserTag } from "#/services/db";
+import { UserTag } from "#/services/db/types";
 
 import { useAppSelector } from "../../store";
 import { getVoteWeightColor } from "./voteColor";

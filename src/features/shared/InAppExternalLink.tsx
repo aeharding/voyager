@@ -2,7 +2,7 @@ import { IonItem } from "@ionic/react";
 import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
 
 import { isNative } from "#/helpers/device";
-import { OLinkHandlerType } from "#/services/db";
+import { OLinkHandlerType } from "#/services/db/types";
 import store from "#/store";
 
 import useLinkLongPress from "./useLinkLongPress";

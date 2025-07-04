@@ -11,7 +11,7 @@ import SourceUrlButton from "#/features/tags/SourceUrlButton";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { UserTag as UserTagType } from "#/services/db";
+import { UserTag as UserTagType } from "#/services/db/types";
 
 import styles from "./BrowseTag.module.css";
 

@@ -7,7 +7,7 @@ import { isNative } from "#/helpers/device";
 import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
 } from "#/helpers/useSystemDarkMode";
-import { AppThemeType } from "#/services/db";
+import { AppThemeType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { getThemeByStyle } from "./theme/AppThemes";

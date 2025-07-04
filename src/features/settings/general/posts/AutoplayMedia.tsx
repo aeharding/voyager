@@ -1,6 +1,6 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
 import { isInstalled } from "#/helpers/device";
-import { OAutoplayMediaType } from "#/services/db";
+import { OAutoplayMediaType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setAutoplayMedia } from "../../settingsSlice";

@@ -5,7 +5,7 @@ import SettingSelector from "#/features/settings/shared/SettingSelector";
 import {
   OCompactThumbnailPositionType,
   OCompactThumbnailSizeType,
-} from "#/services/db";
+} from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import {

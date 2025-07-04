@@ -5,7 +5,7 @@ import {
   bgColorToVariable,
   VOTE_COLORS,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
-import { VotesThemeType } from "#/services/db";
+import { VotesThemeType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 interface VoteStatProps extends ComponentProps<typeof Stat> {

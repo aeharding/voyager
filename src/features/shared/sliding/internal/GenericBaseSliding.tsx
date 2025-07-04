@@ -17,7 +17,7 @@ import { use, useMemo } from "react";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { VOTE_COLORS } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
-import { SwipeAction, SwipeActions } from "#/services/db";
+import { SwipeAction, SwipeActions } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import SlidingItem, { ActionList, SlidingItemAction } from "../SlidingItem";

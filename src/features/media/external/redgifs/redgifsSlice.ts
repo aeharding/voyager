@@ -6,7 +6,8 @@ import {
 import { addMinutes } from "date-fns";
 
 import { parseJWT } from "#/helpers/jwt";
-import { db, RedgifsProvider } from "#/services/db";
+import { db } from "#/services/db";
+import { RedgifsProvider } from "#/services/db/types";
 import { getGif, getTemporaryToken } from "#/services/redgifs";
 import { RootState } from "#/store";
 

@@ -1,5 +1,5 @@
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OTapToCollapseType } from "#/services/db";
+import { OTapToCollapseType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setTapToCollapse } from "../../settingsSlice";

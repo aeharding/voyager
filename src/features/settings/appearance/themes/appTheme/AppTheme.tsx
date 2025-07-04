@@ -12,7 +12,7 @@ import { use } from "react";
 import { DarkContext } from "#/core/GlobalStyles";
 import { getTheme } from "#/core/theme/AppThemes";
 import { ListHeader } from "#/features/settings/shared/formatting";
-import { AppThemeType, OAppThemeType } from "#/services/db";
+import { AppThemeType, OAppThemeType } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setTheme } from "../../../settingsSlice";

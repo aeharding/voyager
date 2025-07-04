@@ -1,4 +1,4 @@
-import { OVoteDisplayMode } from "#/services/db";
+import { OVoteDisplayMode } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { GalleryPostActionsProps } from "../GalleryPostActions";

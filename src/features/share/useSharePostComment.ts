@@ -3,8 +3,11 @@ import { uniq } from "es-toolkit";
 import { CommentView, PostView } from "threadiverse";
 
 import {
-  buildGoVoyagerLink,
+  buildFediRedirectLink,
+  FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS,
+  getFediRedirectHostFromShareType,
   GO_VOYAGER_HOST,
+  THREADIVERSE_HOST,
 } from "#/features/share/fediRedirect";
 import { useShare } from "#/features/share/share";
 import {
@@ -19,7 +22,7 @@ import {
 import { parseUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import { getClient } from "#/services/client";
-import { OPostCommentShareType } from "#/services/db";
+import { OPostCommentShareType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 export function useSharePostComment(itemView: PostView | CommentView) {
@@ -45,11 +48,12 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       buttons: instanceCandidates.map((instance) => ({
         text: instance,
         handler: () => {
-          if (instance === GO_VOYAGER_HOST) {
-            const voyagerLink = buildGoVoyagerLink(
+          if (FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS.includes(instance)) {
+            const fediLink = buildFediRedirectLink(
+              instance,
               (isPost(itemView) ? itemView.post : itemView.comment).ap_id,
             );
-            if (voyagerLink) share(voyagerLink);
+            if (fediLink) share(fediLink);
             return;
           }
 
@@ -145,13 +149,19 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       case OPostCommentShareType.Local:
         await shareInstance(connectedInstance);
         break;
-      case OPostCommentShareType.DeepLink:
+      case OPostCommentShareType.Threadiverse:
+      case OPostCommentShareType.DeepLink: {
+        const fediRedirectHost = getFediRedirectHostFromShareType(defaultShare);
+        if (!fediRedirectHost) break;
+
         await share(
-          buildGoVoyagerLink(
+          buildFediRedirectLink(
+            fediRedirectHost,
             (isPost(itemView) ? itemView.post : itemView.comment).ap_id,
           )!,
         );
         break;
+      }
     }
   }
 
@@ -165,7 +175,7 @@ function generateInstanceCandidates(
   postOrComment: PostView | CommentView,
   connectedInstance: string,
 ) {
-  const candidates: string[] = [GO_VOYAGER_HOST];
+  const candidates: string[] = [GO_VOYAGER_HOST, THREADIVERSE_HOST];
 
   candidates.push(connectedInstance);
 

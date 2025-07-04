@@ -1,7 +1,7 @@
 import { startCase } from "es-toolkit";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { OShowSubscribedIcon } from "#/services/db";
+import { OShowSubscribedIcon } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { setSubscribedIcon } from "../../settingsSlice";
