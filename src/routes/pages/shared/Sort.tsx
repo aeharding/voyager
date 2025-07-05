@@ -5,7 +5,6 @@ import { startCase } from "es-toolkit";
 import {
   albumsOutline,
   arrowUpCircleOutline,
-  barChartOutline,
   calendarOutline,
   chatbubbleEllipsesOutline,
   chatbubblesOutline,
@@ -291,9 +290,8 @@ export function getSortIcon(sort: AnyVgerSort): string {
     case "TopYear":
       return calendarYear;
     case "TopAll":
-      return trophyOutline;
     case "Top":
-      return barChartOutline;
+      return trophyOutline;
     case "Old":
       return hourglassOutline;
     case "Controversial":
