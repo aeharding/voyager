@@ -1,3 +1,5 @@
+import { barChartOutline } from "ionicons/icons";
+
 import {
   ALL_DURATIONS,
   createSortFromDurations,
@@ -8,13 +10,18 @@ export const TOP_DURATIONS = ALL_DURATIONS satisfies readonly VgerDuration[];
 
 const TOP_DURATION_SORTS = createSortFromDurations("Top", TOP_DURATIONS);
 
-export const LEMMY_TOP_SORTS = {
+const TOP = {
   label: "Top",
+  icon: barChartOutline,
+} as const;
+
+export const LEMMY_TOP_SORTS = {
+  ...TOP,
   children: TOP_DURATION_SORTS,
 } as const;
 
 export const PIEFED_TOP_SORTS = {
-  label: "Top",
+  ...TOP,
   children: [
     "TopHour",
     "TopSixHour",
