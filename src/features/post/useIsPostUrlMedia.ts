@@ -25,7 +25,7 @@ export default function useIsPostUrlMedia() {
       if (isRedgif(url)) return "from-url";
     }
 
-    if (post.post.body && findLoneImage(post.post.body)) {
+    if (!post.post.url && post.post.body && findLoneImage(post.post.body)) {
       return "from-body";
     }
 
