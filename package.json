@@ -88,7 +88,7 @@
     "history": "^4.10.1",
     "immer": "^10.1.1",
     "ionicons": "^8.0.10",
-    "mdast-util-gfm-autolink-literal-lemmy": "^3.0.1",
+    "mdast-util-gfm-autolink-literal-lemmy": "^3.1.0",
     "mdast-util-gfm-strikethrough": "^2.0.0",
     "mdast-util-gfm-table": "^2.0.0",
     "mdast-util-lemmy-supersub": "^1.0.1",
