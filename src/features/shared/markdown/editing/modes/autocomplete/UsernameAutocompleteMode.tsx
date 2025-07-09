@@ -21,11 +21,11 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
     return (users as PersonView[]).map((u) => u.person);
   }
 
+  function buildMd(item: Person) {
+    return `[${props.prefix}${getRemoteHandle(item)}](${item.actor_id})`;
+  }
+
   return (
     <GenericAutocompleteMode buildMd={buildMd} fetchFn={fetchFn} {...props} />
   );
-}
-
-function buildMd(item: Person) {
-  return `[@${getRemoteHandle(item)}](${item.actor_id})`;
 }

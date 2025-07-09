@@ -27,11 +27,13 @@ type MarkdownToolbarMode =
       type: "username";
       match: string;
       index: number;
+      prefix: string;
     }
   | {
       type: "community";
       match: string;
       index: number;
+      prefix: string;
     };
 
 interface MarkdownToolbarProps extends SharedModeProps {
@@ -56,8 +58,10 @@ export default function MarkdownToolbar({
     const cursorPosition = textareaRef.current.selectionStart;
 
     // Use a regex to check if the entered text matches the pattern "@username@domain.com"
-    const TYPEAHEAD_HANDLE_REGEX = /(?:^|\s|\(|\[)(?:@|!)(\w*(@[\w.]*)?)/g;
-    const BEGINNING_SPACE_REGEX = /\s|\(|\[/;
+    const TYPEAHEAD_HANDLE_REGEX =
+      /(^|\s|\(|\[)(@|!|\/c\/|\/u\/)(\w*(@[\w.]*)?)/g;
+
+    const textToCursorPosition = text.slice(0, cursorPosition);
 
     /**
      * Say cursor is at the following position:
@@ -65,39 +69,49 @@ export default function MarkdownToolbar({
      * ! h e l l o b o b
      *            ^
      * ```
-     * Then match should only match against partial string `"@hello"`.
+     * Then match should only match against partial string `"!hello"`.
      * But, with:
      * ```
      * ! h e l l o b o b
      *  ^
      * ```
-     * Match against entire string `"@hellobob"`
+     * Match against entire string `"!hellobob"`
      */
-    const textToMatch = /@|!/.test(text[cursorPosition - 1] || "")
+    const textToCursorEndsWithPrefix = /(?:@|!|\/c\/|\/u\/)$/.test(
+      textToCursorPosition,
+    );
+    const textToMatch = textToCursorEndsWithPrefix
       ? text
-      : text.slice(0, cursorPosition);
+      : textToCursorPosition;
 
     let match;
     while ((match = TYPEAHEAD_HANDLE_REGEX.exec(textToMatch)) !== null) {
-      if (
-        cursorPosition >= match.index &&
-        cursorPosition <= TYPEAHEAD_HANDLE_REGEX.lastIndex
-      ) {
-        if (match[1] != null) {
-          // if match starts with a @ then mention is at the very beginning of the comment/post
-          const index = BEGINNING_SPACE_REGEX.test(text[match.index] || "")
-            ? match.index + 1
-            : match.index;
+      const [, spacer, prefix, handle] = match;
+      if (spacer == null || prefix == null || handle == null) continue;
 
-          setMode({
-            type: text[index] === "@" ? "username" : "community",
-            match: match[1],
-            index,
-          });
-          return;
-        }
-        // Do something with the detected handle
+      if (
+        cursorPosition < match.index ||
+        cursorPosition > TYPEAHEAD_HANDLE_REGEX.lastIndex
+      ) {
+        continue;
       }
+
+      const type = getModeTypeForPrefix(prefix);
+
+      if (type) {
+        // the TYPEAHEAD_HANDLE_REGEX includes the space/parenthesis/bracket (separator) before the match
+        // so take that out
+        const index = match.index + spacer.length;
+
+        setMode({
+          type,
+          prefix,
+          match: handle,
+          index,
+        });
+        return;
+      }
+      // Do something with the detected handle
     }
 
     setMode({ type: "default" });
@@ -130,4 +144,15 @@ export default function MarkdownToolbar({
       </div>
     </>
   );
+}
+
+function getModeTypeForPrefix(prefix: string) {
+  switch (prefix) {
+    case "@":
+    case "/u/":
+      return "username";
+    case "!":
+    case "/c/":
+      return "community";
+  }
 }

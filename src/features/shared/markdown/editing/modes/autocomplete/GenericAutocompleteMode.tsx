@@ -11,6 +11,7 @@ import styles from "./GenericAutocompleteMode.module.css";
 export interface AutocompleteModeProps extends GenericModeProps {
   match: string;
   index: number;
+  prefix: string;
 }
 
 interface GenericAutocompleteModeProps<I> extends AutocompleteModeProps {
@@ -36,6 +37,7 @@ export default function GenericAutocompleteMode<
   fetchFn,
   buildMd,
   match,
+  prefix,
   index,
   textareaRef,
 }: GenericAutocompleteModeProps<I>) {
@@ -61,7 +63,10 @@ export default function GenericAutocompleteMode<
 
     textareaRef.current?.focus();
 
-    textareaRef.current?.setSelectionRange(index, index + match.length + 1);
+    textareaRef.current?.setSelectionRange(
+      index,
+      index + prefix.length + match.length,
+    );
     document.execCommand("insertText", false, md);
   }
 
