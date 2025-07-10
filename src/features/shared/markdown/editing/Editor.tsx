@@ -20,6 +20,7 @@ import { parseUriList } from "#/helpers/url";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 
+import MarkdownTextarea from "../../MarkdownTextarea";
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
 import MarkdownToolbar, { TOOLBAR_TARGET_ID } from "./MarkdownToolbar";
 import useEditorHelpers from "./useEditorHelpers";
@@ -228,8 +229,9 @@ export default function Editor({
       <div
         className={cx(styles.container, keyboardOpen && styles.keyboardOpen)}
       >
-        <TextareaAutosizedForOnScreenKeyboard
+        <MarkdownTextarea
           {...preventModalSwipeOnTextSelection}
+          textareaComponent={TextareaAutosizedForOnScreenKeyboard}
           className={styles.textarea}
           ref={useMergedRef(textareaRef, ref)}
           value={text}
