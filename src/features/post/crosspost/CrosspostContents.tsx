@@ -6,6 +6,7 @@ import { chatbubbleOutline } from "ionicons/icons";
 import { PostView } from "threadiverse";
 
 import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
+import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import { cx } from "#/helpers/css";
 import { formatNumber } from "#/helpers/number";
 
@@ -35,7 +36,7 @@ export default function CrosspostContents({
             hasBeenRead ? styles.titleRead : undefined,
           )}
         >
-          {crosspost.post.name}
+          <PostTitleMarkdown>{crosspost.post.name}</PostTitleMarkdown>
         </div>
       ) : (
         <IonSkeletonText />
