@@ -189,7 +189,7 @@ export function useFeedSortParams<Context extends FeedSortContext>(
   const mode = useMode();
 
   if (!mode) return mode;
-  if (!sort) return null; // loaded, but not found
+  if (!sort) return sort;
 
   return convertSortToLemmyParams(context, sort, mode) ?? null;
 }
