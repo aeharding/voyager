@@ -23,6 +23,7 @@ import {
   VgerPostSortTypeByMode,
 } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortTypeByMode } from "#/features/feed/sort/SearchSort";
+import { isNative } from "#/helpers/device";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import { VgerCommunitySortTypeByMode } from "#/routes/pages/search/results/CommunitySort";
@@ -275,10 +276,9 @@ const baseState: SettingsState = {
     defaultFeed: undefined,
     // TODO: Enable by default in late June 2025
     // (devices have been updated to support go.getvoyager.app links)
-    // defaultShare: isNative()
-    //   ? OPostCommentShareType.DeepLink
-    //   : OPostCommentShareType.Local,
-    defaultShare: OPostCommentShareType.Local,
+    defaultShare: isNative()
+      ? OPostCommentShareType.DeepLink
+      : OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     media: {
