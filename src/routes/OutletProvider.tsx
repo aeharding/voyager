@@ -1,9 +1,8 @@
 import { noop } from "es-toolkit";
 import { Location } from "history";
 import { createContext } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { instanceSelector } from "#/features/auth/authSelectors";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
 
@@ -20,7 +19,6 @@ export default function OutletProvider({
 }) {
   const router = useOptimizedIonRouter();
 
-  const selectedInstance = useAppSelector(instanceSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -48,16 +46,17 @@ export default function OutletProvider({
 
   const isTwoColumnLayout = useIsTwoColumnLayout();
 
-  useEffect(() => {
-    if (isTwoColumnLayout) return;
+  const [prevConnectedInstance, setPrevConnectedInstance] =
+    useState(connectedInstance);
 
+  if (prevConnectedInstance !== connectedInstance) {
+    setPrevConnectedInstance(connectedInstance);
     setSecondColumnLocationDictionary(undefined);
-  }, [isTwoColumnLayout]);
+  }
 
-  // Reset second column on instance change
-  useEffect(() => {
+  if (!isTwoColumnLayout && secondColumnLocationDictionary) {
     setSecondColumnLocationDictionary(undefined);
-  }, [connectedInstance, selectedInstance]);
+  }
 
   return (
     <OutletContext

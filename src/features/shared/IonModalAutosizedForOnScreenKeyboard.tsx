@@ -67,12 +67,22 @@ export default function IonModalAutosizedForOnScreenKeyboard(
     }, 100);
   }, []);
 
-  // Turning iPhone on/off can mess up the scrolling to top again
-  useEffect(() => {
-    if (!props.isOpen) return;
+  const [oldDocumentState, setOldDocumentState] = useState<
+    DocumentVisibilityState | undefined
+  >(undefined);
 
+  // Turning iPhone on/off can mess up the scrolling to top again
+  if (oldDocumentState !== documentState) {
+    setOldDocumentState(documentState);
     updateViewport();
-  }, [documentState, updateViewport, props.isOpen]);
+  }
+
+  const [oldIsOpen, setOldIsOpen] = useState<boolean | undefined>(undefined);
+
+  if (oldIsOpen !== props.isOpen) {
+    setOldIsOpen(props.isOpen);
+    updateViewport();
+  }
 
   useEffect(() => {
     if (!props.isOpen) return;

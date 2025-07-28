@@ -65,12 +65,23 @@ export function DynamicDismissableModal({
     isOpenRef.current = isOpen;
   });
 
-  useEffect(() => {
-    setPresentingElement(document.querySelector("ion-tabs") ?? undefined);
+  const [oldPageRef, setOldPageRef] = useState<typeof pageRef | undefined>(
+    undefined,
+  );
+  const [oldSelectedInstance, setOldSelectedInstance] = useState<
+    typeof selectedInstance | undefined
+  >(undefined);
 
-    // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
-    // so grab new IonRouterOutlet
-  }, [pageRef, selectedInstance]);
+  // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
+  // so grab new IonRouterOutlet
+  if (oldPageRef !== pageRef || oldSelectedInstance !== selectedInstance) {
+    setOldPageRef(pageRef);
+    setOldSelectedInstance(selectedInstance);
+
+    queueMicrotask(() => {
+      setPresentingElement(document.querySelector("ion-tabs") ?? undefined);
+    });
+  }
 
   const onDismissAttemptCb = async () => {
     if (document.activeElement instanceof HTMLElement)

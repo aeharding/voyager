@@ -32,7 +32,19 @@ interface CachedImgProps extends Omit<ComponentProps<"img">, "src"> {
 export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
   const [src, setSrc] = useState(props.src);
 
-  useEffect(() => {
+  const [oldPictrsOptions, setOldPictrsOptions] = useState<
+    PictrsOptions | undefined
+  >(undefined);
+  const [oldPropsSrc, setOldPropsSrc] = useState<string | undefined>(undefined);
+
+  if (oldPropsSrc !== props.src || oldPictrsOptions !== pictrsOptions) {
+    setOldPropsSrc(props.src);
+    setOldPictrsOptions(pictrsOptions);
+
+    onSrcChange();
+  }
+
+  function onSrcChange() {
     if (GLOBAL_IMAGE_CACHE.has(props.src)) {
       const previousOptions = GLOBAL_IMAGE_CACHE.get(props.src);
 
@@ -47,7 +59,9 @@ export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
     }
 
     setSrc(buildImageSrc(props.src as string, pictrsOptions));
+  }
 
+  useEffect(() => {
     // Cache the fullscreen image. We could cache a given size
     // (and return it later if subsequent requested size is smaller)
     // but this is simpler and works for most cases rn in Voyager

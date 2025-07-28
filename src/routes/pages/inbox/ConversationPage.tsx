@@ -5,15 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import {
-  use,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { PrivateMessageView } from "threadiverse";
@@ -72,7 +64,6 @@ export default function ConversationPage() {
     (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const tabContext = use(TabContext);
-  const [tab, setTab] = useState<string | undefined>();
   const { handle } = useParams<{ handle: string }>();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const [error, setError] = useState(false);
@@ -91,6 +82,7 @@ export default function ConversationPage() {
 
   const loadUser = useCallback(async () => {
     if (userByHandle[handle.toLowerCase()]) return;
+    if (loadingUser) return;
 
     setLoadingUser(true);
 
@@ -106,15 +98,9 @@ export default function ConversationPage() {
       .finally(() => {
         setLoadingUser(false);
       });
-  }, [dispatch, handle, userByHandle]);
+  }, [dispatch, handle, loadingUser, userByHandle]);
 
-  useLayoutEffect(() => {
-    setTab(tabContext.tabRef?.current);
-  }, [tabContext.tabRef]);
-
-  useEffect(() => {
-    loadUser();
-  }, [loadUser]);
+  loadUser();
 
   useEffect(() => {
     dispatch(syncMessages());
@@ -124,7 +110,7 @@ export default function ConversationPage() {
     if (!virtuaRef.current) return;
 
     virtuaRef.current.scrollToIndex(messages.length - 1, { align: "end" });
-  }, [messages.length]);
+  }, [messages]);
 
   const scrollIfNeeded = useCallback(() => {
     if (!shouldStickToBottom.current) return;
@@ -183,7 +169,7 @@ export default function ConversationPage() {
   })();
 
   const backText = (() => {
-    switch (tab) {
+    switch (tabContext.tabRef?.current) {
       case undefined:
         return " ";
       case "inbox":
