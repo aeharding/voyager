@@ -110,22 +110,22 @@ export function DynamicDismissableModal({
     return false;
   };
 
+  const [oldPathname, setOldPathname] = useState(location.pathname);
+
+  if (oldPathname !== location.pathname) {
+    queueMicrotask(() => {
+      setOldPathname(location.pathname);
+      setCanDismiss(true);
+      setIsOpen(false);
+    });
+  }
+
   // Close tab
   useUnload((e) => {
     if (canDismissRef_.current) return;
 
     e.preventDefault();
-
-    confirm("Are you sure you want to discard your work?");
   });
-
-  // HTML5 route change, and Prompt already caught and user acknowledged
-  useEffect(() => {
-    if (!isOpenRef.current) return;
-
-    setCanDismiss(true);
-    setIsOpen(false);
-  }, [location.pathname, setCanDismiss, setIsOpen]);
 
   const dismiss = () => {
     if (canDismissRef_.current) {

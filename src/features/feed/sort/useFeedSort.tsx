@@ -96,7 +96,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
     [overrideSort],
   );
 
-  const onSortUpdate = useCallback(
+  const getUpdatedSort = useCallback(
     (dbFailure = false) => {
       if (!mode) return mode;
 
@@ -114,7 +114,17 @@ export default function useFeedSort<Context extends FeedSortContext>(
     [feedSort, rememberCommunitySort, defaultSort, mode, getOverrideSort],
   );
 
-  const [sort, _setSort] = useState<Sort | null | undefined>(onSortUpdate);
+  const [sort, _setSort] = useState<Sort | null | undefined>(getUpdatedSort);
+
+  const [oldGetUpdatedSort, setOldGetUpdatedSort] = useState(
+    () => getUpdatedSort,
+  );
+
+  if (!sort && oldGetUpdatedSort !== getUpdatedSort) {
+    setOldGetUpdatedSort(() => getUpdatedSort);
+
+    _setSort((_sort) => _sort ?? getUpdatedSort());
+  }
 
   useEffect(() => {
     if (sort) return; // Latch an existing sort
@@ -125,15 +135,11 @@ export default function useFeedSort<Context extends FeedSortContext>(
       try {
         await dispatch(getFeedSort({ feed, context })).unwrap(); // unwrap to catch dispatched error (db failure)
       } catch (error) {
-        _setSort((_sort) => _sort ?? onSortUpdate(true)); // fallback if indexeddb unavailable
+        _setSort((_sort) => _sort ?? getUpdatedSort(true)); // fallback if indexeddb unavailable
         throw error;
       }
     })();
-  }, [feed, dispatch, rememberCommunitySort, context, onSortUpdate, sort]);
-
-  useEffect(() => {
-    _setSort((_sort) => _sort ?? onSortUpdate());
-  }, [onSortUpdate]);
+  }, [feed, dispatch, rememberCommunitySort, context, getUpdatedSort, sort]);
 
   const setSort = useCallback(
     (sort: Sort) => {

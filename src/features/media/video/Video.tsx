@@ -24,10 +24,8 @@ export default function Video({ portalWithMediaId, ...props }: VideoProps) {
   return <PortaledVideo {...props} portalWithMediaId={portalWithMediaId} />;
 }
 
-function UnportaledVideo(props: VideoProps) {
-  return (
-    <Player {...props} ref={props.ref as React.RefObject<HTMLVideoElement>} />
-  );
+function UnportaledVideo({ ref, ...props }: VideoProps) {
+  return <Player {...props} ref={ref as React.RefObject<HTMLVideoElement>} />;
 }
 
 // portalWithMediaId is required

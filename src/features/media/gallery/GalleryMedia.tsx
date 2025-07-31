@@ -35,6 +35,7 @@ export default function GalleryMedia({
   disableInlineInteraction,
   portalWithMediaId,
   allowShowPlayButton,
+  ref,
   ...props
 }: GalleryMediaProps) {
   const isVideo =
@@ -87,7 +88,7 @@ export default function GalleryMedia({
         volume={volume}
         progress={progress}
         portalWithMediaId={portalWithMediaId}
-        ref={props.ref as ComponentProps<typeof Video>["ref"]}
+        ref={ref as ComponentProps<typeof Video>["ref"]}
         allowShowPlayButton={allowShowPlayButton}
         onClick={onClick}
       />
@@ -97,7 +98,7 @@ export default function GalleryMedia({
     return (
       <GalleryGif
         {...props}
-        ref={props.ref as ComponentProps<typeof GalleryGif>["ref"]}
+        ref={ref as ComponentProps<typeof GalleryGif>["ref"]}
         onClick={onClick}
       />
     );
@@ -106,7 +107,7 @@ export default function GalleryMedia({
   return (
     <GalleryImg
       {...props}
-      ref={props.ref as React.RefObject<HTMLImageElement>}
+      ref={ref as React.RefObject<HTMLImageElement>}
       onClick={onClick}
     />
   );

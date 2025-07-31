@@ -1,6 +1,6 @@
 import { IonModal } from "@ionic/react";
 import { useDocumentVisibility } from "@mantine/hooks";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 
 import { cx, sv } from "#/helpers/css";
 import { isNative } from "#/helpers/device";
@@ -13,76 +13,51 @@ import styles from "./IonModalAutosizedForOnScreenKeyboard.module.css";
 const FIXED_HEADER_HEIGHT = 56;
 
 interface PWAIonModalProps
-  extends Omit<React.ComponentProps<typeof IonModal>, "style"> {
-  viewportHeight: number;
-}
+  extends Omit<React.ComponentProps<typeof IonModal>, "style"> {}
 
-function PWAIonModal({ viewportHeight, ...props }: PWAIonModalProps) {
-  return (
-    <IonModal
-      {...props}
-      className={cx(props.className, styles.pwaIonModal)}
-      style={sv({ viewportHeight })}
-    />
-  );
-}
-
-const Modal = isNative() ? IonModal : PWAIonModal;
-
-/**
- * This component is only needed for Safari PWAs. It is not necessary for native.
- */
-export default function IonModalAutosizedForOnScreenKeyboard(
-  props: Omit<React.ComponentProps<typeof IonModal>, "style">,
-) {
-  const [viewportHeight, setViewportHeight] = useState(
-    document.documentElement.clientHeight,
-  );
+function PWAIonModal(props: PWAIonModalProps) {
   const documentState = useDocumentVisibility();
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   const updateViewport = useCallback(() => {
     if (!props.isOpen) return;
+    if (documentState === "hidden") return;
 
     // For the rare legacy browsers that don't support it
     if (!window.visualViewport) {
-      return;
+      return updateStyles(document.documentElement.clientHeight);
     }
 
     const page = modalRef.current?.querySelector(
       ".ion-page:not(.ion-page-hidden)",
     );
 
-    setViewportHeight(
+    updateStyles(
       window.visualViewport.height -
         (page instanceof HTMLElement ? cumulativeOffset(page).top : 0) -
         FIXED_HEADER_HEIGHT,
     );
-  }, [props.isOpen]);
+  }, [props.isOpen, documentState]);
+
+  function updateStyles(viewportHeight: number) {
+    const styles = sv({ viewportHeight });
+
+    for (const key in styles) {
+      modalRef.current?.style.setProperty(key, styles[key] as string);
+    }
+  }
+
+  // Turning iPhone on/off can mess up the scrolling to top again
+  useEffect(() => {
+    updateViewport();
+  }, [updateViewport]);
 
   const onScroll = useCallback(() => {
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 100);
   }, []);
-
-  const [oldDocumentState, setOldDocumentState] = useState<
-    DocumentVisibilityState | undefined
-  >(undefined);
-
-  // Turning iPhone on/off can mess up the scrolling to top again
-  if (oldDocumentState !== documentState) {
-    setOldDocumentState(documentState);
-    updateViewport();
-  }
-
-  const [oldIsOpen, setOldIsOpen] = useState<boolean | undefined>(undefined);
-
-  if (oldIsOpen !== props.isOpen) {
-    setOldIsOpen(props.isOpen);
-    updateViewport();
-  }
 
   useEffect(() => {
     if (!props.isOpen) return;
@@ -109,15 +84,26 @@ export default function IonModalAutosizedForOnScreenKeyboard(
   }, [updateViewport, props.isOpen]);
 
   return (
-    <Modal
+    <IonModal
+      {...props}
       ref={modalRef}
-      viewportHeight={viewportHeight}
+      className={cx(props.className, styles.pwaIonModal)}
       onDidPresent={() => {
         window.scrollTo(0, 0);
       }}
-      {...props}
     />
   );
+}
+
+const Modal = isNative() ? IonModal : PWAIonModal;
+
+/**
+ * This component is only needed for Safari PWAs. It is not necessary for native.
+ */
+export default function IonModalAutosizedForOnScreenKeyboard(
+  props: Omit<React.ComponentProps<typeof IonModal>, "style">,
+) {
+  return <Modal {...props} />;
 }
 
 function cumulativeOffset(element: HTMLElement) {

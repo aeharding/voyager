@@ -75,16 +75,16 @@ importers:
         version: voyager-ionic-core@8.5.7
       '@ionic/react':
         specifier: 8.5.7
-        version: 8.5.7(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 8.5.7(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       '@ionic/react-router':
         specifier: 8.5.7
-        version: 8.5.7(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react-router-dom@5.3.4(react@0.0.0-experimental-19baee81-20250725))(react-router@5.3.4(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 8.5.7(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react-router-dom@5.3.4(react@0.0.0-experimental-9784cb37-20250730))(react-router@5.3.4(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       '@mantine/hooks':
         specifier: ^8.1.2
-        version: 8.1.2(react@0.0.0-experimental-19baee81-20250725)
+        version: 8.1.2(react@0.0.0-experimental-9784cb37-20250730)
       '@reduxjs/toolkit':
         specifier: ^2.8.2
-        version: 2.8.2(react-redux@9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)(redux@5.0.1))(react@0.0.0-experimental-19baee81-20250725)
+        version: 2.8.2(react-redux@9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)(redux@5.0.1))(react@0.0.0-experimental-9784cb37-20250730)
       capacitor-android-nav-mode:
         specifier: ^2.0.0
         version: 2.0.0(@capacitor/core@7.4.0)
@@ -165,46 +165,46 @@ importers:
         version: 4.6.4
       motion:
         specifier: ^12.23.0
-        version: 12.23.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 12.23.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       photoswipe:
         specifier: ^5.4.4
         version: 5.4.4
       react:
-        specifier: 0.0.0-experimental-19baee81-20250725
-        version: 0.0.0-experimental-19baee81-20250725
+        specifier: 0.0.0-experimental-9784cb37-20250730
+        version: 0.0.0-experimental-9784cb37-20250730
       react-animate-height:
         specifier: ^3.2.3
-        version: 3.2.3(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 3.2.3(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       react-dom:
-        specifier: 0.0.0-experimental-19baee81-20250725
-        version: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+        specifier: 0.0.0-experimental-9784cb37-20250730
+        version: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
       react-error-boundary:
         specifier: ^6.0.0
-        version: 6.0.0(react@0.0.0-experimental-19baee81-20250725)
+        version: 6.0.0(react@0.0.0-experimental-9784cb37-20250730)
       react-intersection-observer:
         specifier: ^9.16.0
-        version: 9.16.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 9.16.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       react-markdown:
         specifier: ^10.1.0
-        version: 10.1.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)
+        version: 10.1.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)
       react-redux:
         specifier: ^9.2.0
-        version: 9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)(redux@5.0.1)
+        version: 9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)(redux@5.0.1)
       react-reverse-portal:
         specifier: ^2.3.0
-        version: 2.3.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 2.3.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       react-router:
         specifier: ^5.3.4
-        version: 5.3.4(react@0.0.0-experimental-19baee81-20250725)
+        version: 5.3.4(react@0.0.0-experimental-9784cb37-20250730)
       react-router-dom:
         specifier: ^5.3.4
-        version: 5.3.4(react@0.0.0-experimental-19baee81-20250725)
+        version: 5.3.4(react@0.0.0-experimental-9784cb37-20250730)
       react-textarea-autosize:
         specifier: ^8.5.9
-        version: 8.5.9(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)
+        version: 8.5.9(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)
       react-transition-state:
         specifier: ^2.3.1
-        version: 2.3.1(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 2.3.1(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       rehype-highlight:
         specifier: ^7.0.2
         version: 7.0.2
@@ -234,10 +234,10 @@ importers:
         version: 5.0.0
       use-long-press:
         specifier: ^3.3.0
-        version: 3.3.0(react@0.0.0-experimental-19baee81-20250725)
+        version: 3.3.0(react@0.0.0-experimental-9784cb37-20250730)
       virtua:
         specifier: ^0.41.5
-        version: 0.41.5(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 0.41.5(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
     devDependencies:
       '@capacitor/cli':
         specifier: ^7.4.0
@@ -253,7 +253,7 @@ importers:
         version: 1.53.2
       '@testing-library/react':
         specifier: ^16.3.0
-        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       '@trapezedev/configure':
         specifier: ^7.1.3
         version: 7.1.3(@types/node@24.0.10)(typescript@5.8.3)
@@ -291,8 +291,8 @@ importers:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
       babel-plugin-react-compiler:
-        specifier: 0.0.0-experimental-2db0664-20250725
-        version: 0.0.0-experimental-2db0664-20250725
+        specifier: 0.0.0-experimental-cffbb87-20250730
+        version: 0.0.0-experimental-cffbb87-20250730
       eslint:
         specifier: ^9.30.1
         version: 9.30.1(jiti@2.4.2)
@@ -306,8 +306,8 @@ importers:
         specifier: ^7.37.5
         version: 7.37.5(eslint@9.30.1(jiti@2.4.2))
       eslint-plugin-react-hooks:
-        specifier: 0.0.0-experimental-19baee81-20250725
-        version: 0.0.0-experimental-19baee81-20250725(eslint@9.30.1(jiti@2.4.2))
+        specifier: 0.0.0-experimental-9784cb37-20250730
+        version: 0.0.0-experimental-9784cb37-20250730(eslint@9.30.1(jiti@2.4.2))
       eslint-plugin-vitest:
         specifier: ^0.5.4
         version: 0.5.4(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.10)(happy-dom@15.11.6)(jiti@2.4.2)(jsdom@26.1.0)(less@4.2.0)(lightningcss@1.28.1)(sass@1.81.0)(stylus@0.62.0)(terser@5.36.0))
@@ -2565,8 +2565,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
-  babel-plugin-react-compiler@0.0.0-experimental-2db0664-20250725:
-    resolution: {integrity: sha512-NhJ0jw9hnpv7Xxt4yy0Fi/pjxLS8XXEb+U6u5f6XGJMRNgTg/LronmiL0xVMJBEVQbhQD4uh+drgqQM8oBS/ag==}
+  babel-plugin-react-compiler@0.0.0-experimental-cffbb87-20250730:
+    resolution: {integrity: sha512-VRJOet4w4/5ePT2ksUBPPZnEHBsUGwKkQx44YDfVIayhOHgHaJXRi7kZLAoRLNcSbp0KqohOFSwCG8yIBgAC5A==}
 
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
@@ -3435,8 +3435,8 @@ packages:
     peerDependencies:
       eslint: '>=8.45.0'
 
-  eslint-plugin-react-hooks@0.0.0-experimental-19baee81-20250725:
-    resolution: {integrity: sha512-nDy43ekN9COprOMZQuxOkUAnXNBSIb4HFvsNEInqSD5Z+YcHNm7g8bzhuoGRUuI97OfuL/Xv7dhlMKgG2dAxMg==}
+  eslint-plugin-react-hooks@0.0.0-experimental-9784cb37-20250730:
+    resolution: {integrity: sha512-6c4ENrCxH/GquPNT87E98JC8X3z2i+yVklpg5tJ8BWGta2DAVb3RZeQ3QlxIZ6MFu34YWul/QtabcpjcS/1RYw==}
     engines: {node: '>=18'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -5566,10 +5566,10 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  react-dom@0.0.0-experimental-19baee81-20250725:
-    resolution: {integrity: sha512-EQPmbE9e7cb3EIQDbFPQ2Iw32SIAb6hmHbz6L9SAKMn8HA5vDyhbgfPgPPMKrzwbWkaiYrwBr0SjQzABrVSkPw==}
+  react-dom@0.0.0-experimental-9784cb37-20250730:
+    resolution: {integrity: sha512-eUKSBDgp6cDKxtOVSMtu6gh85ZLZT2ZdzIWMtLma3CpJGfr3KK0NZN1Ccqu5YIQPUlzfDHkhwQa2EM4yDD6tJA==}
     peerDependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
 
   react-error-boundary@6.0.0:
     resolution: {integrity: sha512-gdlJjD7NWr0IfkPlaREN2d9uUZUlksrfOx7SX62VRerwXbMY6ftGCIZua1VG1aXFNOimhISsTq+Owp725b9SiA==}
@@ -5641,8 +5641,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  react@0.0.0-experimental-19baee81-20250725:
-    resolution: {integrity: sha512-RQ+gon4KiEkTIyOyYeJ2g62UFj6nFNu2shh8nupRI5FXvLyaZhSuuSbHYOwk3YDJQ3cxDxCPaCYWG77G5+Af9g==}
+  react@0.0.0-experimental-9784cb37-20250730:
+    resolution: {integrity: sha512-iivIZqF1Wfi7INr6VcRiLo5/iDbOFvHNm9ANJFcPNqIz1aJcKhA7CGzo3siaHVV2woHFtfQQWJHAhtKF5jN4Fg==}
     engines: {node: '>=0.10.0'}
 
   read-pkg-up@3.0.0:
@@ -5891,8 +5891,8 @@ packages:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
 
-  scheduler@0.0.0-experimental-19baee81-20250725:
-    resolution: {integrity: sha512-XQeExbFQ3VCw4PV/OV7mA9EuYVNB6KvzqrIb17mXp5UjlQFRuUEcUDv7YDdiLc6yVf6VQc+aFBWvd2bXLBiDDw==}
+  scheduler@0.0.0-experimental-9784cb37-20250730:
+    resolution: {integrity: sha512-z8/SiNnxs/gSjS/3ksN1z2eqaS1tJfc+aBMxukNzV2TUq7pGwwzpVr/0w3lNDVPUY3fnnHUaG1KJppJOrjepGw==}
 
   semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
@@ -6024,6 +6024,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -8296,21 +8297,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/react-router@8.5.7(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react-router-dom@5.3.4(react@0.0.0-experimental-19baee81-20250725))(react-router@5.3.4(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)':
+  '@ionic/react-router@8.5.7(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react-router-dom@5.3.4(react@0.0.0-experimental-9784cb37-20250730))(react-router@5.3.4(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)':
     dependencies:
-      '@ionic/react': 8.5.7(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
-      react-router: 5.3.4(react@0.0.0-experimental-19baee81-20250725)
-      react-router-dom: 5.3.4(react@0.0.0-experimental-19baee81-20250725)
+      '@ionic/react': 8.5.7(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
+      react-router: 5.3.4(react@0.0.0-experimental-9784cb37-20250730)
+      react-router-dom: 5.3.4(react@0.0.0-experimental-9784cb37-20250730)
       tslib: 2.8.1
 
-  '@ionic/react@8.5.7(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)':
+  '@ionic/react@8.5.7(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)':
     dependencies:
       '@ionic/core': voyager-ionic-core@8.5.7
       ionicons: 7.4.0
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
       tslib: 2.8.1
 
   '@ionic/utils-array@2.1.6':
@@ -8472,9 +8473,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.4
 
-  '@mantine/hooks@8.1.2(react@0.0.0-experimental-19baee81-20250725)':
+  '@mantine/hooks@8.1.2(react@0.0.0-experimental-9784cb37-20250730)':
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
 
   '@noble/hashes@1.8.0': {}
 
@@ -8661,7 +8662,7 @@ snapshots:
       - bare-buffer
       - supports-color
 
-  '@reduxjs/toolkit@2.8.2(react-redux@9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)(redux@5.0.1))(react@0.0.0-experimental-19baee81-20250725)':
+  '@reduxjs/toolkit@2.8.2(react-redux@9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)(redux@5.0.1))(react@0.0.0-experimental-9784cb37-20250730)':
     dependencies:
       '@standard-schema/spec': 1.0.0
       '@standard-schema/utils': 0.3.0
@@ -8670,8 +8671,8 @@ snapshots:
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.1
     optionalDependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-redux: 9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)(redux@5.0.1)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-redux: 9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)(redux@5.0.1)
 
   '@rolldown/pluginutils@1.0.0-beta.19': {}
 
@@ -8914,12 +8915,12 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)':
+  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)':
     dependencies:
       '@babel/runtime': 7.27.6
       '@testing-library/dom': 10.4.0
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
     optionalDependencies:
       '@types/react': 19.1.8
       '@types/react-dom': 19.1.6(@types/react@19.1.8)
@@ -9643,7 +9644,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-plugin-react-compiler@0.0.0-experimental-2db0664-20250725:
+  babel-plugin-react-compiler@0.0.0-experimental-cffbb87-20250730:
     dependencies:
       '@babel/types': 7.28.0
 
@@ -10604,7 +10605,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-react-hooks@0.0.0-experimental-19baee81-20250725(eslint@9.30.1(jiti@2.4.2)):
+  eslint-plugin-react-hooks@0.0.0-experimental-9784cb37-20250730(eslint@9.30.1(jiti@2.4.2)):
     dependencies:
       '@babel/core': 7.28.0
       '@babel/parser': 7.28.0
@@ -10935,14 +10936,14 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@12.23.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  framer-motion@12.23.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
       motion-dom: 12.22.0
       motion-utils: 12.19.0
       tslib: 2.8.1
     optionalDependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
   fresh@0.5.2: {}
 
@@ -12516,13 +12517,13 @@ snapshots:
 
   motion-utils@12.19.0: {}
 
-  motion@12.23.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  motion@12.23.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      framer-motion: 12.23.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725)
+      framer-motion: 12.23.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730)
       tslib: 2.8.1
     optionalDependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
   ms@2.0.0: {}
 
@@ -13106,32 +13107,32 @@ snapshots:
       defu: 6.1.4
       destr: 2.0.5
 
-  react-animate-height@3.2.3(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  react-animate-height@3.2.3(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
-  react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725):
+  react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      scheduler: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
+      scheduler: 0.0.0-experimental-9784cb37-20250730
 
-  react-error-boundary@6.0.0(react@0.0.0-experimental-19baee81-20250725):
+  react-error-boundary@6.0.0(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
       '@babel/runtime': 7.27.6
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
 
-  react-intersection-observer@9.16.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  react-intersection-observer@9.16.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
     optionalDependencies:
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
   react-is@16.13.1: {}
 
   react-is@17.0.2: {}
 
-  react-markdown@10.1.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725):
+  react-markdown@10.1.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
@@ -13140,7 +13141,7 @@ snapshots:
       hast-util-to-jsx-runtime: 2.3.6
       html-url-attributes: 3.0.1
       mdast-util-to-hast: 13.2.0
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
       remark-parse: 11.0.0
       remark-rehype: 11.1.2
       unified: 11.0.5
@@ -13149,34 +13150,34 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-redux@9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)(redux@5.0.1):
+  react-redux@9.2.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)(redux@5.0.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
-      react: 0.0.0-experimental-19baee81-20250725
-      use-sync-external-store: 1.5.0(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      use-sync-external-store: 1.5.0(react@0.0.0-experimental-9784cb37-20250730)
     optionalDependencies:
       '@types/react': 19.1.8
       redux: 5.0.1
 
   react-refresh@0.17.0: {}
 
-  react-reverse-portal@2.3.0(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  react-reverse-portal@2.3.0(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
-  react-router-dom@5.3.4(react@0.0.0-experimental-19baee81-20250725):
+  react-router-dom@5.3.4(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
       '@babel/runtime': 7.24.7
       history: 4.10.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 0.0.0-experimental-19baee81-20250725
-      react-router: 5.3.4(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-router: 5.3.4(react@0.0.0-experimental-9784cb37-20250730)
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  react-router@5.3.4(react@0.0.0-experimental-19baee81-20250725):
+  react-router@5.3.4(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
       '@babel/runtime': 7.25.7
       history: 4.10.1
@@ -13184,26 +13185,26 @@ snapshots:
       loose-envify: 1.4.0
       path-to-regexp: 1.8.0
       prop-types: 15.8.1
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
       react-is: 16.13.1
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  react-textarea-autosize@8.5.9(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725):
+  react-textarea-autosize@8.5.9(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
       '@babel/runtime': 7.27.6
-      react: 0.0.0-experimental-19baee81-20250725
-      use-composed-ref: 1.4.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)
-      use-latest: 1.3.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      use-composed-ref: 1.4.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)
+      use-latest: 1.3.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)
     transitivePeerDependencies:
       - '@types/react'
 
-  react-transition-state@2.3.1(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  react-transition-state@2.3.1(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
-  react@0.0.0-experimental-19baee81-20250725: {}
+  react@0.0.0-experimental-9784cb37-20250730: {}
 
   read-pkg-up@3.0.0:
     dependencies:
@@ -13546,7 +13547,7 @@ snapshots:
     dependencies:
       xmlchars: 2.2.0
 
-  scheduler@0.0.0-experimental-19baee81-20250725: {}
+  scheduler@0.0.0-experimental-9784cb37-20250730: {}
 
   semver@5.7.2: {}
 
@@ -14280,32 +14281,32 @@ snapshots:
 
   url-join@5.0.0: {}
 
-  use-composed-ref@1.4.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725):
+  use-composed-ref@1.4.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
     optionalDependencies:
       '@types/react': 19.1.8
 
-  use-isomorphic-layout-effect@1.2.1(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725):
+  use-isomorphic-layout-effect@1.2.1(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
     optionalDependencies:
       '@types/react': 19.1.8
 
-  use-latest@1.3.0(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725):
+  use-latest@1.3.0(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      use-isomorphic-layout-effect: 1.2.1(@types/react@19.1.8)(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      use-isomorphic-layout-effect: 1.2.1(@types/react@19.1.8)(react@0.0.0-experimental-9784cb37-20250730)
     optionalDependencies:
       '@types/react': 19.1.8
 
-  use-long-press@3.3.0(react@0.0.0-experimental-19baee81-20250725):
+  use-long-press@3.3.0(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
 
-  use-sync-external-store@1.5.0(react@0.0.0-experimental-19baee81-20250725):
+  use-sync-external-store@1.5.0(react@0.0.0-experimental-9784cb37-20250730):
     dependencies:
-      react: 0.0.0-experimental-19baee81-20250725
+      react: 0.0.0-experimental-9784cb37-20250730
 
   util-deprecate@1.0.2: {}
 
@@ -14341,10 +14342,10 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  virtua@0.41.5(react-dom@0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725))(react@0.0.0-experimental-19baee81-20250725):
+  virtua@0.41.5(react-dom@0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730))(react@0.0.0-experimental-9784cb37-20250730):
     optionalDependencies:
-      react: 0.0.0-experimental-19baee81-20250725
-      react-dom: 0.0.0-experimental-19baee81-20250725(react@0.0.0-experimental-19baee81-20250725)
+      react: 0.0.0-experimental-9784cb37-20250730
+      react-dom: 0.0.0-experimental-9784cb37-20250730(react@0.0.0-experimental-9784cb37-20250730)
 
   vite-node@3.2.4(@types/node@24.0.10)(jiti@2.4.2)(less@4.2.0)(lightningcss@1.28.1)(sass@1.81.0)(stylus@0.62.0)(terser@5.36.0):
     dependencies:

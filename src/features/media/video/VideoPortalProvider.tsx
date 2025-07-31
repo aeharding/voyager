@@ -162,12 +162,14 @@ export function useVideoPortalNode(
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
-  const getPortalNodeEvent = useEffectEvent(() => {
+  function getPortalNode() {
     if (destroyed.current) return;
     if (!mediaId) return;
 
     getPortalNodeForMediaId(mediaId, outPortalUid);
-  });
+  }
+
+  const getPortalNodeEvent = useEffectEvent(getPortalNode);
 
   const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
@@ -187,7 +189,7 @@ export function useVideoPortalNode(
   }, [mediaId]);
 
   useIonViewWillEnter(() => {
-    getPortalNodeEvent();
+    getPortalNode();
   });
 
   if (!mediaId) return;
