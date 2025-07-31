@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect } from "react";
 
 import { supportsWebp } from "#/helpers/device";
 import { isUrlPictrsLike } from "#/helpers/url";
@@ -30,21 +30,7 @@ interface CachedImgProps extends Omit<ComponentProps<"img">, "src"> {
 }
 
 export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
-  const [src, setSrc] = useState(props.src);
-
-  const [oldPictrsOptions, setOldPictrsOptions] = useState<
-    PictrsOptions | undefined
-  >(undefined);
-  const [oldPropsSrc, setOldPropsSrc] = useState<string | undefined>(undefined);
-
-  if (oldPropsSrc !== props.src || oldPictrsOptions !== pictrsOptions) {
-    setOldPropsSrc(props.src);
-    setOldPictrsOptions(pictrsOptions);
-
-    onSrcChange();
-  }
-
-  function onSrcChange() {
+  const src = (() => {
     if (GLOBAL_IMAGE_CACHE.has(props.src)) {
       const previousOptions = GLOBAL_IMAGE_CACHE.get(props.src);
 
@@ -53,13 +39,12 @@ export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
         previousOptions?.devicePixelRatio === pictrsOptions?.devicePixelRatio &&
         previousOptions?.format === pictrsOptions?.format
       ) {
-        setSrc(buildImageSrc(props.src, previousOptions ?? undefined));
-        return;
+        return buildImageSrc(props.src, previousOptions ?? undefined);
       }
     }
 
-    setSrc(buildImageSrc(props.src as string, pictrsOptions));
-  }
+    return buildImageSrc(props.src as string, pictrsOptions);
+  })();
 
   useEffect(() => {
     // Cache the fullscreen image. We could cache a given size
