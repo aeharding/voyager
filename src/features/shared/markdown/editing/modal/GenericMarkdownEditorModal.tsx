@@ -42,8 +42,8 @@ export default function GenericMarkdownEditorModal({
                 item={item}
                 setCanDismiss={setCanDismiss}
                 dismiss={(replied) => {
-                  dismiss();
                   onSubmit(replied);
+                  dismiss();
                 }}
               />
             );
@@ -54,8 +54,8 @@ export default function GenericMarkdownEditorModal({
                 item={item}
                 setCanDismiss={setCanDismiss}
                 dismiss={(replied) => {
-                  dismiss();
                   onSubmit(replied);
+                  dismiss();
                 }}
               />
             );
@@ -66,8 +66,8 @@ export default function GenericMarkdownEditorModal({
                 item={item}
                 setCanDismiss={setCanDismiss}
                 dismiss={(replied) => {
-                  dismiss();
                   onSubmit(replied);
+                  dismiss();
                 }}
               />
             );
