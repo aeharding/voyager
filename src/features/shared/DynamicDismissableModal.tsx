@@ -58,11 +58,6 @@ export function DynamicDismissableModal({
     setPresentingElement(document.querySelector("ion-tabs"));
   }
 
-  // If transitioning to closed and presentingElement is set, clear it
-  if (!isOpen && presentingElement !== undefined) {
-    setPresentingElement(undefined);
-  }
-
   const isOpenRef = useRef(isOpen);
 
   useEffect(() => {
@@ -100,7 +95,6 @@ export function DynamicDismissableModal({
   const _dismiss = () => {
     setCanDismiss(true);
     setIsOpen(false);
-    setPresentingElement(undefined);
   };
 
   if (oldPathname !== location.pathname) {
@@ -119,7 +113,7 @@ export function DynamicDismissableModal({
 
   const dismiss = () => {
     if (canDismissRef_.current) {
-      setIsOpen(false);
+      _dismiss();
       return;
     }
 
@@ -155,6 +149,7 @@ export function DynamicDismissableModal({
         canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
         onDidDismiss={() => {
           setIsOpen(false);
+          setPresentingElement(undefined);
 
           // in case onDidDismiss incorrectly called by Ionic, don't clear data
           if (textRecovery && canDismissRef_.current) clearRecoveredText();
