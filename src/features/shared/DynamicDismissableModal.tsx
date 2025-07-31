@@ -3,12 +3,10 @@ import { noop } from "es-toolkit";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { Prompt, useLocation } from "react-router";
 
-import { instanceSelector } from "#/features/auth/authSelectors";
-import { useAppPageRef } from "#/helpers/AppPage";
 import { isNative } from "#/helpers/device";
 import useStateRef from "#/helpers/useStateRef";
 import { clearRecoveredText } from "#/helpers/useTextRecovery";
-import { useAppDispatch, useAppSelector } from "#/store";
+import { useAppDispatch } from "#/store";
 
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
 import {
@@ -43,11 +41,7 @@ export function DynamicDismissableModal({
   textRecovery,
 }: DynamicDismissableModalProps) {
   const dispatch = useAppDispatch();
-  const pageRef = useAppPageRef();
   const location = useLocation();
-  const selectedInstance = useAppSelector(
-    instanceSelector ?? ((state) => state.auth.connectedInstance),
-  );
 
   // TODO: underscore as hack to avoid compiler complaint.
   // See: https://github.com/reactwg/react-compiler/discussions/32
@@ -56,32 +50,24 @@ export function DynamicDismissableModal({
   const [presentActionSheet] = useIonActionSheet();
 
   const [presentingElement, setPresentingElement] = useState<
-    HTMLElement | undefined
+    HTMLElement | undefined | null
   >();
+
+  // If transitioning to open and presentingElement is not set, initialize
+  if (isOpen && presentingElement === undefined) {
+    setPresentingElement(document.querySelector("ion-tabs"));
+  }
+
+  // If transitioning to closed and presentingElement is set, clear it
+  if (!isOpen && presentingElement !== undefined) {
+    setPresentingElement(undefined);
+  }
 
   const isOpenRef = useRef(isOpen);
 
   useEffect(() => {
     isOpenRef.current = isOpen;
   });
-
-  const [oldPageRef, setOldPageRef] = useState<typeof pageRef | undefined>(
-    undefined,
-  );
-  const [oldSelectedInstance, setOldSelectedInstance] = useState<
-    typeof selectedInstance | undefined
-  >(undefined);
-
-  // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
-  // so grab new IonRouterOutlet
-  if (oldPageRef !== pageRef || oldSelectedInstance !== selectedInstance) {
-    setOldPageRef(pageRef);
-    setOldSelectedInstance(selectedInstance);
-
-    queueMicrotask(() => {
-      setPresentingElement(document.querySelector("ion-tabs") ?? undefined);
-    });
-  }
 
   const onDismissAttemptCb = async () => {
     if (document.activeElement instanceof HTMLElement)
@@ -94,8 +80,7 @@ export function DynamicDismissableModal({
           text: "Discard",
           role: "destructive",
           handler: () => {
-            setCanDismiss(true);
-            setIsOpen(false);
+            _dismiss();
 
             dispatch(deletePendingImageUploads());
           },
@@ -112,11 +97,16 @@ export function DynamicDismissableModal({
 
   const [oldPathname, setOldPathname] = useState(location.pathname);
 
+  const _dismiss = () => {
+    setCanDismiss(true);
+    setIsOpen(false);
+    setPresentingElement(undefined);
+  };
+
   if (oldPathname !== location.pathname) {
     queueMicrotask(() => {
       setOldPathname(location.pathname);
-      setCanDismiss(true);
-      setIsOpen(false);
+      _dismiss();
     });
   }
 
@@ -171,7 +161,7 @@ export function DynamicDismissableModal({
 
           if (canDismissRef_.current) dispatch(onHandledPendingImages());
         }}
-        presentingElement={presentingElement}
+        presentingElement={presentingElement ?? undefined}
         onWillDismiss={() => {
           if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
