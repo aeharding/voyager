@@ -1,5 +1,11 @@
 import { noop } from "es-toolkit";
-import { createContext, use, useEffect, useState } from "react";
+import {
+  createContext,
+  use,
+  useEffect,
+  experimental_useEffectEvent as useEffectEvent,
+  useState,
+} from "react";
 
 import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
 import {
@@ -39,32 +45,48 @@ export default function PostAppearanceProvider({
       : (feedPostAppearance ?? undefined),
   );
 
-  useEffect(() => {
-    (async () => {
+  const initAsyncPostAppearance = useEffectEvent(
+    async (signal: AbortSignal) => {
+      function onAsyncPostAppearance(
+        feedPostAppearance: PostAppearanceType | null,
+      ) {
+        if (postAppearance) return; // if already set, don't update
+
+        if (!rememberCommunityPostAppearance) return;
+        if (feedPostAppearance === undefined) return; // null = loaded, but custom community sort not found
+
+        _setPostAppearance(feedPostAppearance ?? defaultPostAppearance);
+      }
+
       if (!rememberCommunityPostAppearance) return;
       if (!feed) return;
 
+      let feedPostAppearance: PostAppearanceType | null;
+
       try {
-        await dispatch(getPostAppearance(feed)).unwrap(); // unwrap to catch dispatched error (db failure)
+        ({ postAppearance: feedPostAppearance } = await dispatch(
+          getPostAppearance(feed),
+        ).unwrap()); // unwrap to catch dispatched error (db failure)
       } catch (error) {
+        if (signal.aborted) return;
+
         _setPostAppearance((_sort) => _sort ?? defaultPostAppearance); // fallback if indexeddb unavailable
         throw error;
       }
-    })();
-  }, [feed, dispatch, rememberCommunityPostAppearance, defaultPostAppearance]);
+
+      if (signal.aborted) return;
+
+      onAsyncPostAppearance(feedPostAppearance);
+    },
+  );
 
   useEffect(() => {
-    if (!rememberCommunityPostAppearance) return;
-    if (postAppearance) return;
-    if (feedPostAppearance === undefined) return; // null = loaded, but custom community sort not found
+    const abortController = new AbortController();
 
-    _setPostAppearance(feedPostAppearance ?? defaultPostAppearance);
-  }, [
-    feedPostAppearance,
-    postAppearance,
-    defaultPostAppearance,
-    rememberCommunityPostAppearance,
-  ]);
+    initAsyncPostAppearance(abortController.signal);
+
+    return () => abortController.abort();
+  }, []);
 
   function setPostAppearance(postAppearance: PostAppearanceType) {
     if (rememberCommunityPostAppearance) {

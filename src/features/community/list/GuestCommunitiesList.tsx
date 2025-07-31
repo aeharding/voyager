@@ -1,9 +1,5 @@
 import { IonRefresher, IonRefresherContent } from "@ionic/react";
-import {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useState,
-} from "react";
+import { useState } from "react";
 import { Community, CommunitySortType } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
@@ -71,13 +67,20 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
     setCommunities(communities.map((c) => c.community));
   }
 
-  const updateEvent = useEffectEvent(update);
-
-  useEffect(() => {
+  function hardUpdate() {
     setCommunities(undefined);
 
-    updateEvent();
-  }, [client, actor, mode]);
+    update();
+  }
+
+  const [oldClient, setOldClient] = useState<typeof client | undefined>(
+    undefined,
+  );
+
+  if (oldClient !== client) {
+    setOldClient(client);
+    hardUpdate();
+  }
 
   if (communities === undefined) return <CenteredSpinner />;
 
@@ -86,7 +89,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
       <IonRefresher
         slot="fixed"
         onIonRefresh={(e) => {
-          updateEvent().finally(() => e.detail.complete());
+          update().finally(() => e.detail.complete());
         }}
         disabled={isSafariFeedHackEnabled && !isListAtTop}
       >

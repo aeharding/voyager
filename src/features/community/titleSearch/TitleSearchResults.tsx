@@ -168,7 +168,7 @@ export default function TitleSearchResults() {
     };
   }, []);
 
-  const asyncSearchEvent = useEffectEvent(async () => {
+  async function asyncSearch() {
     const result = await client.search({
       q: debouncedSearch,
       limit: 20,
@@ -178,16 +178,20 @@ export default function TitleSearchResults() {
     });
 
     setSearchPayload(result.data as CommunityView[]);
-  });
+  }
 
-  useEffect(() => {
+  const [oldDebouncedSearch, setOldDebouncedSearch] = useState(debouncedSearch);
+
+  if (oldDebouncedSearch !== debouncedSearch) {
+    setOldDebouncedSearch(debouncedSearch);
+
     if (!debouncedSearch) {
       setSearchPayload([]);
       return;
     }
 
-    asyncSearchEvent();
-  }, [debouncedSearch]);
+    asyncSearch();
+  }
 
   function renderTitle(result: Result) {
     if (typeof result === "string") return result;

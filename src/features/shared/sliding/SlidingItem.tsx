@@ -1,12 +1,7 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
-import React, {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { cx } from "#/helpers/css";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
@@ -71,14 +66,22 @@ export default function SlidingItem({
   children,
 }: SlidingItemProps) {
   const dragRef = useRef<ItemSlidingCustomEvent>(undefined);
-  const [activeItemIndex, setActiveItemIndex] = useState<0 | 1 | 2 | -1 | -2>(
-    0,
-  );
+
   const vibrate = useHapticFeedback();
   const draggingRef = useRef(false);
   const longSwipeTriggerPoint = useAppSelector(
     (state) => state.gesture.swipe.longSwipeTriggerPoint,
   );
+
+  const [activeItemIndex, _setActiveItemIndex] = useState<0 | 1 | 2 | -1 | -2>(
+    0,
+  );
+
+  function setActiveItemIndex(activeItemIndex: 0 | 1 | 2 | -1 | -2) {
+    _setActiveItemIndex(activeItemIndex);
+    setStartAction(startActionsRef.current[currentStartActionIndexRef.current]);
+    setEndAction(endActionsRef.current[currentEndActionIndexRef.current]);
+  }
 
   const SECOND_ACTION_RATIO = (() => {
     switch (longSwipeTriggerPoint) {
@@ -146,10 +149,6 @@ export default function SlidingItem({
     startActionsRef.current = startActions;
   });
 
-  useEffect(() => {
-    setStartAction(startActionsRef.current[currentStartActionIndexRef.current]);
-  }, [activeItemIndex]);
-
   /*
    * End Actions
    */
@@ -174,26 +173,28 @@ export default function SlidingItem({
     endActionsRef.current = endActions;
   });
 
+  const onDragStopRef = useRef<
+    ((e: TouchEvent | MouseEvent) => void) | undefined
+  >(undefined);
+
   useEffect(() => {
-    setEndAction(endActionsRef.current[currentEndActionIndexRef.current]);
-  }, [activeItemIndex]);
+    onDragStopRef.current = (e: TouchEvent | MouseEvent) => {
+      if (!dragRef.current) return;
+      if (!draggingRef.current) return;
 
-  const onDragStopEvent = useEffectEvent(async (e: TouchEvent | MouseEvent) => {
-    if (!dragRef.current) return;
-    if (!draggingRef.current) return;
+      switch (activeItemIndex) {
+        case 1:
+        case 2:
+          endActions[activeItemIndex - 1]?.trigger(e);
+          break;
+        case -1:
+        case -2:
+          startActions[-activeItemIndex - 1]?.trigger(e);
+      }
 
-    switch (activeItemIndex) {
-      case 1:
-      case 2:
-        endActions[activeItemIndex - 1]?.trigger(e);
-        break;
-      case -1:
-      case -2:
-        startActions[-activeItemIndex - 1]?.trigger(e);
-    }
-
-    dragRef.current.target.closeOpened();
-    draggingRef.current = false;
+      dragRef.current.target.closeOpened();
+      draggingRef.current = false;
+    };
   });
 
   const onDragStart = () => {
@@ -203,7 +204,7 @@ export default function SlidingItem({
 
     const onStop = (e: MouseEvent | TouchEvent) => {
       cleanup();
-      onDragStopEvent(e);
+      onDragStopRef.current?.(e);
     };
 
     const cleanup = () => {
@@ -211,8 +212,8 @@ export default function SlidingItem({
       document.removeEventListener("touchend", onStop);
     };
 
-    document.addEventListener("mouseup", onDragStopEvent);
-    document.addEventListener("touchend", onDragStopEvent);
+    document.addEventListener("mouseup", onStop);
+    document.addEventListener("touchend", onStop);
 
     return cleanup;
   };

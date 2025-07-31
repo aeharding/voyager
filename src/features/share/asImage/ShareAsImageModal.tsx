@@ -6,7 +6,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { RefObject, useEffect, useState } from "react";
 import { CommentView, PostView } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
@@ -27,20 +26,14 @@ export type ShareAsImageData =
     };
 
 interface SelectTextProps {
-  dataRef: RefObject<ShareAsImageData | null>;
+  data: ShareAsImageData | null;
   onDismiss: () => void;
 }
 
 export default function ShareAsImageModal({
-  dataRef,
+  data,
   onDismiss,
 }: SelectTextProps) {
-  const [data, setData] = useState<ShareAsImageData | null>(null);
-
-  useEffect(() => {
-    setData(dataRef.current);
-  }, [dataRef]);
-
   return (
     <div className={styles.content}>
       {data && (

@@ -51,15 +51,15 @@ function TabContextProviderInternals({
  * Cache tab name on mount. Do not update on navigation changes
  * (assumes component can't be moved between tabs)
  *
- * This is an optimization and it kinda breaks the rules of React,
+ * This is an optimization and it breaks the rules of React,
  * so disable compiler
  */
 export function useTabName() {
-  // eslint-disable-next-line react-hooks/react-compiler
   "use no memo";
 
   const { tabRef } = use(TabContext);
 
+  // eslint-disable-next-line react-hooks/react-compiler
   const [tabName] = useState(() => tabRef?.current ?? "");
 
   return tabName;

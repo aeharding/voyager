@@ -3,8 +3,11 @@ import { VList } from "virtua";
 
 import { useAppPageVListHandleRef } from "./AppPage";
 
-export default function AppVList(props: React.ComponentProps<typeof VList>) {
+export default function AppVList({
+  ref,
+  ...props
+}: React.ComponentProps<typeof VList>) {
   const virtuaRef = useAppPageVListHandleRef();
 
-  return <VList {...props} ref={useMergedRef(virtuaRef, props.ref)} />;
+  return <VList {...props} ref={useMergedRef(virtuaRef, ref)} />;
 }

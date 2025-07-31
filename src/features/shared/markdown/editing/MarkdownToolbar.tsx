@@ -44,7 +44,7 @@ export default function MarkdownToolbar({
   slot,
   ...rest
 }: MarkdownToolbarProps) {
-  const { text, textareaRef } = rest;
+  const { textareaRef } = rest;
 
   const keyboardOpen = useKeyboardOpen();
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -118,8 +118,15 @@ export default function MarkdownToolbar({
   }, [textareaRef]);
 
   useEffect(() => {
-    calculateMode();
-  }, [calculateMode, text]);
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.addEventListener("input", calculateMode);
+
+    return () => {
+      textarea.removeEventListener("input", calculateMode);
+    };
+  }, [calculateMode, textareaRef]);
 
   const toolbar = (() => {
     switch (mode.type) {

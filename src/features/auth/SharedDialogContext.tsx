@@ -1,6 +1,6 @@
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useRef, useState } from "react";
 import {
   Comment,
   CommentView,
@@ -113,12 +113,13 @@ export function SharedDialogContextProvider({
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const reportRef = useRef<ReportHandle>(undefined);
-  const shareAsImageDataRef = useRef<ShareAsImageData | null>(null);
+  const [shareAsImageData, setShareAsImageData] =
+    useState<ShareAsImageData | null>(null);
 
   const [presentShareAsImageModal, onDismissShareAsImageModal] = useIonModal(
     ShareAsImageModal,
     {
-      dataRef: shareAsImageDataRef,
+      data: shareAsImageData,
       onDismiss: (data?: string, role?: string) =>
         onDismissShareAsImageModal(data, role),
     },
@@ -152,15 +153,14 @@ export function SharedDialogContextProvider({
     comment?: CommentView,
     comments?: CommentView[],
   ) => {
-    shareAsImageDataRef.current = {
-      post,
-    };
     if (comment && comments) {
-      shareAsImageDataRef.current = {
-        ...shareAsImageDataRef.current,
+      setShareAsImageData({
+        post,
         comment,
         comments,
-      };
+      });
+    } else {
+      setShareAsImageData({ post });
     }
     presentShareAsImageModal({
       cssClass: "save-as-image-modal",
@@ -186,14 +186,19 @@ export function SharedDialogContextProvider({
       setIsMarkdownEditorOpen(true);
     });
 
-  useEffect(() => {
-    if (isMarkdownEditorOpen) return;
+  function handleMarkdownEditorClose() {
     if (!markdownEditorData) return;
 
     markdownEditorData.onSubmit(undefined);
     setMarkdownEditorData(undefined);
-    return;
-  }, [isMarkdownEditorOpen, markdownEditorData]);
+  }
+
+  function handleSetIsMarkdownEditorOpen(isOpen: boolean) {
+    setIsMarkdownEditorOpen(isOpen);
+
+    // If was open and now closed
+    if (!isOpen && isMarkdownEditorOpen !== isOpen) handleMarkdownEditorClose();
+  }
 
   const presentPrivateMessageCompose: ISharedDialogContext["presentPrivateMessageCompose"] =
     (item) =>
@@ -319,7 +324,7 @@ export function SharedDialogContextProvider({
       <GenericMarkdownEditorModal
         {...markdownEditorData!}
         isOpen={isMarkdownEditorOpen}
-        setIsOpen={setIsMarkdownEditorOpen}
+        setIsOpen={handleSetIsMarkdownEditorOpen}
       />
       <Report ref={reportRef} />
       <PostEditorModal

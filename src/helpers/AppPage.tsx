@@ -8,7 +8,10 @@ import useIsPageHidden from "#/routes/twoColumn/useIsPageHidden";
 
 import { cx } from "./css";
 
-export function AppPage(props: React.ComponentProps<typeof IonPage>) {
+export function AppPage({
+  ref,
+  ...props
+}: React.ComponentProps<typeof IonPage>) {
   const virtuaRef = useRef<VListHandle>(null);
   const pageRef = useRef<HTMLElement>(null);
   const isHidden = useIsPageHidden();
@@ -17,7 +20,7 @@ export function AppPage(props: React.ComponentProps<typeof IonPage>) {
     <PageRefContext value={{ pageRef, virtuaRef }}>
       <IonPage
         {...props}
-        ref={useMergedRef(pageRef, props.ref)}
+        ref={useMergedRef(pageRef, ref)}
         className={cx(props.className, isHidden && "ion-hide")}
       />
     </PageRefContext>
