@@ -216,6 +216,19 @@ export function isUrlPictrsLike(url: URL): boolean {
   );
 }
 
+export function unfurlLemmyImageProxy(url: string) {
+  const parsedUrl = parseUrl(url);
+  if (!parsedUrl) return url;
+
+  if (isUrlPictrsLike(parsedUrl)) {
+    const unfurled = parsedUrl.searchParams.get("url");
+    if (!unfurled) return url;
+    return unfurlLemmyImageProxy(unfurled);
+  }
+
+  return url;
+}
+
 /**
  * Parses a text/uri-list string into an array of URLs.
  * Ignores comment lines (starting with #) and empty lines.
