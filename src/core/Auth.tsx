@@ -72,12 +72,11 @@ function AuthLocation() {
     } else {
       dispatch(updateConnectedInstance(getDefaultServer()));
     }
-    // TODO is this right???
-  }, [connectedInstance, dispatch, location.pathname, selectedInstance]);
+  }, [dispatch, connectedInstance, location.pathname, selectedInstance]);
 
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
-  }, [jwt, location.pathname]);
+  }, [jwt, location]);
 
   const { start, stop } = useInterval(() => {
     if (documentState === "hidden") return;

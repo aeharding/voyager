@@ -59,7 +59,7 @@ export function useTabName() {
 
   const { tabRef } = use(TabContext);
 
-  // eslint-disable-next-line react-hooks/react-compiler
+  // eslint-disable-next-line react-hooks/refs
   const [tabName] = useState(() => tabRef?.current ?? "");
 
   return tabName;

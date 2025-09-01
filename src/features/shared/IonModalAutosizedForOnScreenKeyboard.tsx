@@ -20,6 +20,14 @@ function PWAIonModal(props: PWAIonModalProps) {
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
+  function updateStyles(viewportHeight: number) {
+    const styles = sv({ viewportHeight });
+
+    for (const key in styles) {
+      modalRef.current?.style.setProperty(key, styles[key] as string);
+    }
+  }
+
   const updateViewport = useCallback(() => {
     if (!props.isOpen) return;
     if (documentState === "hidden") return;
@@ -39,14 +47,6 @@ function PWAIonModal(props: PWAIonModalProps) {
         FIXED_HEADER_HEIGHT,
     );
   }, [props.isOpen, documentState]);
-
-  function updateStyles(viewportHeight: number) {
-    const styles = sv({ viewportHeight });
-
-    for (const key in styles) {
-      modalRef.current?.style.setProperty(key, styles[key] as string);
-    }
-  }
 
   // Turning iPhone on/off can mess up the scrolling to top again
   useEffect(() => {

@@ -8,15 +8,14 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import vitestPlugin from "eslint-plugin-vitest";
 import tseslint from "typescript-eslint";
 
-import compilerOptions from "./compilerOptions.js";
-
 export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   eslintConfigPrettier,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  reactHooksPlugin.configs.recommended,
+  // @ts-expect-error -- TODO fix this
+  reactHooksPlugin.configs["flat/recommended"],
   {
     plugins: {
       perfectionist: perfectionistPlugin,
@@ -130,8 +129,6 @@ export default tseslint.config(
         "error",
         { namedComponents: "function-declaration", unnamedComponents: [] },
       ],
-
-      "react-hooks/react-compiler": ["error", compilerOptions],
     },
   },
   {
