@@ -4,9 +4,6 @@ import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
 
-// @ts-expect-error -- Waiting for stable typescript eslint config
-// https://eslint.org/docs/latest/use/configure/configuration-files#typescript-configuration-files
-import compilerOptions from "./compilerOptions.js";
 import manifest from "./manifest.json";
 
 // https://vitejs.dev/config/
@@ -14,7 +11,7 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: [["babel-plugin-react-compiler", compilerOptions]],
+        plugins: ["babel-plugin-react-compiler"],
       },
     }),
     svgr(),

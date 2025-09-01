@@ -31,7 +31,7 @@ RUN grep -q 'APP_VERSION=' .env || \
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy all source files
-COPY index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js ./
+COPY index.html vite.config.ts manifest.json tsconfig.json ./
 COPY public ./public
 COPY scripts ./scripts
 COPY src ./src

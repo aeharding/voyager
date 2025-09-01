@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
-import { MouseEvent, useCallback, useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 import { PostView } from "threadiverse";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -59,7 +59,7 @@ export default function Thumbnail({ post }: ImgProps) {
     (state) => state.settings.appearance.compact.showSelfPostThumbnails,
   );
 
-  const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
+  const nsfw = isNsfwBlurred(post, blurNsfw);
 
   const isLink = !urlIsMedia && post.post.url;
 
@@ -70,7 +70,7 @@ export default function Thumbnail({ post }: ImgProps) {
     autohidePostIfNeeded(post);
   };
 
-  const renderContents = useCallback(() => {
+  function renderContents() {
     if (isLink) {
       if (post.post.thumbnail_url)
         return (
@@ -99,7 +99,7 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     return <SelfSvg />;
-  }, [isLink, nsfw, post, urlIsMedia]);
+  }
 
   if (thumbnailSize === OCompactThumbnailSizeType.Hidden) return;
 

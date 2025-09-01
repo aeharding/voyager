@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { calculateNewAccountDays, isCakeDay } from "#/helpers/date";
 import { useAppSelector } from "#/store";
 
@@ -14,7 +12,7 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
     (state) => state.settings.general.comments.highlightNewAccount,
   );
 
-  const ageBadgeData = useMemo(() => {
+  const ageBadgeData = (() => {
     if (isCakeDay(published)) return { type: "cake" } as const;
 
     const days = calculateNewAccountDays(published);
@@ -22,7 +20,7 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
     if (days !== undefined) {
       return { type: "new", days } as const;
     }
-  }, [published]);
+  })();
 
   if (!ageBadgeData) return;
 
