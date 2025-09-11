@@ -312,6 +312,10 @@ export default function DefaultMode({
     const selection = replySelectionRef.current;
     if (!selection) return;
 
+    // Safari will provide selection range inside textarea
+    // (Unwanted since md-quote handles that)
+    if (selection.text && !selection.html) return;
+
     e.stopPropagation();
     e.preventDefault();
 
