@@ -189,6 +189,13 @@ export function buildResolvePostFailed(instance: string): AppToastOptions {
   };
 }
 
+export function buildMarkRead(read: boolean): AppToastOptions {
+  return {
+    ...shortFailDefaults,
+    message: `Failed to mark item as ${read ? "read" : "unread"}`,
+  };
+}
+
 export function buildResolveCommentFailed(instance: string): AppToastOptions {
   return {
     ...shortFailDefaults,

@@ -1,6 +1,8 @@
 import { mailOutline, mailUnreadOutline } from "ionicons/icons";
 
 import MoreActions from "#/features/comment/CommentEllipsis";
+import { buildMarkRead } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
@@ -28,12 +30,22 @@ export default function InboxItemMoreActions({
     (state) => state.inbox.readByInboxItemId,
   );
   const isRead = readByInboxItemId[getInboxItemId(item)];
+  const presentToast = useAppToast();
 
   const markReadAction = {
     text: isRead ? "Mark Unread" : "Mark Read",
     icon: isRead ? mailUnreadOutline : mailOutline,
     handler: () => {
-      dispatch(markRead(item, !isRead));
+      (async () => {
+        const targetReadStatus = !isRead;
+
+        try {
+          await dispatch(markRead(item, targetReadStatus));
+        } catch (error) {
+          presentToast(buildMarkRead(targetReadStatus));
+          throw error;
+        }
+      })();
     },
   };
 
