@@ -6,7 +6,7 @@ include ':capacitor-community-app-icon'
 project(':capacitor-community-app-icon').projectDir = new File('../node_modules/.pnpm/@capacitor-community+app-icon@6.0.0_@capacitor+core@7.4.3/node_modules/@capacitor-community/app-icon/android')
 
 include ':capacitor-app'
-project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/app/android')
+project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@7.1.0_@capacitor+core@7.4.3/node_modules/@capacitor/app/android')
 
 include ':capacitor-filesystem'
 project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@7.1.4_@capacitor+core@7.4.3/node_modules/@capacitor/filesystem/android')
@@ -15,7 +15,7 @@ include ':capacitor-haptics'
 project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@7.0.2_patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed1_b158c2fa8fc917d346f559cf25b0b52c/node_modules/@capacitor/haptics/android')
 
 include ':capacitor-keyboard'
-project(':capacitor-keyboard').projectDir = new File('../node_modules/.pnpm/@capacitor+keyboard@7.0.2_patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f7_4fc579956704d46961a5d4879508685d/node_modules/@capacitor/keyboard/android')
+project(':capacitor-keyboard').projectDir = new File('../node_modules/.pnpm/@capacitor+keyboard@7.0.3_patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f7_e9e9a5fcaf1ee7986c98388094bd6660/node_modules/@capacitor/keyboard/android')
 
 include ':capacitor-network'
 project(':capacitor-network').projectDir = new File('../node_modules/.pnpm/@capacitor+network@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/network/android')
@@ -24,10 +24,10 @@ include ':capacitor-share'
 project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capacitor+share@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/share/android')
 
 include ':capacitor-splash-screen'
-project(':capacitor-splash-screen').projectDir = new File('../node_modules/.pnpm/@capacitor+splash-screen@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/splash-screen/android')
+project(':capacitor-splash-screen').projectDir = new File('../node_modules/.pnpm/@capacitor+splash-screen@7.0.3_@capacitor+core@7.4.3/node_modules/@capacitor/splash-screen/android')
 
 include ':capacitor-status-bar'
-project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/status-bar/android')
+project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@7.0.3_@capacitor+core@7.4.3/node_modules/@capacitor/status-bar/android')
 
 include ':capacitor-android-nav-mode'
 project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@2.0.0_@capacitor+core@7.4.3/node_modules/capacitor-android-nav-mode/android')
