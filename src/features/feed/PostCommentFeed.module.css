@@ -2,9 +2,6 @@
   border-bottom: 8px solid var(--thick-separator-color);
 }
 
-.thinBottomBorder {
-  ion-item {
-    --inner-border-width: 0 0 1px 0;
-    --border-style: solid;
-  }
+.hr {
+  composes: hr from "#/features/shared/shared.module.css";
 }

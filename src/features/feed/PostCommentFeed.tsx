@@ -85,19 +85,36 @@ export default function PostCommentFeed({
   const borderCss = (() => {
     switch (postAppearance) {
       case "compact":
-        return styles.thinBottomBorder;
+        return undefined;
       case "large":
         return styles.thickBottomBorder;
     }
   })();
 
-  const renderItemContent = useCallback(
+  const renderItem = useCallback(
     (item: PostCommentItem) => {
       if (isPost(item)) return <Post post={item} className={borderCss} />;
 
       return <FeedComment comment={item} className={borderCss} />;
     },
     [borderCss],
+  );
+
+  const renderItemContent = useCallback(
+    (item: PostCommentItem) => {
+      if (postAppearance === "compact")
+        return (
+          <>
+            {renderItem(item)}
+
+            <div className={styles.hr} />
+          </>
+        );
+
+      return renderItem(item);
+    },
+
+    [postAppearance, renderItem],
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
