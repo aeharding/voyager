@@ -3,7 +3,6 @@ import { CommentView, PostView } from "threadiverse";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import FeedComment from "#/features/comment/inFeed/FeedComment";
-import CommentHr from "#/features/comment/inTree/CommentHr";
 import { usePostAppearance } from "#/features/post/appearance/PostAppearanceProvider";
 import Post from "#/features/post/inFeed/Post";
 import {
@@ -86,34 +85,19 @@ export default function PostCommentFeed({
   const borderCss = (() => {
     switch (postAppearance) {
       case "compact":
-        return undefined;
+        return styles.thinBottomBorder;
       case "large":
         return styles.thickBottomBorder;
     }
   })();
 
-  const renderItem = useCallback(
+  const renderItemContent = useCallback(
     (item: PostCommentItem) => {
       if (isPost(item)) return <Post post={item} className={borderCss} />;
 
       return <FeedComment comment={item} className={borderCss} />;
     },
     [borderCss],
-  );
-
-  const renderItemContent = useCallback(
-    (item: PostCommentItem) => {
-      if (postAppearance === "compact")
-        return (
-          <>
-            {renderItem(item)}
-            <CommentHr depth={0} />
-          </>
-        );
-
-      return renderItem(item);
-    },
-    [postAppearance, renderItem],
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(

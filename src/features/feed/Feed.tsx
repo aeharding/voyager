@@ -67,7 +67,7 @@ export interface FeedProps<I>
   filterOnRxFn?: (item: I) => boolean;
 
   getIndex?: (item: I) => number | string;
-  renderItemContent: (item: I) => React.ReactNode;
+  renderItemContent: (item: I, index: number) => React.ReactNode;
   header?: React.ReactElement;
   limit?: number;
 
@@ -379,7 +379,7 @@ export default function Feed<I>({
           {header}
           {filteredItems.map((item, i) => (
             <Fragment key={getIndex ? getIndex(item) : i}>
-              {renderItemContent(item)}
+              {renderItemContent(item, i)}
             </Fragment>
           ))}
           {footer}
