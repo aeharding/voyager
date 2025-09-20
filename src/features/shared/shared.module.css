@@ -76,3 +76,24 @@
   background: var(--ion-color-base);
   color: var(--ion-color-contrast);
 }
+
+.hr {
+  composes: maxWidth;
+
+  position: relative;
+  height: 1px;
+
+  &::after {
+    content: "";
+    position: absolute;
+
+    width: calc(100% - var(--right-offset, 0px));
+    left: var(--right-offset, 0px);
+    top: 0;
+    border-bottom: 1px solid
+      var(
+        --ion-item-border-color,
+        var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
+      );
+  }
+}

@@ -1,5 +1,7 @@
 .slidingItem {
   overflow: initial; /* sticky */
+
+  --ion-item-border-color: transparent;
 }
 
 .itemOption {
