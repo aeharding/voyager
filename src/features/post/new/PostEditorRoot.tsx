@@ -244,7 +244,7 @@ export default function PostEditorRoot({
       custom_thumbnail: existingPost?.post.thumbnail_url,
       name: title,
       url: postUrl,
-      body: text || undefined,
+      body: text,
       nsfw: showNsfwToggle && nsfw,
       alt_text: postAltText,
     };
