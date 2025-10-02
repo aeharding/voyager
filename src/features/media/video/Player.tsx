@@ -33,6 +33,7 @@ export interface PlayerProps extends React.HTMLProps<HTMLElement> {
 
   pauseWhenNotInView?: boolean;
   allowShowPlayButton?: boolean;
+  still?: boolean;
 
   ref?: React.RefObject<HTMLVideoElement>;
   videoRef?: React.RefObject<HTMLVideoElement | undefined>;
@@ -49,6 +50,7 @@ export default function Player({
   autoPlay: videoAllowedToAutoplay = true,
   pauseWhenNotInView = true,
   allowShowPlayButton = true,
+  still = false,
   ref,
   videoRef: _videoRef,
   disableInlineInteraction,
@@ -122,6 +124,7 @@ export default function Player({
 
   useEffect(() => {
     if (!videoRef.current) return;
+    if (still) return;
     if (!pauseWhenNotInView) {
       if (autoPlay) resume();
 
@@ -133,7 +136,13 @@ export default function Player({
     } else {
       pause();
     }
-  }, [inView, pause, resume, pauseWhenNotInView, autoPlay]);
+  }, [inView, pause, resume, pauseWhenNotInView, autoPlay, still]);
+
+  useEffect(() => {
+    if (!still) return;
+
+    pause();
+  }, [pause, still]);
 
   useEffect(() => {
     function enterPip() {

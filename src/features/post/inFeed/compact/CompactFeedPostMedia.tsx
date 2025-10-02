@@ -2,6 +2,7 @@ import { ComponentProps } from "react";
 import { PostView } from "threadiverse";
 
 import GalleryMedia from "#/features/media/gallery/GalleryMedia";
+import { buildMediaId } from "#/features/media/video/VideoPortalProvider";
 
 import usePostSrc from "../usePostSrc";
 
@@ -22,7 +23,8 @@ export default function CompactFeedPostMedia(
         disableInlineInteraction
         controls={false}
         volume={false}
-        autoPlay={false}
+        still
+        portalWithMediaId={buildMediaId(props.post.post.ap_id)}
       />
     );
 }
