@@ -1,9 +1,6 @@
 import { useIonAlert } from "@ionic/react";
 import { sample, without } from "es-toolkit";
-import {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-} from "react";
+import { useEffect, useEffectEvent } from "react";
 
 import { addGuestInstance } from "#/features/auth/authSlice";
 import { setIgnoreInstanceOffline } from "#/features/auth/siteSlice";

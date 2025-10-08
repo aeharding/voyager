@@ -1,11 +1,5 @@
 import { noop } from "es-toolkit";
-import {
-  createContext,
-  use,
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useState,
-} from "react";
+import { createContext, use, useEffect, useEffectEvent, useState } from "react";
 
 import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
 import {

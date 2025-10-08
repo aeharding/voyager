@@ -1,9 +1,5 @@
 import { useDocumentVisibility, useInterval } from "@mantine/hooks";
-import React, {
-  useCallback,
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-} from "react";
+import React, { useCallback, useEffect, useEffectEvent } from "react";
 import { useLocation } from "react-router";
 
 import { instanceSelector, jwtSelector } from "#/features/auth/authSelectors";

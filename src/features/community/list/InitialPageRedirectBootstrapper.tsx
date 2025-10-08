@@ -1,10 +1,5 @@
 import { useIonViewDidEnter } from "@ionic/react";
-import {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import { isInstalled } from "#/helpers/device";
 import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";

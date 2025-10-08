@@ -3,7 +3,7 @@ import {
   memo,
   useCallback,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useRef,
   useState,
 } from "react";

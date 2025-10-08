@@ -1,9 +1,5 @@
 import { App } from "@capacitor/app";
-import {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useRef,
-} from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
 
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { deepLinkFailed } from "#/helpers/toastMessages";

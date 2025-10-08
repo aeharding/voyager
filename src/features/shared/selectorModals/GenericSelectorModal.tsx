@@ -11,11 +11,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { close } from "ionicons/icons";
-import {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useState,
-} from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { VList } from "virtua";
 
 import { AppPage } from "#/helpers/AppPage";

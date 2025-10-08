@@ -5,7 +5,7 @@ import { motion, useAnimate, useMotionValue } from "motion/react";
 import {
   MouseEvent,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useImperativeHandle,
   useRef,
   useState,
