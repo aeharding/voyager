@@ -171,13 +171,11 @@ export default function PickLoginServer() {
 
           <IonList className={styles.list}>
             <VList
-              count={instances.length}
+              data={instances}
               ref={vHandle}
               className="ion-content-scroll-host"
             >
-              {(i) => {
-                const instance = instances[i]!;
-
+              {(instance) => {
                 return (
                   <IonItem
                     detail

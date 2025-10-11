@@ -258,13 +258,8 @@ export default function PickJoinServer() {
           onIonChange={(e) => setSelection(e.detail.value)}
           allowEmptySelection
         >
-          <VList
-            count={allInstances.length}
-            className="ion-content-scroll-host"
-          >
-            {(i) => {
-              const instance = allInstances[i];
-
+          <VList data={allInstances} className="ion-content-scroll-host">
+            {(instance) => {
               // Edge case/race with refreshing instances
               // https://github.com/aeharding/voyager/issues/1854
               if (!instance) return <div />;

@@ -78,10 +78,8 @@ export default function GenericSelectorModal<I>({
       </AppHeader>
       <IonContent>
         <IonList className={styles.list}>
-          <VList count={items.length}>
-            {(i) => {
-              const item = items[i]!;
-
+          <VList data={items}>
+            {(item) => {
               return (
                 <IonItem key={getIndex(item)} onClick={() => onDismiss(item)}>
                   <IonLabel>{getLabel(item)}</IonLabel>
