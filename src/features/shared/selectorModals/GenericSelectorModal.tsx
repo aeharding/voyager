@@ -11,11 +11,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { close } from "ionicons/icons";
-import {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useState,
-} from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { VList } from "virtua";
 
 import { AppPage } from "#/helpers/AppPage";
@@ -82,10 +78,8 @@ export default function GenericSelectorModal<I>({
       </AppHeader>
       <IonContent>
         <IonList className={styles.list}>
-          <VList count={items.length}>
-            {(i) => {
-              const item = items[i]!;
-
+          <VList data={items}>
+            {(item) => {
               return (
                 <IonItem key={getIndex(item)} onClick={() => onDismiss(item)}>
                   <IonLabel>{getLabel(item)}</IonLabel>

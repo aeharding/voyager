@@ -5,12 +5,7 @@ import {
   IonSpinner,
   useIonAlert,
 } from "@ionic/react";
-import {
-  useCallback,
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useState,
-} from "react";
+import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import { GetPersonDetailsResponse } from "threadiverse";
 
 import Profile from "#/features/user/Profile";

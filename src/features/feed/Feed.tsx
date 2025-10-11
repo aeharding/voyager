@@ -10,7 +10,7 @@ import React, {
   use,
   useCallback,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useMemo,
   useRef,
   useState,

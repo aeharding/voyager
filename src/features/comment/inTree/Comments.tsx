@@ -4,7 +4,7 @@ import { compact, differenceBy, sortBy, uniqBy } from "es-toolkit";
 import React, {
   useCallback,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useImperativeHandle,
   useMemo,
   useRef,

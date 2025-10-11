@@ -3,7 +3,7 @@ import { asyncNoop } from "es-toolkit";
 import React, {
   createContext,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useRef,
   useState,
 } from "react";

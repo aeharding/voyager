@@ -4,7 +4,7 @@ import { compact, sortBy, uniqBy } from "es-toolkit";
 import {
   use,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useMemo,
   useRef,
   useState,

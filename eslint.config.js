@@ -4,18 +4,18 @@ import eslint from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
 import reactPlugin from "eslint-plugin-react";
-import reactHooksPlugin from "eslint-plugin-react-hooks";
+import reactHooks from "eslint-plugin-react-hooks";
 import vitestPlugin from "eslint-plugin-vitest";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   eslintConfigPrettier,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  // @ts-expect-error -- TODO fix this
-  reactHooksPlugin.configs["flat/recommended"],
+  reactHooks.configs.flat["recommended-latest"],
   {
     plugins: {
       perfectionist: perfectionistPlugin,

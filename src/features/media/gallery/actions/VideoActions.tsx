@@ -1,12 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { pause } from "ionicons/icons";
-import React, {
-  useEffect,
-  experimental_useEffectEvent as useEffectEvent,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import VideoActionsProgress from "./VideoActionsProgress";
 

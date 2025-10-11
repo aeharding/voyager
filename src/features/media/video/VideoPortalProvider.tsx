@@ -4,7 +4,7 @@ import {
   createContext,
   use,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
+  useEffectEvent,
   useId,
   useRef,
   useState,
