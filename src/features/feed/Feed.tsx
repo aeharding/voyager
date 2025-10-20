@@ -373,8 +373,6 @@ export default function Feed<I>({
             setIsListAtTop(offset < 10);
             setScrolledPastSearch(offset > 40);
           }}
-          /* Large posts reflow with image load, so mount to dom a bit sooner */
-          overscan={1}
         >
           {header}
           {filteredItems.map((item, i) => (

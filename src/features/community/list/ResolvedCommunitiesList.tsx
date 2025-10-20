@@ -31,8 +31,6 @@ import useShowModeratorFeed from "./useShowModeratorFeed";
 
 import styles from "./ResolvedCommunitiesList.module.css";
 
-const OVERSCAN_AMOUNT = 3;
-
 interface SeparatorItem {
   type: "separator";
   value: string;
@@ -211,14 +209,12 @@ function ResolvedCommunitiesList({
         <Virtualizer
           shift={shift}
           ref={virtuaRef}
-          overscan={OVERSCAN_AMOUNT}
           onScroll={(offset) => {
             onListAtTopChange?.(offset < 10);
 
             if (virtuaRef.current) {
               setShift(
-                virtuaRef.current.findStartIndex() >
-                  throughFavoritesCount + OVERSCAN_AMOUNT, // overscan
+                virtuaRef.current.findStartIndex() > throughFavoritesCount,
               );
             } else {
               setShift(false);

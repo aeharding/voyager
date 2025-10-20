@@ -1,5 +1,6 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import superSub from "@aeharding/remark-lemmy-supersub";
+import { MouseEvent } from "react";
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 
@@ -24,6 +25,11 @@ export interface MarkdownProps
   disableInternalLinkRouting?: boolean;
 
   /**
+   * Prevent propagating events if an interactive element is clicked.
+   */
+  preventInteractionPropagation?: boolean;
+
+  /**
    * ID should be unique (prefixed, if using autoincrement id like lemmy uses)
    * Ideally, just use the `ap_id`
    *
@@ -36,11 +42,23 @@ export default function Markdown({
   id,
   disableInternalLinkRouting,
   className,
+  preventInteractionPropagation,
   ...props
 }: MarkdownProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+
+  function onLinkClick(onClick?: (e: MouseEvent<HTMLAnchorElement>) => void) {
+    return (e: MouseEvent<HTMLAnchorElement>) => {
+      if (preventInteractionPropagation) {
+        e.stopPropagation();
+        return;
+      }
+
+      onClick?.(e);
+    };
+  }
 
   return (
     <div className={cx(className, styles.markdown)}>
@@ -65,9 +83,15 @@ export default function Markdown({
                   {...props}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={onLinkClick(props.onClick)}
                 />
               )
-            : (props) => <LinkInterceptor {...props} />,
+            : (props) => (
+                <LinkInterceptor
+                  {...props}
+                  onClick={onLinkClick(props.onClick)}
+                />
+              ),
           summary: Summary,
           details: (props) => <Details {...props} id={id} />,
           ...props.components,

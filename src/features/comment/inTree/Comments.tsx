@@ -506,7 +506,6 @@ export default function Comments({
             ref={virtuaRef}
             style={{ height: "100%" }}
             item={IndexedVirtuaItem}
-            overscan={1}
             onScroll={(offset) => {
               onScroll();
               setIsListAtTop(offset < 6);

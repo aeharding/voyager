@@ -139,13 +139,7 @@ export default function Comment({
                   height={!showCollapsedComment && collapsed ? 0 : "auto"}
                 >
                   {!stub || context ? (
-                    <div
-                      className={styles.content}
-                      onClick={(e) => {
-                        if (!(e.target instanceof HTMLElement)) return;
-                        if (e.target.nodeName === "A") e.stopPropagation();
-                      }}
-                    >
+                    <div className={styles.content}>
                       {!stub && (
                         <CommentContent
                           item={comment}
