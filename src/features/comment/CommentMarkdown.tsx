@@ -16,6 +16,7 @@ export default function CommentMarkdown(mdProps: CommentMarkdownProps) {
   return (
     <Markdown
       {...mdProps}
+      preventInteractionPropagation
       components={{
         img: (props) =>
           !showCommentImages ? (
