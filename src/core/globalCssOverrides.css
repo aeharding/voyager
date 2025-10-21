@@ -251,7 +251,13 @@ ion-fab.fab-vertical-top {
 
 /* Make header buttons closer together (room for mod button) */
 .sc-ion-buttons-ios-s ion-button {
-  margin: 0;
+  /*
+   * && is needed due to stencil component css injected in HEAD last.
+   * Potential future fix: https://github.com/ionic-team/ionic-framework/issues/30369
+   */
+  && {
+    margin: 0;
+  }
 }
 
 /* Add minimum padding for top dismiss area of action sheet */
