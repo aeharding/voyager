@@ -93,15 +93,17 @@ export function DynamicDismissableModal({
   const [oldPathname, setOldPathname] = useState(location.pathname);
 
   const _dismiss = () => {
-    setCanDismiss(true);
-    setIsOpen(false);
+    // changing location (e.g. back button) w/ confirm discard changes prompt
+    // causes bad Ionic state. Wait for Ionic state to settle before dismiss
+    queueMicrotask(() => {
+      setCanDismiss(true);
+      setIsOpen(false);
+    });
   };
 
   if (oldPathname !== location.pathname) {
-    queueMicrotask(() => {
-      setOldPathname(location.pathname);
-      _dismiss();
-    });
+    setOldPathname(location.pathname);
+    _dismiss();
   }
 
   // Close tab
