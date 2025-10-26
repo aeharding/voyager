@@ -42,7 +42,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun i --frozen-lockfile
 
       - name: Build dist bundle
         run: bun run build
@@ -81,7 +81,7 @@ jobs:
         with:
           name: release-data
 
-      - run: bun install --frozen-lockfile
+      - uses: oven-sh/setup-bun@v2
 
       - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
@@ -132,7 +132,7 @@ jobs:
         with:
           name: release-data
 
-      - run: bun install --frozen-lockfile
+      - uses: oven-sh/setup-bun@v2
 
       - run: bun i --frozen-lockfile
 
@@ -179,7 +179,7 @@ jobs:
         with:
           name: release-data
 
-      - run: bun install --frozen-lockfile
+      - uses: oven-sh/setup-bun@v2
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
