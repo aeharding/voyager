@@ -126,8 +126,12 @@ export default function AlphabetJump({
 
     const currentScrollOfset = scrollViewRef.current?.scrollTop;
     virtuaRef.current?.scrollToIndex(section);
-    if (currentScrollOfset !== scrollViewRef.current?.scrollTop)
+
+    queueMicrotask(() => {
+      if (currentScrollOfset === scrollViewRef.current?.scrollTop) return;
+
       vibrate({ style: ImpactStyle.Light });
+    });
   };
 
   return (
