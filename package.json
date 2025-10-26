@@ -4,7 +4,7 @@
   "private": true,
   "version": "2.40.2",
   "type": "module",
-  "packageManager": "pnpm@10.18.1+sha512.77a884a165cbba2d8d1c19e3b4880eee6d2fcabd0d879121e282196b80042351d5eb3ca0935fa599da1dc51265cc68816ad2bddd2a2de5ea9fdf92adbec7cd34",
+  "packageManager": "pnpm@10.19.0+sha512.c9fc7236e92adf5c8af42fd5bf1612df99c2ceb62f27047032f4720b33f8eacdde311865e91c411f2774f618d82f320808ecb51718bfa82c060c4ba7c76a32b8",
   "scripts": {
     "dev": "vite",
     "ionic:build:before": "./scripts/prebuild.sh",
@@ -27,37 +27,16 @@
   "imports": {
     "#/*": "./src/*"
   },
-  "pnpm": {
-    "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@8.7.6"
-    },
-    "patchedDependencies": {
-      "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
-      "@capacitor/android": "patches/@capacitor__android.patch",
-      "@capacitor/haptics": "patches/@capacitor__haptics.patch",
-      "openapi-fetch": "patches/openapi-fetch.patch"
-    },
-    "updateConfig": {
-      "ignoreDependencies": [
-        "history",
-        "@types/history",
-        "react-router",
-        "react-router-dom",
-        "@types/react-router",
-        "@types/react-router-dom"
-      ]
-    }
-  },
   "dependencies": {
     "@aeharding/remark-lemmy-spoiler": "^2.0.0",
     "@aeharding/remark-lemmy-supersub": "^1.0.0",
     "@capacitor-community/app-icon": "^6.0.0",
-    "@capacitor/android": "^7.4.3",
+    "@capacitor/android": "^7.4.4",
     "@capacitor/app": "^7.1.0",
-    "@capacitor/core": "^7.4.3",
+    "@capacitor/core": "^7.4.4",
     "@capacitor/filesystem": "7.1.4",
     "@capacitor/haptics": "^7.0.2",
-    "@capacitor/ios": "^7.4.3",
+    "@capacitor/ios": "^7.4.4",
     "@capacitor/keyboard": "^7.0.3",
     "@capacitor/network": "^7.0.2",
     "@capacitor/share": "^7.0.2",
@@ -68,13 +47,13 @@
     "@ionic/react": "8.7.6",
     "@ionic/react-router": "8.7.6",
     "@mantine/hooks": "^8.3.5",
-    "@reduxjs/toolkit": "^2.9.1",
+    "@reduxjs/toolkit": "^2.9.2",
     "capacitor-android-nav-mode": "^2.0.0",
     "capacitor-application-context": "^2.0.0",
     "capacitor-biometric-lock": "^2.0.0",
     "capacitor-clear-cache": "^2.0.0",
     "capacitor-launch-native": "^2.0.0",
-    "capacitor-plugin-safe-area": "^4.0.0",
+    "capacitor-plugin-safe-area": "^4.0.2",
     "capacitor-reader": "^1.0.0",
     "capacitor-share-safari": "^0.1.2",
     "capacitor-stash-media": "^3.1.1",
@@ -83,9 +62,9 @@
     "date-fns": "^4.1.0",
     "dexie": "^4.2.1",
     "dexie-export-import": "^4.1.4",
-    "es-toolkit": "^1.40.0",
+    "es-toolkit": "^1.41.0",
     "history": "^4.10.1",
-    "immer": "^10.1.3",
+    "immer": "^10.2.0",
     "ionicons": "^8.0.13",
     "mdast-util-gfm-autolink-literal-lemmy": "^3.1.0",
     "mdast-util-gfm-strikethrough": "^2.0.0",
@@ -119,10 +98,10 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "use-long-press": "^3.3.0",
-    "virtua": "^0.46.0"
+    "virtua": "^0.46.3"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.4.3",
+    "@capacitor/cli": "^7.4.4",
     "@eslint/js": "^9.38.0",
     "@ionic/cli": "^7.2.1",
     "@playwright/test": "^1.56.1",
@@ -130,22 +109,22 @@
     "@trapezedev/configure": "^7.1.3",
     "@types/history": "^4.7.11",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^24.8.1",
+    "@types/node": "^24.9.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.2",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "@types/ua-parser-js": "^0.7.39",
     "@vitejs/plugin-legacy": "^7.2.1",
-    "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-react": "^5.1.0",
+    "@vitest/eslint-plugin": "^1.3.24",
     "autoprefixer": "^10.4.21",
-    "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-perfectionist": "^4.15.1",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.0-canary-4b3e662e-20251008",
-    "eslint-plugin-vitest": "^0.5.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "jsdom": "^27.0.1",
     "mdast-util-lemmy-spoiler": "^2.0.0",
     "postcss": "^8.5.6",
@@ -154,10 +133,10 @@
     "release-it": "^19.0.5",
     "typed-css-modules": "^0.9.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1",
-    "vite": "^7.1.10",
+    "typescript-eslint": "^8.46.2",
+    "vite": "^7.1.12",
     "vite-plugin-pwa": "^1.1.0",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.3"
   }
 }

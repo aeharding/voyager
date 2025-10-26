@@ -21,7 +21,7 @@ RUN apk add --no-cache git
 
 # Prepare build deps
 # Copy .env conditionally https://stackoverflow.com/a/31532674/1319878
-COPY package.json pnpm-lock.yaml .npmrc .en[v] ./
+COPY package.json pnpm*.yaml .en[v] ./
 COPY patches ./patches
 
 # Add APP_VERSION to .env if it doesn't already exist
