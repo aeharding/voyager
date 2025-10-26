@@ -33,6 +33,7 @@ export default defineConfig({
         ],
       },
     }),
+    // @ts-expect-error Type mismatch
     legacy({
       // es.array.at: Voyager code iOS 15.2
       // es.object.has-own: ReactMarkdown iOS 15.2

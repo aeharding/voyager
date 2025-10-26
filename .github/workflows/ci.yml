@@ -18,30 +18,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install dependencies
-        run: pnpm install  --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: 🧪 Test project
-        run: pnpm test
+        run: bun run test
 
       - name: 📝 Lint
-        run: pnpm lint
+        run: bun lint
 
       - name: 📝 Prettier formatting
-        run: pnpm lint:formatting
+        run: bun lint:formatting
 
       - name: 📝 Generate CSS types
-        run: pnpm test:generatecsstypes
+        run: bun test:generatecsstypes
 
       - name: 💪 Type check
-        run: pnpm test:typecheck
+        run: bun test:typecheck
 
       - name: 📦 Build
-        run: pnpm build
+        run: bun run build

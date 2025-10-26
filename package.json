@@ -4,13 +4,13 @@
   "private": true,
   "version": "2.40.2",
   "type": "module",
-  "packageManager": "pnpm@10.19.0+sha512.c9fc7236e92adf5c8af42fd5bf1612df99c2ceb62f27047032f4720b33f8eacdde311865e91c411f2774f618d82f320808ecb51718bfa82c060c4ba7c76a32b8",
+  "packageManager": "bun@1.3.1",
   "scripts": {
-    "dev": "vite",
+    "dev": "bunx --bun vite",
     "ionic:build:before": "./scripts/prebuild.sh",
-    "build": "pnpm ionic:build:before && vite build",
+    "build": "bun ionic:build:before && bunx --bun vite build",
     "postinstall": "cap telemetry off && ionic config set -g telemetry false",
-    "preview": "vite preview",
+    "preview": "bunx --bun vite preview",
     "test": "vitest",
     "test:e2e": "playwright test",
     "test:generatecsstypes": "tcm src",
@@ -19,9 +19,9 @@
     "lint:formatting": "prettier --check .",
     "generate:splash:dark": "pwa-asset-generator --type png --index index.html --dark-mode --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
-    "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
+    "generate:splash": "bun generate:splash:dark && bun generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
-    "upgrade:packageManager": "corepack use pnpm@latest",
+    "upgrade:packageManager": "corepack use bun@latest",
     "release": "./scripts/prerelease.sh"
   },
   "imports": {
@@ -138,5 +138,14 @@
     "vite-plugin-pwa": "^1.1.0",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^4.0.3"
+  },
+  "resolutions": {
+    "@ionic/core": "npm:voyager-ionic-core@8.7.6"
+  },
+  "patchedDependencies": {
+    "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
+    "@capacitor/android": "patches/@capacitor__android.patch",
+    "@capacitor/haptics": "patches/@capacitor__haptics.patch",
+    "openapi-fetch": "patches/openapi-fetch.patch"
   }
 }
