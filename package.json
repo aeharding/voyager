@@ -143,9 +143,9 @@
     "@ionic/core": "npm:voyager-ionic-core@8.7.6"
   },
   "patchedDependencies": {
-    "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
-    "@capacitor/android": "patches/@capacitor__android.patch",
-    "@capacitor/haptics": "patches/@capacitor__haptics.patch",
-    "openapi-fetch": "patches/openapi-fetch.patch"
+    "@capacitor/keyboard@7.0.3": "patches/@capacitor__keyboard@7.0.3.patch",
+    "@capacitor/haptics@7.0.2": "patches/@capacitor__haptics@7.0.2.patch",
+    "@capacitor/android@7.4.4": "patches/@capacitor__android@7.4.4.patch",
+    "openapi-fetch@0.14.1": "patches/openapi-fetch@0.14.1.patch"
   }
 }
