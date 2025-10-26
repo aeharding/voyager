@@ -7,27 +7,22 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build project
-        run: pnpm build
+        run: bun run build
         env:
           VITE_FORCE_LEMMY_INSECURE: 1
           VITE_CUSTOM_LEMMY_SERVERS: localhost:8536
 
       - name: Install Playwright dependencies
-        run: npx playwright install --with-deps
+        run: bunx playwright install --with-deps
 
       - name: Run Playwright tests
         run: |
           docker compose -f e2e/ci/docker-compose.yml up -d
           sleep 10
-          pnpm run test:e2e
+          bun test:e2e

@@ -1,0 +1,5 @@
+telemetry = false
+
+[install]
+linker = "isolated"
+publicHoistPattern = "workbox-window"

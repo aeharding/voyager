@@ -39,18 +39,13 @@ jobs:
         with:
           name: release-data
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install dependencies
-        run: pnpm install  --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build dist bundle
-        run: pnpm build
+        run: bun run build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -86,12 +81,7 @@ jobs:
         with:
           name: release-data
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
+      - run: bun install --frozen-lockfile
 
       - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
@@ -107,10 +97,10 @@ jobs:
           gem install bundler
           bundle install
 
-      - run: pnpm i --frozen-lockfile
+      - run: bun i --frozen-lockfile
 
       - name: Build (Ionic)
-        run: pnpm exec ionic cap sync
+        run: bunx ionic cap sync
         env:
           CI_PLATFORM: ios
 
@@ -142,17 +132,12 @@ jobs:
         with:
           name: release-data
 
-      - uses: pnpm/action-setup@v4
+      - run: bun install --frozen-lockfile
 
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - run: pnpm i --frozen-lockfile
+      - run: bun i --frozen-lockfile
 
       - name: Build (Ionic)
-        run: pnpm exec ionic cap sync
+        run: bunx ionic cap sync
         env:
           BUILD_FOSS_ONLY: true
           CI_PLATFORM: android
@@ -194,12 +179,7 @@ jobs:
         with:
           name: release-data
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
+      - run: bun install --frozen-lockfile
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -211,10 +191,10 @@ jobs:
           gem install bundler
           bundle install
 
-      - run: pnpm i --frozen-lockfile
+      - run: bun i --frozen-lockfile
 
       - name: Build (Ionic)
-        run: pnpm exec ionic cap sync
+        run: bunx ionic cap sync
         env:
           CI_PLATFORM: android
 

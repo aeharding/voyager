@@ -37,16 +37,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
+      - uses: oven-sh/setup-bun@v2
 
       - name: Get current version from package.json
         id: app_version
         run: |
-          APP_VERSION=$(node -p "require('./package.json').version")
+          APP_VERSION=$(bun -p "require('./package.json').version")
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
           echo "current app version: $APP_VERSION"
 
@@ -67,18 +63,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install dependencies
-        run: pnpm install  --frozen-lockfile
+        run: bun install  --frozen-lockfile
 
       - name: Run trapeze (update iOS and Android version/code)
-        run: pnpm exec trapeze run trapeze.yaml -y
+        run: bunx trapeze run trapeze.yaml -y
         env:
           APP_BUILD: ${{ needs.app_build.outputs.app_build }}
           APP_VERSION: ${{ needs.app_version.outputs.app_version }}
