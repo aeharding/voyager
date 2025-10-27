@@ -1,8 +1,8 @@
 diff --git a/ios/Sources/KeyboardPlugin/Keyboard.m b/ios/Sources/KeyboardPlugin/Keyboard.m
-index 29c070840c20046fb7dd9e045cd7b83832386919..c7e18788ce2b2738b267a2ee77dbb0087c1c8c4d 100644
+index 29c070840c20046fb7dd9e045cd7b83832386919..076e12ea2dc48721c0dc211b03962986d191824c 100644
 --- a/ios/Sources/KeyboardPlugin/Keyboard.m
 +++ b/ios/Sources/KeyboardPlugin/Keyboard.m
-@@ -110,7 +110,7 @@ - (void)resetScrollView
+@@ -110,7 +110,7 @@ double stageManagerOffset;
  
  - (void)onKeyboardWillHide:(NSNotification *)notification
  {
@@ -11,7 +11,7 @@ index 29c070840c20046fb7dd9e045cd7b83832386919..c7e18788ce2b2738b267a2ee77dbb008
    [self resetScrollView];
    hideTimer = [NSTimer scheduledTimerWithTimeInterval:0 repeats:NO block:^(NSTimer * _Nonnull timer) {
      [self.bridge triggerWindowJSEventWithEventName:@"keyboardWillHide"];
-@@ -142,8 +142,7 @@ - (void)onKeyboardWillShow:(NSNotification *)notification
+@@ -142,8 +142,7 @@ double stageManagerOffset;
      }
    }
  
@@ -21,7 +21,7 @@ index 29c070840c20046fb7dd9e045cd7b83832386919..c7e18788ce2b2738b267a2ee77dbb008
    [self resetScrollView];
  
    NSString * data = [NSString stringWithFormat:@"{ 'keyboardHeight': %d }", (int)height];
-@@ -199,7 +198,7 @@ - (void)resizeElement:(NSString *)element withPaddingBottom:(int)paddingBottom w
+@@ -199,7 +198,7 @@ double stageManagerOffset;
          height = screenHeight - paddingBottom;
      }
      

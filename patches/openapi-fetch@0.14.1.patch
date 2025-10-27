@@ -1,5 +1,5 @@
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 0a380f1a9f13e5feae40ae08349d2f29632e2856..e7425dd4f08f8c9044d409825200c18a415756e1 100644
+index 724ebef59d87aa57d240b233c73f6922ac609007..12ab5992b9461655555b238296dac275d9c32157 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
 @@ -170,7 +170,7 @@ function createClient(clientOptions) {
