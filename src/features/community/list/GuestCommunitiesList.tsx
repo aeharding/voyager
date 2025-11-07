@@ -76,10 +76,12 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const [oldClient, setOldClient] = useState<typeof client | undefined>(
     undefined,
   );
+  const [oldMode, setOldMode] = useState<typeof mode | undefined>(undefined);
 
-  if (oldClient !== client) {
-    setOldClient(client);
+  if (oldClient !== client || oldMode !== mode) {
     hardUpdate();
+    setOldClient(client);
+    setOldMode(mode);
   }
 
   if (communities === undefined) return <CenteredSpinner />;
