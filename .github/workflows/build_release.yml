@@ -71,7 +71,7 @@ jobs:
     concurrency:
       group: ios-release
     environment: deploy
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
 
