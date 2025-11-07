@@ -83,10 +83,6 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
-        with:
-          xcode-version: latest-stable
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
