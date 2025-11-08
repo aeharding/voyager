@@ -9,14 +9,9 @@ import {
   useRef,
 } from "react";
 
-import {
-  extractLemmyLinkFromPotentialFediRedirectService,
-  GO_VOYAGER_HOST,
-} from "#/features/share/fediRedirect";
+import { attemptParseFromClipboard } from "#/helpers/clipboard";
 import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
-import { htmlToMarkdown } from "#/helpers/markdown";
-import { parseUriList } from "#/helpers/url";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 
@@ -89,59 +84,11 @@ export default function Editor({
     // Bail on paste modifiers if user is holding down shift
     if (onPastePlainRef.current) return;
 
-    const html = e.clipboardData.getData("text/html");
+    const toInsert = attemptParseFromClipboard(e);
+    if (!toInsert) return;
 
-    if (html) {
-      e.preventDefault();
-
-      let toInsert;
-
-      try {
-        toInsert = await htmlToMarkdown(html);
-      } catch (_) {
-        toInsert = e.clipboardData.getData("text");
-        console.error("Parse error", e);
-      }
-
-      document.execCommand("insertText", false, toInsert);
-      return;
-    }
-
-    const uriList = e.clipboardData.getData("text/uri-list");
-
-    if (uriList) {
-      const urls = parseUriList(uriList);
-
-      if (urls.length !== 1) return;
-
-      const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(
-        urls[0]!,
-        [GO_VOYAGER_HOST],
-      );
-
-      if (!potentialUrl) return;
-
-      e.preventDefault();
-
-      document.execCommand("insertText", false, potentialUrl);
-
-      return;
-    }
-
-    const text = e.clipboardData.getData("text");
-
-    if (text) {
-      const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(
-        text,
-        [GO_VOYAGER_HOST],
-      );
-
-      if (!potentialUrl) return;
-
-      e.preventDefault();
-
-      document.execCommand("insertText", false, potentialUrl);
-    }
+    e.preventDefault();
+    document.execCommand("insertText", false, toInsert);
   }
 
   async function onDragCapture(event: DragEvent) {

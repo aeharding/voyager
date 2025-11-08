@@ -322,7 +322,7 @@ export default function DefaultMode({
     let quotedText;
 
     try {
-      quotedText = await htmlToMarkdown(selection.html);
+      quotedText = htmlToMarkdown(selection.html);
     } catch (error) {
       quotedText = selection.text;
       console.error("Parse error", error);
