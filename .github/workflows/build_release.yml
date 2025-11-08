@@ -40,6 +40,8 @@ jobs:
           name: release-data
 
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
       - name: 📦 Install dependencies
         run: bun i --frozen-lockfile
@@ -82,6 +84,8 @@ jobs:
           name: release-data
 
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -129,6 +133,8 @@ jobs:
           name: release-data
 
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
       - run: bun i --frozen-lockfile
 
@@ -176,6 +182,8 @@ jobs:
           name: release-data
 
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
