@@ -41,13 +41,13 @@ export function quote(markdown: string) {
     .join("\n");
 }
 
-export async function htmlToMarkdown(html: string) {
-  const process = await unified()
+export function htmlToMarkdown(html: string) {
+  return unified()
     .use(rehypeParse)
     .use(customRemarkGfm, { connectedInstance: "unknown" })
     .use(rehypeRemark)
     .use(remarkStringify)
-    .process(html);
-
-  return process.toString().trim();
+    .processSync(html)
+    .toString()
+    .trim();
 }
