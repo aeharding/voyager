@@ -35,8 +35,8 @@ export default function InlineMarkdown({
       }}
       remarkPlugins={[
         ...(!parseBlocks ? [disableBlockTokens] : []),
-        customRemarkStrikethrough,
         superSub,
+        customRemarkStrikethrough,
         spoiler,
         inlinifySpoiler,
       ]}
