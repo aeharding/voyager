@@ -45,7 +45,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: .tool-versions
           cache: pnpm
 
       - name: 📦 Install dependencies
@@ -94,13 +94,11 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: .tool-versions
           cache: pnpm
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.4"
 
       - name: Install Fastlane
         run: |
@@ -148,7 +146,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: .tool-versions
           cache: pnpm
 
       - run: pnpm i --frozen-lockfile
@@ -162,9 +160,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-          java-version: "21"
-          distribution: "corretto"
+          distribution: temurin
+          java-version-file: .tool-versions
           cache: gradle
+
       - name: Build (Android)
         run: |
           echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
@@ -202,13 +201,11 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: .tool-versions
           cache: pnpm
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.4"
 
       - name: Install Fastlane
         run: |
@@ -225,8 +222,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-          java-version: "21"
-          distribution: "corretto"
+          distribution: temurin
+          java-version-file: .tool-versions
           cache: gradle
 
       - name: Build (Android)
