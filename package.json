@@ -4,13 +4,13 @@
   "private": true,
   "version": "2.40.3",
   "type": "module",
-  "packageManager": "bun@1.3.2",
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd",
   "scripts": {
-    "dev": "bunx --bun vite",
+    "dev": "vite",
     "ionic:build:before": "./scripts/prebuild.sh",
-    "build": "bun ionic:build:before && bunx --bun vite build",
+    "build": "pnpm ionic:build:before && vite build",
     "postinstall": "cap telemetry off && ionic config set -g telemetry false",
-    "preview": "bunx --bun vite preview",
+    "preview": "vite preview",
     "test": "vitest",
     "test:e2e": "playwright test",
     "test:generatecsstypes": "tcm src",
@@ -19,9 +19,9 @@
     "lint:formatting": "prettier --check .",
     "generate:splash:dark": "pwa-asset-generator --type png --index index.html --dark-mode --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
-    "generate:splash": "bun generate:splash:dark && bun generate:splash:light",
+    "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
-    "upgrade:packageManager": "corepack use bun@latest",
+    "upgrade:packageManager": "corepack use pnpm@latest",
     "release": "./scripts/prerelease.sh"
   },
   "imports": {
@@ -138,14 +138,5 @@
     "vite-plugin-pwa": "^1.1.0",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^4.0.7"
-  },
-  "resolutions": {
-    "@ionic/core": "npm:voyager-ionic-core@8.7.9"
-  },
-  "patchedDependencies": {
-    "@capacitor/keyboard@7.0.3": "patches/@capacitor__keyboard@7.0.3.patch",
-    "@capacitor/haptics@7.0.2": "patches/@capacitor__haptics@7.0.2.patch",
-    "@capacitor/android@7.4.4": "patches/@capacitor__android@7.4.4.patch",
-    "openapi-fetch@0.14.1": "patches/openapi-fetch@0.14.1.patch"
   }
 }

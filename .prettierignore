@@ -2,3 +2,4 @@ dist/
 ios/
 android/
 vite.config.ts.timestamp-*
+pnpm-lock.yaml

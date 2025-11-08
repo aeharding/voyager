@@ -1,8 +1,8 @@
 diff --git a/capacitor/src/main/java/com/getcapacitor/Bridge.java b/capacitor/src/main/java/com/getcapacitor/Bridge.java
-index f9c4f0a589248f029f45f29a69f4b3faa5cf5d86..851b01a2c5b0592f48cf44cc238863da0844c27e 100644
+index 594146a0f8fc2903fd255c0b864db97d94ebfb1b..4f13ca78a4051e3b1bc5cd5d3de0e8a99aa44728 100644
 --- a/capacitor/src/main/java/com/getcapacitor/Bridge.java
 +++ b/capacitor/src/main/java/com/getcapacitor/Bridge.java
-@@ -438,7 +438,7 @@ public class Bridge {
+@@ -417,7 +417,7 @@ public class Bridge {
              PackageManager pm = getContext().getPackageManager();
              PackageInfo pInfo = InternalUtils.getPackageInfo(pm, getContext().getPackageName());
              versionCode = Integer.toString((int) PackageInfoCompat.getLongVersionCode(pInfo));

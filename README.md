@@ -147,8 +147,8 @@ While Docker makes things easier, Voyager can be hosted by any HTTP server (ngin
 
 ```sh
 # Build from source (Or, download web artifact from Github Releases)
-bun install
-bun run build
+pnpm install
+pnpm build
 
 # Then, serve ./dist with your favorite HTTP server - nginx, apache etc
 # (make sure 404 goes to index.html)

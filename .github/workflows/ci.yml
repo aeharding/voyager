@@ -18,27 +18,32 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
         with:
-          bun-version-file: package.json
+          node-version: 24
+          cache: pnpm
 
       - name: 📦 Install dependencies
-        run: bun install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: 🧪 Test project
-        run: bun run test
+        run: pnpm test
 
       - name: 📝 Lint
-        run: bun lint
+        run: pnpm lint
 
       - name: 📝 Prettier formatting
-        run: bun lint:formatting
+        run: pnpm lint:formatting
 
       - name: 📝 Generate CSS types
-        run: bun test:generatecsstypes
+        run: pnpm test:generatecsstypes
 
       - name: 💪 Type check
-        run: bun test:typecheck
+        run: pnpm test:typecheck
 
       - name: 📦 Build
-        run: bun run build
+        run: pnpm build
