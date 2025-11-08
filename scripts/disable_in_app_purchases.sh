@@ -2,10 +2,10 @@
 
 # Check the folder doesn't exist before performing actions
 if [ -d "src/features/tips/inAppPurchase__stub" ]; then
-    bun uninstall capacitor-tips
+    pnpm uninstall capacitor-tips
 
     # Removes the proprietary google play app purchase libs
-    bunx cap update
+    pnpm cap update
 
     # Remove and rename files
     rm -rf src/features/tips/inAppPurchase

@@ -131,8 +131,6 @@ export default defineConfig(
       ],
     },
   },
-  // @ts-expect-error @vitest/eslint-plugin is not typed correctly
-  // https://github.com/vitest-dev/eslint-plugin-vitest/issues/771
   {
     files: ["**/*.test.ts", "**/*.test.tsx"],
     ...vitestPlugin.configs.recommended,

@@ -39,15 +39,20 @@ jobs:
         with:
           name: release-data
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
         with:
-          bun-version-file: package.json
+          node-version: 24
+          cache: pnpm
 
       - name: 📦 Install dependencies
-        run: bun i --frozen-lockfile
+        run: pnpm i --frozen-lockfile
 
       - name: Build dist bundle
-        run: bun run build
+        run: pnpm build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -83,9 +88,14 @@ jobs:
         with:
           name: release-data
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
         with:
-          bun-version-file: package.json
+          node-version: 24
+          cache: pnpm
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -97,10 +107,10 @@ jobs:
           gem install bundler
           bundle install
 
-      - run: bun i --frozen-lockfile
+      - run: pnpm i --frozen-lockfile
 
       - name: Build (Ionic)
-        run: bunx ionic cap sync
+        run: pnpm ionic cap sync
         env:
           CI_PLATFORM: ios
 
@@ -132,14 +142,19 @@ jobs:
         with:
           name: release-data
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: package.json
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
-      - run: bun i --frozen-lockfile
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm i --frozen-lockfile
 
       - name: Build (Ionic)
-        run: bunx ionic cap sync
+        run: pnpm ionic cap sync
         env:
           BUILD_FOSS_ONLY: true
           CI_PLATFORM: android
@@ -181,9 +196,14 @@ jobs:
         with:
           name: release-data
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
         with:
-          bun-version-file: package.json
+          node-version: 24
+          cache: pnpm
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -195,10 +215,10 @@ jobs:
           gem install bundler
           bundle install
 
-      - run: bun i --frozen-lockfile
+      - run: pnpm i --frozen-lockfile
 
       - name: Build (Ionic)
-        run: bunx ionic cap sync
+        run: pnpm ionic cap sync
         env:
           CI_PLATFORM: android
 

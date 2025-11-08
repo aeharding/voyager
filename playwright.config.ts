@@ -39,7 +39,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: process.env.CI ? "bun preview" : "bun dev",
+    command: process.env.CI ? "pnpm preview" : "pnpm dev",
     url: serverURL,
     reuseExistingServer: !process.env.CI,
   },

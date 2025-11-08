@@ -35,11 +35,16 @@ If the issue is unassigned, **please confirm that it is OK to work on** in the i
 
 Most Voyager development is done in your preferred web browser like a normal webapp.
 
-To get started, clone the repository and run on the root folder:
+To get started, install:
+
+1. [nvm](https://github.com/nvm-sh/nvm)
+
+Then clone the repository and run on the root folder:
 
 ```sh
-bun install
-bun dev
+corepack enable
+pnpm install
+pnpm dev
 ```
 
 ### iOS Native App
@@ -48,14 +53,15 @@ If the feature you're working on is native-only, you can compile and run Voyager
 
 To build the iOS native app, install:
 
-1. [Bun](https://bun.sh)
+1. [nvm](https://github.com/nvm-sh/nvm)
 2. [Xcode](https://developer.apple.com/xcode/)
 
 Then, in Voyager's source code directory, build the project:
 
 ```sh
-bun install
-bunx ionic capacitor build ios
+corepack enable
+pnpm install
+pnpm ionic capacitor build ios
 ```
 
 Xcode should automatically open. You can then run the project with `CMD+R`.
@@ -64,14 +70,15 @@ Xcode should automatically open. You can then run the project with `CMD+R`.
 
 To build the Android native app, install:
 
-1. [Bun](https://bun.sh)
+1. [nvm](https://github.com/nvm-sh/nvm)
 2. [Android Studio](https://developer.android.com/studio)
 
 Then, in Voyager's source code directory, build the project:
 
 ```sh
-bun install
-bunx ionic capacitor build android
+corepack enable
+pnpm install
+pnpm ionic capacitor build android
 ```
 
 Android Studio should open.
@@ -85,7 +92,7 @@ Finally, can run the project with `Ctrl+R`.
 Voyager uses [Vitest](https://vitest.dev). You can run the test suite with:
 
 ```
-bun run test
+pnpm test
 ```
 
 ### 🚀 Releasing
@@ -123,7 +130,7 @@ Note: F-droid and Github Releases binaries are built with `BUILD_FOSS_ONLY=true`
 2. Trigger the `release` workflow in Github Actions from the relevant commit
 
 > [!TIP]
-> Shorthand: `bun release` (relies on [`gh`](https://cli.github.com))
+> Shorthand: `pnpm release` (relies on [`gh`](https://cli.github.com))
 
 #### The `release` workflow will:
 
