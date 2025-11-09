@@ -164,9 +164,10 @@ export default function Editor({
   }
 
   function updateMetaRef(e: KeyboardEvent) {
-    const meta = e.shiftKey;
-    onPastePlainRef.current = meta;
-    return meta;
+    // It's not enough to just check for shiftKey,
+    // because iOS safari will return shiftKey=true when
+    // <enter> or <space> is pressed (including on keyup).
+    onPastePlainRef.current = e.shiftKey && (e.metaKey || e.ctrlKey);
   }
 
   return (
