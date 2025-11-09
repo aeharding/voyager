@@ -37,12 +37,13 @@ Most Voyager development is done in your preferred web browser like a normal web
 
 To get started, install:
 
-1. [nvm](https://github.com/nvm-sh/nvm)
+1. node, recommended via [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
 
 Then clone the repository and run on the root folder:
 
 ```sh
 corepack enable
+asdf reshim nodejs
 pnpm install
 pnpm dev
 ```
@@ -53,13 +54,14 @@ If the feature you're working on is native-only, you can compile and run Voyager
 
 To build the iOS native app, install:
 
-1. [nvm](https://github.com/nvm-sh/nvm)
+1. node, recommended via [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
 2. [Xcode](https://developer.apple.com/xcode/)
 
 Then, in Voyager's source code directory, build the project:
 
 ```sh
 corepack enable
+asdf reshim nodejs
 pnpm install
 pnpm ionic capacitor build ios
 ```
@@ -70,13 +72,14 @@ Xcode should automatically open. You can then run the project with `CMD+R`.
 
 To build the Android native app, install:
 
-1. [nvm](https://github.com/nvm-sh/nvm)
+1. node, recommended via [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
 2. [Android Studio](https://developer.android.com/studio)
 
 Then, in Voyager's source code directory, build the project:
 
 ```sh
 corepack enable
+asdf reshim nodejs
 pnpm install
 pnpm ionic capacitor build android
 ```
