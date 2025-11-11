@@ -45,8 +45,10 @@ export default function VideoActionsProgress({
     const deltaX = duration / progressBarRef.current.clientWidth;
     const newTime = Math.max(
       0,
-      Math.min(duration, initialValue + diffX * deltaX),
+      // 0.00001 to make time inclusive of the last frame
+      Math.min(duration - 0.00001, initialValue + diffX * deltaX),
     );
+
     onValueChange(newTime);
   }
 
