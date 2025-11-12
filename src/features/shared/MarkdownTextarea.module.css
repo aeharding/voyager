@@ -1,0 +1,29 @@
+.container {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  textarea {
+    color: transparent;
+    print-color-adjust: exact;
+    caret-color: white;
+
+    margin: 0;
+    width: 100%;
+  }
+}
+
+.hljsContainer {
+  position: absolute;
+
+  inset: 0;
+  white-space: pre-wrap !important;
+
+  pointer-events: none;
+
+  :global(.hljs-link) {
+    text-decoration: underline;
+  }
+}
