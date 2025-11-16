@@ -2,6 +2,8 @@ import { useThrottledCallback } from "@mantine/hooks";
 import { useRef } from "react";
 import { VListHandle } from "virtua";
 
+import { findEndIndex, findStartIndex } from "#/helpers/virtua";
+
 export function useRangeChange(
   virtuaHandleRef: React.RefObject<VListHandle | null>,
   onRangeChange: (startIndex: number, endIndex: number) => void,
@@ -14,8 +16,8 @@ export function useRangeChange(
 
     if (!virtuaHandle) return;
 
-    const startIndex = virtuaHandle.findStartIndex();
-    const endIndex = virtuaHandle.findEndIndex();
+    const startIndex = findStartIndex(virtuaHandle);
+    const endIndex = findEndIndex(virtuaHandle);
 
     if (
       startIndex !== startIndexRef.current ||

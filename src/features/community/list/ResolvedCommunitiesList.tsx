@@ -21,6 +21,7 @@ import {
 import { jwtSelector } from "#/features/auth/authSelectors";
 import { cx } from "#/helpers/css";
 import { getHandle } from "#/helpers/lemmy";
+import { findStartIndex } from "#/helpers/virtua";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppSelector } from "#/store";
 
@@ -186,7 +187,7 @@ function ResolvedCommunitiesList({
 
   const updateActiveIndex = useCallback(() => {
     if (!virtuaRef.current) return;
-    const start = virtuaRef.current.findStartIndex();
+    const start = findStartIndex(virtuaRef.current);
     const activeStickyIndex =
       [...stickyIndexes].reverse().find((index) => start >= index) ?? -1;
     setActiveIndex(activeStickyIndex);
@@ -214,7 +215,7 @@ function ResolvedCommunitiesList({
 
             if (virtuaRef.current) {
               setShift(
-                virtuaRef.current.findStartIndex() > throughFavoritesCount,
+                findStartIndex(virtuaRef.current) > throughFavoritesCount,
               );
             } else {
               setShift(false);

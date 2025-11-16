@@ -93,12 +93,12 @@
     "rehype-remark": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "threadiverse": "^0.7.2",
+    "threadiverse": "^0.8.0",
     "ua-parser-js": "^2.0.6",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "use-long-press": "^3.3.0",
-    "virtua": "^0.46.6"
+    "virtua": "^0.47.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.4",
