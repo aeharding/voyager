@@ -8,7 +8,7 @@ import { receivedPosts } from "#/features/post/postSlice";
 import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
 import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import {
-  COMMENT_VIA_POST_PATH,
+  LEMMY_COMMENT_VIA_POST_PATH,
   PIEFED_COMMENT_PATH_AND_HASH,
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
@@ -192,8 +192,8 @@ function findLemmyFedilinkFromQuirkUrl(link: string): string | undefined {
 function findLemmyCommentIdFromUrl(url: URL): number | undefined {
   const { pathname } = url;
 
-  if (COMMENT_VIA_POST_PATH.test(pathname))
-    return +pathname.match(COMMENT_VIA_POST_PATH)![1]!;
+  if (LEMMY_COMMENT_VIA_POST_PATH.test(pathname))
+    return +pathname.match(LEMMY_COMMENT_VIA_POST_PATH)![1]!;
 }
 
 function findPiefedCommentIdFromUrl(url: URL): number | undefined {

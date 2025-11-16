@@ -22,6 +22,7 @@ export const POST_PATH = /^\/post\/(\d+)$/;
 export const COMMENT_PATH = /^\/comment\/(\d+)$/;
 
 export const PIEFED_COMMENT_PATH_AND_HASH = /^\/post\/(?:\d+)#comment_(\d+)$/;
+export const PIEFED_POST_SEO_PATH = /\/c\/[\w-]+\/p\/(\d+)\/[\w-]+$/;
 
 /**
  * Lemmy 0.19.4 added a new url format to reference comments,
@@ -31,7 +32,7 @@ export const PIEFED_COMMENT_PATH_AND_HASH = /^\/post\/(?:\d+)#comment_(\d+)$/;
  *
  * https://github.com/LemmyNet/lemmy-ui/commit/b7fe70d8c15fe8c8482c8403744f24f63d1c505a#diff-13e07e23177266e419a34a839636bcdbd2f6997000fb8e0f3be26c78400acf77R145
  */
-export const COMMENT_VIA_POST_PATH = /^\/post\/\d+\/(\d+)$/;
+export const LEMMY_COMMENT_VIA_POST_PATH = /^\/post\/\d+\/(\d+)$/;
 
 export const USER_PATH =
   /^\/u\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
@@ -41,10 +42,11 @@ export const COMMUNITY_PATH =
 const POTENTIAL_PATHS = [
   POST_PATH,
   COMMENT_PATH,
-  COMMENT_VIA_POST_PATH,
+  LEMMY_COMMENT_VIA_POST_PATH,
   USER_PATH,
   COMMUNITY_PATH,
   PIEFED_COMMENT_PATH_AND_HASH,
+  PIEFED_POST_SEO_PATH,
 ] as const;
 
 export type LemmyObjectType = "community" | "post" | "comment" | "user";
@@ -151,7 +153,8 @@ export default function useLemmyUrlHandler() {
 
           presentToast({
             message: `Could not find ${getObjectName(
-              url.pathname,
+              url,
+              determineSoftwareFromUrl(url),
             )} on your instance. Try again to open in browser.`,
             duration: 3500,
             color: "warning",
@@ -195,23 +198,6 @@ export default function useLemmyUrlHandler() {
     const url = getUrl(link);
 
     if (!url) return;
-
-    if (matchLemmyOrPiefedCommunity(url.pathname)) return "community";
-
-    switch (determineSoftwareFromUrl(url)) {
-      case "piefed":
-        if (PIEFED_COMMENT_PATH_AND_HASH.test(`${url.pathname}${url.hash}`))
-          return "comment";
-        if (POST_PATH.test(url.pathname)) return "post";
-        if (USER_PATH.test(url.pathname)) return "user";
-        if (COMMENT_PATH.test(url.pathname)) return "comment";
-        break;
-      case "lemmy":
-        if (POST_PATH.test(url.pathname)) return "post";
-        if (COMMENT_PATH.test(url.pathname)) return "comment";
-        if (COMMENT_VIA_POST_PATH.test(url.pathname)) return "comment";
-        if (USER_PATH.test(url.pathname)) return "user";
-    }
   }
 
   async function redirectToLemmyObjectIfNeeded(
@@ -277,10 +263,32 @@ function isPotentialObjectPath(urlPathname: string): boolean {
   return false;
 }
 
-function getObjectName(urlPathname: string): string | undefined {
-  if (POST_PATH.test(urlPathname)) return "post";
-  if (COMMENT_PATH.test(urlPathname)) return "comment";
-  if (COMMENT_VIA_POST_PATH.test(urlPathname)) return "comment";
-  if (USER_PATH.test(urlPathname)) return "user";
-  if (COMMUNITY_PATH.test(urlPathname)) return "community";
+function getObjectName(url: URL, software: string): string | undefined {
+  if (matchLemmyOrPiefedCommunity(url.pathname)) return "community";
+
+  switch (software) {
+    case "piefed":
+      switch (true) {
+        case POST_PATH.test(url.pathname):
+        case PIEFED_POST_SEO_PATH.test(url.pathname):
+          return "post";
+        case COMMENT_PATH.test(url.pathname):
+        case PIEFED_COMMENT_PATH_AND_HASH.test(`${url.pathname}${url.hash}`):
+          return "comment";
+        case USER_PATH.test(url.pathname):
+          return "user";
+      }
+      break;
+
+    case "lemmy":
+      switch (true) {
+        case POST_PATH.test(url.pathname):
+          return "post";
+        case COMMENT_PATH.test(url.pathname):
+        case LEMMY_COMMENT_VIA_POST_PATH.test(url.pathname):
+          return "comment";
+        case USER_PATH.test(url.pathname):
+          return "user";
+      }
+  }
 }
