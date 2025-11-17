@@ -22,14 +22,7 @@ export const LEMMY_TOP_SORTS = {
 
 export const PIEFED_TOP_SORTS = {
   ...TOP,
-  children: [
-    "TopHour",
-    "TopSixHour",
-    "TopTwelveHour",
-    "TopDay",
-    "TopWeek",
-    "TopMonth",
-  ],
+  children: TOP_DURATION_SORTS,
 } as const;
 
 export type VgerTopSort = (typeof TOP_DURATION_SORTS)[number];

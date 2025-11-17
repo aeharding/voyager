@@ -45,7 +45,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
         case "piefed":
           return {
             mode,
-            sort: "Active",
+            sort: "Top",
           };
       }
     })();

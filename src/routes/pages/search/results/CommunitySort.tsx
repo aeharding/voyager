@@ -23,7 +23,7 @@ export const COMMUNITY_SORT_BY_MODE = {
     "NameDesc",
     "SubscribersLocal",
   ],
-  piefed: ["Active", "New"],
+  piefed: ["Top", "Hot", "New"],
 } as const;
 
 export type VgerCommunitySortTypeByMode = {
