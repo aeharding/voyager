@@ -9,13 +9,13 @@ import {
 } from "ionicons/icons";
 import { ReactNode, useMemo } from "react";
 
-import { LemmyObjectType } from "#/features/shared/useLemmyUrlHandler";
+import { ObjectType } from "#/features/shared/useLemmyUrlHandler";
 import type { determineTypeFromUrl } from "#/helpers/url";
 
 import styles from "./LinkPreview.module.css";
 
 interface LinkPreviewProps {
-  type: LemmyObjectType | ReturnType<typeof determineTypeFromUrl>;
+  type: ObjectType | ReturnType<typeof determineTypeFromUrl>;
 }
 
 export default function LinkPreview({ type }: LinkPreviewProps): ReactNode {
