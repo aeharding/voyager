@@ -7,10 +7,7 @@ import { receivedCommunity } from "#/features/community/communitySlice";
 import { receivedPosts } from "#/features/post/postSlice";
 import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/share/fediRedirect";
 import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
-import {
-  COMMENT_VIA_POST_PATH,
-  PIEFED_COMMENT_PATH_AND_HASH,
-} from "#/features/shared/useLemmyUrlHandler";
+import { POTENTIAL_OBJECTS } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { isPiefedError } from "#/helpers/piefedErrors";
@@ -192,8 +189,8 @@ function findLemmyFedilinkFromQuirkUrl(link: string): string | undefined {
 function findLemmyCommentIdFromUrl(url: URL): number | undefined {
   const { pathname } = url;
 
-  if (COMMENT_VIA_POST_PATH.test(pathname))
-    return +pathname.match(COMMENT_VIA_POST_PATH)![1]!;
+  if (POTENTIAL_OBJECTS.LEMMY_COMMENT_VIA_POST_PATH.test(pathname))
+    return +pathname.match(POTENTIAL_OBJECTS.LEMMY_COMMENT_VIA_POST_PATH)![1]!;
 }
 
 function findPiefedCommentIdFromUrl(url: URL): number | undefined {
@@ -201,8 +198,8 @@ function findPiefedCommentIdFromUrl(url: URL): number | undefined {
 
   const slug = `${pathname}${hash}`;
 
-  if (PIEFED_COMMENT_PATH_AND_HASH.test(slug))
-    return +slug.match(PIEFED_COMMENT_PATH_AND_HASH)![1]!;
+  if (POTENTIAL_OBJECTS.PIEFED_COMMENT_PATH_AND_HASH.test(slug))
+    return +slug.match(POTENTIAL_OBJECTS.PIEFED_COMMENT_PATH_AND_HASH)![1]!;
 }
 
 function isNotFoundError(error: unknown): boolean {
