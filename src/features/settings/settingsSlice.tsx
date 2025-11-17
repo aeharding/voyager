@@ -270,7 +270,7 @@ const baseState: SettingsState = {
       sort: {
         lemmyv0: "TopAll",
         lemmyv1: "ActiveSixMonths",
-        piefed: "Active",
+        piefed: "Top",
       },
     },
     defaultFeed: undefined,

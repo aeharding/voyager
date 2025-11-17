@@ -16,7 +16,6 @@ import {
   buildUserLinkFromHandle,
 } from "#/helpers/appLinkBuilder";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { useMode } from "#/helpers/threadiverse";
 
 import AutoResolvePostComment from "./AutoResolvePostComment";
 
@@ -26,7 +25,6 @@ interface SearchOptionsProps {
 
 export default function SearchOptions({ search }: SearchOptionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const mode = useMode();
   const { determineObjectTypeFromUrl, redirectToLemmyObjectIfNeeded } =
     useLemmyUrlHandler();
 
@@ -54,18 +52,19 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
             <IonLabel>Visit {type}</IonLabel>
           </IonItem>
         )}
+
         <IonItem routerLink={buildSearchPostsLink(search)}>
           <IonIcon icon={albumsOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">Posts with “{search}”</IonLabel>
         </IonItem>
-        {mode !== "piefed" && (
-          <IonItem routerLink={buildSearchCommentsLink(search)}>
-            <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
-            <IonLabel className="ion-text-nowrap">
-              Comments with “{search}”
-            </IonLabel>
-          </IonItem>
-        )}
+
+        <IonItem routerLink={buildSearchCommentsLink(search)}>
+          <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">
+            Comments with “{search}”
+          </IonLabel>
+        </IonItem>
+
         <IonItem routerLink={buildSearchCommunitiesLink(search)}>
           <IonIcon icon={searchOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">

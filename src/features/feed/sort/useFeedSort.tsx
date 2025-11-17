@@ -297,10 +297,15 @@ function convertSearchSortToPiefedParams(
     case "New":
     case "TopDay":
     case "TopHour":
-    case "TopMonth":
     case "TopSixHour":
     case "TopTwelveHour":
     case "TopWeek":
+    case "TopMonth":
+    case "TopThreeMonths":
+    case "TopSixMonths":
+    case "TopNineMonths":
+    case "TopYear":
+    case "TopAll":
     case "Active":
     case "Hot":
     case "Scaled":
@@ -415,6 +420,11 @@ function convertPostSortToPiefedParams(
     case "TopDay":
     case "TopWeek":
     case "TopMonth":
+    case "TopThreeMonths":
+    case "TopSixMonths":
+    case "TopNineMonths":
+    case "TopYear":
+    case "TopAll":
       return { sort, mode: "piefed" };
   }
 }
