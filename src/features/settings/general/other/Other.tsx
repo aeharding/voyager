@@ -4,6 +4,7 @@ import { ListHeader } from "#/features/settings/shared/formatting";
 
 import BackupSettings from "./backup/BackupSettings";
 import ClearCache from "./ClearCache";
+import ConfirmLeaveFeedPrompt from "./ConfirmLeaveFeedPrompt";
 import DefaultFeed from "./DefaultFeed";
 import Haptics from "./Haptics";
 import LinkHandler from "./LinkHandler";
@@ -28,6 +29,7 @@ export default function Other() {
         <NoSubscribedInFeed />
         <Share />
         <Thumbnailinator />
+        <ConfirmLeaveFeedPrompt />
         <ClearCache />
         <BackupSettings />
       </IonList>

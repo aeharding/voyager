@@ -71,6 +71,7 @@ import {
 } from "#/services/db/types";
 import { AppDispatch, RootState } from "#/store";
 
+import { canConfigureConfirmLeaveFeedPrompt } from "./general/other/ConfirmLeaveFeedPrompt";
 import {
   getLocalStorageInitialState,
   LOCALSTORAGE_KEYS,
@@ -179,6 +180,7 @@ export interface SettingsState {
     linkHandler: LinkHandlerType;
     preferNativeApps: boolean;
     defaultFeed: DefaultFeedType | undefined;
+    confirmLeaveFeedPrompt: boolean;
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
     defaultShare: PostCommentShareType;
@@ -273,6 +275,7 @@ const baseState: SettingsState = {
         piefed: "Top",
       },
     },
+    confirmLeaveFeedPrompt: canConfigureConfirmLeaveFeedPrompt,
     defaultFeed: undefined,
     // TODO: Enable by default in late June 2025
     // (devices have been updated to support go.getvoyager.app links)
@@ -400,6 +403,10 @@ export const settingsSlice = createSlice({
     ) {
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
+    },
+    setConfirmLeaveFeedPrompt(state, action: PayloadAction<boolean>) {
+      state.general.confirmLeaveFeedPrompt = action.payload;
+      db.setSetting("confirm_leave_feed_prompt", action.payload);
     },
     setDefaultCommentSort(
       state,
@@ -862,6 +869,7 @@ export const {
   setCompactShowSelfPostThumbnails,
   setCompactShowVotingButtons,
   setCompactThumbnailSize,
+  setConfirmLeaveFeedPrompt,
   setDatabaseError,
   setDefaultCommentSort,
   setDefaultFeed,
@@ -992,6 +1000,7 @@ function hydrateStateWithGlobalSettings(
         tapToCollapse: settings.tap_to_collapse,
         touchFriendlyLinks: settings.touch_friendly_links,
       },
+      confirmLeaveFeedPrompt: settings.confirm_leave_feed_prompt,
       defaultShare: settings.default_share,
       enableHapticFeedback: settings.enable_haptic_feedback,
       linkHandler: settings.link_handler,
