@@ -7,8 +7,10 @@ import { AppThemeType } from "#/services/db/types";
 
 import styles from "./AppThemePreview.module.css";
 
-interface AppThemePreviewProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "style" | "className"> {
+interface AppThemePreviewProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "style" | "className"
+> {
   appTheme: AppThemeType;
 }
 

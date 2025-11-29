@@ -5,8 +5,9 @@ import useLemmyUrlHandler, {
   ObjectType,
 } from "#/features/shared/useLemmyUrlHandler";
 
-interface SourceUrlButtonProps
-  extends React.ComponentPropsWithoutRef<typeof IonButton> {
+interface SourceUrlButtonProps extends React.ComponentPropsWithoutRef<
+  typeof IonButton
+> {
   sourceUrl: string | undefined;
   dismiss: () => void;
 }

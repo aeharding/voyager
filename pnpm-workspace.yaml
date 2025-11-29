@@ -1,5 +1,5 @@
 overrides:
-  "@ionic/core": npm:voyager-ionic-core@8.7.9
+  "@ionic/core": npm:voyager-ionic-core@8.7.11
 
 patchedDependencies:
   "@capacitor/android": patches/@capacitor__android.patch

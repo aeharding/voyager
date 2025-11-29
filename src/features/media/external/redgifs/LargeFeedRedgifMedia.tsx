@@ -16,8 +16,10 @@ import {
 
 import styles from "./LargeFeedRedgifMedia.module.css";
 
-interface RedgifProps
-  extends Omit<ComponentProps<typeof LargeFeedMedia>, "src"> {
+interface RedgifProps extends Omit<
+  ComponentProps<typeof LargeFeedMedia>,
+  "src"
+> {
   url: string;
 }
 

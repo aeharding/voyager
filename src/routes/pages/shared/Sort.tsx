@@ -51,8 +51,10 @@ type HydratedSortOptions<S> = RootSortOption<S>[];
 
 type RootSortOption<S> = SelectableSortOption<S> | ChildrenSortOption<S>;
 
-interface ChildrenSortOption<S, C = SelectableSortOption<S>>
-  extends ActionSheetButton {
+interface ChildrenSortOption<
+  S,
+  C = SelectableSortOption<S>,
+> extends ActionSheetButton {
   label: string;
   children: readonly C[];
 }

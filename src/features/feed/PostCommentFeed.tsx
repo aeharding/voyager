@@ -27,8 +27,10 @@ import styles from "./PostCommentFeed.module.css";
 
 export type PostCommentItem = PostView | CommentView;
 
-interface PostCommentFeed
-  extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
+interface PostCommentFeed extends Omit<
+  FeedProps<PostCommentItem>,
+  "renderItemContent"
+> {
   communityName?: string;
   filterHiddenPosts?: boolean;
   filterKeywordsAndWebsites?: boolean;
