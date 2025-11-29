@@ -7,8 +7,10 @@ import { getModColor, getModIcon, ModeratorRole } from "../useCanModerate";
 
 import styles from "./ModRolePersonLink.module.css";
 
-interface ModRolePersonLinkProps
-  extends Omit<React.ComponentProps<typeof PersonLink>, "color" | "prefix"> {
+interface ModRolePersonLinkProps extends Omit<
+  React.ComponentProps<typeof PersonLink>,
+  "color" | "prefix"
+> {
   role: ModeratorRole;
 }
 

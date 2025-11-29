@@ -21,8 +21,9 @@ import Vote from "./vote/Vote";
 
 import styles from "./GalleryPostActions.module.css";
 
-export interface GalleryPostActionsProps
-  extends React.ComponentProps<typeof AltText> {
+export interface GalleryPostActionsProps extends React.ComponentProps<
+  typeof AltText
+> {
   post: PostView;
   src: string;
   alt?: string;

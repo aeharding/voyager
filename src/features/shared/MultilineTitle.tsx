@@ -2,8 +2,10 @@ import { IonText, IonTitle } from "@ionic/react";
 
 import styles from "./MultilineTitle.module.css";
 
-interface MultilineTitleProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "className"> {
+interface MultilineTitleProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className"
+> {
   subheader?: string;
 }
 

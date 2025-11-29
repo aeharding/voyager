@@ -5,8 +5,10 @@ import TextareaAutosize, {
 import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
 import { fixSafariAutoscroll } from "#/helpers/safari";
 
-interface TextareaAutosizedForOnScreenKeyboardProps
-  extends Omit<TextareaAutosizeProps, "onFocus"> {
+interface TextareaAutosizedForOnScreenKeyboardProps extends Omit<
+  TextareaAutosizeProps,
+  "onFocus"
+> {
   ref: React.Ref<HTMLTextAreaElement>;
 }
 

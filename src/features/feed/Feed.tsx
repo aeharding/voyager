@@ -42,10 +42,9 @@ interface FetchFnResult<I> {
   next_page?: PageCursor;
 }
 
-export interface FeedProps<I>
-  extends Partial<
-    Pick<EndPostProps, "formatSortDuration" | "renderCustomEmptyContent">
-  > {
+export interface FeedProps<I> extends Partial<
+  Pick<EndPostProps, "formatSortDuration" | "renderCustomEmptyContent">
+> {
   itemsRef?: React.RefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 

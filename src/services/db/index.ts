@@ -110,8 +110,7 @@ interface DynamicSettingValueTypes {
 }
 
 export interface SettingValueTypes
-  extends GlobalSettingValueTypes,
-    DynamicSettingValueTypes {}
+  extends GlobalSettingValueTypes, DynamicSettingValueTypes {}
 
 export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "always_show_author",

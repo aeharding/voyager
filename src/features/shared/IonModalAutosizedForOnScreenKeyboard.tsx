@@ -12,8 +12,10 @@ import styles from "./IonModalAutosizedForOnScreenKeyboard.module.css";
 // So hardcode for now
 const FIXED_HEADER_HEIGHT = 56;
 
-interface PWAIonModalProps
-  extends Omit<React.ComponentProps<typeof IonModal>, "style"> {}
+interface PWAIonModalProps extends Omit<
+  React.ComponentProps<typeof IonModal>,
+  "style"
+> {}
 
 function PWAIonModal(props: PWAIonModalProps) {
   const documentState = useDocumentVisibility();

@@ -18,8 +18,10 @@ import MarkdownImg from "./MarkdownImg";
 
 import styles from "./Markdown.module.css";
 
-export interface MarkdownProps
-  extends Omit<ReactMarkdownOptions, "remarkPlugins"> {
+export interface MarkdownProps extends Omit<
+  ReactMarkdownOptions,
+  "remarkPlugins"
+> {
   className?: string;
 
   disableInternalLinkRouting?: boolean;

@@ -4,8 +4,10 @@ import CommunitySummary from "#/features/community/CommunitySummary";
 
 import Feed, { FeedProps } from "./Feed";
 
-interface PostCommentFeed
-  extends Omit<FeedProps<CommunityView>, "renderItemContent"> {}
+interface PostCommentFeed extends Omit<
+  FeedProps<CommunityView>,
+  "renderItemContent"
+> {}
 
 export default function CommunityFeed({ ...rest }: PostCommentFeed) {
   return (

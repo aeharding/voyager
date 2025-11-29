@@ -101,12 +101,12 @@ describe("formatRelativeToNow Function", () => {
 
     it(`should format ${name} correctly in verbose format`, () => {
       const result = formatRelativeToNow(date, "verbose");
+      const expectedValues =
+        typeof expected.verbose === "string"
+          ? [expected.verbose]
+          : expected.verbose;
 
-      if (typeof expected.verbose === "string") {
-        expect(result).toBe(expected.verbose);
-      } else {
-        expect(result).toBeOneOf(expected.verbose);
-      }
+      expect(result).toBeOneOf(expectedValues);
     });
   });
 

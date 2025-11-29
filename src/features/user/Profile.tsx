@@ -32,8 +32,10 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import Scores from "./Scores";
 
-interface ProfileProps
-  extends Pick<ComponentProps<typeof PostCommentFeed>, "onPull"> {
+interface ProfileProps extends Pick<
+  ComponentProps<typeof PostCommentFeed>,
+  "onPull"
+> {
   person: Pick<PersonView, "person" | "counts">;
 }
 
