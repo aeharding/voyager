@@ -1,12 +1,15 @@
-publicHoistPattern:
-  - workbox-window
 overrides:
   "@ionic/core": npm:voyager-ionic-core@8.7.9
+
 patchedDependencies:
-  "@capacitor/keyboard": patches/@capacitor__keyboard.patch
   "@capacitor/android": patches/@capacitor__android.patch
   "@capacitor/haptics": patches/@capacitor__haptics.patch
+  "@capacitor/keyboard": patches/@capacitor__keyboard.patch
   openapi-fetch: patches/openapi-fetch.patch
+
+publicHoistPattern:
+  - workbox-window
+
 updateConfig:
   ignoreDependencies:
     - history

@@ -9,7 +9,7 @@ overrides:
 
 patchedDependencies:
   '@capacitor/android':
-    hash: dca4cd0644bfe52632f4d81f97b9ddc5ddcd67caae25988a52f9014428029ab6
+    hash: db122ed87c040420028701b699d577755aa9dafc3c78e5377a8a28dcaacc48ca
     path: patches/@capacitor__android.patch
   '@capacitor/haptics':
     hash: 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
@@ -36,7 +36,7 @@ importers:
         version: 6.0.0(@capacitor/core@7.4.4)
       '@capacitor/android':
         specifier: ^7.4.4
-        version: 7.4.4(patch_hash=dca4cd0644bfe52632f4d81f97b9ddc5ddcd67caae25988a52f9014428029ab6)(@capacitor/core@7.4.4)
+        version: 7.4.4(patch_hash=db122ed87c040420028701b699d577755aa9dafc3c78e5377a8a28dcaacc48ca)(@capacitor/core@7.4.4)
       '@capacitor/app':
         specifier: ^7.1.0
         version: 7.1.0(@capacitor/core@7.4.4)
@@ -7470,7 +7470,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.4.4
 
-  '@capacitor/android@7.4.4(patch_hash=dca4cd0644bfe52632f4d81f97b9ddc5ddcd67caae25988a52f9014428029ab6)(@capacitor/core@7.4.4)':
+  '@capacitor/android@7.4.4(patch_hash=db122ed87c040420028701b699d577755aa9dafc3c78e5377a8a28dcaacc48ca)(@capacitor/core@7.4.4)':
     dependencies:
       '@capacitor/core': 7.4.4
 
