@@ -36,17 +36,23 @@ and I can't find a better solution 🤷‍♂️ */
 }
 
 .headerSearchbar {
-  position: absolute;
-  inset: 0;
+  /**
+   * && is needed due to stencil component css injected in HEAD last.
+   * Potential future fix: https://github.com/ionic-team/ionic-framework/issues/30369
+   */
+  && {
+    position: absolute;
+    inset: 0;
 
-  padding-top: 5px !important;
+    padding-top: 5px !important;
 
-  &:global(.md) {
-    padding-top: 0 !important;
-    padding-left: 0;
-    padding-right: 0;
+    &:global(.md) {
+      padding-top: 0 !important;
+      padding-left: 0;
+      padding-right: 0;
 
-    --box-shadow: none;
+      --box-shadow: none;
+    }
   }
 }
 
