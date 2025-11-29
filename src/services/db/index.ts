@@ -37,6 +37,7 @@ export interface GlobalSettingValueTypes {
   compact_show_voting_buttons: boolean;
   compact_thumbnail_position_type: types.CompactThumbnailPositionType;
   compact_thumbnail_size: types.CompactThumbnailSizeType;
+  confirm_leave_feed_prompt: boolean;
   default_comment_sort_lemmyv0: VgerCommentSortTypeByMode["lemmyv0"];
   default_comment_sort_lemmyv1: VgerCommentSortTypeByMode["lemmyv1"];
   default_comment_sort_piefed: VgerCommentSortTypeByMode["piefed"];
@@ -178,6 +179,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "default_share",
   "default_search_sort_by_feed",
   "default_community_sort_by_feed",
+  "confirm_leave_feed_prompt",
 ]);
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

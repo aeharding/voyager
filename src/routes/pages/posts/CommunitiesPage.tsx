@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 
 import CommunitiesList from "#/features/community/list/CommunitiesList";
 import CommunitiesListRedirectBootstrapper from "#/features/community/list/CommunitiesListRedirectBootstrapper";
+import { ConfirmLeaveFeedPrompt } from "#/features/community/list/ConfirmLeaveFeedPrompt";
 import CommunitiesMoreActions from "#/features/community/list/InstanceMoreActions";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
@@ -24,6 +25,7 @@ const CommunitiesPageContent = memo(function CommunitiesPageContent({
 }: CommunitiesPageParams) {
   return (
     <>
+      <ConfirmLeaveFeedPrompt />
       <CommunitiesListRedirectBootstrapper />
       <AppPage>
         <AppHeader>
