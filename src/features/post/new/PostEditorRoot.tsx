@@ -26,6 +26,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { deletePendingImageUploads } from "#/features/shared/markdown/editing/uploadImageSlice";
 import useUploadImage from "#/features/shared/markdown/editing/useUploadImage";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { useOnPaste } from "#/helpers/clipboard";
 import { isAndroid } from "#/helpers/device";
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -61,6 +62,9 @@ export default function PostEditorRoot({
   const [presentAlert] = useIonAlert();
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
+  const { onKeyUpDown: onKeyUpDownPaste, onPaste: onPasteUrl } =
+    useOnPaste("url");
 
   const community =
     "existingPost" in props
@@ -507,6 +511,9 @@ export default function PostEditorRoot({
                   clearInput
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
+                  onPaste={onPasteUrl}
+                  onKeyUp={onKeyUpDownPaste}
+                  onKeyDown={onKeyUpDownPaste}
                 />
               </IonItem>
             )}

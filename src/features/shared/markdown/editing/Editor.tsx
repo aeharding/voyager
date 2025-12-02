@@ -9,7 +9,7 @@ import {
   useRef,
 } from "react";
 
-import { attemptParseFromClipboard } from "#/helpers/clipboard";
+import { useOnPaste } from "#/helpers/clipboard";
 import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
@@ -48,11 +48,13 @@ export default function Editor({
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(undefined);
-  const onPastePlainRef = useRef(false);
 
   const { insertBlock } = useEditorHelpers(textareaRef);
 
   const { uploadImage, jsx: uploadImageJsx } = useUploadImage("body");
+
+  const { onKeyUpDown: onKeyUpDownPaste, onPaste: onPasteMarkdown } =
+    useOnPaste("markdown");
 
   useTextRecovery(text, setText, !canRecoverText);
 
@@ -81,14 +83,7 @@ export default function Editor({
       return;
     }
 
-    // Bail on paste modifiers if user is holding down shift
-    if (onPastePlainRef.current) return;
-
-    const toInsert = attemptParseFromClipboard(e);
-    if (!toInsert) return;
-
-    e.preventDefault();
-    document.execCommand("insertText", false, toInsert);
+    onPasteMarkdown(e);
   }
 
   async function onDragCapture(event: DragEvent) {
@@ -163,13 +158,6 @@ export default function Editor({
     }
   }
 
-  function updateMetaRef(e: KeyboardEvent) {
-    // It's not enough to just check for shiftKey,
-    // because iOS safari will return shiftKey=true when
-    // <enter> or <space> is pressed (including on keyup).
-    onPastePlainRef.current = e.shiftKey && (e.metaKey || e.ctrlKey);
-  }
-
   return (
     <>
       {uploadImageJsx}
@@ -188,7 +176,7 @@ export default function Editor({
           spellCheck
           id={TOOLBAR_TARGET_ID}
           onKeyDown={(e) => {
-            updateMetaRef(e);
+            onKeyUpDownPaste(e);
 
             switch (e.key) {
               case "Enter": {
@@ -204,7 +192,7 @@ export default function Editor({
                 break;
             }
           }}
-          onKeyUp={updateMetaRef}
+          onKeyUp={onKeyUpDownPaste}
           onPaste={onPaste}
           onDropCapture={onDragCapture}
           onDragOver={onDragOver}
