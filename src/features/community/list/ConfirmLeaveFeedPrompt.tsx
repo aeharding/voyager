@@ -2,8 +2,9 @@ import { BackButtonEventDetail } from "@ionic/core";
 import { useIonAlert } from "@ionic/react";
 import { useEffect, useRef } from "react";
 
+import { setConfirmLeaveFeedPrompt } from "#/features/settings/settingsSlice";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
-import { useAppSelector } from "#/store";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export function ConfirmLeaveFeedPrompt() {
   const router = useOptimizedIonRouter();
@@ -12,6 +13,8 @@ export function ConfirmLeaveFeedPrompt() {
   const confirmLeaveFeedPrompt = useAppSelector(
     (state) => state.settings.general.confirmLeaveFeedPrompt,
   );
+  const dispatch = useAppDispatch();
+  const dontAskAgainRef = useRef(false);
 
   useEffect(() => {
     if (!confirmLeaveFeedPrompt) return;
@@ -33,7 +36,9 @@ export function ConfirmLeaveFeedPrompt() {
         if (
           !pushedByRoute ||
           !/^\/posts\/[\w\\.]+$/.test(pushedByRoute) ||
-          document.querySelector(".pswp--open")
+          // check if gallery is open
+          // (this feature isn't ios only, so this should work)
+          location.hash
         ) {
           next();
           return;
@@ -45,9 +50,27 @@ export function ConfirmLeaveFeedPrompt() {
           header: "Are you sure you want to leave the feed?",
           message: "You will lose your progress.",
           backdropDismiss: false,
+          inputs: [
+            {
+              name: "dontAskAgain",
+              type: "checkbox",
+              label: "Don't ask me again",
+              handler: (input) => {
+                dontAskAgainRef.current = input.checked ?? false;
+              },
+            },
+          ],
           buttons: [
             { text: "Cancel", role: "cancel" },
-            { text: "Leave", handler: () => next() },
+            {
+              text: "Leave",
+              handler: () => {
+                if (dontAskAgainRef.current)
+                  dispatch(setConfirmLeaveFeedPrompt(false));
+
+                next();
+              },
+            },
           ],
           onDidDismiss: () => {
             isAlertOpenRef.current = false;
@@ -64,7 +87,7 @@ export function ConfirmLeaveFeedPrompt() {
         onBackButton as EventListener,
       );
     };
-  }, [confirmLeaveFeedPrompt, router, presentAlert, dismissAlert]);
+  }, [confirmLeaveFeedPrompt, router, presentAlert, dismissAlert, dispatch]);
 
   return null;
 }
