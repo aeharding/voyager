@@ -6,11 +6,11 @@ import { useCalculateSeparateScore } from "#/helpers/vote";
 
 import VoteStat from "../VoteStat";
 import { useVote } from "./shared";
-import { VoteModeProps } from "./shared";
+import { VoteProps } from "./Vote";
 
 import styles from "./shared.module.css";
 
-export default function SeparateVoteMode({ item, className }: VoteModeProps) {
+export default function SeparateVoteMode({ item, ...rest }: VoteProps) {
   const { upvotes, downvotes } = useCalculateSeparateScore(item);
   const { myVote, onVote } = useVote(item);
 
@@ -19,26 +19,26 @@ export default function SeparateVoteMode({ item, className }: VoteModeProps) {
       <VoteStat
         button
         icon={arrowUpSharp}
-        className={className}
         iconClassName={styles.icon}
         currentVote={myVote}
         voteRepresented={1}
         onClick={async (e) => {
           await onVote(e, myVote === 1 ? 0 : 1);
         }}
+        {...rest}
       >
         {formatNumber(upvotes)}
       </VoteStat>
       <VoteStat
         button
         icon={arrowDownSharp}
-        className={className}
         iconClassName={styles.icon}
         currentVote={myVote}
         voteRepresented={-1}
         onClick={async (e) => {
           await onVote(e, myVote === -1 ? 0 : -1);
         }}
+        {...rest}
       >
         {formatNumber(downvotes)}
       </VoteStat>

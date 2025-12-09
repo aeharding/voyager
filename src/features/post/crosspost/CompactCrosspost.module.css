@@ -51,3 +51,7 @@
 .statIonSkeletonText {
   width: 16px;
 }
+
+.vote {
+  pointer-events: none;
+}

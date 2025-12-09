@@ -11,7 +11,12 @@ export function useCalculateTotalScore(item: PostView | CommentView) {
       : state.post.postVotesById[id],
   );
 
-  return item.counts.score - (item.my_vote ?? 0) + (storeVote ?? 0);
+  return (
+    item.counts.upvotes -
+    item.counts.downvotes -
+    (item.my_vote ?? 0) +
+    (storeVote ?? 0)
+  );
 }
 
 export function useCalculateSeparateScore(item: PostView | CommentView) {
