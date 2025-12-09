@@ -21,10 +21,10 @@ import SendMessageBox from "#/features/inbox/SendMessageBox";
 import AppHeader from "#/features/shared/AppHeader";
 import { getUser } from "#/features/user/userSlice";
 import { AppPage } from "#/helpers/AppPage";
-import AppVList from "#/helpers/AppVList";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
+import { AppVirtualizer } from "#/helpers/virtua";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -134,35 +134,35 @@ export default function ConversationPage() {
 
     if (typeof myUserId === "number" && them)
       return (
-        <AppVList
-          className={styles.container}
-          ref={virtuaRef}
-          style={{ flex: 1 }}
-          reverse
-          onScroll={(offset) => {
-            // Wait for viewport resize to settle (iOS keyboard open/close)
-            requestAnimationFrame(() => {
+        <div className={styles.container}>
+          <div style={{ flexGrow: 1 }} />
+          <AppVirtualizer
+            ref={virtuaRef}
+            onScroll={(offset) => {
+              // Wait for viewport resize to settle (iOS keyboard open/close)
               requestAnimationFrame(() => {
-                if (!virtuaRef.current) return;
-                shouldStickToBottom.current =
-                  offset -
-                    virtuaRef.current.scrollSize +
-                    virtuaRef.current.viewportSize >=
-                  // FIXME: The sum may not be 0 because of sub-pixel value when browser's window.devicePixelRatio has decimal value
-                  -1.5;
+                requestAnimationFrame(() => {
+                  if (!virtuaRef.current) return;
+                  shouldStickToBottom.current =
+                    offset -
+                      virtuaRef.current.scrollSize +
+                      virtuaRef.current.viewportSize >=
+                    // FIXME: The sum may not be 0 because of sub-pixel value when browser's window.devicePixelRatio has decimal value
+                    -1.5;
+                });
               });
-            });
-          }}
-        >
-          {messages.map((message, index) => (
-            <div
-              className={styles.messageContainer}
-              key={message.private_message.id}
-            >
-              <Message message={message} first={index === 0} />
-            </div>
-          ))}
-        </AppVList>
+            }}
+          >
+            {messages.map((message, index) => (
+              <div
+                className={styles.messageContainer}
+                key={message.private_message.id}
+              >
+                <Message message={message} first={index === 0} />
+              </div>
+            ))}
+          </AppVirtualizer>
+        </div>
       );
 
     return <IonSpinner className={sharedStyles.pageSpinner} />;

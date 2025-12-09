@@ -18,7 +18,6 @@ import { useFeedSortParams } from "#/features/feed/sort/useFeedSort";
 import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
-import AppVList from "#/helpers/AppVList";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
 import {
   buildCommentsTreeWithMissing,
@@ -27,7 +26,7 @@ import {
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
-import { IndexedVirtuaItem } from "#/helpers/virtua";
+import { AppVList, IndexedVirtuaItem } from "#/helpers/virtua";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
