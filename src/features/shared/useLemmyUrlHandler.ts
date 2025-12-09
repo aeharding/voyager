@@ -189,6 +189,8 @@ export default function useLemmyUrlHandler() {
     const url = getUrl(link);
 
     if (!url) return;
+
+    return getObjectName(url, determineSoftwareFromUrl(url));
   }
 
   async function redirectToLemmyObjectIfNeeded(
@@ -254,7 +256,7 @@ function isPotentialObjectPath(urlPathname: string): boolean {
   return false;
 }
 
-function getObjectName(url: URL, software: string): string | undefined {
+function getObjectName(url: URL, software: string): ObjectType | undefined {
   if (matchLemmyOrPiefedCommunity(url.pathname)) return "community";
 
   switch (software) {
