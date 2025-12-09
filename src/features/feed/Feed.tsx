@@ -19,7 +19,7 @@ import { PageCursor } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
-import AppVList from "#/helpers/AppVList";
+import { AppVList } from "#/helpers/virtua";
 import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
