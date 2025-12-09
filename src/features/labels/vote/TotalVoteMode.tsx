@@ -6,11 +6,11 @@ import { useCalculateTotalScore } from "#/helpers/vote";
 
 import VoteStat from "../VoteStat";
 import { useVote } from "./shared";
-import { VoteModeProps } from "./shared";
+import { VoteProps } from "./Vote";
 
 import styles from "./shared.module.css";
 
-export default function TotalVoteMode({ item, className }: VoteModeProps) {
+export default function TotalVoteMode({ item, ...rest }: VoteProps) {
   const score = useCalculateTotalScore(item);
   const { myVote, onVote } = useVote(item);
 
@@ -18,12 +18,12 @@ export default function TotalVoteMode({ item, className }: VoteModeProps) {
     <VoteStat
       button
       icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
-      className={className}
       iconClassName={styles.icon}
       currentVote={myVote}
       onClick={async (e) => {
         await onVote(e, myVote ? 0 : 1);
       }}
+      {...rest}
     >
       {formatNumber(score)}
     </VoteStat>

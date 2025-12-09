@@ -14,11 +14,6 @@ import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppSelector } from "#/store";
 import { useAppDispatch } from "#/store";
 
-export interface VoteModeProps {
-  item: PostView | CommentView;
-  className?: string;
-}
-
 export function useVote(item: PostView | CommentView) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();

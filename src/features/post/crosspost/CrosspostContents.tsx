@@ -5,6 +5,7 @@ import { arrowUpSharp } from "ionicons/icons";
 import { chatbubbleOutline } from "ionicons/icons";
 import { PostView } from "threadiverse";
 
+import Vote from "#/features/labels/vote/Vote";
 import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
 import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import { cx } from "#/helpers/css";
@@ -55,11 +56,13 @@ export default function CrosspostContents({
           <IonSkeletonText className={styles.communityIonSkeletonText} />
         )}
         <div className={styles.stat}>
-          <IonIcon icon={arrowUpSharp} />{" "}
           {crosspost ? (
-            formatNumber(crosspost.counts.score)
+            <Vote item={crosspost} colorized={false} className={styles.vote} />
           ) : (
-            <IonSkeletonText className={styles.statIonSkeletonText} />
+            <>
+              <IonIcon icon={arrowUpSharp} />{" "}
+              <IonSkeletonText className={styles.statIonSkeletonText} />
+            </>
           )}
         </div>
         <div className={styles.stat}>
