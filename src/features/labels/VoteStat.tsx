@@ -11,13 +11,13 @@ import { useAppSelector } from "#/store";
 interface VoteStatProps extends ComponentProps<typeof Stat> {
   currentVote: 1 | -1 | 0;
   voteRepresented?: 1 | -1 | 0;
-  colorized?: boolean;
+  disabled?: boolean;
 }
 
 export default function VoteStat({
   currentVote,
   voteRepresented,
-  colorized = true,
+  onClick,
   ...props
 }: VoteStatProps) {
   const votesTheme = useAppSelector(
@@ -27,8 +27,12 @@ export default function VoteStat({
   return (
     <Stat
       {...props}
+      onClick={(...args) => {
+        if (props.disabled) return;
+        onClick?.(...args);
+      }}
       style={
-        colorized
+        !props.disabled
           ? {
               color: buildStatColor(currentVote, voteRepresented, votesTheme),
             }

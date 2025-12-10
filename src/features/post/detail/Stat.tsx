@@ -11,6 +11,7 @@ interface StatProps extends React.HTMLAttributes<
   button?: boolean;
   icon: string;
   iconClassName?: string;
+  disabled?: boolean;
   children?: React.ReactNode;
 }
 
@@ -20,9 +21,10 @@ export default function Stat({
   iconClassName,
   className,
   children,
+  disabled,
   ...rest
 }: StatProps) {
-  const El = button ? "button" : "div";
+  const El = button && !disabled ? "button" : "div";
 
   return (
     <El
