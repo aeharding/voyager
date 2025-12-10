@@ -32,20 +32,14 @@ export default function CompactCrosspost(props: CrosspostProps) {
           ) : (
             <IonSkeletonText className={styles.communityIonSkeletonText} />
           )}
-          <div className={styles.stat}>
-            {crosspost ? (
-              <Vote
-                item={crosspost}
-                colorized={false}
-                className={styles.vote}
-              />
-            ) : (
-              <>
-                <IonIcon icon={arrowUpSharp} />{" "}
-                <IonSkeletonText className={styles.statIonSkeletonText} />
-              </>
-            )}
-          </div>
+          {crosspost ? (
+            <Vote item={crosspost} disabled />
+          ) : (
+            <div className={styles.stat}>
+              <IonIcon icon={arrowUpSharp} />{" "}
+              <IonSkeletonText className={styles.statIonSkeletonText} />
+            </div>
+          )}
           <div className={styles.stat}>
             <IonIcon icon={chatbubbleOutline} />{" "}
             {crosspost ? (
