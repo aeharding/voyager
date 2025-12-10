@@ -95,14 +95,9 @@ export function DynamicDismissableModal({
   const _dismiss = () => {
     // changing location (e.g. back button) w/ confirm discard changes prompt
     // causes bad Ionic state. Wait for Ionic state to settle before dismiss
-
-    // NOTE: Temp attempt fix for https://vger.social/post/29689412
-    // Originally just queueMicrotask
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setCanDismiss(true);
-        setIsOpen(false);
-      });
+    queueMicrotask(() => {
+      setCanDismiss(true);
+      setIsOpen(false);
     });
   };
 
