@@ -28,6 +28,8 @@ import {
   subscript,
   superscript,
 } from "#/features/icons";
+import { unfurlRedirectServiceIfNeeded } from "#/features/resolve/resolveSlice";
+import { GO_VOYAGER_HOST } from "#/features/share/fediRedirect";
 import { htmlToMarkdown } from "#/helpers/markdown";
 import { isValidUrl } from "#/helpers/url";
 
@@ -237,8 +239,10 @@ export default function DefaultMode({
     });
   }
 
-  function insertMarkdownLink(text: string = "", url?: string) {
-    const markdownLink = `[${text}](${url || "url"})`;
+  function insertMarkdownLink(text = "", url = "") {
+    const unwrappedUrl = unfurlRedirectServiceIfNeeded(url, [GO_VOYAGER_HOST]);
+
+    const markdownLink = `[${text}](${unwrappedUrl || "url"})`;
 
     const locationBeforeInsert = selectionLocation.current;
     const currentSelectionLocation = locationBeforeInsert + markdownLink.length;

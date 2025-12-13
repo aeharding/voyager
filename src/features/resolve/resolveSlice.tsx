@@ -130,8 +130,14 @@ export function normalizeObjectUrl(objectUrl: string) {
   return url;
 }
 
-export function unfurlRedirectServiceIfNeeded(url: string): string {
-  const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(url);
+export function unfurlRedirectServiceIfNeeded(
+  url: string,
+  services?: string[],
+): string {
+  const potentialUrl = extractLemmyLinkFromPotentialFediRedirectService(
+    url,
+    services,
+  );
 
   if (potentialUrl) return potentialUrl;
 
