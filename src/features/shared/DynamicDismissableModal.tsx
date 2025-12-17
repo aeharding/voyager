@@ -151,13 +151,8 @@ export function DynamicDismissableModal({
         canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
         onDidDismiss={() => {
           setIsOpen(false);
+          setPresentingElement(undefined);
 
-          // Attempt to fix https://github.com/aeharding/voyager/issues/2183
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              setPresentingElement(undefined);
-            });
-          });
           // in case onDidDismiss incorrectly called by Ionic, don't clear data
           if (textRecovery && canDismissRef_.current) clearRecoveredText();
 
