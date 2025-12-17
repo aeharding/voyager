@@ -4,8 +4,11 @@
 
   font-size: 0.9rem;
 
+  overflow-y: auto;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .messageContainer {
