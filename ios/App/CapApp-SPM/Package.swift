@@ -30,7 +30,7 @@ let package = Package(
         .package(name: "CapacitorPluginSafeArea", path: "../../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.3_@capacitor+core@8.0.0/node_modules/capacitor-plugin-safe-area"),
         .package(name: "CapacitorReader", path: "../../../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@8.0.0/node_modules/capacitor-reader"),
         .package(name: "CapacitorShareSafari", path: "../../../node_modules/.pnpm/capacitor-share-safari@0.1.2_@capacitor+core@8.0.0/node_modules/capacitor-share-safari"),
-        .package(name: "CapacitorStashMedia", path: "../../../node_modules/.pnpm/capacitor-stash-media@3.1.1_@capacitor+core@8.0.0/node_modules/capacitor-stash-media"),
+        .package(name: "CapacitorStashMedia", path: "../../../node_modules/.pnpm/capacitor-stash-media@3.2.2_@capacitor+core@8.0.0/node_modules/capacitor-stash-media"),
         .package(name: "CapacitorTips", path: "../../../node_modules/.pnpm/capacitor-tips@2.2.0_@capacitor+core@8.0.0/node_modules/capacitor-tips")
     ],
     targets: [
