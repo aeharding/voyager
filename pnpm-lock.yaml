@@ -113,8 +113,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2(@capacitor/core@8.0.0)
       capacitor-stash-media:
-        specifier: ^3.2.2
-        version: 3.2.2(@capacitor/core@8.0.0)
+        specifier: ^3.2.3
+        version: 3.2.3(@capacitor/core@8.0.0)
       capacitor-tips:
         specifier: ^2.2.0
         version: 2.2.0(@capacitor/core@8.0.0)
@@ -2748,8 +2748,8 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
-  capacitor-stash-media@3.2.2:
-    resolution: {integrity: sha512-Fj1p/rHtqG6JxM5ZpqK/B+YOWD5zsxdkTneKeiGEano4WWxR7uWxyVOh2zPmge7oI+V1aYGVPiLPG4+ukDohEQ==}
+  capacitor-stash-media@3.2.3:
+    resolution: {integrity: sha512-VwIflUsPyrMnOE7DJdgoki1IaP09POFwqHYqSvmnnZpTTGAh7iSojTrSUMZ7osNsl5e5lfdbcXHUNqlO1865fA==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -9635,7 +9635,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.0.0
 
-  capacitor-stash-media@3.2.2(@capacitor/core@8.0.0):
+  capacitor-stash-media@3.2.3(@capacitor/core@8.0.0):
     dependencies:
       '@capacitor/core': 8.0.0
 
