@@ -1,6 +1,6 @@
 import { IonModal, useIonActionSheet } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useState } from "react";
 import { Prompt, useLocation } from "react-router";
 
 import { isNative } from "#/helpers/device";
@@ -60,12 +60,6 @@ export function DynamicDismissableModal({
 
     if (isOpen) setPresentingElement(document.querySelector("ion-tabs"));
   }
-
-  const isOpenRef = useRef(isOpen);
-
-  useEffect(() => {
-    isOpenRef.current = isOpen;
-  });
 
   const onDismissAttemptCb = async () => {
     if (document.activeElement instanceof HTMLElement)
