@@ -3,7 +3,7 @@ import { noop } from "es-toolkit";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { Prompt, useLocation } from "react-router";
 
-import { isNative } from "#/helpers/device";
+import { isAndroid, isIosTheme, isNative } from "#/helpers/device";
 import useStateRef from "#/helpers/useStateRef";
 import { clearRecoveredText } from "#/helpers/useTextRecovery";
 import { useAppDispatch } from "#/store";
@@ -153,6 +153,8 @@ export function DynamicDismissableModal({
           setIsOpen(false);
           setPresentingElement(undefined);
 
+          performAndroidModalBugWorkaroundIfNeeded();
+
           // in case onDidDismiss incorrectly called by Ionic, don't clear data
           if (textRecovery && canDismissRef_.current) clearRecoveredText();
 
@@ -189,3 +191,32 @@ export const DynamicDismissableModalContext = createContext<{
   dismiss: () => void;
   setCanDismiss: (canDismiss: boolean) => void;
 }>({ dismiss: noop, setCanDismiss: noop });
+
+/**
+ * Ionic and/or Android has an inconsistent bug
+ * specific to Android+iOS modal animations.
+ *
+ * On those devices, check if the transform failed
+ * to be applied, and if so, reset it manually.
+ *
+ * @see https://github.com/aeharding/voyager/issues/2183
+ */
+function performAndroidModalBugWorkaroundIfNeeded() {
+  if (!isAndroid()) return; // only Android is affected
+  if (!isIosTheme()) return; // only iOS theme is affected
+
+  queueMicrotask(() => {
+    const tabs = document.querySelector("ion-tabs")!;
+
+    // If the transform was successfully reset by Ionic, return
+    if (!tabs.style.transform) return;
+
+    tabs.style.transform = "";
+    tabs.style.overflow = "";
+
+    const app = document.querySelector("ion-app")!;
+    app.style.backgroundColor = "";
+
+    document.body.classList.remove("backdrop-no-scroll");
+  });
+}
