@@ -53,9 +53,12 @@ export function DynamicDismissableModal({
     HTMLElement | undefined | null
   >();
 
-  // If transitioning to open and presentingElement is not set, initialize
-  if (isOpen && presentingElement === undefined) {
-    setPresentingElement(document.querySelector("ion-tabs"));
+  const [oldIsOpen, setOldIsOpen] = useState(isOpen);
+
+  if (oldIsOpen !== isOpen) {
+    setOldIsOpen(isOpen);
+
+    if (isOpen) setPresentingElement(document.querySelector("ion-tabs"));
   }
 
   const isOpenRef = useRef(isOpen);
@@ -151,12 +154,13 @@ export function DynamicDismissableModal({
         canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
         onDidDismiss={() => {
           setIsOpen(false);
-          setPresentingElement(undefined);
 
-          // in case onDidDismiss incorrectly called by Ionic, don't clear data
-          if (textRecovery && canDismissRef_.current) clearRecoveredText();
+          // in case onDidDismiss incorrectly called by Ionic, don't proceed
+          if (!canDismissRef_.current) return;
 
-          if (canDismissRef_.current) dispatch(onHandledPendingImages());
+          if (textRecovery) clearRecoveredText();
+
+          dispatch(onHandledPendingImages());
         }}
         presentingElement={presentingElement ?? undefined}
         onWillDismiss={() => {
