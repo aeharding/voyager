@@ -28,11 +28,11 @@ export default defineConfig(
       "perfectionist/sort-imports": [
         "warn",
         {
-          newlinesBetween: "always",
+          newlinesBetween: 1,
           partitionByComment: true,
           type: "natural",
           ignoreCase: false,
-          tsconfigRootDir: ".",
+          tsconfig: { rootDir: "." },
           sortSideEffects: true,
           groups: [
             "builtin",
@@ -41,11 +41,12 @@ export default defineConfig(
             ["parent", "sibling", "index"],
             "css-modules",
           ],
-          customGroups: {
-            value: {
-              ["css-modules"]: ["\\.module\\.css$"],
+          customGroups: [
+            {
+              groupName: "css-modules",
+              elementNamePattern: "\\.module\\.css$",
             },
-          },
+          ],
         },
       ],
     },

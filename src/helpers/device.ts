@@ -59,10 +59,10 @@ export function getSafeArea() {
   }
 
   return {
-    top: parseValue(style.getPropertyValue("--sat")),
-    right: parseValue(style.getPropertyValue("--sar")),
-    bottom: parseValue(style.getPropertyValue("--sab")),
-    left: parseValue(style.getPropertyValue("--sal")),
+    top: parseValue(style.getPropertyValue("--ion-safe-area-top")),
+    right: parseValue(style.getPropertyValue("--ion-safe-area-right")),
+    bottom: parseValue(style.getPropertyValue("--ion-safe-area-bottom")),
+    left: parseValue(style.getPropertyValue("--ion-safe-area-left")),
   };
 }
 
