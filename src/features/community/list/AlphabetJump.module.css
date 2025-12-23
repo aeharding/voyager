@@ -2,7 +2,7 @@
   --line-height: 15px;
 
   position: absolute;
-  right: env(safe-area-inset-right);
+  right: var(--ion-safe-area-right);
   z-index: 1;
 
   top: 50%;

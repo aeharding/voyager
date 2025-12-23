@@ -20,9 +20,7 @@
   width: 100%;
 
   padding: 1rem;
-  padding-bottom: calc(
-    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
-  );
+  padding-bottom: calc(1rem + var(--ion-safe-area-bottom, 0));
 
   color: white;
   background: none;

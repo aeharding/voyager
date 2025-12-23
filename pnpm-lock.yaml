@@ -15,7 +15,7 @@ patchedDependencies:
     hash: 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
     path: patches/@capacitor__haptics.patch
   '@capacitor/keyboard':
-    hash: a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f71586ecd0859f11
+    hash: 8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1b68891d578a3ae
     path: patches/@capacitor__keyboard.patch
   openapi-fetch:
     hash: 8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67
@@ -57,7 +57,7 @@ importers:
         version: 8.0.0(@capacitor/core@8.0.0)
       '@capacitor/keyboard':
         specifier: ^8.0.0
-        version: 8.0.0(patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f71586ecd0859f11)(@capacitor/core@8.0.0)
+        version: 8.0.0(patch_hash=8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1b68891d578a3ae)(@capacitor/core@8.0.0)
       '@capacitor/network':
         specifier: ^8.0.0
         version: 8.0.0(@capacitor/core@8.0.0)
@@ -7559,7 +7559,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.0.0
 
-  '@capacitor/keyboard@8.0.0(patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f71586ecd0859f11)(@capacitor/core@8.0.0)':
+  '@capacitor/keyboard@8.0.0(patch_hash=8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1b68891d578a3ae)(@capacitor/core@8.0.0)':
     dependencies:
       '@capacitor/core': 8.0.0
 

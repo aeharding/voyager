@@ -22,11 +22,8 @@
   height: var(--markdown-toolbar-height);
 
   @media screen and (max-width: 767px) {
-    height: calc(
-      var(--markdown-toolbar-height) +
-        var(--ion-safe-area-bottom, env(safe-area-inset-bottom))
-    );
-    padding-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
+    height: calc(var(--markdown-toolbar-height) + var(--ion-safe-area-bottom));
+    padding-bottom: var(--ion-safe-area-bottom);
 
     &.keyboardOpen {
       height: var(--markdown-toolbar-height);

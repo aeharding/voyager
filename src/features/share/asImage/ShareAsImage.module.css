@@ -1,8 +1,5 @@
 .container {
-  --bottom-padding: max(
-    var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0)),
-    16px
-  );
+  --bottom-padding: max(var(--ion-safe-area-bottom, 0), 16px);
 
   --top-space: 50px;
 
@@ -13,10 +10,7 @@
   display: grid;
   grid-template-rows: max-content 1fr max-content;
 
-  max-height: calc(
-    100vh - var(--ion-safe-area-top, env(safe-area-inset-top, 0)) -
-      var(--top-space)
-  );
+  max-height: calc(100vh - var(--ion-safe-area-top, 0) - var(--top-space));
 
   padding: 0 16px var(--bottom-padding);
 }

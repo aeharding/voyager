@@ -12,8 +12,7 @@
 
   @media screen and (max-width: 767px) {
     padding-bottom: calc(
-      var(--markdown-toolbar-height) +
-        var(--ion-safe-area-bottom, env(safe-area-inset-bottom))
+      var(--markdown-toolbar-height) + var(--ion-safe-area-bottom)
     );
 
     &.keyboardOpen {

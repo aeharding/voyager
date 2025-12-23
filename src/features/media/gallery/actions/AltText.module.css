@@ -2,9 +2,7 @@
   max-width: 600px;
   width: 100%;
 
-  margin-top: calc(
-    var(--ion-safe-area-top, env(safe-area-inset-top, 0)) + 50px
-  );
+  margin-top: calc(var(--ion-safe-area-top, 0) + 50px);
 
   overflow-y: auto;
 
