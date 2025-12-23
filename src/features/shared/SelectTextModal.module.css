@@ -33,5 +33,5 @@
 
   user-select: text;
 
-  margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
+  margin-bottom: var(--ion-safe-area-bottom);
 }

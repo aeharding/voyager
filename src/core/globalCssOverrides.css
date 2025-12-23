@@ -198,7 +198,7 @@ ion-action-sheet ion-icon {
 /* photoswipe */
 
 .pswp__top-bar {
-  top: env(safe-area-inset-top, 0);
+  top: var(--ion-safe-area-top, 0);
 }
 
 /* Let IonActionSheet be on top */

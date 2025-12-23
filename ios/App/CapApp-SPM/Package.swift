@@ -17,7 +17,7 @@ let package = Package(
         .package(name: "CapacitorDevice", path: "../../../node_modules/.pnpm/@capacitor+device@8.0.0_@capacitor+core@8.0.0/node_modules/@capacitor/device"),
         .package(name: "CapacitorFilesystem", path: "../../../node_modules/.pnpm/@capacitor+filesystem@8.0.0_@capacitor+core@8.0.0/node_modules/@capacitor/filesystem"),
         .package(name: "CapacitorHaptics", path: "../../../node_modules/.pnpm/@capacitor+haptics@8.0.0_patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed1_5e690f6871a05688cb24e0cb6bfed927/node_modules/@capacitor/haptics"),
-        .package(name: "CapacitorKeyboard", path: "../../../node_modules/.pnpm/@capacitor+keyboard@8.0.0_patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f7_65bf6763d5befbedd16f6c190f831f20/node_modules/@capacitor/keyboard"),
+        .package(name: "CapacitorKeyboard", path: "../../../node_modules/.pnpm/@capacitor+keyboard@8.0.0_patch_hash=8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1_d3e983c06a099e5cbf98e34e3e6afb93/node_modules/@capacitor/keyboard"),
         .package(name: "CapacitorNetwork", path: "../../../node_modules/.pnpm/@capacitor+network@8.0.0_@capacitor+core@8.0.0/node_modules/@capacitor/network"),
         .package(name: "CapacitorShare", path: "../../../node_modules/.pnpm/@capacitor+share@8.0.0_@capacitor+core@8.0.0/node_modules/@capacitor/share"),
         .package(name: "CapacitorSplashScreen", path: "../../../node_modules/.pnpm/@capacitor+splash-screen@8.0.0_@capacitor+core@8.0.0/node_modules/@capacitor/splash-screen"),

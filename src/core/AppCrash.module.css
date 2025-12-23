@@ -11,10 +11,10 @@
 
   overflow: auto;
 
-  padding-top: max(env(safe-area-inset-top), 8px);
-  padding-right: max(env(safe-area-inset-right), 8px);
-  padding-bottom: max(env(safe-area-inset-bottom), 8px);
-  padding-left: max(env(safe-area-inset-left), 8px);
+  padding-top: max(var(--ion-safe-area-top), 8px);
+  padding-right: max(var(--ion-safe-area-right), 8px);
+  padding-bottom: max(var(--ion-safe-area-bottom), 8px);
+  padding-left: max(var(--ion-safe-area-left), 8px);
 
   color: var(--ion-text-color);
 }

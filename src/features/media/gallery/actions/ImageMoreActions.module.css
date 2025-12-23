@@ -5,7 +5,7 @@
   left: 0;
   height: 60px;
   padding: 0 1rem;
-  margin-top: var(--ion-safe-area-top, env(safe-area-inset-top, 0));
+  margin-top: var(--ion-safe-area-top, 0);
 
   display: flex;
   align-items: center;
