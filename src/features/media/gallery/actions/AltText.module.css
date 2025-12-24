@@ -53,6 +53,8 @@
 
   white-space: pre-wrap;
   word-break: break-word;
+
+  pointer-events: auto;
 }
 
 .clamped {
