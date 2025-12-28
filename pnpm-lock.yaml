@@ -224,8 +224,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: ^0.10.0
-        version: 0.10.0
+        specifier: ^0.10.1
+        version: 0.10.1
       ua-parser-js:
         specifier: ^2.0.7
         version: 2.0.7
@@ -5993,8 +5993,8 @@ packages:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
 
-  threadiverse@0.10.0:
-    resolution: {integrity: sha512-Bu8SYCl1yT4YatIaawOVdTq6uimtTjU5tMZz6OXrnaYvJzGtCtg15m/YSUDEKPyyE1x2oOtRm9soQwg0fqAueQ==}
+  threadiverse@0.10.1:
+    resolution: {integrity: sha512-BjzDT7996qSKX3GkgJpVALzR9VOsbCBnpTNDkiMABjteFjhjuGLAH6eS7kNykVMDXEaQWc8BZbNcMXziIM7q7Q==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -13512,7 +13512,7 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.10.0:
+  threadiverse@0.10.1:
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client-v0: lemmy-js-client@0.20.0-alpha.18
