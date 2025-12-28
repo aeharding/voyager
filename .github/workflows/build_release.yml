@@ -332,7 +332,7 @@ jobs:
             }
 
       - name: Release
-        uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5 # v2.4.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           body: ${{ steps.build_changelog.outputs.changelog }}
           files: |
