@@ -21,6 +21,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
 
   build_web:
     concurrency:
@@ -29,7 +31,8 @@ jobs:
     environment: production
     permissions:
       contents: read
-      id-token: write # aws
+      id-token: write # aws + attestation
+      attestations: write
     steps:
       - uses: actions/checkout@v5
 
@@ -68,6 +71,11 @@ jobs:
         run: |
           zip -r Voyager-Web-$BUILD_LABEL.zip dist
 
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -79,6 +87,10 @@ jobs:
       group: ios-release
     environment: deploy
     runs-on: macos-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v5
 
@@ -123,6 +135,11 @@ jobs:
           APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
           COMMIT_MSG: ${{ github.event.commits[0].message }}
 
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
+
       - name: Upload iOS IPA as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -131,6 +148,10 @@ jobs:
 
   build_android:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v5
 
@@ -174,6 +195,11 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
       - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.BUILD_LABEL }}.apk
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
