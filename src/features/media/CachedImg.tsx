@@ -4,6 +4,8 @@ import { supportsWebp } from "#/helpers/device";
 import { isUrlPictrsLike } from "#/helpers/url";
 import { parseUrl } from "#/helpers/url";
 
+import UnproxiedFallbackImg from "./UnproxiedFallbackImg";
+
 interface PictrsOptions {
   /**
    * maximum image dimension
@@ -15,6 +17,10 @@ interface PictrsOptions {
   format?: "jpg" | "png" | "webp";
 }
 
+/**
+ * We may initially load the full size image, but then later need the thumbnail.
+ * If we're already loaded the full size image, return it to prevent flicker.
+ */
 const GLOBAL_IMAGE_CACHE = new Map<string, PictrsOptions | null>();
 
 interface CachedImgProps extends Omit<ComponentProps<"img">, "src"> {
@@ -59,7 +65,7 @@ export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
     };
   }, [pictrsOptions, props.src]);
 
-  return <img {...props} src={src} />;
+  return <UnproxiedFallbackImg {...props} src={src} />;
 }
 
 const defaultFormat = supportsWebp() ? "webp" : "jpg";
