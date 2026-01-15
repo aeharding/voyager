@@ -8,7 +8,10 @@
   padding: 0 24px 1rem;
 
   color: rgba(255, 255, 255, 0.7);
-  pointer-events: auto;
+
+  :global(.pswp--ui-visible) & {
+    pointer-events: auto;
+  }
 }
 
 .buttons {

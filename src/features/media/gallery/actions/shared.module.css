@@ -32,7 +32,9 @@
   align-items: center;
   gap: 1rem;
 
-  pointer-events: auto;
+  :global(.pswp--ui-visible) & {
+    pointer-events: auto;
+  }
 }
 
 .withBg {

@@ -54,7 +54,9 @@
   white-space: pre-wrap;
   word-break: break-word;
 
-  pointer-events: auto;
+  :global(.pswp--ui-visible) & {
+    pointer-events: auto;
+  }
 }
 
 .clamped {
