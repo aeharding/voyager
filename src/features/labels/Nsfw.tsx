@@ -9,7 +9,7 @@ export default function Nsfw() {
   return <span className={styles.container}>NSFW</span>;
 }
 
-const NSFW_INSTANCES = ["lemmynsfw.com"];
+const NSFW_INSTANCES = ["fedinsfw.app"];
 
 export function isNsfw(post: PostView): boolean {
   if (post.post.nsfw || post.community.nsfw) return true;

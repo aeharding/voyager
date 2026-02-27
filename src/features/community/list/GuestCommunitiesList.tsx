@@ -18,7 +18,7 @@ import ResolvedCommunitiesList from "./ResolvedCommunitiesList";
  *
  * TODO in the future Local/All will be configurable in an explore view
  */
-const SHOW_LOCAL_ONLY = ["lemmynsfw.com"];
+const SHOW_LOCAL_ONLY = ["fedinsfw.app"];
 
 export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const [communities, setCommunities] = useState<Community[] | undefined>();

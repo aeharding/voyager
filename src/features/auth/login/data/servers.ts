@@ -106,7 +106,7 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   ...PIEFED_INSTANCES,
   "lemmy.ml",
   "lemmygrad.ml",
-  "lemmynsfw.com",
+  "fedinsfw.app",
   "hexbear.net",
   "vger.social",
 ];
