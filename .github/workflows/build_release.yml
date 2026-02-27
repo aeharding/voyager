@@ -86,7 +86,7 @@ jobs:
     concurrency:
       group: ios-release
     environment: deploy
-    runs-on: macos-latest
+    runs-on: macos-26
     permissions:
       contents: read
       id-token: write
