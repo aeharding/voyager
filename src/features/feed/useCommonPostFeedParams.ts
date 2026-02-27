@@ -8,5 +8,5 @@ export default function useCommonPostFeedParams():
   | undefined {
   const handle = useAppSelector(handleSelector);
 
-  if (handle === "lemmynsfw.com") return { show_nsfw: true };
+  if (handle === "fedinsfw.app") return { show_nsfw: true };
 }
