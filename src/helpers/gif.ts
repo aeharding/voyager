@@ -8,7 +8,6 @@ export function determineIsAnimatedGif(file: File): Promise<boolean> {
     fileReader.onload = function () {
       const buffer = fileReader.result as ArrayBuffer;
       const dv = new DataView(buffer, HEADER_LEN + LOGICAL_SCREEN_DESC_LEN - 3);
-      let offset = 0;
       const globalColorTable = dv.getUint8(0);
       let globalColorTableSize = 0;
 
@@ -16,7 +15,7 @@ export function determineIsAnimatedGif(file: File): Promise<boolean> {
         globalColorTableSize = 3 * Math.pow(2, (globalColorTable & 0x7) + 1);
       }
 
-      offset = 3 + globalColorTableSize;
+      const offset = 3 + globalColorTableSize;
       const extensionIntroducer = dv.getUint8(offset);
       const graphicsControlLabel = dv.getUint8(offset + 1);
       let delayTime = 0;

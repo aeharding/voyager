@@ -4,7 +4,6 @@ import eslint from "@eslint/js";
 import vitestPlugin from "@vitest/eslint-plugin";
 import eslintConfigPrettier from "eslint-config-prettier";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
-import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
@@ -13,8 +12,6 @@ export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   eslintConfigPrettier,
-  reactPlugin.configs.flat.recommended,
-  reactPlugin.configs.flat["jsx-runtime"],
   reactHooks.configs.flat["recommended-latest"],
   {
     plugins: {
@@ -115,20 +112,6 @@ export default defineConfig(
           destructuredArrayIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
         },
-      ],
-
-      "react/prop-types": "off",
-      "react/jsx-fragments": ["warn", "syntax"],
-      "react/jsx-curly-brace-presence": ["warn", "never"],
-      "react/no-unknown-property": [
-        "error",
-        {
-          ignore: ["css"],
-        },
-      ],
-      "react/function-component-definition": [
-        "error",
-        { namedComponents: "function-declaration", unnamedComponents: [] },
       ],
     },
   },

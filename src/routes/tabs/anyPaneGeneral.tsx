@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import Route from "#/routes/common/Route";
 import PostDetail from "#/routes/pages/posts/PostPage";
 
