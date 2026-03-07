@@ -77,7 +77,7 @@ export const resolveObject =
           const fedilink = await resolveFedilink(q, { signal });
 
           if (!fedilink) {
-            throw new Error("Could not find fedilink");
+            throw new Error("Could not find fedilink", { cause: error });
           }
 
           object = await clientSelector(getState()).resolveObject(

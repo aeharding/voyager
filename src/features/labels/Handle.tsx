@@ -17,7 +17,6 @@ export function renderHandle({ showInstanceWhenRemote, item }: HandleProps) {
   if (showInstanceWhenRemote && !item.local)
     return [
       item.name,
-      // eslint-disable-next-line react/jsx-key
       <aside className={styles.aside}>@{getItemActorName(item)}</aside>,
     ];
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import Route from "#/routes/common/Route";
 import CommunitiesExplorePage from "#/routes/pages/search/CommunitiesExplorePage";
 import RandomCommunityPage from "#/routes/pages/search/RandomCommunityPage";

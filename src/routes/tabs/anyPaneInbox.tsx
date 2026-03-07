@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import { Route } from "react-router";
 
 import ConversationPage from "#/routes/pages/inbox/ConversationPage";

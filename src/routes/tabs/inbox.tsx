@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import Route from "#/routes/common/Route";
 import BoxesPage from "#/routes/pages/inbox/BoxesPage";
 import InboxAuthRequired from "#/routes/pages/inbox/InboxAuthRequired";

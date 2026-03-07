@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import Route from "#/routes/common/Route";
 import ConversationPage from "#/routes/pages/inbox/ConversationPage";
 import PostDetail from "#/routes/pages/posts/PostPage";

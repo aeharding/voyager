@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import { Redirect } from "react-router";
 
 import Route from "#/routes/common/Route";

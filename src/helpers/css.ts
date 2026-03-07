@@ -25,6 +25,7 @@ export function cx(...args: (string | Falsey)[]) {
 
     if (!className) continue;
 
+    // eslint-disable-next-line no-useless-assignment
     result = (result && (result += " ")) + className;
   }
 
