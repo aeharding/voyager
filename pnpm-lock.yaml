@@ -89,35 +89,35 @@ importers:
         specifier: ^2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
       capacitor-android-nav-mode:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@8.2.0)
+        specifier: ^3.0.0
+        version: 3.0.0(@capacitor/core@8.2.0)
       capacitor-application-context:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@8.2.0)
+        specifier: ^3.0.0
+        version: 3.0.0(@capacitor/core@8.2.0)
       capacitor-biometric-lock:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@8.2.0)
+        specifier: ^3.0.0
+        version: 3.0.0(@capacitor/core@8.2.0)
       capacitor-clear-cache:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@8.2.0)
+        specifier: ^3.0.0
+        version: 3.0.0(@capacitor/core@8.2.0)
       capacitor-launch-native:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@8.2.0)
+        specifier: ^3.0.0
+        version: 3.0.0(@capacitor/core@8.2.0)
       capacitor-plugin-safe-area:
         specifier: ^5.0.0
         version: 5.0.0(@capacitor/core@8.2.0)
       capacitor-reader:
+        specifier: ^2.0.0
+        version: 2.0.0(@capacitor/core@8.2.0)
+      capacitor-share-safari:
         specifier: ^1.0.0
         version: 1.0.0(@capacitor/core@8.2.0)
-      capacitor-share-safari:
-        specifier: ^0.1.2
-        version: 0.1.2(@capacitor/core@8.2.0)
       capacitor-stash-media:
-        specifier: ^3.2.3
-        version: 3.2.3(@capacitor/core@8.2.0)
+        specifier: ^4.0.0
+        version: 4.0.0(@capacitor/core@8.2.0)
       capacitor-tips:
-        specifier: ^2.2.0
-        version: 2.2.0(@capacitor/core@8.2.0)
+        specifier: ^3.0.0
+        version: 3.0.0(@capacitor/core@8.2.0)
       colorjs.io:
         specifier: ^0.6.1
         version: 0.6.1
@@ -167,8 +167,8 @@ importers:
         specifier: ^4.6.8
         version: 4.6.8
       motion:
-        specifier: ^12.35.0
-        version: 12.35.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^12.35.1
+        version: 12.35.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       photoswipe:
         specifier: ^5.4.4
         version: 5.4.4
@@ -2744,55 +2744,55 @@ packages:
   caniuse-lite@1.0.30001777:
     resolution: {integrity: sha512-tmN+fJxroPndC74efCdp12j+0rk0RHwV5Jwa1zWaFVyw2ZxAuPeG8ZgWC3Wz7uSjT3qMRQ5XHZ4COgQmsCMJAQ==}
 
-  capacitor-android-nav-mode@2.0.0:
-    resolution: {integrity: sha512-j0NuSDNYU2VEufm+XJNi7WRSY+d/j2PQsfDVQ+1tspEVjADhrkEt8msNXkpOlbpdSjtj1mPhnty6v8f0RaKWlg==}
+  capacitor-android-nav-mode@3.0.0:
+    resolution: {integrity: sha512-ecZitxppzvwtpWsdmVA45FNjgtxvnbMBxU4w8D7yix9B5mzBhWAXvHHr5cpOEIl9FNFBXCiteqVj8ZSykjmPLA==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-application-context@2.0.0:
-    resolution: {integrity: sha512-9hf51Qv1u/t+7f45JFc1qQj6eXCVpiFw8obsStCPIe8rKtsJYHVqhBGO8QPN3BtoNun9GkaCt+SLI35bs0rSPA==}
+  capacitor-application-context@3.0.0:
+    resolution: {integrity: sha512-nUZyX8SC8IRqAWYatqdsObvwm8G0m1im3tjbbUcnxF91O38llrcKRg3enfDeDqbRw3pDpKFV31atz5kdEw3O5w==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-biometric-lock@2.0.0:
-    resolution: {integrity: sha512-aeh4OwqThFbVbST3tURuNTqvP1ywWtPjqPzHWRf4yuZ+n7UtJ+t2cIBpMeiQnhe3s0xHTBrcq8NzaHLwDCpBGA==}
+  capacitor-biometric-lock@3.0.0:
+    resolution: {integrity: sha512-muHmQUj7WLWy8QxAJWiKj0wER0pZM3Xi0JSo54gEukXUD6iUAJk04T1Pa//KcZJM5GwriNG1yLNXvzuuaXDwxA==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-clear-cache@2.0.0:
-    resolution: {integrity: sha512-/3J9txJFena0tKggFPadCt8e3t1OMxop+jqeYXhiFzWx1V54DbCnmare/neTyl/IU4oVQKSLSM6ByQ9BRNyrpQ==}
+  capacitor-clear-cache@3.0.0:
+    resolution: {integrity: sha512-yYMChAaAVyQpCuFMpYUmpwLb440KakTEROSrb1491JjS2o0k7NAQJC5W4fEmVOSdTtBc7SYCxiy7MvXXx9iGAg==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-launch-native@2.0.0:
-    resolution: {integrity: sha512-teahstP09U9T5+HdWaIdmQY2LqdI6UiJrScRKVBj4rJ7ozt40Jnnizkf3L86Usz44D58Y3AhBbStnQF5cjXQkA==}
+  capacitor-launch-native@3.0.0:
+    resolution: {integrity: sha512-Tu3ZWXLPvp3wiRq6c5CmaT0CSRB0XTOVrvUuQu3ALUoLzEf8AbzcYy2Q9FB/nQYIlkNXgIdQC7WQoz9BDyUviQ==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
   capacitor-plugin-safe-area@5.0.0:
     resolution: {integrity: sha512-Q7+mV7oxGGDB4qPPGXFwS/dexR2/bo/uwkoBRTeR3d/rCzboi3Rnylw18MxSFx/mbQHD9BB7gSDWl+YnncJohQ==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
-  capacitor-reader@1.0.0:
-    resolution: {integrity: sha512-Fu213zl7nsH2PK+fsj9Z7eRxlTIKp3onB8tQjofHGf31RU3ufSnk6VjH0C7tixbwTsWSOB18kaxsSypBOgs12w==}
+  capacitor-reader@2.0.0:
+    resolution: {integrity: sha512-iJAXjKndSmYVJn2Ezh8++qYdn0Asi8Iet/Gu9Zy04yZbd3baNQjce5B3QlL3d5JF70Vvzm9UcVMvghcWouZbzw==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-share-safari@0.1.2:
-    resolution: {integrity: sha512-Ao1zeicsZB8+sJXzEcK2YCWlDLFb8HYo34KLH5LC0WriwJOK/kLTfdOtOTyzaxBDenzOGERCaA1IXx46YH4noA==}
+  capacitor-share-safari@1.0.0:
+    resolution: {integrity: sha512-EDYSeJj283xE8zX1FVjYx8Ar01XPKoP7QPsDvFSAad5ilVqeQsQl/aDTasYRpNl9KQWtuuOhK3HPnAG9u3ghJg==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-stash-media@3.2.3:
-    resolution: {integrity: sha512-VwIflUsPyrMnOE7DJdgoki1IaP09POFwqHYqSvmnnZpTTGAh7iSojTrSUMZ7osNsl5e5lfdbcXHUNqlO1865fA==}
+  capacitor-stash-media@4.0.0:
+    resolution: {integrity: sha512-AWEXNNT95+QGO2BcZDE6SkIrNiAaW44h3DxeABDwzeC4q5R79UiRXWVyPPaZ/I0iK6vINYPReqjH5MOqdWw2yg==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
-  capacitor-tips@2.2.0:
-    resolution: {integrity: sha512-IVccFvrFY7NHzVz8R8nUZWCU+fsXrBC3FfPCrmdTEQyg0qYmz8+N3jxKV9CyW4lX4bv+fkVIPSYwppDDX5G5lQ==}
+  capacitor-tips@3.0.0:
+    resolution: {integrity: sha512-pg0kHQ22vZR50OIjgfXc3tD+yhK/wv07ThaNgHXMNt4kNbXI+uH5fO3fQpmC51dx2cJT5rYmac8Q5PspM3xKVA==}
     peerDependencies:
-      '@capacitor/core': '>=7.0.0'
+      '@capacitor/core': '>=8.0.0'
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -3655,8 +3655,8 @@ packages:
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
-  framer-motion@12.35.0:
-    resolution: {integrity: sha512-w8hghCMQ4oq10j6aZh3U2yeEQv5K69O/seDI/41PK4HtgkLrcBovUNc0ayBC3UyyU7V1mrY2yLzvYdWJX9pGZQ==}
+  framer-motion@12.35.1:
+    resolution: {integrity: sha512-rL8cLrjYZNShZqKV3U0Qj6Y5WDiZXYEM5giiTLfEqsIZxtspzMDCkKmrO5po76jWfvOg04+Vk+sfBvTD0iMmLw==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -4874,14 +4874,14 @@ packages:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
 
-  motion-dom@12.35.0:
-    resolution: {integrity: sha512-FFMLEnIejK/zDABn+vqGVAUN4T0+3fw+cVAY8MMT65yR+j5uMuvWdd4npACWhh94OVWQs79CrBBuwOwGRZAQiA==}
+  motion-dom@12.35.1:
+    resolution: {integrity: sha512-7n6r7TtNOsH2UFSAXzTkfzOeO5616v9B178qBIjmu/WgEyJK0uqwytCEhwKBTuM/HJA40ptAw7hLFpxtPAMRZQ==}
 
   motion-utils@12.29.2:
     resolution: {integrity: sha512-G3kc34H2cX2gI63RqU+cZq+zWRRPSsNIOjpdl9TN4AQwC4sgwYPl/Q/Obf/d53nOm569T0fYK+tcoSV50BWx8A==}
 
-  motion@12.35.0:
-    resolution: {integrity: sha512-BQUhNUIGvUcwXCzwmnT1JpjUqab34lIwxHnXUyWRht1WC1vAyp7/4qgMiUXxN3K6hgUhyoR+HNnLeQMwUZjVjw==}
+  motion@12.35.1:
+    resolution: {integrity: sha512-yEt/49kWC0VU/IEduDfeZw82eDemlPwa1cyo/gcEEUCN4WgpSJpUcxz6BUwakGabvJiTzLQ58J73515I5tfykQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -9562,23 +9562,23 @@ snapshots:
 
   caniuse-lite@1.0.30001777: {}
 
-  capacitor-android-nav-mode@2.0.0(@capacitor/core@8.2.0):
+  capacitor-android-nav-mode@3.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-application-context@2.0.0(@capacitor/core@8.2.0):
+  capacitor-application-context@3.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-biometric-lock@2.0.0(@capacitor/core@8.2.0):
+  capacitor-biometric-lock@3.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-clear-cache@2.0.0(@capacitor/core@8.2.0):
+  capacitor-clear-cache@3.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-launch-native@2.0.0(@capacitor/core@8.2.0):
+  capacitor-launch-native@3.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
@@ -9586,19 +9586,19 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-reader@1.0.0(@capacitor/core@8.2.0):
+  capacitor-reader@2.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-share-safari@0.1.2(@capacitor/core@8.2.0):
+  capacitor-share-safari@1.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-stash-media@3.2.3(@capacitor/core@8.2.0):
+  capacitor-stash-media@4.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
-  capacitor-tips@2.2.0(@capacitor/core@8.2.0):
+  capacitor-tips@3.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 
@@ -10630,9 +10630,9 @@ snapshots:
 
   fraction.js@5.3.4: {}
 
-  framer-motion@12.35.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  framer-motion@12.35.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      motion-dom: 12.35.0
+      motion-dom: 12.35.1
       motion-utils: 12.29.2
       tslib: 2.8.1
     optionalDependencies:
@@ -12101,15 +12101,15 @@ snapshots:
 
   modify-values@1.0.1: {}
 
-  motion-dom@12.35.0:
+  motion-dom@12.35.1:
     dependencies:
       motion-utils: 12.29.2
 
   motion-utils@12.29.2: {}
 
-  motion@12.35.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  motion@12.35.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      framer-motion: 12.35.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      framer-motion: 12.35.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       tslib: 2.8.1
     optionalDependencies:
       react: 19.2.4
