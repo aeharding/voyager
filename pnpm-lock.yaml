@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@8.8.1
+  '@ionic/core': npm:voyager-ionic-core@8.8.1-voyager.0
 
 patchedDependencies:
   '@capacitor/android':
@@ -74,8 +74,8 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
       '@ionic/core':
-        specifier: npm:voyager-ionic-core@8.8.1
-        version: voyager-ionic-core@8.8.1
+        specifier: npm:voyager-ionic-core@8.8.1-voyager.0
+        version: voyager-ionic-core@8.8.1-voyager.0
       '@ionic/react':
         specifier: 8.8.1
         version: 8.8.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -6522,8 +6522,8 @@ packages:
       jsdom:
         optional: true
 
-  voyager-ionic-core@8.8.1:
-    resolution: {integrity: sha512-3MVgAqgnXWfyiN9Jh67aBRFIY3Bkj80/KoA/0cvtIGibdY7xXYpBZ+5ZL/WH9z8JfQYo5lUTykDWNXjdMYJpGQ==}
+  voyager-ionic-core@8.8.1-voyager.0:
+    resolution: {integrity: sha512-ePAShDwkQmjDDlzJ14WYcyMjG4hAJ8SFPw3BwWQKl9iGZCrl+t0Dn4T6Eq3HKB7OIIPXA3hdJCcVtsp545zlLA==}
     engines: {node: '>= 16'}
 
   w3c-xmlserializer@5.0.0:
@@ -8129,7 +8129,7 @@ snapshots:
 
   '@ionic/react@8.8.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
-      '@ionic/core': voyager-ionic-core@8.8.1
+      '@ionic/core': voyager-ionic-core@8.8.1-voyager.0
       ionicons: 8.0.13
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
@@ -13940,7 +13940,7 @@ snapshots:
       - tsx
       - yaml
 
-  voyager-ionic-core@8.8.1:
+  voyager-ionic-core@8.8.1-voyager.0:
     dependencies:
       '@stencil/core': 4.43.0
       ionicons: 8.0.13
