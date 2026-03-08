@@ -156,11 +156,17 @@ export function DynamicDismissableModal({
 
           dispatch(onHandledPendingImages());
         }}
+        onIonDragEnd={(e) => {
+          if (e.detail.snapBreakpoint !== 0) return;
+          if (!(document.activeElement instanceof HTMLElement)) return;
+
+          document.activeElement.blur();
+        }}
         presentingElement={presentingElement ?? undefined}
         onWillDismiss={() => {
-          if (document.activeElement instanceof HTMLElement) {
-            document.activeElement.blur();
-          }
+          if (!(document.activeElement instanceof HTMLElement)) return;
+
+          document.activeElement.blur();
         }}
       >
         <DynamicDismissableModalContext value={{ dismiss, setCanDismiss }}>
