@@ -12,7 +12,6 @@ const config: CapacitorConfig = {
   plugins: {
     Keyboard: {
       resize: KeyboardResize.Ionic,
-      resizeOnFullScreen: true,
     },
     SplashScreen: {
       launchShowDuration: 3_000,
