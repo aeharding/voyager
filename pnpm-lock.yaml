@@ -9,13 +9,13 @@ overrides:
 
 patchedDependencies:
   '@capacitor/android':
-    hash: db122ed87c040420028701b699d577755aa9dafc3c78e5377a8a28dcaacc48ca
+    hash: 3d759f6e55e98678871eaaf33b044fb5b2498cca155fe074bb49dbbf4a490f84
     path: patches/@capacitor__android.patch
   '@capacitor/haptics':
     hash: 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
     path: patches/@capacitor__haptics.patch
   '@capacitor/keyboard':
-    hash: 8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1b68891d578a3ae
+    hash: 4668f0c9ffd6f4db234f7372ce7623e4426b9d8427dd11439c4201723c6406a3
     path: patches/@capacitor__keyboard.patch
   openapi-fetch:
     hash: 8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67
@@ -36,16 +36,13 @@ importers:
         version: 7.0.0(@capacitor/core@8.2.0)
       '@capacitor/android':
         specifier: ^8.2.0
-        version: 8.2.0(patch_hash=db122ed87c040420028701b699d577755aa9dafc3c78e5377a8a28dcaacc48ca)(@capacitor/core@8.2.0)
+        version: 8.2.0(patch_hash=3d759f6e55e98678871eaaf33b044fb5b2498cca155fe074bb49dbbf4a490f84)(@capacitor/core@8.2.0)
       '@capacitor/app':
         specifier: ^8.0.1
         version: 8.0.1(@capacitor/core@8.2.0)
       '@capacitor/core':
         specifier: ^8.2.0
         version: 8.2.0
-      '@capacitor/device':
-        specifier: ^8.0.1
-        version: 8.0.1(@capacitor/core@8.2.0)
       '@capacitor/filesystem':
         specifier: ^8.1.2
         version: 8.1.2(@capacitor/core@8.2.0)
@@ -57,7 +54,7 @@ importers:
         version: 8.2.0(@capacitor/core@8.2.0)
       '@capacitor/keyboard':
         specifier: ^8.0.1
-        version: 8.0.1(patch_hash=8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1b68891d578a3ae)(@capacitor/core@8.2.0)
+        version: 8.0.1(patch_hash=4668f0c9ffd6f4db234f7372ce7623e4426b9d8427dd11439c4201723c6406a3)(@capacitor/core@8.2.0)
       '@capacitor/network':
         specifier: ^8.0.1
         version: 8.0.1(@capacitor/core@8.2.0)
@@ -103,9 +100,6 @@ importers:
       capacitor-launch-native:
         specifier: ^3.0.0
         version: 3.0.0(@capacitor/core@8.2.0)
-      capacitor-plugin-safe-area:
-        specifier: ^5.0.0
-        version: 5.0.0(@capacitor/core@8.2.0)
       capacitor-reader:
         specifier: ^2.0.0
         version: 2.0.0(@capacitor/core@8.2.0)
@@ -911,11 +905,6 @@ packages:
 
   '@capacitor/core@8.2.0':
     resolution: {integrity: sha512-oKaoNeNtH2iIZMDFVrb1atoyRECDGHcfLMunJ5KWN8DtvpVBeeA4c41e20NTuhMxw1cSYbpq2PV2hb+/9CJxlQ==}
-
-  '@capacitor/device@8.0.1':
-    resolution: {integrity: sha512-LHtf3ObK7dpFS3jJ0GNrTG0lHufNgD0tLBukeEAxeR28mu80dHQA1XxmQV0CWo+KKcI0hBdz4dfucRta3TdVxw==}
-    peerDependencies:
-      '@capacitor/core': '>=8.0.0'
 
   '@capacitor/filesystem@8.1.2':
     resolution: {integrity: sha512-doaaMfGoFR2hWU6aV6u83I+5ZsGyJVq+Gz4r9lMpJzUKMm1eMu0hLnFdV1aXZlU9FlK/RndFrVD8oRZfNOqWgQ==}
@@ -2766,11 +2755,6 @@ packages:
 
   capacitor-launch-native@3.0.0:
     resolution: {integrity: sha512-Tu3ZWXLPvp3wiRq6c5CmaT0CSRB0XTOVrvUuQu3ALUoLzEf8AbzcYy2Q9FB/nQYIlkNXgIdQC7WQoz9BDyUviQ==}
-    peerDependencies:
-      '@capacitor/core': '>=8.0.0'
-
-  capacitor-plugin-safe-area@5.0.0:
-    resolution: {integrity: sha512-Q7+mV7oxGGDB4qPPGXFwS/dexR2/bo/uwkoBRTeR3d/rCzboi3Rnylw18MxSFx/mbQHD9BB7gSDWl+YnncJohQ==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
@@ -7532,7 +7516,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.2.0
 
-  '@capacitor/android@8.2.0(patch_hash=db122ed87c040420028701b699d577755aa9dafc3c78e5377a8a28dcaacc48ca)(@capacitor/core@8.2.0)':
+  '@capacitor/android@8.2.0(patch_hash=3d759f6e55e98678871eaaf33b044fb5b2498cca155fe074bb49dbbf4a490f84)(@capacitor/core@8.2.0)':
     dependencies:
       '@capacitor/core': 8.2.0
 
@@ -7566,10 +7550,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@capacitor/device@8.0.1(@capacitor/core@8.2.0)':
-    dependencies:
-      '@capacitor/core': 8.2.0
-
   '@capacitor/filesystem@8.1.2(@capacitor/core@8.2.0)':
     dependencies:
       '@capacitor/core': 8.2.0
@@ -7583,7 +7563,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.2.0
 
-  '@capacitor/keyboard@8.0.1(patch_hash=8f83b26625e28f4de23b507acd3b9b03d3e95da938bc817cc1b68891d578a3ae)(@capacitor/core@8.2.0)':
+  '@capacitor/keyboard@8.0.1(patch_hash=4668f0c9ffd6f4db234f7372ce7623e4426b9d8427dd11439c4201723c6406a3)(@capacitor/core@8.2.0)':
     dependencies:
       '@capacitor/core': 8.2.0
 
@@ -9579,10 +9559,6 @@ snapshots:
       '@capacitor/core': 8.2.0
 
   capacitor-launch-native@3.0.0(@capacitor/core@8.2.0):
-    dependencies:
-      '@capacitor/core': 8.2.0
-
-  capacitor-plugin-safe-area@5.0.0(@capacitor/core@8.2.0):
     dependencies:
       '@capacitor/core': 8.2.0
 

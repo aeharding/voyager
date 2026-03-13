@@ -6,7 +6,6 @@ import DatabaseErrorListener from "./DatabaseErrorListener";
 import HapticsListener from "./HapticsListener";
 import ServerConnectivity from "./ServerConnectivity";
 // Listeners
-import "./androidSafeArea";
 import "./db";
 import "./ionActivatable";
 import "./network/listener";
