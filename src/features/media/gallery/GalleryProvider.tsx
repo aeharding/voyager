@@ -1,4 +1,4 @@
-import { StatusBar } from "@capacitor/status-bar";
+import { SystemBars } from "@capacitor/core";
 import { asyncNoop, compact, noop } from "es-toolkit";
 import type { PreparedPhotoSwipeOptions, ZoomLevelOption } from "photoswipe";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
@@ -405,7 +405,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       instance.on("openingAnimationStart", () => {
         preventControlsIfNeeded();
 
-        if (isNative()) StatusBar.hide();
+        if (isNative()) SystemBars.hide();
       });
 
       instance.on("imageClickAction", (e) => {
@@ -423,7 +423,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       }
 
       instance.on("close", () => {
-        if (isNative()) StatusBar.show();
+        if (isNative()) SystemBars.show();
       });
 
       instance.on("uiRegister", function () {

@@ -1,5 +1,5 @@
+import { SystemBars, SystemBarsStyle } from "@capacitor/core";
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
-import { StatusBar, Style } from "@capacitor/status-bar";
 import React, { createContext, useEffect, useLayoutEffect } from "react";
 
 import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
@@ -83,7 +83,9 @@ export default function GlobalStyles({ children }: React.PropsWithChildren) {
 
   useLayoutEffect(() => {
     if (isNative()) {
-      StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+      SystemBars.setStyle({
+        style: isDark ? SystemBarsStyle.Dark : SystemBarsStyle.Light,
+      });
     }
   }, [isDark]);
 
