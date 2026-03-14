@@ -12,6 +12,7 @@ export default function DatabaseErrorListener() {
   useEffect(() => {
     const listener = (ev: PromiseRejectionEvent) => {
       switch (ev.reason.name) {
+        case Dexie.errnames.MissingAPI:
         case Dexie.errnames.Unknown:
         case Dexie.errnames.DatabaseClosed: {
           dispatch(setDatabaseError(ev.reason));
