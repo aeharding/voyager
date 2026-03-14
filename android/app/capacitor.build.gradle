@@ -17,6 +17,7 @@ dependencies {
     implementation project(':capacitor-network')
     implementation project(':capacitor-share')
     implementation project(':capacitor-splash-screen')
+    implementation project(':capacitor-status-bar')
     implementation project(':capacitor-android-nav-mode')
     implementation project(':capacitor-application-context')
     implementation project(':capacitor-biometric-lock')

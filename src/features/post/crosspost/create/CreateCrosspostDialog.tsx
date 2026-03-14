@@ -1,4 +1,4 @@
-import { SystemBars } from "@capacitor/core";
+import { StatusBar } from "@capacitor/status-bar";
 import {
   IonButton,
   IonInput,
@@ -60,10 +60,10 @@ export default function CreateCrosspostDialog({
   useEffect(() => {
     if (!isNative()) return;
 
-    SystemBars.hide();
+    StatusBar.hide();
 
     return () => {
-      SystemBars.show();
+      StatusBar.show();
     };
   }, []);
 

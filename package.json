@@ -41,6 +41,7 @@
     "@capacitor/network": "^8.0.1",
     "@capacitor/share": "^8.0.1",
     "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.1",
     "@github/markdown-toolbar-element": "^2.2.3",
     "@ionic/core": "npm:voyager-ionic-core@8.8.1-voyager.0",
     "@ionic/react": "8.8.1",
