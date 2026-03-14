@@ -1,6 +1,6 @@
+import babel from "@rolldown/plugin-babel";
 import legacy from "@vitejs/plugin-legacy";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
-import babel from "@rolldown/plugin-babel";
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
@@ -37,6 +37,7 @@ export default defineConfig({
       // es.array.at: Voyager code iOS 15.2
       // es.object.has-own: ReactMarkdown iOS 15.2
       modernPolyfills: ["es.array.at", "es.object.has-own"],
+      renderLegacyChunks: false,
     }),
   ],
   envPrefix: [
