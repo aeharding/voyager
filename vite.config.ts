@@ -36,8 +36,7 @@ export default defineConfig({
     legacy({
       // es.array.at: Voyager code iOS 15.2
       // es.object.has-own: ReactMarkdown iOS 15.2
-      modernPolyfills: ["es.array.at", "es.object.has-own"],
-      renderLegacyChunks: false,
+      polyfills: ["es.array.at", "es.object.has-own"],
     }),
   ],
   envPrefix: [
