@@ -26,9 +26,6 @@ project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capaci
 include ':capacitor-splash-screen'
 project(':capacitor-splash-screen').projectDir = new File('../node_modules/.pnpm/@capacitor+splash-screen@8.0.1_@capacitor+core@8.2.0/node_modules/@capacitor/splash-screen/android')
 
-include ':capacitor-status-bar'
-project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@8.0.1_@capacitor+core@8.2.0/node_modules/@capacitor/status-bar/android')
-
 include ':capacitor-android-nav-mode'
 project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@3.0.0_@capacitor+core@8.2.0/node_modules/capacitor-android-nav-mode/android')
 
