@@ -4,8 +4,8 @@ import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { isAppleDeviceInstallable } from "#/helpers/device";
 import { useAppSelector } from "#/store";
 
-export default function DatabaseErrorModal() {
-  const databaseError = useAppSelector((state) => state.settings.databaseError);
+export default function AppErrorModal() {
+  const errors = useAppSelector((state) => state.settings.errors);
 
   const reportText = (
     <>
@@ -23,12 +23,44 @@ export default function DatabaseErrorModal() {
 
   // Sometimes Dexie will return a MissingAPIError,
   // sometimes it will return a DatabaseClosedError with MissingAPIError in the message
-  const isMissingAPI =
-    databaseError?.name === Dexie.errnames.MissingAPI ||
-    databaseError?.message?.startsWith("MissingAPIError");
+  const isMissingDBAPI =
+    errors.database?.name === Dexie.errnames.MissingAPI ||
+    errors.database?.message?.startsWith("MissingAPIError");
+
+  const title = (() => {
+    if (errors.unsupportedSystemWebview) return "Outdated System Webview";
+
+    if (errors.database)
+      return "There was an issue setting up Voyager&apos;s database";
+
+    return "Unknown error";
+  })();
 
   const body = (() => {
-    if (isAppleDeviceInstallable() && isMissingAPI) {
+    if (errors.unsupportedSystemWebview) {
+      return (
+        <>
+          <p>
+            Your device is running an outdated version of System Webview{" "}
+            <i>{errors.unsupportedSystemWebview}</i>.
+          </p>
+          <p>
+            Keeping your system webview up to date is important for security,
+            performance and compatibility.{" "}
+            <a
+              href="https://play.google.com/store/apps/details?id=com.google.android.webview"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Update via the Google Play Store
+            </a>
+            .
+          </p>
+        </>
+      );
+    }
+
+    if (isAppleDeviceInstallable() && isMissingDBAPI) {
       return (
         <>
           <p>
@@ -58,8 +90,8 @@ export default function DatabaseErrorModal() {
     }
 
     if (
-      (databaseError?.name === Dexie.errnames.DatabaseClosed ||
-        databaseError?.name === Dexie.errnames.Unknown) &&
+      (errors.database?.name === Dexie.errnames.DatabaseClosed ||
+        errors.database?.name === Dexie.errnames.Unknown) &&
       isAppleDeviceInstallable()
     ) {
       return (
@@ -96,15 +128,25 @@ export default function DatabaseErrorModal() {
 
   return (
     <div className="ion-padding">
-      <h3>There was an issue setting up Voyager&apos;s database.</h3>
+      <h3>{title}</h3>
 
       {body}
 
-      {databaseError && (
+      {errors.database && (
         <p>
           Error:{" "}
           <code>
-            [{databaseError.name}] {databaseError.message}
+            [{errors.database.name}] {errors.database.message}
+          </code>
+        </p>
+      )}
+
+      {errors.unsupportedSystemWebview && (
+        <p>
+          Error:{" "}
+          <code>
+            Unsupported system webview:{" "}
+            <code>{errors.unsupportedSystemWebview}</code>
           </code>
         </p>
       )}

@@ -15,7 +15,7 @@ import BanUserModal from "#/features/moderation/ban/BanUserModal";
 import CreateCrosspostDialog from "#/features/post/crosspost/create/CreateCrosspostDialog";
 import PostEditorModal from "#/features/post/new/PostEditorModal";
 import Report, { ReportableItem, ReportHandle } from "#/features/report/Report";
-import DatabaseErrorModal from "#/features/settings/root/DatabaseErrorModal";
+import AppErrorModal from "#/features/settings/root/AppErrorModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "#/features/share/asImage/ShareAsImageModal";
@@ -88,7 +88,7 @@ interface ISharedDialogContext {
 
   presentUserTag: (person: Person, sourceUrl?: string) => void;
 
-  presentDatabaseErrorModal: (automatic?: boolean) => void;
+  presentAppErrorModal: (automatic?: boolean) => void;
 }
 
 export const SharedDialogContext = createContext<ISharedDialogContext>({
@@ -104,7 +104,7 @@ export const SharedDialogContext = createContext<ISharedDialogContext>({
   presentBanUser: noop,
   presentCreateCrosspost: noop,
   presentUserTag: noop,
-  presentDatabaseErrorModal: noop,
+  presentAppErrorModal: noop,
 });
 
 export function SharedDialogContextProvider({
@@ -126,13 +126,13 @@ export function SharedDialogContextProvider({
   );
 
   const didDatabaseModalOpenRef = useRef(false);
-  const [_presentDatabaseErrorModal] = useIonModal(DatabaseErrorModal);
+  const [_presentAppErrorModal] = useIonModal(AppErrorModal);
 
-  const presentDatabaseErrorModal = (automatic = false) => {
+  const presentAppErrorModal = (automatic = false) => {
     if (didDatabaseModalOpenRef.current && automatic) return;
     didDatabaseModalOpenRef.current = true;
 
-    _presentDatabaseErrorModal({
+    _presentAppErrorModal({
       initialBreakpoint: 1,
       breakpoints: [0, 1],
       cssClass: styles.autoHeight,
@@ -315,7 +315,7 @@ export function SharedDialogContextProvider({
         presentBanUser,
         presentCreateCrosspost,
         presentUserTag,
-        presentDatabaseErrorModal,
+        presentAppErrorModal,
       }}
     >
       {children}

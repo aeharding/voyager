@@ -5,8 +5,9 @@ import { use } from "react";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { IconBg } from "#/routes/pages/settings/SettingsPage";
 
-export default function DatabaseErrorItem() {
-  const { presentDatabaseErrorModal } = use(SharedDialogContext);
+export default function AppErrorItem() {
+  const { presentAppErrorModal: presentDatabaseErrorModal } =
+    use(SharedDialogContext);
 
   return (
     <IonList inset>
