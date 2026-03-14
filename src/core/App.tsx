@@ -59,6 +59,8 @@ import TabbedRoutes from "#/routes/TabbedRoutes";
 import Auth from "./Auth";
 import Listeners from "./listeners";
 // Setup global app lifecycle listeners
+import { SharedDialogContextProvider } from "#/features/auth/SharedDialogContext";
+
 import "./listeners";
 
 // index.tsx ensures android nav mode resolves before app is rendered
@@ -93,13 +95,15 @@ export default function App() {
                     <TabContextProvider>
                       <AppToastProvider>
                         <IonApp>
-                          <Auth>
-                            <OutletProvider>
-                              <TabbedRoutes>
-                                <Listeners />
-                              </TabbedRoutes>
-                            </OutletProvider>
-                          </Auth>
+                          <SharedDialogContextProvider>
+                            <Auth>
+                              <OutletProvider>
+                                <TabbedRoutes>
+                                  <Listeners />
+                                </TabbedRoutes>
+                              </OutletProvider>
+                            </Auth>
+                          </SharedDialogContextProvider>
                         </IonApp>
                       </AppToastProvider>
                     </TabContextProvider>

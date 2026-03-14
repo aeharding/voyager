@@ -9,6 +9,7 @@ import {
   userHandleSelector,
 } from "#/features/auth/authSelectors";
 import { Credential } from "#/features/auth/authSlice";
+import { getInstanceFromRemoteHandle } from "#/helpers/lemmy";
 import { getClient } from "#/services/client";
 import { useAppSelector } from "#/store";
 
@@ -46,7 +47,7 @@ export function TemporarySelectedAccountProvider({
   const selectedAccountClient = (() => {
     if (!selectedAccountHandle) return;
 
-    const instance = selectedAccountHandle.split("@")[1]!;
+    const instance = getInstanceFromRemoteHandle(selectedAccountHandle);
 
     return getClient(instance, selectedAccountJwt);
   })();

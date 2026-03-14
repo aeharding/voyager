@@ -1,6 +1,6 @@
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, { createContext, useRef, useState } from "react";
+import React, { ComponentProps, createContext, useRef, useState } from "react";
 import {
   Comment,
   CommentView,
@@ -43,7 +43,11 @@ interface ISharedDialogContext {
   /**
    * @returns true if login dialog was presented
    */
-  presentLoginIfNeeded: () => boolean;
+  presentLoginIfNeeded: (
+    reauthAccountHandle?: ComponentProps<
+      typeof LoginModal
+    >["initialAccountHandle"],
+  ) => boolean;
 
   /**
    * @returns private message payload if submitted
@@ -140,11 +144,17 @@ export function SharedDialogContextProvider({
   };
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [reauthAccountHandle, setReauthAccountHandle] =
+    useState<ComponentProps<typeof LoginModal>["initialAccountHandle"]>(
+      undefined,
+    );
 
-  const presentLoginIfNeeded = () => {
-    if (jwt) return false;
+  const presentLoginIfNeeded = (reauthAccountHandle?: string) => {
+    if (!reauthAccountHandle && jwt) return false;
 
     setIsLoginOpen(true);
+    setReauthAccountHandle(reauthAccountHandle);
+
     return true;
   };
 
@@ -276,6 +286,7 @@ export function SharedDialogContextProvider({
       presentLogin: () => {
         onDismissAccountSwitcher();
         setIsLoginOpen(true);
+        setReauthAccountHandle(undefined);
       },
       onSelectAccount: (account: string) => dispatch(changeAccount(account)),
     },
@@ -320,7 +331,11 @@ export function SharedDialogContextProvider({
     >
       {children}
 
-      <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
+      <LoginModal
+        isOpen={isLoginOpen}
+        setIsOpen={setIsLoginOpen}
+        initialAccountHandle={reauthAccountHandle}
+      />
       <GenericMarkdownEditorModal
         {...markdownEditorData!}
         isOpen={isMarkdownEditorOpen}
