@@ -32,7 +32,8 @@ import {
   refreshBiometricType,
 } from "#/features/settings/biometric/biometricSlice";
 import BiometricTitle from "#/features/settings/biometric/BiometricTitle";
-import DatabaseErrorItem from "#/features/settings/root/DatabaseErrorItem";
+import AppErrorItem from "#/features/settings/root/AppErrorItem";
+import { hasErrorsSelector } from "#/features/settings/settingsSlice";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import TipDialog from "#/features/tips/TipDialog";
@@ -64,7 +65,7 @@ export function IconBg({ color, size, children, slot }: IconBgProps) {
 }
 
 export default function SettingsPage() {
-  const databaseError = useAppSelector((state) => state.settings.databaseError);
+  const hasErrors = useAppSelector(hasErrorsSelector);
   const { status: updateStatus, checkForUpdates } = use(UpdateContext);
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(userHandleSelector);
@@ -102,7 +103,7 @@ export default function SettingsPage() {
           </IonToolbar>
         </AppHeader>
 
-        {databaseError && <DatabaseErrorItem />}
+        {hasErrors && <AppErrorItem />}
 
         <IonList inset>
           <IonItem

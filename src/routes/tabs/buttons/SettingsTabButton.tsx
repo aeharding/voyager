@@ -3,13 +3,14 @@ import { cog } from "ionicons/icons";
 import { use } from "react";
 
 import useShouldInstall from "#/features/pwa/useShouldInstall";
+import { hasErrorsSelector } from "#/features/settings/settingsSlice";
 import { UpdateContext } from "#/routes/pages/settings/update/UpdateContext";
 import { useAppSelector } from "#/store";
 
 import SharedTabButton, { TabButtonProps } from "./shared";
 
 function SettingsTabButton(props: TabButtonProps) {
-  const databaseError = useAppSelector((state) => state.settings.databaseError);
+  const hasErrors = useAppSelector(hasErrorsSelector);
 
   const { status: updateStatus } = use(UpdateContext);
   const shouldInstall = useShouldInstall();
@@ -18,7 +19,7 @@ function SettingsTabButton(props: TabButtonProps) {
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
 
   const settingsBadge = (() => {
-    if (databaseError) return <IonBadge color="danger">!</IonBadge>;
+    if (hasErrors) return <IonBadge color="danger">!</IonBadge>;
 
     if (settingsNotificationCount)
       return <IonBadge color="danger">{settingsNotificationCount}</IonBadge>;
