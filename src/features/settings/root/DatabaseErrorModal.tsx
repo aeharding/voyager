@@ -21,7 +21,42 @@ export default function DatabaseErrorModal() {
     </>
   );
 
+  // Sometimes Dexie will return a MissingAPIError,
+  // sometimes it will return a DatabaseClosedError with MissingAPIError in the message
+  const isMissingAPI =
+    databaseError?.name === Dexie.errnames.MissingAPI ||
+    databaseError?.message?.startsWith("MissingAPIError");
+
   const body = (() => {
+    if (isAppleDeviceInstallable() && isMissingAPI) {
+      return (
+        <>
+          <p>
+            Non-critical settings will be forgotten when the app relaunches.
+          </p>
+
+          <p>
+            This error occurs in <strong>Lockdown Mode</strong> because certain
+            functionality is disabled that Voyager depends on.{" "}
+            <strong>Please make sure Lockdown Mode is turned off</strong> so
+            Voyager can function properly. For more information on Lockdown
+            Mode,{" "}
+            <InAppExternalLink
+              href="https://support.apple.com/en-us/105120"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              please visit apple.com.
+            </InAppExternalLink>
+          </p>
+          <p>
+            If you are still seeing this error message after verifying Lockdown
+            Mode is turned off, please {reportText}
+          </p>
+        </>
+      );
+    }
+
     if (
       (databaseError?.name === Dexie.errnames.DatabaseClosed ||
         databaseError?.name === Dexie.errnames.Unknown) &&
@@ -56,35 +91,6 @@ export default function DatabaseErrorModal() {
       );
     }
 
-    if (isAppleDeviceInstallable()) {
-      return (
-        <>
-          <p>
-            Non-critical settings will be forgotten when the app relaunches.
-          </p>
-
-          <p>
-            This error occurs in <strong>Lockdown Mode</strong> because certain
-            functionality is disabled that Voyager depends on.{" "}
-            <strong>Please make sure Lockdown Mode is turned off</strong> so
-            Voyager can function properly. For more information on Lockdown
-            Mode,{" "}
-            <InAppExternalLink
-              href="https://support.apple.com/en-us/105120"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              please visit apple.com.
-            </InAppExternalLink>
-          </p>
-          <p>
-            If you are still seeing this error message after verifying Lockdown
-            Mode is turned off, please {reportText}
-          </p>
-        </>
-      );
-    }
-
     return <p>Please {reportText}</p>;
   })();
 
@@ -96,7 +102,10 @@ export default function DatabaseErrorModal() {
 
       {databaseError && (
         <p>
-          Error: <code>{databaseError.message}</code>
+          Error:{" "}
+          <code>
+            [{databaseError.name}] {databaseError.message}
+          </code>
         </p>
       )}
     </div>
