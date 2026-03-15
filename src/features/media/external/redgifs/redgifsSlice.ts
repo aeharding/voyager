@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { addMinutes } from "date-fns";
 
-import { parseJWT } from "#/helpers/jwt";
+import { isValidToken } from "#/helpers/jwt";
 import { db } from "#/services/db";
 import { RedgifsProvider } from "#/services/db/types";
 import { getGif, getTemporaryToken } from "#/services/redgifs";
@@ -169,7 +169,3 @@ export const enable = createAsyncThunk("redgifs/enable", async () => {
 });
 
 export default redgifsSlice.reducer;
-
-function isValidToken(token: string): boolean {
-  return Date.now() / 1_000 < parseJWT<{ exp: number }>(token).exp;
-}

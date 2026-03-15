@@ -1,25 +1,44 @@
+import { IonAlert } from "@ionic/react";
 import { useDocumentVisibility, useInterval } from "@mantine/hooks";
-import React, { useCallback, useEffect, useEffectEvent } from "react";
+import React, {
+  use,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useState,
+} from "react";
 import { useLocation } from "react-router";
 
-import { instanceSelector, jwtSelector } from "#/features/auth/authSelectors";
-import { updateConnectedInstance } from "#/features/auth/authSlice";
+import {
+  activeAccountSelector,
+  instanceSelector,
+  jwtSelector,
+} from "#/features/auth/authSelectors";
+import {
+  logoutAccount,
+  updateConnectedInstance,
+} from "#/features/auth/authSlice";
+import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { getSiteIfNeeded, isAdminSelector } from "#/features/auth/siteSlice";
-import { getInboxCounts, syncMessages } from "#/features/inbox/inboxSlice";
+import {
+  getInboxCounts as _getInboxCounts,
+  syncMessages,
+} from "#/features/inbox/inboxSlice";
 import BackgroundReportSync from "#/features/moderation/BackgroundReportSync";
+import { isLemmyError } from "#/helpers/lemmyErrors";
 import { getDefaultServer } from "#/services/app";
-import { useAppDispatch, useAppSelector } from "#/store";
+import store, { useAppDispatch, useAppSelector } from "#/store";
 
 export default function Auth({ children }: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
+  const activeAccount = useAppSelector(activeAccountSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
 
   useEffect(() => {
     dispatch(getSiteIfNeeded());
-  }, [dispatch, jwt, connectedInstance]);
+  }, [dispatch, activeAccount, connectedInstance]);
 
   return (
     <>
@@ -44,6 +63,8 @@ function AuthLocation() {
     (state) => state.auth.connectedInstance,
   );
 
+  const { presentLoginIfNeeded } = use(SharedDialogContext);
+  const [isReauthNeeded, setIsReauthNeeded] = useState(false);
   const hasModdedSubs = useAppSelector(
     (state) =>
       !!state.site.response?.my_user?.moderates.length ||
@@ -70,6 +91,16 @@ function AuthLocation() {
     }
   }, [dispatch, connectedInstance, location.pathname, selectedInstance]);
 
+  const getInboxCounts = useCallback(async () => {
+    try {
+      await dispatch(_getInboxCounts());
+    } catch (error) {
+      if (isLemmyError(error, "incorrect_login")) setIsReauthNeeded(true);
+
+      throw error;
+    }
+  }, [dispatch]);
+
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
   }, [jwt, location]);
@@ -94,17 +125,23 @@ function AuthLocation() {
       if (documentState === "hidden") return;
       if (!jwt) return;
 
-      dispatch(getInboxCounts());
+      getInboxCounts();
     },
     1_000 * 60,
     { autoInvoke: true },
   );
 
-  useEffect(() => {
-    if (documentState === "hidden") return;
+  const [oldDocumentState, setOldDocumentState] = useState<
+    DocumentVisibilityState | undefined
+  >(undefined);
+  const [oldJwt, setOldJwt] = useState<string | undefined>(undefined);
 
-    dispatch(getInboxCounts());
-  }, [documentState, jwt, dispatch]);
+  if (oldDocumentState !== documentState || oldJwt !== jwt) {
+    setOldDocumentState(documentState);
+    setOldJwt(jwt);
+
+    if (documentState === "visible") getInboxCounts();
+  }
 
   const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
 
@@ -115,7 +152,37 @@ function AuthLocation() {
     dispatch(syncMessages());
   }, [dispatch, documentState]);
 
-  if (!hasModdedSubs) return;
+  return (
+    <>
+      {hasModdedSubs && <BackgroundReportSync />}
+      <IonAlert
+        isOpen={isReauthNeeded}
+        onDidDismiss={() => setIsReauthNeeded(false)}
+        header="Login Session Expired"
+        message="Your login session is no longer valid. Please log in again."
+        backdropDismiss={false}
+        buttons={[
+          {
+            text: "Login",
+            handler: () => {
+              const activeAccount = activeAccountSelector(store.getState());
+              if (!activeAccount) return;
 
-  return <BackgroundReportSync />;
+              presentLoginIfNeeded(activeAccount.handle);
+            },
+          },
+          {
+            text: "Logout",
+            handler: () => {
+              const activeAccount = activeAccountSelector(store.getState());
+              if (!activeAccount) return;
+
+              dispatch(logoutAccount(activeAccount.handle));
+            },
+            role: "destructive",
+          },
+        ]}
+      />
+    </>
+  );
 }
