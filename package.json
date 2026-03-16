@@ -22,7 +22,8 @@
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
     "upgrade:packageManager": "corepack use pnpm@latest",
-    "release": "./scripts/prerelease.sh"
+    "release": "./scripts/prerelease.sh",
+    "script:update-instance-rankings": "node scripts/update_instance_rankings.js && prettier --write src/features/auth/login/data/categories.json"
   },
   "imports": {
     "#/*": "./src/*"
@@ -125,6 +126,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-perfectionist": "^5.6.0",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.4.0",
     "jsdom": "^28.1.0",
     "mdast-util-lemmy-spoiler": "^2.0.0",
     "postcss": "^8.5.8",
