@@ -437,15 +437,16 @@ export default function Comments({
           fetchMore={fetchComments}
           loading={loading}
           pluralType="comments"
+          key="load-more-failed"
         />
       );
 
     if (loading && !comments.length)
-      return <IonSpinner className={styles.spinner} />;
+      return <IonSpinner className={styles.spinner} key="spinner" />;
 
     if (!comments.length)
       return (
-        <div className={styles.empty}>
+        <div className={styles.empty} key="empty">
           <div>No Comments</div>
           <aside>It&apos;s quiet... too quiet...</aside>
         </div>
@@ -473,7 +474,7 @@ export default function Comments({
         ...allComments,
         renderFooter(),
         bottomPadding ? (
-          <div style={{ height: `${bottomPadding}px` }} />
+          <div style={{ height: `${bottomPadding}px` }} key="bottom-padding" />
         ) : undefined,
       ]),
     [allComments, bottomPadding, header, renderFooter],
