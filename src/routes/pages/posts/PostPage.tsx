@@ -13,7 +13,8 @@ import { useParams } from "react-router";
 import { CommentSort } from "#/features/comment/CommentSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import PostDetail from "#/features/post/detail/PostDetail";
-import { getPost } from "#/features/post/postSlice";
+import { crossPostsSelector, getPost } from "#/features/post/postSlice";
+import { modeSelector } from "#/features/auth/siteSlice";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import AppHeader from "#/features/shared/AppHeader";
@@ -64,6 +65,9 @@ export function PostPageContent({
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+  const mode = useAppSelector(modeSelector);
+  const postId = typeof post === "object" ? post.post.id : 0;
+  const crossPosts = useAppSelector(crossPostsSelector(postId));
   const [sort, setSort] = useFeedSort("comments", {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
@@ -82,10 +86,8 @@ export function PostPageContent({
   const Content = virtualEnabled ? FeedContent : IonContent;
 
   useEffect(() => {
-    if (post) return;
-
     dispatch(getPost(+id));
-  }, [post, client, dispatch, id]);
+  }, [client, dispatch, id]);
 
   async function refresh(event: RefresherCustomEvent) {
     // TODO replace with await when React Compiler doesn't bail
@@ -127,11 +129,15 @@ export function PostPageContent({
   const title = (() => {
     if (threadCommentId) return "Thread";
 
-    return (
-      <>
-        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
-      </>
-    );
+    if (!postIfFound) return <>Comments</>;
+
+    const totalComments =
+      mode === "piefed" && crossPosts.length
+        ? postIfFound.counts.comments +
+          crossPosts.reduce((sum, cp) => sum + cp.counts.comments, 0)
+        : postIfFound.counts.comments;
+
+    return <>{formatNumber(totalComments)} Comments</>;
   })();
 
   return (

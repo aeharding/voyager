@@ -1,0 +1,11 @@
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.message {
+  text-align: center;
+  padding: 16px;
+  color: var(--ion-color-medium);
+}
