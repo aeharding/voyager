@@ -1,37 +1,30 @@
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
-import { createMemoryHistory } from "history";
-import React, { useEffect } from "react";
+import React, { ComponentProps } from "react";
 
 import { isAppleDeviceInstalledToHomescreen } from "#/helpers/device";
 
-export const memoryHistory = isAppleDeviceInstalledToHomescreen()
-  ? createMemoryHistory()
-  : undefined;
+const SHARED_ROUTER_PARAMS = {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+  },
+} as const satisfies ComponentProps<
+  typeof IonReactMemoryRouter & typeof IonReactRouter
+>;
 
 export default function Router({ children }: React.PropsWithChildren) {
-  useEffect(() => {
-    if (!memoryHistory) return;
-
-    const unListen = memoryHistory.listen(() => {
-      window.scrollTo(0, 0);
-    });
-    return () => {
-      unListen();
-    };
-  }, []);
-
   /**
    * This is a total hack to prevent native page swipe gesture
    * on iOS. If there's no page history to swipe,
    * what are you going to do, Apple... 😈
    */
-  if (memoryHistory) {
+  if (isAppleDeviceInstalledToHomescreen()) {
     return (
-      <IonReactMemoryRouter history={memoryHistory}>
+      <IonReactMemoryRouter {...SHARED_ROUTER_PARAMS}>
         {children}
       </IonReactMemoryRouter>
     );
   }
 
-  return <IonReactRouter>{children}</IonReactRouter>;
+  return <IonReactRouter {...SHARED_ROUTER_PARAMS}>{children}</IonReactRouter>;
 }

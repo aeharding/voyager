@@ -1,7 +1,7 @@
 import { IonModal, useIonActionSheet } from "@ionic/react";
 import { noop } from "es-toolkit";
 import React, { createContext, useState } from "react";
-import { Prompt, useLocation } from "react-router";
+import { useLocation } from "react-router";
 
 import { isNative } from "#/helpers/device";
 import useStateRef from "#/helpers/useStateRef";
@@ -98,11 +98,6 @@ export function DynamicDismissableModal({
     });
   };
 
-  if (oldPathname !== location.pathname) {
-    setOldPathname(location.pathname);
-    _dismiss();
-  }
-
   // Close tab
   useUnload((e) => {
     if (canDismissRef_.current) return;
@@ -119,6 +114,12 @@ export function DynamicDismissableModal({
     onDismissAttemptCb();
   };
 
+  if (oldPathname !== location.pathname) {
+    setOldPathname(location.pathname);
+
+    dismiss();
+  }
+
   const content =
     typeof renderModalContents === "function"
       ? renderModalContents({
@@ -130,50 +131,37 @@ export function DynamicDismissableModal({
   const Modal = isNative() ? IonModal : IonModalAutosizedForOnScreenKeyboard;
 
   return (
-    <>
-      {isOpen && (
-        <Prompt
-          // https://github.com/remix-run/react-router/issues/5405#issuecomment-673811334
-          when={true}
-          message={() => {
-            if (canDismissRef_.current) return true;
+    <Modal
+      className={className}
+      isOpen={isOpen}
+      canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
+      onDidDismiss={() => {
+        setIsOpen(false);
 
-            return "Are you sure you want to discard your work?";
-          }}
-        />
-      )}
-      <Modal
-        className={className}
-        isOpen={isOpen}
-        canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
-        onDidDismiss={() => {
-          setIsOpen(false);
+        // in case onDidDismiss incorrectly called by Ionic, don't proceed
+        if (!canDismissRef_.current) return;
 
-          // in case onDidDismiss incorrectly called by Ionic, don't proceed
-          if (!canDismissRef_.current) return;
+        if (textRecovery) clearRecoveredText();
 
-          if (textRecovery) clearRecoveredText();
+        dispatch(onHandledPendingImages());
+      }}
+      onIonDragEnd={(e) => {
+        if (e.detail.snapBreakpoint !== 0) return;
+        if (!(document.activeElement instanceof HTMLElement)) return;
 
-          dispatch(onHandledPendingImages());
-        }}
-        onIonDragEnd={(e) => {
-          if (e.detail.snapBreakpoint !== 0) return;
-          if (!(document.activeElement instanceof HTMLElement)) return;
+        document.activeElement.blur();
+      }}
+      presentingElement={presentingElement ?? undefined}
+      onWillDismiss={() => {
+        if (!(document.activeElement instanceof HTMLElement)) return;
 
-          document.activeElement.blur();
-        }}
-        presentingElement={presentingElement ?? undefined}
-        onWillDismiss={() => {
-          if (!(document.activeElement instanceof HTMLElement)) return;
-
-          document.activeElement.blur();
-        }}
-      >
-        <DynamicDismissableModalContext value={{ dismiss, setCanDismiss }}>
-          {content}
-        </DynamicDismissableModalContext>
-      </Modal>
-    </>
+        document.activeElement.blur();
+      }}
+    >
+      <DynamicDismissableModalContext value={{ dismiss, setCanDismiss }}>
+        {content}
+      </DynamicDismissableModalContext>
+    </Modal>
   );
 }
 

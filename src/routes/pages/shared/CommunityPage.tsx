@@ -6,7 +6,7 @@ import {
 } from "@ionic/react";
 import { noop } from "es-toolkit";
 import { createContext, useEffect, useRef, useState } from "react";
-import { Redirect, useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 
 import ModActions from "#/features/community/mod/ModActions";
 import MoreActions from "#/features/community/MoreActions";
@@ -55,7 +55,9 @@ interface CommunityPageParams {
 }
 
 export default function CommunityPage() {
-  const { community, actor } = useParams<CommunityPageParams>();
+  const { community, actor } = useParams();
+
+  if (!community || !actor) throw new Error("Community and actor required");
 
   return <CommunityPageContent community={community} actor={actor} />;
 }
@@ -148,9 +150,9 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
-      <Redirect
+      <Navigate
         to={buildGeneralBrowseLink(`/c/${community.split("@")[0]}`)}
-        push={false}
+        replace
       />
     );
 

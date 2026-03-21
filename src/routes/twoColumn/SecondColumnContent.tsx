@@ -1,5 +1,5 @@
 import { use } from "react";
-import { Switch, useLocation } from "react-router-dom";
+import { Routes, useLocation } from "react-router-dom";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import anyPane from "#/routes/tabs/anyPane";
@@ -45,9 +45,9 @@ export default function SecondColumnContent() {
                 value={currSecondColumnLocation !== secondColumnLocation}
                 key={`${tab}${currSecondColumnLocation.pathname}`}
               >
-                <Switch location={currSecondColumnLocation}>
+                <Routes location={currSecondColumnLocation}>
                   {...anyPane}
-                </Switch>
+                </Routes>
               </HiddenPageContext>
             );
           },

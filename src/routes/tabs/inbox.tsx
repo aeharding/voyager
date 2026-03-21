@@ -9,38 +9,54 @@ import RepliesPage from "#/routes/pages/inbox/RepliesPage";
 import anyPaneInbox from "./anyPaneInbox";
 
 export default [
-  <Route exact path="/inbox">
-    <BoxesPage />
-  </Route>,
-  <Route exact path="/inbox/all">
-    <InboxAuthRequired>
-      <InboxPage showRead />
-    </InboxAuthRequired>
-  </Route>,
-  <Route exact path="/inbox/unread">
-    <InboxAuthRequired>
-      <InboxPage />
-    </InboxAuthRequired>
-  </Route>,
-  <Route exact path="/inbox/mentions">
-    <InboxAuthRequired>
-      <MentionsPage />
-    </InboxAuthRequired>
-  </Route>,
-  <Route exact path="/inbox/comment-replies">
-    <InboxAuthRequired>
-      <RepliesPage type="Comment" />
-    </InboxAuthRequired>
-  </Route>,
-  <Route exact path="/inbox/post-replies">
-    <InboxAuthRequired>
-      <RepliesPage type="Post" />
-    </InboxAuthRequired>
-  </Route>,
-  <Route exact path="/inbox/messages">
-    <InboxAuthRequired>
-      <MessagesPage />
-    </InboxAuthRequired>
-  </Route>,
+  <Route path="/inbox" element={<BoxesPage />} />,
+  <Route
+    path="/inbox/all"
+    element={
+      <InboxAuthRequired>
+        <InboxPage showRead />
+      </InboxAuthRequired>
+    }
+  />,
+  <Route
+    path="/inbox/unread"
+    element={
+      <InboxAuthRequired>
+        <InboxPage />
+      </InboxAuthRequired>
+    }
+  />,
+  <Route
+    path="/inbox/mentions"
+    element={
+      <InboxAuthRequired>
+        <MentionsPage />
+      </InboxAuthRequired>
+    }
+  />,
+  <Route
+    path="/inbox/comment-replies"
+    element={
+      <InboxAuthRequired>
+        <RepliesPage type="Comment" />
+      </InboxAuthRequired>
+    }
+  />,
+  <Route
+    path="/inbox/post-replies"
+    element={
+      <InboxAuthRequired>
+        <RepliesPage type="Post" />
+      </InboxAuthRequired>
+    }
+  />,
+  <Route
+    path="/inbox/messages"
+    element={
+      <InboxAuthRequired>
+        <MessagesPage />
+      </InboxAuthRequired>
+    }
+  />,
   ...anyPaneInbox,
 ];

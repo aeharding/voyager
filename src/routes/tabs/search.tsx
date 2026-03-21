@@ -6,22 +6,19 @@ import SearchPostsResultsPage from "#/routes/pages/search/results/SearchFeedResu
 import SearchPage from "#/routes/pages/search/SearchPage";
 
 export default [
-  <Route exact path="/search">
-    <SearchPage />
-  </Route>,
-  <Route exact path="/search/random">
-    <RandomCommunityPage />
-  </Route>,
-  <Route exact path="/search/posts/:search">
-    <SearchPostsResultsPage type="Posts" />
-  </Route>,
-  <Route exact path="/search/comments/:search">
-    <SearchPostsResultsPage type="Comments" />
-  </Route>,
-  <Route exact path="/search/communities/:search">
-    <SearchCommunitiesPage />
-  </Route>,
-  <Route exact path="/search/explore">
-    <CommunitiesExplorePage />
-  </Route>,
+  <Route path="/search" element={<SearchPage />} />,
+  <Route path="/search/random" element={<RandomCommunityPage />} />,
+  <Route
+    path="/search/posts/:search"
+    element={<SearchPostsResultsPage type="Posts" />}
+  />,
+  <Route
+    path="/search/comments/:search"
+    element={<SearchPostsResultsPage type="Comments" />}
+  />,
+  <Route
+    path="/search/communities/:search"
+    element={<SearchCommunitiesPage />}
+  />,
+  <Route path="/search/explore" element={<CommunitiesExplorePage />} />,
 ];

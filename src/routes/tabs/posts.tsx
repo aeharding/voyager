@@ -1,4 +1,4 @@
-import { Redirect } from "react-router";
+import { Navigate } from "react-router";
 
 import Route from "#/routes/common/Route";
 import CommunitiesPage from "#/routes/pages/posts/CommunitiesPage";
@@ -17,18 +17,19 @@ export default function buildPostsRoutes({
   selectedInstance,
 }: Props) {
   return [
-    <Route exact path="/posts">
-      {defaultFeed ? (
-        <Redirect
-          to={`/posts/${selectedInstance ?? getDefaultServer()}${redirectRoute}`}
-          push={false}
-        />
-      ) : (
-        ""
-      )}
-    </Route>,
-    <Route exact path="/posts/:actor">
-      <CommunitiesPage />
-    </Route>,
+    <Route
+      path="/posts"
+      element={
+        defaultFeed ? (
+          <Navigate
+            to={`/posts/${selectedInstance ?? getDefaultServer()}${redirectRoute}`}
+            replace
+          />
+        ) : (
+          ""
+        )
+      }
+    />,
+    <Route path="/posts/:actor" element={<CommunitiesPage />} />,
   ];
 }

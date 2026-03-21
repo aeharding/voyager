@@ -1,4 +1,4 @@
-import { Redirect } from "react-router";
+import { Navigate } from "react-router";
 
 import { jwtSelector } from "#/features/auth/authSelectors";
 import useIonViewIsVisible from "#/helpers/useIonViewIsVisible";
@@ -11,7 +11,7 @@ export default function InboxAuthRequired({
 
   const ionViewIsVisible = useIonViewIsVisible();
 
-  if (!jwt && ionViewIsVisible) return <Redirect to="/inbox" push={false} />;
+  if (!jwt && ionViewIsVisible) return <Navigate to="/inbox" replace />;
 
   return children;
 }

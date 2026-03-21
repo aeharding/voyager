@@ -12,9 +12,5 @@ publicHoistPattern:
 
 updateConfig:
   ignoreDependencies:
-    - history
-    - "@types/history"
     - react-router
     - react-router-dom
-    - "@types/react-router"
-    - "@types/react-router-dom"

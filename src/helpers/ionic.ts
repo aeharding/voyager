@@ -6,8 +6,6 @@ import {
 } from "@ionic/core";
 import { MouseEvent, TouchEvent } from "react";
 
-import { memoryHistory } from "#/routes/common/Router";
-
 const ION_CONTENT_ELEMENT_SELECTOR = "ion-content";
 
 export function findCurrentPage() {
@@ -59,7 +57,8 @@ export function preventOnClickNavigationBug(e: MouseEvent) {
   const link =
     linker.getAttribute("router-link") || linker.getAttribute("href");
 
-  const pathname = memoryHistory?.location.pathname ?? location.pathname;
+  // TODO: use useLocation() or otherwise get memory history
+  const pathname = location.pathname;
 
   if (pathname === link) {
     e.preventDefault();

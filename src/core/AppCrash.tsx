@@ -1,19 +1,29 @@
 import { IonButton, IonIcon, IonLabel } from "@ionic/react";
 import { logoGithub } from "ionicons/icons";
 import { FallbackProps } from "react-error-boundary";
+import { useLocation } from "react-router";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { isInstalled, isNative } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
-import { memoryHistory } from "#/routes/common/Router";
 import store from "#/store";
 
 import styles from "./AppCrash.module.css";
 
-export default function AppCrash({ error }: FallbackProps) {
+export function AppCrashWithLocation(props: FallbackProps) {
+  const location = useLocation();
+
+  return <AppCrash {...props} location={location} />;
+}
+
+interface AppCrashProps extends FallbackProps {
+  location?: ReturnType<typeof useLocation>;
+}
+
+export default function AppCrash({ error, location }: AppCrashProps) {
   // Don't use useLocation/useAppSelector, because they are not available
   // (`<AppCrash />` is at the root of the document tree)
-  const location = memoryHistory ? memoryHistory.location : window.location;
+  // TODO: AppCrash before <Router> so we can use useLocation
   const loggedIn = loggedInSelector(store.getState());
 
   let crashData = `
@@ -25,7 +35,7 @@ export default function AppCrash({ error }: FallbackProps) {
 ### Device and app metadata
 
   - window.location.href: \`${window.location.href}\`
-  - react-router location.pathname: \`${location.pathname}\`
+  - react-router location.pathname: \`${location?.pathname}\`
   - Logged in? \`${loggedIn}\`
   - Native app? \`${isNative()}\`
   - Installed to home screen? \`${isInstalled()}\`

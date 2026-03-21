@@ -8,21 +8,22 @@ import ActorRedirect from "./ActorRedirect";
 
 type AppRouteProps = Omit<RouteProps, "children"> & React.PropsWithChildren;
 
-export default function Route({ children, ...props }: AppRouteProps) {
-  const tabName = useTabName();
+export default ReactRoute; // TODO
+// export default function Route({ children, ...props }: AppRouteProps) {
+//   const tabName = useTabName();
 
-  const content = (() => {
-    if (props.path?.includes("/:actor"))
-      return <ActorRedirect>{children}</ActorRedirect>;
+//   const content = (() => {
+//     if (props.path?.includes("/:actor"))
+//       return <ActorRedirect>{children}</ActorRedirect>;
 
-    return children;
-  })();
+//     return children;
+//   })();
 
-  return (
-    <TabNameContext value={tabName}>
-      <ReactRoute {...props}>{content}</ReactRoute>
-    </TabNameContext>
-  );
-}
+//   return (
+//     <TabNameContext value={tabName}>
+//       <ReactRoute {...props}>{content}</ReactRoute>
+//     </TabNameContext>
+//   );
+// }
 
 export const TabNameContext = createContext("");

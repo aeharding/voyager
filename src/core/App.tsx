@@ -48,7 +48,7 @@ import { UpdateContextProvider } from "#/routes/pages/settings/update/UpdateCont
 import ConfigProvider from "#/services/app";
 import { StoreProvider } from "#/store";
 
-import AppCrash from "./AppCrash";
+import AppCrash, { AppCrashWithLocation } from "./AppCrash";
 import GlobalStyles from "./GlobalStyles";
 import { TabContextProvider } from "./TabContext";
 
@@ -91,23 +91,25 @@ export default function App() {
             <BeforeInstallPromptProvider>
               <UpdateContextProvider>
                 <Router>
-                  <OptimizedRouterProvider>
-                    <TabContextProvider>
-                      <AppToastProvider>
-                        <IonApp>
-                          <SharedDialogContextProvider>
-                            <Auth>
-                              <OutletProvider>
-                                <TabbedRoutes>
-                                  <Listeners />
-                                </TabbedRoutes>
-                              </OutletProvider>
-                            </Auth>
-                          </SharedDialogContextProvider>
-                        </IonApp>
-                      </AppToastProvider>
-                    </TabContextProvider>
-                  </OptimizedRouterProvider>
+                  <ErrorBoundary FallbackComponent={AppCrashWithLocation}>
+                    <OptimizedRouterProvider>
+                      <TabContextProvider>
+                        <AppToastProvider>
+                          <IonApp>
+                            <SharedDialogContextProvider>
+                              <Auth>
+                                <OutletProvider>
+                                  <TabbedRoutes>
+                                    <Listeners />
+                                  </TabbedRoutes>
+                                </OutletProvider>
+                              </Auth>
+                            </SharedDialogContextProvider>
+                          </IonApp>
+                        </AppToastProvider>
+                      </TabContextProvider>
+                    </OptimizedRouterProvider>
+                  </ErrorBoundary>
                 </Router>
               </UpdateContextProvider>
             </BeforeInstallPromptProvider>
