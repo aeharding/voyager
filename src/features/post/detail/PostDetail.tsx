@@ -87,6 +87,7 @@ export default function PostDetail({
             onPrependComment={(comment) =>
               commentsRef.current?.prependComments([comment])
             }
+            key="post-header"
           />
         }
         postId={post.post.id}
