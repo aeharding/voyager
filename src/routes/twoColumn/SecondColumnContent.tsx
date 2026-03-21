@@ -2,13 +2,26 @@ import { use } from "react";
 import { Routes, useLocation } from "react-router-dom";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
-import anyPane from "#/routes/tabs/anyPane";
+import { secondColumnPaneRouteElements } from "#/routes/tabs/shared/secondColumnPaneRoutes";
 import { useAppSelector } from "#/store";
 
 import { OutletContext } from "../OutletProvider";
 import TwoColumnEmpty from "./TwoColumnEmpty";
 import { HiddenPageContext } from "./useIsPageHidden";
 import { IsSecondColumnContext } from "./useIsSecondColumn";
+
+/** Match [`SecondColumnPaneRoutes`](src/routes/tabs/shared/secondColumnPaneRoutes.tsx) paths without duplicating `/:tab`. */
+function locationWithinTab(
+  location: { pathname: string; search: string; hash: string; state?: unknown },
+  tab: string,
+) {
+  const prefix = `/${tab}`;
+  let pathname = location.pathname;
+  if (pathname === prefix) pathname = "/";
+  else if (pathname.startsWith(`${prefix}/`))
+    pathname = pathname.slice(prefix.length);
+  return { ...location, pathname };
+}
 
 export default function SecondColumnContent() {
   const loggedIn = useAppSelector(loggedInSelector);
@@ -37,16 +50,21 @@ export default function SecondColumnContent() {
     <IsSecondColumnContext value={true}>
       {secondColumnLocationDictionary &&
         Object.entries(secondColumnLocationDictionary).map(
-          ([tab, currSecondColumnLocation]) => {
+          ([tabKey, currSecondColumnLocation]) => {
             if (!currSecondColumnLocation) return;
 
             return (
               <HiddenPageContext
                 value={currSecondColumnLocation !== secondColumnLocation}
-                key={`${tab}${currSecondColumnLocation.pathname}`}
+                key={`${tabKey}${currSecondColumnLocation.pathname}`}
               >
-                <Routes location={currSecondColumnLocation}>
-                  {...anyPane}
+                <Routes
+                  location={locationWithinTab(
+                    currSecondColumnLocation,
+                    tabKey,
+                  )}
+                >
+                  {...secondColumnPaneRouteElements(tabKey)}
                 </Routes>
               </HiddenPageContext>
             );

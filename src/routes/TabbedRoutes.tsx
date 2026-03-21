@@ -8,7 +8,6 @@ import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { getDefaultServer } from "#/services/app";
-import { DefaultFeedType, ODefaultFeedType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import { usingActorRedirect } from "./common/ActorRedirect";
@@ -95,19 +94,4 @@ function InnerTabbedRoutes() {
   );
 }
 
-export function getPathForFeed(defaultFeed: DefaultFeedType): string {
-  switch (defaultFeed.type) {
-    case ODefaultFeedType.All:
-      return "/all";
-    case ODefaultFeedType.Home:
-      return "/home";
-    case ODefaultFeedType.Local:
-      return "/local";
-    case ODefaultFeedType.Moderating:
-      return "/mod";
-    case ODefaultFeedType.CommunityList:
-      return "";
-    case ODefaultFeedType.Community:
-      return `/c/${defaultFeed.name}`;
-  }
-}
+export { getPathForFeed } from "./getPathForFeed";
