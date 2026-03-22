@@ -1,5 +1,11 @@
 import { IonSpinner } from "@ionic/react";
-import { useCallback, useEffect, useEffectEvent, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useState,
+} from "react";
 import { CommentView, PostView } from "threadiverse";
 
 import { VgerCommentSortType } from "#/features/comment/CommentSort";

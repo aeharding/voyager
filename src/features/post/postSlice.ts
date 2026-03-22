@@ -113,7 +113,8 @@ export const postSlice = createSlice({
       state,
       action: PayloadAction<{ postId: number; comments: CommentView[] }>,
     ) => {
-      const existing = state.crossPostCommentsByPostId[action.payload.postId] ?? [];
+      const existing =
+        state.crossPostCommentsByPostId[action.payload.postId] ?? [];
       const merged = [
         ...existing,
         ...action.payload.comments.filter(
@@ -126,11 +127,13 @@ export const postSlice = createSlice({
       state,
       action: PayloadAction<{ postId: number; comments: CommentView[] }>,
     ) => {
-      const existing = state.crossPostCommentsByPostId[action.payload.postId] ?? [];
+      const existing =
+        state.crossPostCommentsByPostId[action.payload.postId] ?? [];
       const merged = [
         ...action.payload.comments,
         ...existing.filter(
-          (e) => !action.payload.comments.some((c) => c.comment.id === e.comment.id),
+          (e) =>
+            !action.payload.comments.some((c) => c.comment.id === e.comment.id),
         ),
       ];
       state.crossPostCommentsByPostId[action.payload.postId] = merged;
@@ -416,8 +419,9 @@ export const getPost =
 
     // PieFed returns cross_posts in getPost responses, but the threadiverse
     // package doesn't model this field in its shared TypeScript types.
-    const crossPosts = (result as { post_view: PostView; cross_posts?: PostView[] })
-      .cross_posts ?? [];
+    const crossPosts =
+      (result as { post_view: PostView; cross_posts?: PostView[] })
+        .cross_posts ?? [];
 
     // Re-attach mini cross_posts onto post_view.post so the feed stat icon
     // survives the Redux post update when returning from post detail.

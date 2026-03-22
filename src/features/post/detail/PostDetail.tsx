@@ -39,7 +39,9 @@ export default function PostDetail({
   const crossPosts = useAppSelector(crossPostsSelector(post.post.id));
   const hasCrossPosts = mode === "piefed" && crossPosts.length > 0;
   const [primaryCollapsed, setPrimaryCollapsed] = useState(false);
-  const [crossPostCollapsed, setCrossPostCollapsed] = useState<Record<number, boolean>>({});
+  const [crossPostCollapsed, setCrossPostCollapsed] = useState<
+    Record<number, boolean>
+  >({});
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const isSecondColumn = useIsSecondColumn();
   const commentsRef = useRef<CommentsHandle>(undefined);
