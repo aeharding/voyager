@@ -112,7 +112,6 @@ export default function PostDetail({
               post={post}
               onPrependComment={(comment) =>
                 commentsRef.current?.prependComments([comment])
-                key="post-header"
               }
             />
             {hasCrossPosts && (
