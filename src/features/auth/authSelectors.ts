@@ -4,7 +4,7 @@ import { parseLemmyJWT } from "#/helpers/lemmy";
 import { getClient } from "#/services/client";
 import { RootState } from "#/store";
 
-export const activeAccount = createSelector(
+export const activeAccountSelector = createSelector(
   [
     (state: RootState) => state.auth.accountData?.accounts,
     (state: RootState) => state.auth.accountData?.activeHandle,
@@ -14,9 +14,12 @@ export const activeAccount = createSelector(
   },
 );
 
-export const jwtSelector = createSelector([activeAccount], (account) => {
-  return account && "jwt" in account ? account.jwt : undefined;
-});
+export const jwtSelector = createSelector(
+  [activeAccountSelector],
+  (account) => {
+    return account && "jwt" in account ? account.jwt : undefined;
+  },
+);
 
 export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
   jwt ? parseLemmyJWT(jwt) : undefined,
@@ -29,15 +32,18 @@ export const jwtIssSelector = (state: RootState) =>
  * Warning: This could be a logged-out handle, e.g. "lemmy.world"
  */
 export const handleSelector = createSelector(
-  [activeAccount],
+  [activeAccountSelector],
   (account) => account?.handle,
 );
 
-export const userHandleSelector = createSelector([activeAccount], (account) => {
-  if (!account || !account.handle.includes("@")) return;
+export const userHandleSelector = createSelector(
+  [activeAccountSelector],
+  (account) => {
+    if (!account || !account.handle.includes("@")) return;
 
-  return account.handle;
-});
+    return account.handle;
+  },
+);
 
 export const usernameSelector = createSelector(
   [userHandleSelector],

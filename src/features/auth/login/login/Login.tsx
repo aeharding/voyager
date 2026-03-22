@@ -35,9 +35,14 @@ import Totp from "./Totp";
 interface LoginProps {
   url: string;
   siteIcon: string | undefined;
+  username?: string;
 }
 
-export default function Login({ url, siteIcon }: LoginProps) {
+export default function Login({
+  url,
+  siteIcon,
+  username: prefilledUsername,
+}: LoginProps) {
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -45,8 +50,9 @@ export default function Login({ url, siteIcon }: LoginProps) {
   const { dismiss, setCanDismiss } = use(DynamicDismissableModalContext);
 
   const usernameRef = useRef<HTMLIonInputElement>(null);
+  const passwordRef = useRef<HTMLIonInputElement>(null);
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(prefilledUsername ?? "");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -55,9 +61,13 @@ export default function Login({ url, siteIcon }: LoginProps) {
 
   useEffect(() => {
     setTimeout(() => {
-      usernameRef.current?.setFocus();
+      if (prefilledUsername) {
+        passwordRef.current?.setFocus();
+      } else {
+        usernameRef.current?.setFocus();
+      }
     }, 300);
-  }, []);
+  }, [prefilledUsername]);
 
   async function submit() {
     const alreadyLoggedIn = accounts?.some(
@@ -186,12 +196,14 @@ export default function Login({ url, siteIcon }: LoginProps) {
                 inputMode="email"
                 value={username}
                 onIonInput={(e) => setUsername(e.detail.value || "")}
+                disabled={!!prefilledUsername}
               />
             </IonItem>
           </IonList>
           <IonList inset>
             <IonItem>
               <IonInput
+                ref={passwordRef}
                 type="password"
                 labelPlacement="stacked"
                 label="Password"

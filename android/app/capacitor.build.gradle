@@ -11,7 +11,6 @@ apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
     implementation project(':capacitor-community-app-icon')
     implementation project(':capacitor-app')
-    implementation project(':capacitor-device')
     implementation project(':capacitor-filesystem')
     implementation project(':capacitor-haptics')
     implementation project(':capacitor-keyboard')
@@ -24,7 +23,6 @@ dependencies {
     implementation project(':capacitor-biometric-lock')
     implementation project(':capacitor-clear-cache')
     implementation project(':capacitor-launch-native')
-    implementation project(':capacitor-plugin-safe-area')
     implementation project(':capacitor-reader')
     implementation project(':capacitor-share-safari')
     implementation project(':capacitor-stash-media')

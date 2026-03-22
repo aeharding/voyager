@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UploadImageResponse } from "threadiverse";
 
 import {
-  activeAccount,
+  activeAccountSelector,
   getInstanceFromHandle,
 } from "#/features/auth/authSelectors";
 import { Credential } from "#/features/auth/authSlice";
@@ -65,7 +65,7 @@ export const uploadImage =
   (image: File, context: UploadImageContext, _account?: Credential) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const state = getState();
-    const account = _account ?? activeAccount(state);
+    const account = _account ?? activeAccountSelector(state);
 
     if (!account) throw new Error("Account is not valid/signed in");
 

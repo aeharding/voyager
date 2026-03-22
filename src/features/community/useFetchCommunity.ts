@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState } from "react";
 
 import { getCommunity } from "#/features/community/communitySlice";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -11,11 +11,21 @@ export default function useFetchCommunity(communityHandle: string) {
     (state) => state.community.communityByHandle[communityHandle.toLowerCase()],
   );
 
-  useEffect(() => {
-    if (community) return;
+  const [oldCommunityHandle, setOldCommunityHandle] = useState<
+    typeof communityHandle | undefined
+  >();
+  const [oldCommunity, setOldCommunity] = useState<
+    typeof community | undefined
+  >(community);
 
-    dispatch(getCommunity(communityHandle));
-  }, [community, communityHandle, dispatch]);
+  if (oldCommunityHandle !== communityHandle || oldCommunity !== community) {
+    setOldCommunityHandle(communityHandle);
+    setOldCommunity(community);
+
+    if (!community) {
+      dispatch(getCommunity(communityHandle));
+    }
+  }
 
   return community;
 }

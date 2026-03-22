@@ -82,6 +82,14 @@ export function getRemoteHandleFromHandle(
   return `${handle}@${connectedInstance}`;
 }
 
+export function getUsernameFromRemoteHandle(handle: string): string {
+  return handle.split("@")[0]!;
+}
+
+export function getInstanceFromRemoteHandle(handle: string): string {
+  return handle.split("@")[1]!;
+}
+
 export function canModify(comment: Comment) {
   return !comment.deleted && !comment.removed;
 }

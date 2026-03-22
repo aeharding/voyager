@@ -6,6 +6,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
 import reactHooks from "eslint-plugin-react-hooks";
 import { defineConfig } from "eslint/config";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
@@ -118,5 +119,14 @@ export default defineConfig(
   {
     files: ["**/*.test.ts", "**/*.test.tsx"],
     ...vitestPlugin.configs.recommended,
+  },
+  {
+    files: ["scripts/**"],
+    languageOptions: {
+      globals: globals.node,
+    },
+    rules: {
+      "no-console": "off",
+    },
   },
 );

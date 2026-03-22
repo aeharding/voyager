@@ -5,8 +5,8 @@ import AppUrlListener from "./AppUrlListener";
 import DatabaseErrorListener from "./DatabaseErrorListener";
 import HapticsListener from "./HapticsListener";
 import ServerConnectivity from "./ServerConnectivity";
+import UnsupportedWebviewListener from "./UnsupportedWebviewListener";
 // Listeners
-import "./androidSafeArea";
 import "./db";
 import "./ionActivatable";
 import "./network/listener";
@@ -22,6 +22,7 @@ export default function Listeners() {
       <AppUrlListener />
       <TextRecoveryStartupPrompt />
       <DatabaseErrorListener />
+      <UnsupportedWebviewListener />
       <ServerConnectivity />
     </>
   );
