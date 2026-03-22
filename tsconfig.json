@@ -18,6 +18,7 @@
     "noUncheckedIndexedAccess": true,
 
     "jsx": "react-jsx",
+    "resolveJsonModule": true,
 
     "paths": {
       // duplicate of package.json[imports]

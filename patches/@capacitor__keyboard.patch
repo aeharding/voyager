@@ -1,17 +1,3 @@
-diff --git a/android/src/main/java/com/capacitorjs/plugins/keyboard/KeyboardPlugin.java b/android/src/main/java/com/capacitorjs/plugins/keyboard/KeyboardPlugin.java
-index bf6735a85ff72fea5fe4d84b24d682d4080a95d6..072fb27b98f5d1fecc5b80794026f85c882908dd 100644
---- a/android/src/main/java/com/capacitorjs/plugins/keyboard/KeyboardPlugin.java
-+++ b/android/src/main/java/com/capacitorjs/plugins/keyboard/KeyboardPlugin.java
-@@ -17,6 +17,9 @@ public class KeyboardPlugin extends Plugin {
-     public void load() {
-         execute(() -> {
-             boolean resizeOnFullScreen = getConfig().getBoolean("resizeOnFullScreen", false);
-+            if (android.os.Build.VERSION.SDK_INT >= 35) {
-+                resizeOnFullScreen = false;
-+            }
-             implementation = new Keyboard(getBridge(), resizeOnFullScreen);
- 
-             implementation.setKeyboardEventListener(this::onKeyboardEvent);
 diff --git a/ios/Sources/KeyboardPlugin/Keyboard.m b/ios/Sources/KeyboardPlugin/Keyboard.m
 index 29c070840c20046fb7dd9e045cd7b83832386919..076e12ea2dc48721c0dc211b03962986d191824c 100644
 --- a/ios/Sources/KeyboardPlugin/Keyboard.m

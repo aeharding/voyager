@@ -3,18 +3,40 @@ import { IonNav } from "@ionic/react";
 import { use, useRef, useState } from "react";
 
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import {
+  getInstanceFromRemoteHandle,
+  getUsernameFromRemoteHandle,
+} from "#/helpers/lemmy";
 import useIonNavBackButtonListener from "#/helpers/useIonNavBackButtonListener";
 
+import Login from "./login/Login";
 import Welcome from "./welcome/Welcome";
 
 function blurDocument() {
   (document.activeElement as HTMLElement)?.blur();
 }
 
-export default function LoginNav() {
+interface LoginNavProps {
+  /**
+   * The remote account handle for reauthentication.
+   * Bypass server selection and prefill readonly username field
+   */
+  initialAccountHandle?: string;
+}
+
+export default function LoginNav({ initialAccountHandle }: LoginNavProps) {
   const [root] = useState(
     () =>
       function render() {
+        if (initialAccountHandle) {
+          return (
+            <Login
+              url={getInstanceFromRemoteHandle(initialAccountHandle)}
+              siteIcon={undefined}
+              username={getUsernameFromRemoteHandle(initialAccountHandle)}
+            />
+          );
+        }
         return <Welcome />;
       },
   );

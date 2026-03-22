@@ -4,7 +4,6 @@ import { use, useEffect } from "react";
 
 import { TabContext } from "#/core/TabContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
-import { SharedDialogContextProvider } from "#/features/auth/SharedDialogContext";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
@@ -31,7 +30,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   if (!ready) return;
 
   return (
-    <SharedDialogContextProvider>
+    <>
       {children}
       <VideoPortalProvider>
         <GalleryProvider>
@@ -41,7 +40,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
           />
         </GalleryProvider>
       </VideoPortalProvider>
-    </SharedDialogContextProvider>
+    </>
   );
 }
 

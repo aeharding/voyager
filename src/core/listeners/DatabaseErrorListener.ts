@@ -6,16 +6,17 @@ import { setDatabaseError } from "#/features/settings/settingsSlice";
 import { useAppDispatch } from "#/store";
 
 export default function DatabaseErrorListener() {
-  const { presentDatabaseErrorModal } = use(SharedDialogContext);
+  const { presentAppErrorModal } = use(SharedDialogContext);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const listener = (ev: PromiseRejectionEvent) => {
       switch (ev.reason.name) {
+        case Dexie.errnames.MissingAPI:
         case Dexie.errnames.Unknown:
         case Dexie.errnames.DatabaseClosed: {
           dispatch(setDatabaseError(ev.reason));
-          presentDatabaseErrorModal(true);
+          presentAppErrorModal(true);
         }
       }
     };

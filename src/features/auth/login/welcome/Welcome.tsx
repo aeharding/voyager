@@ -25,7 +25,7 @@ export default function Welcome() {
           </IonToolbar>
         </AppHeader>
 
-        <BaseSvg className={styles.baseSvg} />
+        <BaseSvg className={styles.baseSvg} slot="fixed" />
 
         <Buttons />
       </IonContent>

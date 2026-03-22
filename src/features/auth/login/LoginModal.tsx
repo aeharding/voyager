@@ -1,10 +1,15 @@
+import { ComponentProps } from "react";
+
 import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
 
 import LoginNav from "./LoginNav";
 
 import styles from "./LoginModal.module.css";
 
-interface LoginModalProps {
+interface LoginModalProps extends Pick<
+  ComponentProps<typeof LoginNav>,
+  "initialAccountHandle"
+> {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
@@ -12,6 +17,7 @@ interface LoginModalProps {
 export default function LoginModal({
   isOpen,
   setIsOpen,
+  initialAccountHandle,
 }: Readonly<LoginModalProps>) {
   return (
     <DynamicDismissableModal
@@ -19,7 +25,7 @@ export default function LoginModal({
       isOpen={isOpen}
       setIsOpen={setIsOpen}
     >
-      <LoginNav />
+      <LoginNav initialAccountHandle={initialAccountHandle} />
     </DynamicDismissableModal>
   );
 }

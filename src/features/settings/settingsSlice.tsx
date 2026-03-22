@@ -89,7 +89,11 @@ export {
 
 export interface SettingsState {
   ready: boolean;
-  databaseError: Error | undefined;
+  errors: {
+    database: Error | undefined;
+    unsupportedSystemWebview: string | undefined;
+  };
+
   appearance: {
     font: {
       fontSizeMultiplier: number;
@@ -200,7 +204,10 @@ export interface SettingsState {
 const baseState: SettingsState = {
   ready: false,
 
-  databaseError: undefined,
+  errors: {
+    database: undefined,
+    unsupportedSystemWebview: undefined,
+  },
 
   appearance: {
     commentsTheme: "rainbow",
@@ -355,7 +362,10 @@ export const settingsSlice = createSlice({
 
   reducers: {
     setDatabaseError(state, action: PayloadAction<Error>) {
-      state.databaseError = action.payload;
+      state.errors.database = action.payload;
+    },
+    setUnsupportedSystemWebviewError(state, action: PayloadAction<string>) {
+      state.errors.unsupportedSystemWebview = action.payload;
     },
 
     setAlwaysShowAuthor(state, action: PayloadAction<boolean>) {
@@ -858,6 +868,13 @@ export const defaultThreadCollapse = createSelector(
   },
 );
 
+export const hasErrorsSelector = createSelector(
+  [(state: RootState) => state.settings.errors],
+  (errors): boolean => {
+    return !!errors.database || !!errors.unsupportedSystemWebview;
+  },
+);
+
 export const {
   setAlwaysShowAuthor,
   setAlwaysUseReaderMode,
@@ -921,6 +938,7 @@ export const {
   settingsReady,
   setTouchFriendlyLinks,
   setTwoColumnLayout,
+  setUnsupportedSystemWebviewError,
   setUpvoteOnSave,
   setUserDarkMode,
   setUserInstanceUrlDisplay,

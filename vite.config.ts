@@ -1,5 +1,6 @@
+import babel from "@rolldown/plugin-babel";
 import legacy from "@vitejs/plugin-legacy";
-import react from "@vitejs/plugin-react";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
@@ -9,10 +10,9 @@ import manifest from "./manifest.json";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
     svgr(),
     VitePWA({
@@ -37,6 +37,7 @@ export default defineConfig({
       // es.array.at: Voyager code iOS 15.2
       // es.object.has-own: ReactMarkdown iOS 15.2
       modernPolyfills: ["es.array.at", "es.object.has-own"],
+      renderLegacyChunks: false,
     }),
   ],
   envPrefix: [
@@ -52,7 +53,7 @@ export default defineConfig({
   // Put everything into one chunk for now.
   build: {
     chunkSizeWarningLimit: 5_000,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         manualChunks: () => "index.js",
 
@@ -67,9 +68,6 @@ export default defineConfig({
           : {}),
       },
     },
-  },
-  esbuild: {
-    logOverride: { "unsupported-css-nesting": "silent" },
   },
   test: {
     exclude: ["**/e2e/**", "**/node_modules/**"],
