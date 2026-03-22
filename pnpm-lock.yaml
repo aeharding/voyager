@@ -20,6 +20,9 @@ patchedDependencies:
   openapi-fetch:
     hash: 8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67
     path: patches/openapi-fetch.patch
+  threadiverse:
+    hash: 7254da00c3faf9d0106242594492bbf8b514f7dae6df2f17a03c23eb34529454
+    path: patches/threadiverse.patch
 
 importers:
 
@@ -225,7 +228,7 @@ importers:
         version: 11.0.0
       threadiverse:
         specifier: ^0.10.1
-        version: 0.10.1
+        version: 0.10.1(patch_hash=7254da00c3faf9d0106242594492bbf8b514f7dae6df2f17a03c23eb34529454)
       ua-parser-js:
         specifier: ^2.0.9
         version: 2.0.9
@@ -13510,7 +13513,7 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.10.1:
+  threadiverse@0.10.1(patch_hash=7254da00c3faf9d0106242594492bbf8b514f7dae6df2f17a03c23eb34529454):
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client-v0: lemmy-js-client@0.20.0-alpha.18
