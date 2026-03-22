@@ -10,11 +10,11 @@ import {
 import { useEffect } from "react";
 import { useParams } from "react-router";
 
+import { modeSelector } from "#/features/auth/siteSlice";
 import { CommentSort } from "#/features/comment/CommentSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import PostDetail from "#/features/post/detail/PostDetail";
 import { crossPostsSelector, getPost } from "#/features/post/postSlice";
-import { modeSelector } from "#/features/auth/siteSlice";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import AppHeader from "#/features/shared/AppHeader";

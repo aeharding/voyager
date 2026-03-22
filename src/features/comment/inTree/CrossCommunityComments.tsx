@@ -3,21 +3,21 @@ import { useCallback, useEffect, useEffectEvent, useMemo, useState } from "react
 import { CommentView, PostView } from "threadiverse";
 
 import { VgerCommentSortType } from "#/features/comment/CommentSort";
-import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
 import { useFeedSortParams } from "#/features/feed/sort/useFeedSort";
-import { buildCommentsTreeWithMissing } from "#/helpers/lemmy";
-import useClient from "#/helpers/useClient";
-import { useAppDispatch, useAppSelector } from "#/store";
-
-import { receivedComments } from "../commentSlice";
 import {
   appendCrossPostComments,
   crossPostCommentsSelector,
   prependCrossPostComments,
   receivedCrossPostComments,
 } from "#/features/post/postSlice";
-import CommentTree from "./CommentTree";
+import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
+import { buildCommentsTreeWithMissing } from "#/helpers/lemmy";
+import useClient from "#/helpers/useClient";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { receivedComments } from "../commentSlice";
 import { CommentsContext } from "./CommentsContext";
+import CommentTree from "./CommentTree";
 import CommunityCommentSectionHeader from "./CommunityCommentSectionHeader";
 
 import styles from "./CrossCommunityComments.module.css";
@@ -44,7 +44,7 @@ export default function CrossCommunityComments({
   const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
   const sortParams = useFeedSortParams("comments", sort);
 
-  const comments = cachedComments ?? [];
+  const comments = useMemo(() => cachedComments ?? [], [cachedComments]);
 
   const fetchComments = useCallback(async () => {
     if (!sortParams) return;
@@ -106,6 +106,28 @@ export default function CrossCommunityComments({
     [fetchComments, appendComments, prependComments, getComments],
   );
 
+  function renderBody() {
+    if (loading)
+      return (
+        <div className={styles.spinnerContainer}>
+          <IonSpinner />
+        </div>
+      );
+    if (failed)
+      return <div className={styles.message}>Failed to load comments</div>;
+    if (comments.length === 0)
+      return <div className={styles.message}>No comments</div>;
+    return commentTree.map((comment, index) => (
+      <CommentTree
+        key={comment.comment_view.comment.id}
+        comment={comment}
+        first={index === 0}
+        rootIndex={index + 1}
+        baseDepth={comment.absoluteDepth}
+      />
+    ));
+  }
+
   return (
     <CommentsContext value={commentsContextValue}>
       <CommunityCommentSectionHeader
@@ -115,26 +137,7 @@ export default function CrossCommunityComments({
         isCollapsed={isCollapsed}
         onToggle={onToggle}
       />
-      {!isCollapsed &&
-        (loading ? (
-          <div className={styles.spinnerContainer}>
-            <IonSpinner />
-          </div>
-        ) : failed ? (
-          <div className={styles.message}>Failed to load comments</div>
-        ) : comments.length === 0 ? (
-          <div className={styles.message}>No comments</div>
-        ) : (
-          commentTree.map((comment, index) => (
-            <CommentTree
-              key={comment.comment_view.comment.id}
-              comment={comment}
-              first={index === 0}
-              rootIndex={index + 1}
-              baseDepth={comment.absoluteDepth}
-            />
-          ))
-        ))}
+      {!isCollapsed && renderBody()}
     </CommentsContext>
   );
 }
