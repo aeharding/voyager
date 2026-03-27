@@ -6,6 +6,10 @@ patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
   "@capacitor/keyboard": patches/@capacitor__keyboard.patch
   openapi-fetch: patches/openapi-fetch.patch
+  # Patch targets threadiverse@0.10.1. Exposes cross_posts from PieFed's
+  # getPost and getPosts responses, which SafeClient's Zod validation strips.
+  # Can be dropped once threadiverse models cross_posts in its shared types.
+  threadiverse: patches/threadiverse.patch
 
 publicHoistPattern:
   - workbox-window
