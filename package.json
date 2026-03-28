@@ -94,7 +94,7 @@
     "rehype-remark": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "threadiverse": "^0.10.1",
+    "threadiverse": "^0.11.0",
     "ua-parser-js": "^2.0.9",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
