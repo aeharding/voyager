@@ -1,4 +1,4 @@
-import { use, useMemo } from "react";
+import { use } from "react";
 import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
@@ -8,7 +8,7 @@ import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
 
-import useIsPostUrlMedia from "../../useIsPostUrlMedia";
+import usePostUrlIsMedia from "../../usePostUrlIsMedia";
 import LargeFeedPostMedia from "./media/LargeFeedPostMedia";
 
 import styles from "./LargePostContents.module.css";
@@ -31,13 +31,9 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
     (state) => state.settings.appearance.posts.blurNsfw,
   );
 
-  const isPostUrlMedia = useIsPostUrlMedia();
-  const urlIsMedia = useMemo(
-    () => isPostUrlMedia(post),
-    [post, isPostUrlMedia],
-  );
+  const postUrlIsMedia = usePostUrlIsMedia(post);
 
-  if (urlIsMedia) {
+  if (postUrlIsMedia) {
     return (
       <div
         className={cx(

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { PostView } from "threadiverse";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
@@ -7,12 +8,14 @@ import { useAppSelector } from "#/store";
 
 type PostUrlMediaType = "from-url" | "from-body" | false;
 
-export default function useIsPostUrlMedia() {
+export default function usePostUrlIsMedia(post: PostView) {
   const embedExternalMedia = useAppSelector(
     (state) => state.settings.appearance.posts.embedExternalMedia,
   );
 
-  return function isPostUrlMedia(post: PostView): PostUrlMediaType {
+  // React compiler:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function isPostUrlMedia(post: PostView): PostUrlMediaType {
     const url = post.post.url;
 
     if (!url) return false;
@@ -30,5 +33,7 @@ export default function useIsPostUrlMedia() {
     }
 
     return false;
-  };
+  }
+
+  return useMemo(() => isPostUrlMedia(post), [post, isPostUrlMedia]);
 }
