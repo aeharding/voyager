@@ -11,12 +11,16 @@ import { AppDispatch, RootState } from "#/store";
 
 import { clientSelector, handleSelector } from "./authSelectors";
 
+interface SoftwareState extends ProviderInfo {
+  instance: string;
+}
+
 interface SiteState {
   failedAttempt: number;
   loading: boolean;
   response: GetSiteResponse | undefined;
 
-  software: ProviderInfo | undefined;
+  software: SoftwareState | undefined;
   softwareError: boolean;
   unsupportedSoftware: boolean;
 
@@ -52,7 +56,7 @@ export const siteSlice = createSlice({
     loadingSoftware(state) {
       state.software = undefined;
     },
-    receivedSoftware(state, action: PayloadAction<ProviderInfo>) {
+    receivedSoftware(state, action: PayloadAction<SoftwareState>) {
       state.software = action.payload;
       state.softwareError = false;
     },
@@ -134,16 +138,18 @@ export const getSiteIfNeeded =
 
 export const getSoftware =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const reqId = siteReqIdSelector(getState());
-    let software;
+    const instance = getState().auth.connectedInstance;
 
-    dispatch(loadingSoftware());
+    // Already have software for this instance
+    if (instance === getState().site.software?.instance) return;
+
+    let software;
 
     try {
       software = await clientSelector(getState()).getSoftware();
     } catch (error) {
       // Site or user changed before site response resolved
-      if (reqId !== siteReqIdSelector(getState())) return;
+      if (getState().auth.connectedInstance !== instance) return;
 
       if (error instanceof UnsupportedSoftwareError) {
         dispatch(receivedUnsupportedSoftware());
@@ -155,9 +161,14 @@ export const getSoftware =
     }
 
     // Site or user changed before software response resolved
-    if (reqId !== siteReqIdSelector(getState())) return;
+    if (getState().auth.connectedInstance !== instance) return;
 
-    dispatch(receivedSoftware(software));
+    dispatch(
+      receivedSoftware({
+        ...software,
+        instance,
+      }),
+    );
   };
 
 export const getSite =
