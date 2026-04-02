@@ -16,12 +16,14 @@ import { createPortal } from "react-dom";
 import CommentTree from "#/features/comment/inTree/CommentTree";
 import { buildImageSrc } from "#/features/media/CachedImg";
 import PostHeader from "#/features/post/detail/PostHeader";
+import usePostUrlIsMedia from "#/features/post/usePostUrlIsMedia";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
 import { cx } from "#/helpers/css";
 import { isNative } from "#/helpers/device";
 import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
 import useAppToast from "#/helpers/useAppToast";
 import { getServerUrl } from "#/services/nativeFetch";
+import { useAppSelector } from "#/store";
 
 import AddRemoveButtons from "./AddRemoveButtons";
 import includeStyleProperties from "./includeStyleProperties";
@@ -60,7 +62,7 @@ const domToBlobOptions: DomToBlobOptions = {
           url: buildImageSrc(url, { format: "jpg" }),
           responseType: "blob",
           headers: {
-            ["User-Agent"]: "VoyagerApp/1.0",
+            "User-Agent": "VoyagerApp/1.0",
           },
         });
 
@@ -92,6 +94,13 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   );
   const [includePostText, setIncludePostText] = useState(true);
   const [watermark, setWatermark] = useState(false);
+
+  const collapsedBodyFromStore = useAppSelector(
+    (state) => !!state.post.postCollapsedById[data.post.post.id],
+  );
+  const [hidePostBody, setHidePostBody] = useState(
+    !("comment" in data) && collapsedBodyFromStore,
+  );
 
   const [blob, setBlob] = useState<Blob | undefined>();
   const [imageSrc, setImageSrc] = useState("");
@@ -163,6 +172,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     hideCommunity,
     includePostDetails,
     includePostText,
+    hidePostBody,
   ]);
 
   async function onShare() {
@@ -200,6 +210,13 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       URL.revokeObjectURL(link.href);
     }
   }
+
+  const postUrlIsMedia = usePostUrlIsMedia(data.post);
+
+  const shouldHide = (() => {
+    if (hidePostBody) return "body";
+    if (!includePostText) return "except-title";
+  })();
 
   return (
     <div className={styles.container}>
@@ -272,6 +289,16 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             )}
           </>
         )}
+        {!("comment" in data) && data.post.post.body && postUrlIsMedia ? (
+          <IonItem>
+            <IonToggle
+              checked={hidePostBody}
+              onIonChange={(e) => setHidePostBody(e.detail.checked)}
+            >
+              Hide Post Body
+            </IonToggle>
+          </IonItem>
+        ) : undefined}
         {includePostDetails && (
           <IonItem>
             <IonToggle
@@ -312,9 +339,10 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
               <PostHeader
                 className={!("comment" in data) ? styles.hideBottomBorder : ""}
                 post={data.post}
-                showPostText={includePostText}
+                shouldHide={shouldHide}
                 showPostActions={false}
                 constrainHeight={false}
+                collapsed={false}
               />
             )}
             {"comment" in data && (
