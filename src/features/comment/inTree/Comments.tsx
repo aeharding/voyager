@@ -52,6 +52,8 @@ interface CommentsProps {
   threadCommentId?: string;
   sort: VgerCommentSortType | null | undefined;
   bottomPadding?: number;
+  trailer?: React.ReactNode[];
+  collapsed?: boolean;
 
   ref: React.RefObject<CommentsHandle | undefined>;
 
@@ -65,6 +67,8 @@ export default function Comments({
   sort,
   bottomPadding,
   threadCommentId,
+  trailer = [],
+  collapsed = false,
   ref,
   virtualEnabled,
 }: CommentsProps) {
@@ -471,13 +475,14 @@ export default function Comments({
     () =>
       compact([
         header,
-        ...allComments,
-        renderFooter(),
+        ...(!collapsed ? allComments : []),
+        !collapsed ? renderFooter() : undefined,
+        ...trailer,
         bottomPadding ? (
           <div style={{ height: `${bottomPadding}px` }} key="bottom-padding" />
         ) : undefined,
       ]),
-    [allComments, bottomPadding, header, renderFooter],
+    [allComments, bottomPadding, collapsed, header, renderFooter, trailer],
   );
 
   const onScroll = useRangeChange(virtuaRef, (start, end) => {

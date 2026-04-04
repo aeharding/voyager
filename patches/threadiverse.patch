@@ -1,0 +1,47 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 9119c80b6115e2d67f72be3831abcdf199ce165c..a5a58c6d8baac778ca51ce8978c697c21699d7c2 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1064,12 +1064,24 @@ function buildSafeClient(_Client) {
+       return ListPersonMentionsResponse.parse(response);
+     }
+     async getPost(...params) {
+-      const { post_view } = await super.getPost(...params);
+-      return { post_view: PostView.parse(post_view) };
++      const response = await super.getPost(...params);
++      const result = { post_view: PostView.parse(response.post_view) };
++      if (response.cross_posts?.length) {
++        result.cross_posts = response.cross_posts;
++      }
++      return result;
+     }
+     async getPosts(...params) {
+       const response = await super.getPosts(...params);
+-      return ListPostsResponse.parse(response);
++      const parsed = ListPostsResponse.parse(response);
++      parsed.data = parsed.data.map((postView, i) => {
++        const crossPosts = response.data?.[i]?.post?.cross_posts;
++        if (crossPosts?.length) {
++          return { ...postView, post: { ...postView.post, cross_posts: crossPosts } };
++        }
++        return postView;
++      });
++      return parsed;
+     }
+     async getPrivateMessages(...params) {
+       const response = await super.getPrivateMessages(...params);
+@@ -3305,9 +3317,13 @@ class UnsafePiefedClient {
+       ...options,
+       params: { query }
+     });
+-    return {
++    const result = {
+       post_view: toPostView(response.data.post_view)
+     };
++    if (response.data.cross_posts?.length) {
++      result.cross_posts = response.data.cross_posts.map(toPostView);
++    }
++    return result;
+   }
+   async getPosts(payload, options) {
+     if (payload.mode && payload.mode !== "piefed")

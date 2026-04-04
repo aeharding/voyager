@@ -1,0 +1,20 @@
+.container {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background-color: var(--ion-color-light);
+  border-bottom: solid 1px var(--ion-color-medium);
+  font-size: 0.9em;
+  gap: 8px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ion-color-medium);
+  flex-shrink: 0;
+}
