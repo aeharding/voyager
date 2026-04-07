@@ -4,6 +4,7 @@ import { PostView } from "threadiverse";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { resolveObject } from "#/features/resolve/resolveSlice";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
+import { stopIonicTapClick } from "#/helpers/ionic";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../postSlice";
@@ -75,6 +76,7 @@ export default function CrosspostContainer({
       onClick={handleLinkClick}
       className={`cross-post ${hasBeenRead ? "read" : ""} ${className}`}
       draggable="false"
+      onTouchStart={() => stopIonicTapClick()}
     >
       {children({ crosspost, hasBeenRead })}
     </LinkInterceptor>
