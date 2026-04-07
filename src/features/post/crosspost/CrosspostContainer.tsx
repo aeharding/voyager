@@ -76,7 +76,7 @@ export default function CrosspostContainer({
       onClick={handleLinkClick}
       className={`cross-post ${hasBeenRead ? "read" : ""} ${className}`}
       draggable="false"
-      onTouchStart={() => stopIonicTapClick()}
+      onTouchStart={stopIonicTapClick}
     >
       {children({ crosspost, hasBeenRead })}
     </LinkInterceptor>
