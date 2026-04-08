@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Post, PostView } from "threadiverse";
+import { CommentView, Post, PostView } from "threadiverse";
 
 import {
   clientSelector,
@@ -46,6 +46,8 @@ interface PostState {
   postSavedById: Record<string, boolean | undefined>;
   postReadById: Record<string, boolean>;
   postCollapsedById: Record<string, boolean>;
+  crossPostsByPostId: Record<number, PostView[]>;
+  crossPostCommentsByPostId: Record<number, CommentView[]>;
 }
 
 const initialState: PostState = {
@@ -56,6 +58,8 @@ const initialState: PostState = {
   postSavedById: {},
   postReadById: {},
   postCollapsedById: {},
+  crossPostsByPostId: {},
+  crossPostCommentsByPostId: {},
 };
 
 export const postSlice = createSlice({
@@ -90,6 +94,49 @@ export const postSlice = createSlice({
     },
     resetHidden: (state) => {
       state.postHiddenById = {};
+    },
+    receivedCrossPostsForPost: (
+      state,
+      action: PayloadAction<{ postId: number; crossPosts: PostView[] }>,
+    ) => {
+      state.crossPostsByPostId[action.payload.postId] =
+        action.payload.crossPosts;
+    },
+    receivedCrossPostComments: (
+      state,
+      action: PayloadAction<{ postId: number; comments: CommentView[] }>,
+    ) => {
+      state.crossPostCommentsByPostId[action.payload.postId] =
+        action.payload.comments;
+    },
+    appendCrossPostComments: (
+      state,
+      action: PayloadAction<{ postId: number; comments: CommentView[] }>,
+    ) => {
+      const existing =
+        state.crossPostCommentsByPostId[action.payload.postId] ?? [];
+      const merged = [
+        ...existing,
+        ...action.payload.comments.filter(
+          (c) => !existing.some((e) => e.comment.id === c.comment.id),
+        ),
+      ];
+      state.crossPostCommentsByPostId[action.payload.postId] = merged;
+    },
+    prependCrossPostComments: (
+      state,
+      action: PayloadAction<{ postId: number; comments: CommentView[] }>,
+    ) => {
+      const existing =
+        state.crossPostCommentsByPostId[action.payload.postId] ?? [];
+      const merged = [
+        ...action.payload.comments,
+        ...existing.filter(
+          (e) =>
+            !action.payload.comments.some((c) => c.comment.id === e.comment.id),
+        ),
+      ];
+      state.crossPostCommentsByPostId[action.payload.postId] = merged;
     },
   },
   extraReducers: (builder) => {
@@ -250,6 +297,10 @@ export const {
   postDeleted,
   togglePostCollapse,
   resetHidden,
+  receivedCrossPostsForPost,
+  receivedCrossPostComments,
+  appendCrossPostComments,
+  prependCrossPostComments,
 } = postSlice.actions;
 
 export default postSlice.reducer;
@@ -366,7 +417,38 @@ export const getPost =
       throw error;
     }
 
-    dispatch(receivedPosts([result.post_view]));
+    // PieFed returns cross_posts in getPost responses, but the threadiverse
+    // package doesn't model this field in its shared TypeScript types.
+    const crossPosts =
+      (result as { post_view: PostView; cross_posts?: PostView[] })
+        .cross_posts ?? [];
+
+    // Re-attach mini cross_posts onto post_view.post so the feed stat icon
+    // survives the Redux post update when returning from post detail.
+    const postView = crossPosts.length
+      ? ({
+          ...result.post_view,
+          post: {
+            ...result.post_view.post,
+            cross_posts: crossPosts.map((cp) => ({
+              post_id: cp.post.id,
+              reply_count: cp.counts.comments,
+            })),
+          },
+        } as PostView)
+      : result.post_view;
+
+    dispatch(receivedPosts([postView]));
+
+    // Always dispatch so stale cross-post data is cleared when a post no
+    // longer has any cross-posts (e.g. community was removed).
+    dispatch(
+      receivedCrossPostsForPost({
+        postId: id,
+        crossPosts,
+      }),
+    );
+
     return result;
   };
 
@@ -409,6 +491,16 @@ export const clearHidden =
 export const postHiddenByIdSelector = (state: RootState) => {
   return state.post.postHiddenById;
 };
+
+export const crossPostsSelector =
+  (postId: number) =>
+  (state: RootState): PostView[] =>
+    state.post.crossPostsByPostId[postId] ?? [];
+
+export const crossPostCommentsSelector =
+  (postId: number) =>
+  (state: RootState): CommentView[] | undefined =>
+    state.post.crossPostCommentsByPostId[postId];
 
 export const modRemovePost =
   (post: Post, removed: boolean, reason?: string) =>
