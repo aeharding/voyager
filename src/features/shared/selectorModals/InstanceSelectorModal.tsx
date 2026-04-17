@@ -22,14 +22,16 @@ export default function InstanceSelectorModal(
 
   const presentToast = useAppToast();
 
-  const getInstancesEvent = useEffectEvent(async () => {
+  const getInstancesEvent = useEffectEvent(async (signal: AbortSignal) => {
     let instances;
 
     setLoading(true);
 
     try {
-      instances = await client.getFederatedInstances();
+      instances = await client.getFederatedInstances({ signal });
     } catch (error) {
+      if (signal.aborted) return;
+
       presentToast({
         message: "Failed to load instance list",
         color: "danger",
@@ -45,7 +47,13 @@ export default function InstanceSelectorModal(
   });
 
   useEffect(() => {
-    getInstancesEvent();
+    const abortController = new AbortController();
+
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    getInstancesEvent(abortController.signal);
+
+    return () => abortController.abort();
   }, []);
 
   async function search(query: string) {

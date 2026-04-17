@@ -80,27 +80,45 @@ export default function ConversationPage() {
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
-  const loadUser = useCallback(async () => {
+  const abortRef = useRef<AbortController | null>(null);
+
+  const loadUser = useCallback(() => {
     if (userByHandle[handle.toLowerCase()]) return;
-    if (loadingUser) return;
+
+    abortRef.current?.abort();
+    const abortController = new AbortController();
+    abortRef.current = abortController;
+    const { signal } = abortController;
 
     setLoadingUser(true);
 
     // TODO replace with await when React Compiler doesn't bail
-    return dispatch(getUser(handle))
+    return dispatch(getUser(handle, signal))
       .catch((error) => {
+        if (signal.aborted) throw error;
+
         setError(true);
         throw error;
       })
       .then(() => {
+        if (signal.aborted) return;
+
         setError(false);
       })
       .finally(() => {
+        if (signal.aborted) return;
+
         setLoadingUser(false);
       });
-  }, [dispatch, handle, loadingUser, userByHandle]);
+  }, [dispatch, handle, userByHandle]);
 
-  loadUser();
+  useEffect(() => {
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadUser();
+
+    return () => abortRef.current?.abort();
+  }, [loadUser]);
 
   useEffect(() => {
     dispatch(syncMessages());

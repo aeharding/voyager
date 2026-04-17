@@ -51,7 +51,7 @@ export default function Message({ message, first }: MessageProps) {
 
   const bind = useLongPress(onMessageLongPress, { cancelOnMovement: 15 });
 
-  const setReadEvent = useEffectEvent(async () => {
+  const markReadEvent = useEffectEvent(async () => {
     if (loading) return;
 
     setLoading(true);
@@ -77,7 +77,9 @@ export default function Message({ message, first }: MessageProps) {
     )
       return;
 
-    setReadEvent();
+    // Synchronize server-side read state with the focused message.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    markReadEvent();
   }, [focused, message, thisIsMyMessage, thisIsASelfMessage]);
 
   return (
