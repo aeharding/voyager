@@ -49,11 +49,14 @@ export const { receivedUsers, updateBanned, resetUsers } = userSlice.actions;
 export default userSlice.reducer;
 
 export const getUser =
-  (handle: string) =>
+  (handle: string, signal?: AbortSignal) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const personResponse = await clientSelector(getState())?.getPersonDetails({
-      username: handle,
-    });
+    const personResponse = await clientSelector(getState())?.getPersonDetails(
+      {
+        username: handle,
+      },
+      { signal },
+    );
 
     dispatch(receivedUsers([personResponse.person_view.person]));
 

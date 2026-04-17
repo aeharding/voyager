@@ -22,7 +22,7 @@ import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./GenericSelectorModal.module.css";
 
 interface GenericSelectorModalProps<I> {
-  search: (query: string) => Promise<I[]>;
+  search: (query: string, signal?: AbortSignal) => Promise<I[]>;
   onDismiss: (item?: I) => void;
   getIndex: (item: I) => number;
   getLabel: (item: I) => string;
@@ -40,14 +40,20 @@ export default function GenericSelectorModal<I>({
 }: GenericSelectorModalProps<I>) {
   const [items, setItems] = useState<I[]>([]);
 
-  async function query(q: string) {
-    setItems(await search(q));
+  async function query(q: string, signal?: AbortSignal) {
+    setItems(await search(q, signal));
   }
 
   const queryEvent = useEffectEvent(query);
 
   useEffect(() => {
-    queryEvent("");
+    const abortController = new AbortController();
+
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    queryEvent("", abortController.signal);
+
+    return () => abortController.abort();
   }, []);
 
   return (

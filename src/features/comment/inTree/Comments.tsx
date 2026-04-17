@@ -104,9 +104,12 @@ export default function Comments({
     getCommentContextDepthForPath(commentPath),
   );
 
-  useEffect(() => {
+  const [oldCommentPath, setOldCommentPath] = useState(commentPath);
+  if (oldCommentPath !== commentPath) {
+    setOldCommentPath(commentPath);
+
     setMaxContext(getCommentContextDepthForPath(commentPath));
-  }, [commentPath]);
+  }
 
   const parentCommentId = (() => {
     if (commentPath) return +commentPath.split(".")[1]!;
@@ -319,6 +322,9 @@ export default function Comments({
   const fetchCommentsEvent = useEffectEvent(fetchComments);
 
   useEffect(() => {
+    // Data fetching synchronized to comments state.
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCommentsEvent(true);
   }, [sort, commentPath, postId, client, threadCommentId]);
 

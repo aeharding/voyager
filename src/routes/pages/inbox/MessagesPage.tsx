@@ -8,7 +8,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import {
@@ -28,8 +28,8 @@ import MarkAllAsReadButton from "./MarkAllAsReadButton";
 export default function MessagesPage() {
   const dispatch = useAppDispatch();
   const messages = useAppSelector((state) => state.inbox.messages);
+  const loading = useAppSelector((state) => state.inbox.messagesLoading);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const [loading, setLoading] = useState(false);
   const conversationsByPersonId = useAppSelector(
     conversationsByPersonIdSelector,
   );
@@ -39,18 +39,9 @@ export default function MessagesPage() {
     [conversationsByPersonId],
   );
 
-  const fetchItems = useCallback(async () => {
-    setLoading(true);
-    try {
-      await dispatch(syncMessages());
-    } finally {
-      setLoading(false);
-    }
-  }, [dispatch]);
-
   useEffect(() => {
-    fetchItems();
-  }, [dispatch, jwtPayload, fetchItems]);
+    dispatch(syncMessages());
+  }, [dispatch, jwtPayload]);
 
   const content = (() => {
     if (!messages.length && loading) return <CenteredSpinner />;

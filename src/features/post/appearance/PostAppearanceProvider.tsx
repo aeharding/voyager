@@ -77,6 +77,8 @@ export default function PostAppearanceProvider({
   useEffect(() => {
     const abortController = new AbortController();
 
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     initAsyncPostAppearance(abortController.signal);
 
     return () => abortController.abort();

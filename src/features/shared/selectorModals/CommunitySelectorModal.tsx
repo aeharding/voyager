@@ -16,13 +16,16 @@ export default function CommunitySelectorModal(
 ) {
   const client = useClient();
 
-  async function search(query: string) {
-    const result = await client.search({
-      q: query,
-      type_: "Communities",
-      ...getTopAllSearchSort(await client.getMode()),
-      limit: LIMIT,
-    });
+  async function search(query: string, signal?: AbortSignal) {
+    const result = await client.search(
+      {
+        q: query,
+        type_: "Communities",
+        ...getTopAllSearchSort(await client.getMode()),
+        limit: LIMIT,
+      },
+      { signal },
+    );
 
     return result.data as CommunityView[];
   }

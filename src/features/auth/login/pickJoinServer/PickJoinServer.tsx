@@ -121,42 +121,38 @@ export default function PickJoinServer() {
     [searchHostname],
   );
 
-  const fetchCustomSite = useCallback(async () => {
-    setCustomInstance(undefined);
+  const fetchCustomSite = useCallback(
+    async (signal: AbortSignal) => {
+      setCustomInstance(undefined);
 
-    if (customSearchHostnameInvalid) return;
+      if (customSearchHostnameInvalid) return;
 
-    const potentialServer = searchHostname.toLowerCase();
+      const potentialServer = searchHostname.toLowerCase();
 
-    setLoading(true);
+      setLoading(true);
 
-    let site;
+      let site;
 
-    try {
-      site = await getClient(potentialServer).getSite();
-    } finally {
-      setLoading(false);
-    }
+      try {
+        site = await getClient(potentialServer).getSite({ signal });
+      } finally {
+        setLoading(false);
+      }
 
-    // User changed search before request resolved
-    if (
-      site.site_view.site.actor_id !==
-      `https://${searchHostname.toLowerCase()}/`
-    )
-      return;
-
-    setCustomInstance(site);
-  }, [customSearchHostnameInvalid, searchHostname]);
+      setCustomInstance(site);
+    },
+    [customSearchHostnameInvalid, searchHostname],
+  );
 
   useEffect(() => {
-    fetchCustomSite();
+    const abortController = new AbortController();
+
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCustomSite(abortController.signal);
+
+    return () => abortController.abort();
   }, [fetchCustomSite]);
-
-  useEffect(() => {
-    if (!customSearchHostnameInvalid) return;
-
-    setLoading(false);
-  }, [customSearchHostnameInvalid]);
 
   useEffect(() => {
     (async () => {
