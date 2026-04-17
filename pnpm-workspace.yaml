@@ -1,8 +1,7 @@
 overrides:
-  "@ionic/core": npm:voyager-ionic-core@8.8.2
+  "@ionic/core": npm:voyager-ionic-core@8.8.4
 
 patchedDependencies:
-  "@capacitor/android": patches/@capacitor__android.patch
   "@capacitor/haptics": patches/@capacitor__haptics.patch
   "@capacitor/keyboard": patches/@capacitor__keyboard.patch
   openapi-fetch: patches/openapi-fetch.patch

@@ -1,10 +1,10 @@
 # https://nodejs.org/en/download
-nodejs 24.14.1
+nodejs 24.15.0
 
 # https://www.ruby-lang.org/en/news
 # https://github.com/ruby/setup-ruby/blob/master/ruby-builder-versions.json
-ruby 3.4.7
+ruby 3.4.9
 
 # https://adoptium.net/temurin/releases?version=21
 # java v21 for gradle v8
-java temurin-21.0.9+10.0.LTS
+java temurin-21.0.10+7.0.LTS
