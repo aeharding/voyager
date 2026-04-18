@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { PostView } from "threadiverse";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
@@ -6,34 +5,24 @@ import { findLoneImage } from "#/helpers/markdown";
 import { findUrlMediaType } from "#/helpers/url";
 import { useAppSelector } from "#/store";
 
-type PostUrlMediaType = "from-url" | "from-body" | false;
-
 export default function usePostUrlIsMedia(post: PostView) {
   const embedExternalMedia = useAppSelector(
     (state) => state.settings.appearance.posts.embedExternalMedia,
   );
 
-  // React compiler:
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function isPostUrlMedia(post: PostView): PostUrlMediaType {
-    const url = post.post.url;
+  const { url, url_content_type, body } = post.post;
 
-    if (!url) return false;
-
-    if (findUrlMediaType(url, post.post.url_content_type)) {
+  if (url) {
+    if (findUrlMediaType(url, url_content_type)) {
       return "from-url";
     }
 
     if (embedExternalMedia) {
       if (isRedgif(url)) return "from-url";
     }
-
-    if (!post.post.url && post.post.body && findLoneImage(post.post.body)) {
-      return "from-body";
-    }
-
-    return false;
+  } else {
+    if (body && findLoneImage(body)) return "from-body";
   }
 
-  return useMemo(() => isPostUrlMedia(post), [post, isPostUrlMedia]);
+  return false;
 }
