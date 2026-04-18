@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
-import { RefObject } from "react";
+import { RefObject, use } from "react";
 import { Comment, CommentView } from "threadiverse";
 
 import Ago from "#/features/labels/Ago";
@@ -11,6 +11,7 @@ import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import ActionsContainer from "#/features/post/actions/ActionsContainer";
+import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
 import { cx } from "#/helpers/css";
@@ -43,6 +44,7 @@ export default function CommentHeader({
   rootIndex,
   commentEllipsisHandleRef,
 }: CommentHeaderProps) {
+  const { capturing } = use(ShareImageContext);
   const showCollapsedComment = useAppSelector(
     (state) => state.settings.general.comments.showCollapsed,
   );
@@ -53,6 +55,8 @@ export default function CommentHeader({
   );
 
   function renderActions() {
+    if (capturing) return;
+
     if (inModqueue) return <ModqueueItemActions itemView={commentView} />;
 
     if (canModerate)
