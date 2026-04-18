@@ -132,7 +132,11 @@ export default function PostHeader({
       );
     }
 
-    if (post.post.body?.trim() && postUrlIsMedia !== "from-body") {
+    if (
+      post.post.body?.trim() &&
+      postUrlIsMedia !== "from-body" &&
+      shouldHide !== "body"
+    ) {
       return (
         <>
           {post.post.url && !postUrlIsMedia && <PostLink post={post} />}
@@ -149,7 +153,7 @@ export default function PostHeader({
     if (post.post.url && !postUrlIsMedia) {
       return <PostLink className={styles.postLink} post={post} />;
     }
-  }, [post, crosspostUrl, postUrlIsMedia]);
+  }, [post, crosspostUrl, postUrlIsMedia, shouldHide]);
 
   const text = renderText();
 
@@ -181,7 +185,7 @@ export default function PostHeader({
                 <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
               </div>
-              {!shouldHide && text && (
+              {shouldHide !== "except-title" && text && (
                 <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
                   <div className={styles.textContent} slot="content">
                     {text}

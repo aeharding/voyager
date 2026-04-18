@@ -16,7 +16,7 @@ import { createPortal } from "react-dom";
 import CommentTree from "#/features/comment/inTree/CommentTree";
 import { buildImageSrc } from "#/features/media/CachedImg";
 import PostHeader from "#/features/post/detail/PostHeader";
-import usePostUrlIsMedia from "#/features/post/usePostUrlIsMedia";
+import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
 import { cx } from "#/helpers/css";
 import { isNative } from "#/helpers/device";
@@ -89,9 +89,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
   const [hideUsernames, setHideUsernames] = useState(false);
   const [hideCommunity, setHideCommunity] = useState(false);
-  const [includePostDetails, setIncludePostDetails] = useState(
-    !("comment" in data),
-  );
+  const [includePost, setIncludePost] = useState(!("comment" in data));
   const [includePostText, setIncludePostText] = useState(true);
   const [watermark, setWatermark] = useState(false);
 
@@ -112,6 +110,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   );
 
   const hasPostBody = data.post.post.body || data.post.post.url;
+
+  const crosspostUrl = useCrosspostUrl(data.post);
 
   useEffect(() => {
     if (!blob) return;
@@ -170,7 +170,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     watermark,
     hideUsernames,
     hideCommunity,
-    includePostDetails,
+    includePost,
     includePostText,
     hidePostBody,
   ]);
@@ -211,8 +211,6 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     }
   }
 
-  const postUrlIsMedia = usePostUrlIsMedia(data.post);
-
   const shouldHide = (() => {
     if (hidePostBody) return "body";
     if (!includePostText) return "except-title";
@@ -251,13 +249,13 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <>
             <IonItem>
               <IonToggle
-                checked={includePostDetails}
-                onIonChange={(e) => setIncludePostDetails(e.detail.checked)}
+                checked={includePost}
+                onIonChange={(e) => setIncludePost(e.detail.checked)}
               >
-                Include Post Details
+                Include Post
               </IonToggle>
             </IonItem>
-            {includePostDetails && hasPostBody ? (
+            {includePost && hasPostBody ? (
               <IonItem>
                 <IonToggle
                   checked={includePostText}
@@ -289,7 +287,10 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             )}
           </>
         )}
-        {!("comment" in data) && data.post.post.body && postUrlIsMedia ? (
+        {!("comment" in data) &&
+        data.post.post.body?.trim() &&
+        data.post.post.url &&
+        !crosspostUrl ? (
           <IonItem>
             <IonToggle
               checked={hidePostBody}
@@ -299,7 +300,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             </IonToggle>
           </IonItem>
         ) : undefined}
-        {includePostDetails && (
+        {includePost && (
           <IonItem>
             <IonToggle
               checked={hideCommunity}
@@ -335,7 +336,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <ShareImageContext
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
-            {includePostDetails && (
+            {includePost && (
               <PostHeader
                 className={!("comment" in data) ? styles.hideBottomBorder : ""}
                 post={data.post}
@@ -347,9 +348,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             )}
             {"comment" in data && (
               <>
-                {includePostDetails && (
-                  <div className={styles.postCommentSpacer} />
-                )}
+                {includePost && <div className={styles.postCommentSpacer} />}
                 <CommentTree
                   comment={commentNode[0]!}
                   first
