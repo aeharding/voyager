@@ -37,6 +37,7 @@ class FeedViewModel: ObservableObject {
         error = nil
 
         var request = URLRequest(url: url)
+        request.setValue("VoyagerApp/1.0", forHTTPHeaderField: "User-Agent")
 
         if let authToken = self.sessionManager.authToken {
             request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // lemmy >= 0.19
