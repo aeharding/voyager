@@ -3,7 +3,9 @@ import { PostView } from "threadiverse";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
 import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";
+import LargeFeedYoutubeMedia from "#/features/media/external/youtube/LargeFeedYoutubeMedia";
 import { buildMediaId } from "#/features/media/video/VideoPortalProvider";
+import { isYoutube } from "#/features/post/link/thumbnail/sites/youtube";
 import { cx } from "#/helpers/css";
 
 import usePostSrc from "../../usePostSrc";
@@ -30,6 +32,16 @@ export default function LargeFeedPostMedia(
             disableInlineInteraction={props.blur}
             className={cx(styles.lightbox, props.className)}
             portalWithMediaId={buildMediaId(props.post.post.ap_id)}
+          />
+        );
+      case isYoutube(props.post.post.url):
+        return (
+          <LargeFeedYoutubeMedia
+            url={props.post.post.url}
+            blur={props.blur}
+            className={cx(styles.lightbox, props.className)}
+            style={props.style}
+            onClick={props.onClick}
           />
         );
     }
