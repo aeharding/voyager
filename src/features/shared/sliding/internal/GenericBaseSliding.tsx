@@ -16,6 +16,7 @@ import {
 import { use, useMemo } from "react";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
+import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { VOTE_COLORS } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import { SwipeAction, SwipeActions } from "#/services/db/types";
 import { useAppSelector } from "#/store";
@@ -71,6 +72,7 @@ export default function GenericBaseSliding({
   const disableRightSwipes = useAppSelector(
     (state) => state.gesture.swipe.disableRightSwipes,
   );
+  const isDownvoteEnabled = useAppSelector(isDownvoteEnabledSelector);
 
   const collapseToTopAction = useMemo(() => {
     return collapseRootComment
@@ -132,14 +134,16 @@ export default function GenericBaseSliding({
           bgColor: VOTE_COLORS.UPVOTE[votesTheme],
           slash: currentVote === 1,
         },
-        downvote: {
-          icon: arrowDownSharp,
-          trigger: () => {
-            onVote(currentVote === -1 ? 0 : -1);
-          },
-          bgColor: VOTE_COLORS.DOWNVOTE[votesTheme],
-          slash: currentVote === -1,
-        },
+        downvote: isDownvoteEnabled
+          ? {
+              icon: arrowDownSharp,
+              trigger: () => {
+                onVote(currentVote === -1 ? 0 : -1);
+              },
+              bgColor: VOTE_COLORS.DOWNVOTE[votesTheme],
+              slash: currentVote === -1,
+            }
+          : undefined,
         reply: {
           icon: arrowUndo,
           trigger: reply,
@@ -167,6 +171,7 @@ export default function GenericBaseSliding({
       onVote,
       shareTrigger,
       votesTheme,
+      isDownvoteEnabled,
     ]);
 
   const startActions: ActionList = useMemo(
