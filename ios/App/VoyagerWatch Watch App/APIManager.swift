@@ -29,6 +29,7 @@ class APIManager {
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("VoyagerApp/1.0", forHTTPHeaderField: "User-Agent")
 
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // lemmy >= 0.19
 

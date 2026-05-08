@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
-import { MouseEvent, useMemo } from "react";
+import { MouseEvent } from "react";
 import { PostView } from "threadiverse";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -16,7 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../../postSlice";
-import useIsPostUrlMedia from "../../useIsPostUrlMedia";
+import usePostUrlIsMedia from "../../usePostUrlIsMedia";
 import CompactFeedPostMedia from "./CompactFeedPostMedia";
 import SelfSvg from "./self.svg?react";
 
@@ -43,11 +43,7 @@ export default function Thumbnail({ post }: ImgProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const isPostUrlMedia = useIsPostUrlMedia();
-  const urlIsMedia = useMemo(
-    () => isPostUrlMedia(post),
-    [post, isPostUrlMedia],
-  );
+  const postUrlIsMedia = usePostUrlIsMedia(post);
 
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
@@ -61,7 +57,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const nsfw = isNsfwBlurred(post, blurNsfw);
 
-  const isLink = !urlIsMedia && post.post.url;
+  const isLink = !postUrlIsMedia && post.post.url;
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -89,7 +85,7 @@ export default function Thumbnail({ post }: ImgProps) {
       return <IonIcon className={styles.fullsizeIcon} icon={link} />;
     }
 
-    if (urlIsMedia) {
+    if (postUrlIsMedia) {
       return (
         <CompactFeedPostMedia
           post={post}

@@ -46,7 +46,7 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
 
   const registration = useRef<ServiceWorkerRegistration>(undefined);
 
-  async function checkForUpdates() {
+  async function checkForUpdates(signal?: AbortSignal) {
     const r = registration.current;
 
     if (!r) {
@@ -58,9 +58,13 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
     try {
       await r.update();
     } catch (error) {
+      if (signal?.aborted) throw error;
+
       setStatus("error");
       throw error;
     }
+
+    if (signal?.aborted) return;
 
     setStatus((status) => {
       if (status === "outdated") return status;
@@ -95,7 +99,13 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
   useEffect(() => {
     if (documentState === "hidden") return;
 
-    checkForUpdatesEvent();
+    const abortController = new AbortController();
+
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    checkForUpdatesEvent(abortController.signal);
+
+    return () => abortController.abort();
   }, [documentState]);
 
   return (

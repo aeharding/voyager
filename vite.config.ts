@@ -18,6 +18,7 @@ export default defineConfig({
     VitePWA({
       devOptions: {
         enabled: true,
+        suppressWarnings: true,
       },
       registerType: "prompt",
       manifestFilename: "manifest.json",

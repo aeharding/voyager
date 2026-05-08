@@ -1,81 +1,22 @@
-import { CapacitorHttp } from "@capacitor/core";
-import { Directory, Filesystem } from "@capacitor/filesystem";
-import { Share } from "@capacitor/share";
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { domToBlob, Options as DomToBlobOptions } from "modern-screenshot";
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useState } from "react";
 import { createPortal } from "react-dom";
 
 import CommentTree from "#/features/comment/inTree/CommentTree";
-import { buildImageSrc } from "#/features/media/CachedImg";
 import PostHeader from "#/features/post/detail/PostHeader";
-import { blobToDataURL, blobToString } from "#/helpers/blob";
+import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { cx } from "#/helpers/css";
 import { isNative } from "#/helpers/device";
 import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
-import useAppToast from "#/helpers/useAppToast";
-import { getServerUrl } from "#/services/nativeFetch";
+import { useAppSelector } from "#/store";
 
 import AddRemoveButtons from "./AddRemoveButtons";
-import includeStyleProperties from "./includeStyleProperties";
+import PostContentSelector, { PostContent } from "./PostContentSelector";
 import { ShareAsImageData } from "./ShareAsImageModal";
+import useShareImage from "./useShareImage";
 import Watermark from "./Watermark";
 
 import styles from "./ShareAsImage.module.css";
-
-const domToBlobOptions: DomToBlobOptions = {
-  scale: 4,
-  features: {
-    // Without this, render fails on certain images
-    removeControlCharacter: false,
-  },
-  includeStyleProperties,
-  filter: (node) => {
-    if (!(node instanceof HTMLElement)) return true;
-
-    return node.tagName !== "VIDEO";
-  },
-  fetchFn: isNative()
-    ? async (url) => {
-        // Pass through relative URLs to browser fetching
-        // !: running in native environment
-        if (url.startsWith(`${getServerUrl!()}/`)) {
-          return false;
-        }
-
-        // Attempt upgrade to https (insecure will be blocked)
-        if (url.startsWith("http://")) {
-          url = url.replace(/^http:\/\//, "https://");
-        }
-
-        const nativeResponse = await CapacitorHttp.get({
-          // if pictrs, convert large gifs to jpg
-          url: buildImageSrc(url, { format: "jpg" }),
-          responseType: "blob",
-          headers: {
-            ["User-Agent"]: "VoyagerApp/1.0",
-          },
-        });
-
-        // Workaround that will probably break in a future capacitor upgrade
-        // https://github.com/ionic-team/capacitor/issues/6126
-        return `data:${
-          nativeResponse.headers["Content-Type"] || "image/png"
-        };base64,${nativeResponse.data}`;
-      }
-    : undefined,
-};
-
-const shareAsImageRenderRoot = document.querySelector(
-  "#share-as-image-root",
-) as HTMLElement;
 
 interface ShareAsImageProps {
   data: ShareAsImageData;
@@ -83,18 +24,18 @@ interface ShareAsImageProps {
 }
 
 export default function ShareAsImage({ data, header }: ShareAsImageProps) {
-  const presentToast = useAppToast();
-
   const [hideUsernames, setHideUsernames] = useState(false);
   const [hideCommunity, setHideCommunity] = useState(false);
-  const [includePostDetails, setIncludePostDetails] = useState(
-    !("comment" in data),
-  );
-  const [includePostText, setIncludePostText] = useState(true);
+  const [includePost, setIncludePost] = useState(!("comment" in data));
   const [watermark, setWatermark] = useState(false);
 
-  const [blob, setBlob] = useState<Blob | undefined>();
-  const [imageSrc, setImageSrc] = useState("");
+  const collapsedBodyFromStore = useAppSelector(
+    (state) => !!state.post.postCollapsedById[data.post.post.id],
+  );
+  const [postContent, setPostContent] = useState<PostContent>(() => {
+    if ("comment" in data) return "full";
+    return collapsedBodyFromStore ? "hide-body" : "full";
+  });
 
   const [minDepth, setMinDepth] = useState(
     ("comment" in data
@@ -104,18 +45,15 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
   const hasPostBody = data.post.post.body || data.post.post.url;
 
-  useEffect(() => {
-    if (!blob) return;
+  const crosspostUrl = useCrosspostUrl(data.post);
 
-    (async () => {
-      setImageSrc(await blobToDataURL(blob));
-    })();
-  }, [blob]);
+  const canHideBody =
+    !!data.post.post.body?.trim() && !!data.post.post.url && !crosspostUrl;
 
   const filteredComments = (() => {
     if (!("comment" in data)) return [];
 
-    const filtered = data.comments
+    return data.comments
       .filter(
         (c) =>
           (getDepthFromComment(c.comment) ?? 0) >= minDepth &&
@@ -126,80 +64,29 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           (getDepthFromComment(a.comment) ?? 0) -
           (getDepthFromComment(b.comment) ?? 0),
       );
-
-    return filtered;
   })();
 
   const commentNode = filteredComments.length
     ? buildCommentsTree(filteredComments, true)
     : [];
 
-  const render = useCallback(async () => {
-    try {
-      const blob = await domToBlob(
-        shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
-        domToBlobOptions,
-      );
-      setBlob(() => blob ?? undefined);
-    } catch (error) {
-      presentToast({
-        message: "Error rendering image",
-      });
-
-      throw error;
-    }
-  }, [presentToast]);
-
-  useLayoutEffect(() => {
-    requestAnimationFrame(() => {
-      render();
-    });
-  }, [
-    render,
+  const { imageSrc, renderRoot, onShare } = useShareImage({
     data,
-    filteredComments,
-    watermark,
-    hideUsernames,
-    hideCommunity,
-    includePostDetails,
-    includePostText,
-  ]);
+    renderDeps: [
+      data,
+      filteredComments,
+      watermark,
+      hideUsernames,
+      hideCommunity,
+      includePost,
+      postContent,
+    ],
+  });
 
-  async function onShare() {
-    if (!blob) return;
-
-    const apId =
-      "comment" in data ? data.comment.comment.ap_id : data.post.post.ap_id;
-
-    const filename = `${apId
-      .replace(/^https:\/\//, "")
-      .replaceAll(/\//g, "-")}.png`;
-
-    const file = new File([blob], filename, {
-      type: "image/png",
-    });
-
-    const webSharePayload: ShareData = { files: [file] };
-
-    if (isNative()) {
-      const data = await blobToString(blob);
-      const file = await Filesystem.writeFile({
-        data,
-        directory: Directory.Cache,
-        path: filename,
-      });
-      await Share.share({ files: [file.uri] });
-      await Filesystem.deleteFile({ path: file.uri });
-    } else if ("canShare" in navigator && navigator.canShare(webSharePayload)) {
-      navigator.share(webSharePayload);
-    } else {
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = URL.createObjectURL(file);
-      link.click();
-      URL.revokeObjectURL(link.href);
-    }
-  }
+  const shouldHide = ((): "body" | "except-title" | undefined => {
+    if (postContent === "hide-body") return "body";
+    if (postContent === "title-only") return "except-title";
+  })();
 
   return (
     <div className={styles.container}>
@@ -234,21 +121,18 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <>
             <IonItem>
               <IonToggle
-                checked={includePostDetails}
-                onIonChange={(e) => setIncludePostDetails(e.detail.checked)}
+                checked={includePost}
+                onIonChange={(e) => setIncludePost(e.detail.checked)}
               >
-                Include Post Details
+                Include Post
               </IonToggle>
             </IonItem>
-            {includePostDetails && hasPostBody ? (
-              <IonItem>
-                <IonToggle
-                  checked={includePostText}
-                  onIonChange={(e) => setIncludePostText(e.detail.checked)}
-                >
-                  Include Post Text
-                </IonToggle>
-              </IonItem>
+            {includePost && hasPostBody ? (
+              <PostContentSelector
+                value={postContent}
+                onChange={setPostContent}
+                canHideBody={canHideBody}
+              />
             ) : undefined}
 
             {!!getDepthFromComment(data.comment.comment) && (
@@ -272,7 +156,19 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             )}
           </>
         )}
-        {includePostDetails && (
+        {!("comment" in data) && canHideBody ? (
+          <IonItem>
+            <IonToggle
+              checked={postContent === "hide-body"}
+              onIonChange={(e) =>
+                setPostContent(e.detail.checked ? "hide-body" : "full")
+              }
+            >
+              Hide Post Body
+            </IonToggle>
+          </IonItem>
+        ) : undefined}
+        {includePost && (
           <IonItem>
             <IonToggle
               checked={hideCommunity}
@@ -308,20 +204,19 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <ShareImageContext
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
-            {includePostDetails && (
+            {includePost && (
               <PostHeader
                 className={!("comment" in data) ? styles.hideBottomBorder : ""}
                 post={data.post}
-                showPostText={includePostText}
+                shouldHide={shouldHide}
                 showPostActions={false}
                 constrainHeight={false}
+                collapsed={false}
               />
             )}
             {"comment" in data && (
               <>
-                {includePostDetails && (
-                  <div className={styles.postCommentSpacer} />
-                )}
+                {includePost && <div className={styles.postCommentSpacer} />}
                 <CommentTree
                   comment={commentNode[0]!}
                   first
@@ -333,7 +228,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           </ShareImageContext>
           {watermark && <Watermark />}
         </div>,
-        shareAsImageRenderRoot,
+        renderRoot,
       )}
     </div>
   );

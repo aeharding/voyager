@@ -115,7 +115,7 @@ function ResolvedCommunitiesList({
   }, [communities]);
 
   const { items, throughFavoritesCount } = useMemo(() => {
-    const favoriteItems: (FavoriteItem | SeparatorItem)[] = favorites?.length
+    const favoriteItems: (FavoriteItem | SeparatorItem)[] = favorites.length
       ? [
           { type: "separator", value: "Favorites" },
           ...favoritesAsCommunitiesIfFound.map(
@@ -166,7 +166,7 @@ function ResolvedCommunitiesList({
     };
   }, [
     communitiesGroupedByLetter,
-    favorites?.length,
+    favorites.length,
     favoritesAsCommunitiesIfFound,
     jwt,
     moderates,

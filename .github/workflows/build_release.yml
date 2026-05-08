@@ -38,12 +38,12 @@ jobs:
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: release-data
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
         uses: actions/setup-node@v6
@@ -58,7 +58,7 @@ jobs:
         run: pnpm build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
@@ -77,7 +77,7 @@ jobs:
           subject-path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Voyager-Web-${{ env.BUILD_LABEL }}.zip
           path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
@@ -96,12 +96,12 @@ jobs:
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: release-data
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
         uses: actions/setup-node@v6
@@ -141,7 +141,7 @@ jobs:
           subject-path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
 
       - name: Upload iOS IPA as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
           path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
@@ -157,12 +157,12 @@ jobs:
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: release-data
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
         uses: actions/setup-node@v6
@@ -202,7 +202,7 @@ jobs:
           subject-path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
       - name: Send to Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
           path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
@@ -217,12 +217,12 @@ jobs:
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: release-data
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
         uses: actions/setup-node@v6
@@ -283,19 +283,19 @@ jobs:
 
     steps:
       - name: Download dist artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Voyager-Web-${{ env.BUILD_LABEL }}.zip
           path: artifacts/web
 
       - name: Download iOS Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
           path: artifacts/ios
 
       - name: Download Android Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
           path: artifacts/android
@@ -303,7 +303,7 @@ jobs:
         # https://github.com/softprops/action-gh-release/pull/372#issuecomment-1642643937
       - name: Changelog
         id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@c9dc8369bccbc41e0ac887f8fd674f5925d315f7 # v5.4.1
+        uses: mikepenz/release-changelog-builder-action@bcae7115752d4ed746ff92feb666574428a79415 # v6.2.1
         with:
           configurationJson: |
             {
@@ -332,7 +332,7 @@ jobs:
             }
 
       - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
           body: ${{ steps.build_changelog.outputs.changelog }}
           files: |

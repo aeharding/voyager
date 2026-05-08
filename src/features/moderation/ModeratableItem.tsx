@@ -1,6 +1,7 @@
 import { createContext, ReactNode, use } from "react";
 import { CommentView, PostView } from "threadiverse";
 
+import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 import { isPost } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";
 
@@ -51,6 +52,7 @@ export default function ModeratableItem({
   children,
   highlighted,
 }: ModeratableItemProps) {
+  const { capturing } = use(ShareImageContext);
   const canModerate = useCanModerate(itemView.community);
 
   const item = useAppSelector((state) => {
@@ -66,7 +68,7 @@ export default function ModeratableItem({
 
   const modState = useItemModState(item);
 
-  const shouldShowModBanner = canModerate && modState;
+  const shouldShowModBanner = canModerate && modState && !capturing;
 
   if (highlighted && !shouldShowModBanner) {
     return (

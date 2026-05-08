@@ -12,7 +12,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { uniq } from "es-toolkit";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { VList, VListHandle } from "virtua";
 
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
@@ -30,7 +30,6 @@ export default function PickLoginServer() {
   const presentToast = useAppToast();
   const validateLoginTo = useValidateLoginTo();
   const [search, setSearch] = useState("");
-  const [shouldSubmit, setShouldSubmit] = useState(false);
   const searchHostname = stripProtocol(search.trim());
   const instances = useMemo(
     () =>
@@ -66,12 +65,16 @@ export default function PickLoginServer() {
     }, 300);
   }, []);
 
-  const submit = useCallback(async () => {
+  const submit = async (updateSearch?: string) => {
+    const newSearch = updateSearch ?? search;
+
+    if (updateSearch) setSearch(updateSearch);
+
     if (loading) return;
 
-    const potentialServer = searchHostname.toLowerCase();
+    const potentialServer = stripProtocol(newSearch).toLowerCase();
 
-    if (instances[0] && search !== potentialServer) {
+    if (instances[0] && newSearch !== potentialServer) {
       setSearch(instances[0]);
       return;
     }
@@ -89,14 +92,7 @@ export default function PickLoginServer() {
     } finally {
       setLoading(false);
     }
-  }, [instances, loading, search, searchHostname, validateLoginTo]);
-
-  useEffect(() => {
-    if (!shouldSubmit) return;
-
-    setShouldSubmit(false);
-    submit();
-  }, [shouldSubmit, submit]);
+  };
 
   return (
     <>
@@ -110,7 +106,11 @@ export default function PickLoginServer() {
             {loading ? (
               <IonSpinner color="medium" />
             ) : (
-              <IonButton strong onClick={submit} disabled={searchInvalid}>
+              <IonButton
+                strong
+                onClick={() => submit()}
+                disabled={searchInvalid}
+              >
                 Next
               </IonButton>
             )}
@@ -180,8 +180,7 @@ export default function PickLoginServer() {
                   <IonItem
                     detail
                     onClick={() => {
-                      setSearch(instance);
-                      setShouldSubmit(true);
+                      submit(instance);
                       searchbarRef.current?.setFocus();
                     }}
                   >

@@ -31,39 +31,50 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
   const router = useOptimizedIonRouter();
   const [present] = useIonAlert();
 
-  const load = useCallback(async () => {
-    let data;
+  const load = useCallback(
+    async (signal?: AbortSignal) => {
+      let data;
 
-    try {
-      data = await dispatch(getUser(handle));
-    } catch (error) {
-      if (
-        isLemmyError(error, "couldnt_find_person" as never) || // TODO lemmy 0.19 and less support
-        isLemmyError(error, "not_found")
-      ) {
-        await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
+      try {
+        data = await dispatch(getUser(handle, signal));
+      } catch (error) {
+        if (signal?.aborted) throw error;
 
-        if (router.canGoBack()) {
-          router.goBack();
-        } else {
-          router.push(buildGeneralBrowseLink("/"));
+        if (
+          isLemmyError(error, "couldnt_find_person" as never) || // TODO lemmy 0.19 and less support
+          isLemmyError(error, "not_found")
+        ) {
+          await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
+
+          if (router.canGoBack()) {
+            router.goBack();
+          } else {
+            router.push(buildGeneralBrowseLink("/"));
+          }
+
+          throw error;
         }
+
+        setPerson("failed");
 
         throw error;
       }
 
-      setPerson("failed");
-
-      throw error;
-    }
-
-    setPerson(data);
-  }, [buildGeneralBrowseLink, dispatch, handle, present, router]);
+      setPerson(data);
+    },
+    [buildGeneralBrowseLink, dispatch, handle, present, router],
+  );
 
   const loadEvent = useEffectEvent(load);
 
   useEffect(() => {
-    if (handle) loadEvent();
+    const abortController = new AbortController();
+
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (handle) loadEvent(abortController.signal);
+
+    return () => abortController.abort();
   }, [handle]);
 
   if (!person)

@@ -22,6 +22,7 @@ interface PostState {
   readByInboxItemId: Record<string, boolean>;
   messageSyncState: "init" | "syncing" | "synced";
   messages: PrivateMessageView[];
+  messagesLoading: boolean;
 }
 
 const initialState: PostState = {
@@ -34,6 +35,7 @@ const initialState: PostState = {
   readByInboxItemId: {},
   messageSyncState: "init",
   messages: [],
+  messagesLoading: false,
 };
 
 export const inboxSlice = createSlice({
@@ -89,6 +91,9 @@ export const inboxSlice = createSlice({
       state.messageSyncState = "init";
       state.messages = [];
     },
+    setMessagesLoading: (state, action: PayloadAction<boolean>) => {
+      state.messagesLoading = action.payload;
+    },
   },
 });
 
@@ -104,6 +109,7 @@ export const {
   syncComplete,
   syncFail,
   setAllReadStatus: markAllReadInCache,
+  setMessagesLoading,
 } = inboxSlice.actions;
 
 export default inboxSlice.reducer;
@@ -134,65 +140,75 @@ export const getInboxCounts =
 
 export const syncMessages =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) {
-      dispatch(resetInbox());
-      return;
-    }
-
-    const syncState = getState().inbox.messageSyncState;
-
-    switch (syncState) {
-      case "syncing":
-        break;
-      case "init":
-      case "synced": {
-        dispatch(sync());
-
-        let page_cursor: PageCursor | undefined;
-        let fetchedPageCount = 0;
-
-        while (true) {
-          let privateMessages;
-
-          try {
-            const results = await clientSelector(getState()).getPrivateMessages(
-              {
-                limit: (() => {
-                  if (syncState === "init") return 50; // initial sync, expect many messages
-                  if (!page_cursor) return 1; // poll to check for new messages
-
-                  return 20; // detected new messages, kick off sync
-                })(),
-                page_cursor,
-              },
-            );
-            privateMessages = results.data;
-            fetchedPageCount++;
-            page_cursor = results.next_page;
-          } catch (e) {
-            dispatch(syncFail());
-            throw e;
-          }
-
-          const newMessages = differenceBy(
-            privateMessages,
-            getState().inbox.messages,
-            (msg) => msg.private_message.id,
-          );
-
-          dispatch(receivedMessages(privateMessages));
-          dispatch(receivedUsers(privateMessages.map((msg) => msg.creator)));
-          dispatch(receivedUsers(privateMessages.map((msg) => msg.recipient)));
-
-          if (!newMessages.length || fetchedPageCount > 10) break;
-        }
-
-        dispatch(syncComplete());
-      }
+    dispatch(setMessagesLoading(true));
+    try {
+      await _syncMessages(dispatch, getState);
+    } finally {
+      dispatch(setMessagesLoading(false));
     }
   };
+
+const _syncMessages = async (
+  dispatch: AppDispatch,
+  getState: () => RootState,
+) => {
+  const jwt = jwtSelector(getState());
+
+  if (!jwt) {
+    dispatch(resetInbox());
+    return;
+  }
+
+  const syncState = getState().inbox.messageSyncState;
+
+  switch (syncState) {
+    case "syncing":
+      break;
+    case "init":
+    case "synced": {
+      dispatch(sync());
+
+      let page_cursor: PageCursor | undefined;
+      let fetchedPageCount = 0;
+
+      while (true) {
+        let privateMessages;
+
+        try {
+          const results = await clientSelector(getState()).getPrivateMessages({
+            limit: (() => {
+              if (syncState === "init") return 50; // initial sync, expect many messages
+              if (!page_cursor) return 1; // poll to check for new messages
+
+              return 20; // detected new messages, kick off sync
+            })(),
+            page_cursor,
+          });
+          privateMessages = results.data;
+          fetchedPageCount++;
+          page_cursor = results.next_page;
+        } catch (e) {
+          dispatch(syncFail());
+          throw e;
+        }
+
+        const newMessages = differenceBy(
+          privateMessages,
+          getState().inbox.messages,
+          (msg) => msg.private_message.id,
+        );
+
+        dispatch(receivedMessages(privateMessages));
+        dispatch(receivedUsers(privateMessages.map((msg) => msg.creator)));
+        dispatch(receivedUsers(privateMessages.map((msg) => msg.recipient)));
+
+        if (!newMessages.length || fetchedPageCount > 10) break;
+      }
+
+      dispatch(syncComplete());
+    }
+  }
+};
 
 export const markAllRead =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {

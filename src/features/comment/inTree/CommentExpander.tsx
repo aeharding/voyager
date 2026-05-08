@@ -60,7 +60,7 @@ export default function CommentExpander({
         max_depth:
           collapseThreads === OCommentThreadCollapse.All
             ? 1
-            : Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
+            : Math.max(depth + 2, MAX_DEFAULT_COMMENT_DEPTH),
       });
     } catch (error) {
       presentToast({

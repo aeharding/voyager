@@ -79,11 +79,20 @@ function AccountSwitcherContents({
     _activeHandle ?? appActiveHandle,
   );
 
-  const { editing } = use(ListEditorContext);
+  const [old_activeHandle, setOld_activeHandle] = useState(_activeHandle);
+  const [oldAppActiveHandle, setOldAppActiveHandle] = useState(appActiveHandle);
 
-  useEffect(() => {
+  if (
+    old_activeHandle !== _activeHandle ||
+    oldAppActiveHandle !== appActiveHandle
+  ) {
+    setOld_activeHandle(_activeHandle);
+    setOldAppActiveHandle(appActiveHandle);
+
     setSelectedAccount(_activeHandle ?? appActiveHandle);
-  }, [_activeHandle, appActiveHandle]);
+  }
+
+  const { editing } = use(ListEditorContext);
 
   useEffect(() => {
     if (accounts?.length) return;

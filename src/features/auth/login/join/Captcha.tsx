@@ -7,7 +7,13 @@ import {
   IonText,
 } from "@ionic/react";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
-import { useCallback, useEffect, useImperativeHandle, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { GetCaptchaResponse, Register } from "threadiverse";
 
 import { b64ToBlob } from "#/helpers/blob";
@@ -31,6 +37,8 @@ export default function Captcha({ url, ref }: CaptchaProps) {
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
+  const abortRef = useRef<AbortController | null>(null);
+
   const getResult = useCallback(
     () => ({ captcha_answer: answer, captcha_uuid: captcha?.ok?.uuid }),
     [answer, captcha],
@@ -45,34 +53,45 @@ export default function Captcha({ url, ref }: CaptchaProps) {
   );
 
   const getCaptcha = useCallback(async () => {
+    abortRef.current?.abort();
+    const abortController = new AbortController();
+    abortRef.current = abortController;
+    const { signal } = abortController;
+
     setLoading(true);
 
     let res;
 
     try {
-      res = await getClient(url).getCaptcha();
+      res = await getClient(url).getCaptcha({ signal });
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
 
+    if (signal.aborted) return;
+
     setCaptcha(res);
+
+    if (res.ok) {
+      // Safari doesn't support playing b64 data URIs, so we gotta createObjectURL
+      const blob = b64ToBlob(res.ok.wav, "audio/wav");
+
+      setAudioUrl(URL.createObjectURL(blob));
+    }
   }, [url]);
 
   useEffect(() => {
-    if (!captcha?.ok) return;
+    if (!audioUrl) return;
 
-    // Safari doesn't support playing b64 data URIs, so we gotta createObjectURL
-    const blob = b64ToBlob(captcha.ok.wav, "audio/wav");
-    const newUrl = URL.createObjectURL(blob);
-    setAudioUrl(newUrl);
-
-    return () => {
-      URL.revokeObjectURL(newUrl);
-    };
-  }, [captcha]);
+    return () => URL.revokeObjectURL(audioUrl);
+  }, [audioUrl]);
 
   useEffect(() => {
+    // See https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getCaptcha();
+
+    return () => abortRef.current?.abort();
   }, [getCaptcha]);
 
   async function play() {
