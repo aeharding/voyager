@@ -20,10 +20,10 @@ import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 import useGetAppScrollable from "#/helpers/useGetAppScrollable";
 
 export const LISTING_TYPES = [
-  "All",
-  "Local",
-  "Subscribed",
-  "ModeratorView",
+  "all",
+  "local",
+  "subscribed",
+  "moderator_view",
 ] as const;
 
 const BUTTONS: ActionSheetButton<ListingType>[] = LISTING_TYPES.map(
@@ -77,13 +77,13 @@ export default function ListingTypeFilter({
 
 export function getListingTypeIcon(listingType: ListingType): string {
   switch (listingType) {
-    case "All":
+    case "all":
       return earthOutline;
-    case "Local":
+    case "local":
       return peopleOutline;
-    case "Subscribed":
+    case "subscribed":
       return homeOutline;
-    case "ModeratorView":
+    case "moderator_view":
       return shieldCheckmarkOutline;
   }
 }

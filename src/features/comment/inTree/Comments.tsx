@@ -242,7 +242,7 @@ export default function Comments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           ...sortParams,
-          type_: "All",
+          type_: "all",
           limit: 60,
           max_depth: maxDepth,
           page_cursor: currentPage,

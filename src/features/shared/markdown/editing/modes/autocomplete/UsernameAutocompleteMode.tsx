@@ -14,7 +14,7 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   async function fetchFn(q: string) {
     const { data: users } = await client.search({
       q,
-      type_: "Users",
+      type_: "users",
       ...getTopAllSearchSort(await client.getMode()),
     });
 

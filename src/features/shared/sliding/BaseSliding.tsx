@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { PrivateMessageView } from "threadiverse";
+import { Notification, PrivateMessageView } from "threadiverse";
 
 import { cx } from "#/helpers/css";
 import { SwipeActions } from "#/services/db/types";
@@ -14,6 +14,7 @@ import styles from "./BaseSliding.module.css";
 interface BaseSlidingVoteProps extends React.PropsWithChildren {
   className?: string;
   item: SlideableVoteItem;
+  notification?: Notification;
   rootIndex?: number;
   collapsed?: boolean;
   actions: SwipeActions;
@@ -56,7 +57,7 @@ export function BaseSlidingDM(props: BaseSlidingDMProps) {
   return <GenericBaseSlidingWrapper {...props} component={DMActionsImpl} />;
 }
 
-type BaseSlidingDMProps = { item: PrivateMessageView } & Omit<
-  BaseSlidingVoteProps,
-  "item"
->;
+type BaseSlidingDMProps = {
+  item: PrivateMessageView;
+  notification?: Notification;
+} & Omit<BaseSlidingVoteProps, "item" | "notification">;

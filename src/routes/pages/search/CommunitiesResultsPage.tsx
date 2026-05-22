@@ -37,7 +37,7 @@ export default function CommunitiesResultsPage({
     },
   );
   const sortParams = useFeedSortParams("search", sort);
-  const [listingType, setListingType] = useState<ListingType>("All");
+  const [listingType, setListingType] = useState<ListingType>("all");
 
   const fetchFn: FetchFn<CommunityView> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
@@ -51,7 +51,7 @@ export default function CommunitiesResultsPage({
       {
         limit: LIMIT,
         q: search,
-        type_: "Communities",
+        type_: "communities",
         listing_type: listingType,
         page_cursor,
         ...sortParams,

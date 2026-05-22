@@ -41,10 +41,10 @@ export default function InboxPage({ showRead }: InboxPageProps) {
     );
 
     const filteredData = response.data.filter((notification) => {
-      if ("private_message" in notification) {
+      if (notification.data.type_ === "private_message") {
         return (
-          notification.creator.id !== myUserId ||
-          notification.creator.id === notification.recipient.id
+          notification.data.creator.id !== myUserId ||
+          notification.data.creator.id === notification.data.recipient.id
         ); // if you message yourself, show it (lemmy returns as a notification)
       }
 
@@ -53,10 +53,17 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
     dispatch(receivedInboxItems(filteredData));
     dispatch(
-      receivedUsers([
-        ...filteredData.map(({ creator }) => creator),
-        ...filteredData.map(({ recipient }) => recipient),
-      ]),
+      receivedUsers(
+        filteredData.flatMap((n) => {
+          if (n.data.type_ === "private_message") {
+            return [n.data.creator, n.data.recipient];
+          }
+          if (n.data.type_ === "comment") {
+            return [n.data.creator];
+          }
+          return [];
+        }),
+      ),
     );
 
     return { ...response, data: filteredData };

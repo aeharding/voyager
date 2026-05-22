@@ -6,7 +6,7 @@ import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
-import { getInboxItemId, markRead } from "./inboxSlice";
+import { getNotificationKey, markNotificationRead } from "./inboxSlice";
 import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 
 import styles from "./InboxItemMoreActions.module.css";
@@ -29,7 +29,7 @@ export default function InboxItemMoreActions({
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId,
   );
-  const isRead = readByInboxItemId[getInboxItemId(item)];
+  const isRead = readByInboxItemId[getNotificationKey(item.notification)];
   const presentToast = useAppToast();
 
   const markReadAction = {
@@ -40,7 +40,9 @@ export default function InboxItemMoreActions({
         const targetReadStatus = !isRead;
 
         try {
-          await dispatch(markRead(item, targetReadStatus));
+          await dispatch(
+            markNotificationRead(item.notification, targetReadStatus),
+          );
         } catch (error) {
           presentToast(buildMarkRead(targetReadStatus));
           throw error;
@@ -49,22 +51,29 @@ export default function InboxItemMoreActions({
     },
   };
 
-  return (
-    <button className={styles.button}>
-      {"person_mention" in item || "comment_reply" in item ? (
+  function renderInner() {
+    if (item.data.type_ === "comment") {
+      return (
         <MoreActions
-          comment={item}
+          comment={item.data}
           rootIndex={undefined}
           appendActions={[markReadAction]}
           ref={ref}
         />
-      ) : (
+      );
+    }
+    if (item.data.type_ === "private_message") {
+      return (
         <PrivateMessageMoreActions
-          item={item}
+          item={item.data}
+          notification={item.notification}
           markReadAction={markReadAction}
           ref={ref}
         />
-      )}
-    </button>
-  );
+      );
+    }
+    return null;
+  }
+
+  return <button className={styles.button}>{renderInner()}</button>;
 }

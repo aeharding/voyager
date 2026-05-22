@@ -39,7 +39,7 @@ export default function Legal() {
                 if (
                   site?.site_view.local_site.application_question &&
                   site?.site_view.local_site.registration_mode ===
-                    "RequireApplication"
+                    "require_application"
                 )
                   return <Question />;
 

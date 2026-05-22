@@ -1,5 +1,5 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { ListingType } from "threadiverse";
+import { CommentSortType, ListingType } from "threadiverse";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { FetchFn } from "#/features/feed/Feed";
@@ -10,6 +10,7 @@ import PostCommentFeed, {
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useMode } from "#/helpers/threadiverse";
 import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 
@@ -28,9 +29,26 @@ export default function CommentsPage(props: CommentsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
+  const mode = useMode();
 
   const communityNameIfAvailable =
     "communityName" in props ? props.communityName : undefined;
+
+  const sortByMode = (() => {
+    const sort: CommentSortType = (() => {
+      switch (mode) {
+        case "lemmyv0":
+          return { sort: "New", mode };
+        case "lemmyv1":
+          return { sort: "new", mode };
+        case "piefed":
+          return { sort: "New", mode };
+        default:
+          return { sort: "New", mode: "lemmyv0" };
+      }
+    })();
+    return sort;
+  })();
 
   const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) =>
     client.getComments(
@@ -39,7 +57,7 @@ export default function CommentsPage(props: CommentsPageProps) {
         limit: LIMIT,
         community_name: communityNameIfAvailable,
         type_: "type" in props ? props.type : undefined,
-        sort: "New",
+        ...sortByMode,
       },
       ...rest,
     );

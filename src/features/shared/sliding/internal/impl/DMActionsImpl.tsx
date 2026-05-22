@@ -2,7 +2,10 @@ import { asyncNoop, noop } from "es-toolkit";
 import { ComponentProps, use } from "react";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
-import { markRead, syncMessages } from "#/features/inbox/inboxSlice";
+import {
+  markNotificationRead,
+  syncMessages,
+} from "#/features/inbox/inboxSlice";
 import { useSharedInboxActions } from "#/features/shared/sliding/internal/shared";
 import store, { useAppDispatch } from "#/store";
 
@@ -11,17 +14,20 @@ import GenericBaseSliding from "../GenericBaseSliding";
 
 export default function DMActionsImpl({
   item,
+  notification,
   ...rest
 }: ComponentProps<typeof BaseSlidingDM>) {
   const dispatch = useAppDispatch();
   const { presentPrivateMessageCompose } = use(SharedDialogContext);
 
-  const shared = useSharedInboxActions(item);
+  const shared = useSharedInboxActions(notification);
 
   return (
     <GenericBaseSliding
       onVote={async () => {
-        await dispatch(markRead(item, true));
+        if (notification) {
+          await dispatch(markNotificationRead(notification, true));
+        }
       }}
       currentVote={0}
       reply={async () => {
@@ -36,7 +42,9 @@ export default function DMActionsImpl({
           },
         });
 
-        await dispatch(markRead(item, true));
+        if (notification) {
+          await dispatch(markNotificationRead(notification, true));
+        }
         dispatch(syncMessages());
       }}
       collapse={noop}

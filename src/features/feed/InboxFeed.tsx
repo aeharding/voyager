@@ -1,5 +1,5 @@
 import InboxItem, { InboxItemView } from "#/features/inbox/InboxItem";
-import { getInboxItemId } from "#/features/inbox/inboxSlice";
+import { getNotificationKey } from "#/features/inbox/inboxSlice";
 
 import Feed, { FeedProps } from "./Feed";
 
@@ -12,10 +12,14 @@ export default function InboxFeed({ ...rest }: PostCommentFeed) {
   return (
     <Feed
       renderItemContent={renderItemContent}
-      getIndex={getInboxItemId}
+      getIndex={getIndex}
       {...rest}
     />
   );
+}
+
+function getIndex(item: InboxItemView): string {
+  return getNotificationKey(item.notification);
 }
 
 function renderItemContent(item: InboxItemView) {

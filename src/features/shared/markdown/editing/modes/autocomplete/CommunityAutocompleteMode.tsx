@@ -14,7 +14,7 @@ export default function CommunityAutocomplete(props: AutocompleteModeProps) {
   async function fetchFn(q: string) {
     const { data } = await client.search({
       q,
-      type_: "Communities",
+      type_: "communities",
       ...getTopAllSearchSort(await client.getMode()),
     });
 

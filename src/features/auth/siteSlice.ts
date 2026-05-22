@@ -97,7 +97,7 @@ export const isAdminSelector = (state: RootState) =>
 
 export const isDownvoteEnabledSelector = (state: RootState) =>
   // TODO: handle post/comment downvotes being disabled separately, and also disabled upvotes
-  state.site.response?.site_view.local_site.comment_downvotes !== "Disable";
+  state.site.response?.site_view.local_site.comment_downvotes !== "disable";
 
 export const localUserViewSelector = (state: RootState) =>
   state.site.response?.my_user?.local_user_view;

@@ -29,7 +29,7 @@ export function getTopAllSearchSort(mode: ThreadiverseMode): SearchSortType {
     case "lemmyv0":
       return { sort: "TopAll", mode } as const;
     case "lemmyv1":
-      return { sort: "Top", mode } as const;
+      return { mode } as const;
     case "piefed":
       return { sort: "Active", mode } as const;
   }

@@ -95,7 +95,8 @@ export const blockUser =
       getState().inbox.messageSyncState !== "init" &&
       (!block ||
         getState().inbox.messages?.find(
-          (msg) => msg.creator.id === id || msg.recipient.id === id,
+          (msg) =>
+            msg.data.creator.id === id || msg.data.recipient.id === id,
         ))
     ) {
       dispatch(resetMessages());

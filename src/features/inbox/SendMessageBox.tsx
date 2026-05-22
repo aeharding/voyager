@@ -55,7 +55,28 @@ export default function SendMessageBox({
       throw error;
     }
 
-    dispatch(receivedMessages([message.private_message_view]));
+    dispatch(
+      receivedMessages([
+        {
+          data: { ...message.private_message_view, type_: "private_message" },
+          notification: {
+            creator_id: message.private_message_view.creator.id,
+            id: message.private_message_view.private_message.id,
+            kind: "private_message",
+            private_message_id:
+              message.private_message_view.private_message.id,
+            published_at:
+              message.private_message_view.private_message.published,
+            // Outgoing messages: the sender never gets a real notification
+            // for their own sent message, so we synthesize one. Marking it
+            // already-read prevents auto-mark-as-read attempts on a synthetic
+            // notification.id that the server doesn't know about.
+            read: true,
+            recipient_id: message.private_message_view.recipient.id,
+          },
+        },
+      ]),
+    );
 
     setLoading(false);
     setValue("");

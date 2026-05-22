@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FederatedInstances } from "threadiverse";
+import { FederatedInstances, UnsupportedError } from "threadiverse";
 
 import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
 import { KNOWN_SOFTWARE } from "#/helpers/threadiverse";
@@ -94,17 +94,27 @@ export const getInstances =
 
         db.setCachedFederatedInstances(connectedInstance, federated_instances);
       } catch (error) {
-        dispatch(failedInstances());
+        // Some providers (e.g. Lemmy v1) don't support this endpoint.
+        // Stash an empty result so we don't keep retrying.
+        if (error instanceof UnsupportedError) {
+          federated_instances = { linked: [], allowed: [], blocked: [] };
+          db.setCachedFederatedInstances(
+            connectedInstance,
+            federated_instances,
+          );
+        } else {
+          dispatch(failedInstances());
 
-        (async () => {
-          await customBackOff(getState().instances.failedCount);
+          (async () => {
+            await customBackOff(getState().instances.failedCount);
 
-          // Instance was switched before request could resolved. Bail
-          if (connectedInstance !== urlSelector(getState())) return;
+            // Instance was switched before request could resolved. Bail
+            if (connectedInstance !== urlSelector(getState())) return;
 
-          dispatch(getInstances());
-        })();
-        throw error;
+            dispatch(getInstances());
+          })();
+          throw error;
+        }
       }
     }
 

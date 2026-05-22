@@ -20,7 +20,7 @@ export default function CommunitySelectorModal(
     const result = await client.search(
       {
         q: query,
-        type_: "Communities",
+        type_: "communities",
         ...getTopAllSearchSort(await client.getMode()),
         limit: LIMIT,
       },

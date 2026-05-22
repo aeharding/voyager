@@ -380,6 +380,6 @@ function normalize(instance: GetSiteResponse | LVInstance): Instance {
     url: new URL(instance.site_view.site.actor_id).hostname,
     icon: instance.site_view.site.icon,
     description: instance.site_view.site.description,
-    open: instance.site_view.local_site.registration_mode === "Open",
+    open: instance.site_view.local_site.registration_mode === "open",
   };
 }

@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useLocation } from "react-router";
-import { PiefedResponseError } from "threadiverse";
+import { ResponseError } from "threadiverse";
 
 import {
   activeAccountSelector,
@@ -98,7 +98,7 @@ function AuthLocation() {
     } catch (error) {
       if (isLemmyError(error, "incorrect_login")) setIsReauthNeeded(true);
       else if (
-        error instanceof PiefedResponseError &&
+        error instanceof ResponseError &&
         (error.status === 400 || error.status === 401)
       )
         setIsReauthNeeded(true);

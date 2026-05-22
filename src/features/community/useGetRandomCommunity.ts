@@ -26,7 +26,7 @@ export default function useGetRandomCommunity() {
       let response;
 
       try {
-        response = await client.getRandomCommunity({ type_: "All" });
+        response = await client.getRandomCommunity({ type_: "all" });
       } catch (error) {
         presentToast(randomCommunityFailed);
         throw error;
@@ -42,7 +42,7 @@ export default function useGetRandomCommunity() {
 
       try {
         response = await client.listCommunities({
-          type_: "All",
+          type_: "all",
           limit: RANDOM_CHUNK,
           page_cursor: Math.floor(
             (Math.random() * totalCommunitiesCount) / RANDOM_CHUNK,

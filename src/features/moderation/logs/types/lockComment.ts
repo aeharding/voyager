@@ -1,4 +1,4 @@
-import { arrowUndoCircle, trash } from "ionicons/icons";
+import { lockClosed, lockOpen } from "ionicons/icons";
 import { ModlogItem } from "threadiverse";
 
 import { buildCommentLink } from "#/helpers/appLinkBuilder";
@@ -6,11 +6,11 @@ import { buildCommentLink } from "#/helpers/appLinkBuilder";
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, buildCommentMessage } from "./shared";
 
-export default function removeComment(item: ModlogItem): LogEntryData {
-  const removed = !item.modlog.is_revert;
+export default function lockComment(item: ModlogItem): LogEntryData {
+  const locked = !item.modlog.is_revert;
   return {
-    icon: removed ? trash : arrowUndoCircle,
-    title: `${removed ? "Removed" : "Restored"} Comment`,
+    icon: locked ? lockClosed : lockOpen,
+    title: `${locked ? "Locked" : "Unlocked"} Comment`,
     by: item.moderator,
     message: item.target_comment
       ? buildCommentMessage(item.target_comment)

@@ -1,33 +1,22 @@
 import {
-  CommentReplyView,
   CommentView,
-  PersonMentionView,
+  Notification,
   PostView,
   PrivateMessageView,
 } from "threadiverse";
 
-import { getInboxItemId, markRead } from "#/features/inbox/inboxSlice";
+import {
+  getNotificationKey,
+  markNotificationRead,
+} from "#/features/inbox/inboxSlice";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-export type SlideableVoteItem =
-  | CommentView
-  | PostView
-  | PersonMentionView
-  | CommentReplyView;
+export type SlideableVoteItem = CommentView | PostView;
 
 export type SlideableItem = SlideableVoteItem | PrivateMessageView;
 
-export function isInboxItem(
-  item: SlideableItem,
-): item is PersonMentionView | CommentReplyView | PrivateMessageView {
-  if ("person_mention" in item) return true;
-  if ("comment_reply" in item) return true;
-  if ("private_message" in item) return true;
-  return false;
-}
-
-export function useSharedInboxActions(item: SlideableItem) {
+export function useSharedInboxActions(notification: Notification | undefined) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
 
@@ -35,15 +24,15 @@ export function useSharedInboxActions(item: SlideableItem) {
     (state) => state.inbox.readByInboxItemId,
   );
 
-  const isRead = isInboxItem(item)
-    ? readByInboxItemId[getInboxItemId(item)]
+  const isRead = notification
+    ? !!readByInboxItemId[getNotificationKey(notification)]
     : false;
 
   async function markUnread() {
-    if (!isInboxItem(item)) return;
+    if (!notification) return;
 
     try {
-      await dispatch(markRead(item, !isRead));
+      await dispatch(markNotificationRead(notification, !isRead));
     } catch (error) {
       presentToast({
         message: "Failed to mark item as unread",

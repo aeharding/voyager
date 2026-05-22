@@ -265,8 +265,8 @@ export const getCommentContent = createAsyncThunk(
 
     const log = await client.getModlog({ comment_id: commentId });
 
-    return log.data.filter((l) => "mod_remove_comment" in l)[0]?.comment
-      .content;
+    return log.data.find((l) => l.modlog.kind === "mod_remove_comment")
+      ?.target_comment?.content;
   },
   {
     condition: (commentId, { getState }) => {

@@ -172,8 +172,8 @@ export default function TitleSearchResults() {
     const result = await client.search({
       q: debouncedSearch,
       limit: 20,
-      type_: "Communities",
-      listing_type: "All",
+      type_: "communities",
+      listing_type: "all",
       ...getTopAllSearchSort(await client.getMode()),
     });
 

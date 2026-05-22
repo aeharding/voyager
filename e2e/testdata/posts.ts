@@ -47,7 +47,7 @@ export const posts: PostView[] = [
       banner: "",
       hidden: false,
       posting_restricted_to_mods: false,
-      visibility: "Public",
+      visibility: "public",
     },
     creator_banned_from_community: false,
     creator_is_moderator: false,

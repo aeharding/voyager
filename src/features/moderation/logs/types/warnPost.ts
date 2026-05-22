@@ -1,4 +1,4 @@
-import { megaphone, volumeOff } from "ionicons/icons";
+import { warningOutline } from "ionicons/icons";
 import { ModlogItem } from "threadiverse";
 
 import { buildPostLink } from "#/helpers/appLinkBuilder";
@@ -6,13 +6,10 @@ import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, buildPostMessage } from "./shared";
 
-export default function featurePost(item: ModlogItem): LogEntryData {
-  const featured = !item.modlog.is_revert;
-  const scope =
-    item.modlog.kind === "admin_feature_post_site" ? " (Site)" : "";
+export default function warnPost(item: ModlogItem): LogEntryData {
   return {
-    icon: featured ? megaphone : volumeOff,
-    title: `${featured ? "Stickied" : "Unstickied"} Post${scope}`,
+    icon: warningOutline,
+    title: "Warned Post",
     by: item.moderator,
     message: item.target_post ? buildPostMessage(item.target_post) : undefined,
     link:

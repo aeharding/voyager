@@ -24,7 +24,7 @@ export default function CommunitiesExplorePage() {
     internal: "CommunitiesExplore",
   });
   const sortParams = useFeedSortParams("communities", sort);
-  const [listingType, setListingType] = useState<ListingType>("All");
+  const [listingType, setListingType] = useState<ListingType>("all");
 
   const fetchFn: FetchFn<CommunityView> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();

@@ -14,7 +14,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { use, useCallback, useMemo } from "react";
-import { CommentReplyView, CommentView, PersonMentionView } from "threadiverse";
+import { CommentView } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
@@ -50,7 +50,7 @@ import { CommentsContext } from "./inTree/CommentsContext";
 import useCollapseRootComment from "./inTree/useCollapseRootComment";
 
 export interface CommentActionsProps {
-  comment: CommentView | PersonMentionView | CommentReplyView;
+  comment: CommentView;
   rootIndex: number | undefined;
   appendActions?: ActionSheetOptions["buttons"];
 }

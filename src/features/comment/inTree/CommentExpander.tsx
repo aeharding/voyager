@@ -55,7 +55,7 @@ export default function CommentExpander({
     try {
       response = await client.getComments({
         parent_id: comment.comment.id,
-        type_: "All",
+        type_: "all",
         limit: 1_000,
         max_depth:
           collapseThreads === OCommentThreadCollapse.All

@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   CommunityModeratorView,
+  CommunitySortType,
   CommunityView,
   GetCommunityResponse,
 } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
-import { getSite } from "#/features/auth/siteSlice";
+import { getSite, modeSelector } from "#/features/auth/siteSlice";
 import { getHandle } from "#/helpers/lemmy";
 import { db } from "#/services/db";
 import { AppDispatch, RootState } from "#/store";
@@ -152,11 +153,26 @@ export const blockCommunity =
 
 export const getTrendingCommunities =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const trendingCommunities = await clientSelector(
-      getState(),
-    )?.listCommunities({
-      type_: "All",
-      sort: "Hot" as never, // TODO Piefed doesn't support Hot for communities sort, ignore for now and hopefully supported soon
+    const client = clientSelector(getState());
+    const mode = modeSelector(getState());
+
+    const sortParams: CommunitySortType = (() => {
+      switch (mode) {
+        case "lemmyv0":
+          return { sort: "Hot", mode };
+        case "lemmyv1":
+          return { sort: "hot", mode };
+        case "piefed":
+          // PieFed doesn't support a Hot sort for communities; use Top as a stand-in.
+          return { sort: "Top", mode };
+        default:
+          return { sort: "Hot", mode: "lemmyv0" };
+      }
+    })();
+
+    const trendingCommunities = await client?.listCommunities({
+      type_: "all",
+      ...sortParams,
       limit: 6,
     });
 

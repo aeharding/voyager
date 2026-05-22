@@ -1,4 +1,4 @@
-import { arrowUndoCircle, trash } from "ionicons/icons";
+import { warningOutline } from "ionicons/icons";
 import { ModlogItem } from "threadiverse";
 
 import { buildCommentLink } from "#/helpers/appLinkBuilder";
@@ -6,11 +6,10 @@ import { buildCommentLink } from "#/helpers/appLinkBuilder";
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, buildCommentMessage } from "./shared";
 
-export default function removeComment(item: ModlogItem): LogEntryData {
-  const removed = !item.modlog.is_revert;
+export default function warnComment(item: ModlogItem): LogEntryData {
   return {
-    icon: removed ? trash : arrowUndoCircle,
-    title: `${removed ? "Removed" : "Restored"} Comment`,
+    icon: warningOutline,
+    title: "Warned Comment",
     by: item.moderator,
     message: item.target_comment
       ? buildCommentMessage(item.target_comment)

@@ -2,7 +2,11 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { timerOutline } from "ionicons/icons";
 import { useCallback } from "react";
 import { useRef } from "react";
-import { ModlogItem as ModLogItemType, Person } from "threadiverse";
+import {
+  ModlogItem as ModLogItemType,
+  ModlogKind,
+  Person,
+} from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import Ago from "#/features/labels/Ago";
@@ -24,6 +28,7 @@ import banFromCommunity from "./types/banFromCommunity";
 import banFromInstance from "./types/banFromInstance";
 import featurePost from "./types/featurePost";
 import hideCommunity from "./types/hideCommunity";
+import lockComment from "./types/lockComment";
 import lockPost from "./types/lockPost";
 import purgeComment from "./types/purgeComment";
 import purgeCommunity from "./types/purgeCommunity";
@@ -33,6 +38,8 @@ import removeComment from "./types/removeComment";
 import removeCommunity from "./types/removeCommunity";
 import removePost from "./types/removePost";
 import transferCommunity from "./types/transferCommunity";
+import warnComment from "./types/warnComment";
+import warnPost from "./types/warnPost";
 
 import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ModlogItem.module.css";
@@ -54,44 +61,53 @@ export interface LogEntryData {
 }
 
 function renderModlogData(item: ModLogItemType): LogEntryData {
-  switch (true) {
-    case "mod_remove_comment" in item:
+  const kind = item.modlog.kind;
+  switch (kind) {
+    case "mod_remove_comment":
       return removeComment(item);
-    case "mod_remove_post" in item:
+    case "mod_remove_post":
       return removePost(item);
-    case "mod_lock_post" in item:
+    case "mod_lock_post":
       return lockPost(item);
-    case "mod_feature_post" in item:
+    case "mod_lock_comment":
+      return lockComment(item);
+    case "mod_feature_post_community":
+    case "admin_feature_post_site":
       return featurePost(item);
-    case "mod_remove_community" in item:
+    case "admin_remove_community":
       return removeCommunity(item);
-    case "mod_ban_from_community" in item:
+    case "mod_ban_from_community":
       return banFromCommunity(item);
-    case "mod_ban" in item:
+    case "admin_ban":
       return banFromInstance(item);
-    case "mod_add_community" in item:
+    case "mod_add_to_community":
       return addCommunity(item);
-    case "mod_transfer_community" in item:
+    case "mod_transfer_community":
       return transferCommunity(item);
-    case "mod_add" in item:
+    case "admin_add":
       return addInstance(item);
-    case "admin_purge_person" in item:
+    case "admin_purge_person":
       return purgePerson(item);
-    case "admin_purge_community" in item:
+    case "admin_purge_community":
       return purgeCommunity(item);
-    case "admin_purge_post" in item:
+    case "admin_purge_post":
       return purgePost(item);
-    case "admin_purge_comment" in item:
+    case "admin_purge_comment":
       return purgeComment(item);
-    case "mod_hide_community" in item:
+    case "mod_change_community_visibility":
       return hideCommunity(item);
+    case "mod_warn_comment":
+      return warnComment(item);
+    case "mod_warn_post":
+      return warnPost(item);
     default:
-      // should never happen (type = never)
-      //
-      // If item is not type = never, then some mod log action was added
-      // and needs to be handled.
-      return item;
+      kind satisfies never;
+      throw new Error(`Unknown modlog kind: ${kind}`);
   }
+}
+
+function isAdminActionKind(kind: ModlogKind): boolean {
+  return kind.startsWith("admin_");
 }
 
 export function ModlogItem({ item }: ModLogItemProps) {
@@ -108,16 +124,12 @@ export function ModlogItem({ item }: ModLogItemProps) {
     link,
   } = renderModlogData(item);
 
-  const isAdmin = useIsAdmin(
-    (() => {
-      if ("admin" in item) return item.admin;
-      if ("moderator" in item) return item.moderator;
-    })(),
-  );
+  const isAdminAction = isAdminActionKind(item.modlog.kind);
+  const isAdmin = useIsAdmin(item.moderator);
 
   const role = (() => {
     if (by && isAdmin) return "admin-local";
-    if ("admin" in item) return "admin-remote";
+    if (isAdminAction) return "admin-remote";
 
     return role_ ?? "mod";
   })();

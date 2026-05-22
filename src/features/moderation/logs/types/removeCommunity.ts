@@ -1,5 +1,5 @@
 import { arrowUndoCircle, trash } from "ionicons/icons";
-import { ModRemoveCommunityView } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
 import { buildCommunityLink } from "#/helpers/appLinkBuilder";
 import { getHandle } from "#/helpers/lemmy";
@@ -7,17 +7,16 @@ import { getHandle } from "#/helpers/lemmy";
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData } from "./shared";
 
-export default function removeCommunity(
-  item: ModRemoveCommunityView,
-): LogEntryData {
+export default function removeCommunity(item: ModlogItem): LogEntryData {
+  const removed = !item.modlog.is_revert;
   return {
-    icon: item.mod_remove_community.removed ? trash : arrowUndoCircle,
-    title: `${
-      item.mod_remove_community.removed ? "Removed" : "Restored"
-    } Community`,
+    icon: removed ? trash : arrowUndoCircle,
+    title: `${removed ? "Removed" : "Restored"} Community`,
     by: item.moderator,
-    message: getHandle(item.community),
-    link: buildCommunityLink(item.community),
-    ...buildBaseData(item.mod_remove_community),
+    message: item.target_community ? getHandle(item.target_community) : undefined,
+    link: item.target_community
+      ? buildCommunityLink(item.target_community)
+      : undefined,
+    ...buildBaseData(item.modlog),
   };
 }

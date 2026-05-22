@@ -1,6 +1,6 @@
 import { IonLoading } from "@ionic/react";
 import { useEffect, useEffectEvent, useState } from "react";
-import { Instance } from "threadiverse";
+import { Instance, UnsupportedError } from "threadiverse";
 
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
@@ -33,7 +33,10 @@ export default function InstanceSelectorModal(
       if (signal.aborted) return;
 
       presentToast({
-        message: "Failed to load instance list",
+        message:
+          error instanceof UnsupportedError
+            ? "Instance list not supported on this server"
+            : "Failed to load instance list",
         color: "danger",
       });
       props.onDismiss();

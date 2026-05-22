@@ -40,7 +40,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
         case "lemmyv1":
           return {
             mode,
-            sort: "ActiveSixMonths",
+            sort: "active_six_months",
           };
         case "piefed":
           return {
@@ -55,7 +55,7 @@ export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
     try {
       ({ data: communities } = await client.listCommunities({
         ...commonPostFeedParams,
-        type_: SHOW_LOCAL_ONLY.includes(actor) ? "Local" : "All",
+        type_: SHOW_LOCAL_ONLY.includes(actor) ? "local" : "all",
         ...sortParams,
         limit: 50,
       }));

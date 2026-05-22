@@ -439,7 +439,7 @@ export const modStickyPost =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const response = await clientSelector(getState())?.featurePost({
       post_id: postId,
-      feature_type: "Community",
+      feature_type: "community",
       featured: stickied,
     });
 

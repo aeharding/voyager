@@ -9,9 +9,9 @@ import {
 } from "@ionic/react";
 import { chevronForwardOutline } from "ionicons/icons";
 import { useState } from "react";
-import { PrivateMessageView } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
+import { PrivateMessageNotification } from "#/features/inbox/inboxSlice";
 import ItemIcon from "#/features/labels/img/ItemIcon";
 import { blockUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
@@ -23,7 +23,7 @@ import Time from "./Time";
 import styles from "./ConversationItem.module.css";
 
 interface ConversationItemProps {
-  messages: PrivateMessageView[];
+  messages: PrivateMessageNotification[];
 }
 
 export default function ConversationItem({ messages }: ConversationItemProps) {
@@ -35,7 +35,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
   );
   const client = useAppSelector(clientSelector);
 
-  const previewMsg = messages[0]!; // presorted, newest => oldest
+  const previewMsg = messages[0]!.data; // presorted, newest => oldest
 
   const person =
     previewMsg.creator.id === myUserId
@@ -44,11 +44,12 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
 
   const unread = !!messages.find(
     (msg) =>
-      !msg.private_message.read && msg.private_message.creator_id !== myUserId,
+      !msg.notification.read &&
+      msg.data.private_message.creator_id !== myUserId,
   );
 
   async function onDelete() {
-    const theirs = messages.filter((m) => m.creator.id !== myUserId);
+    const theirs = messages.filter((m) => m.data.creator.id !== myUserId);
 
     const theirPotentialRecentMessage = theirs.pop();
 
@@ -78,7 +79,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
   }
 
   async function blockAndReportIfNeeded(
-    theirRecentMessage: PrivateMessageView,
+    theirRecentMessage: PrivateMessageNotification,
     report = false,
   ) {
     setLoading(true);
@@ -86,12 +87,12 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
     try {
       if (report) {
         await client.createPrivateMessageReport({
-          private_message_id: theirRecentMessage.private_message.id,
+          private_message_id: theirRecentMessage.data.private_message.id,
           reason: "Spam or abuse",
         });
       }
 
-      dispatch(blockUser(true, theirRecentMessage.creator.id));
+      dispatch(blockUser(true, theirRecentMessage.data.creator.id));
     } finally {
       setLoading(false);
     }

@@ -45,7 +45,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const client = useClient();
   const myHandle = useAppSelector(userHandleSelector);
   const { present: presentModZoneActions, role } = useModZoneActions({
-    type: "ModeratorView",
+    type: "moderator_view",
   });
   const dispatch = useAppDispatch();
 

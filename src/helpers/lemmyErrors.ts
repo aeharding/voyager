@@ -15,6 +15,11 @@ function getErrorMessage(
   if (!(error instanceof Error))
     return "Unknown error occurred, please try again.";
 
+  // Server-level rate limiting — applies to any endpoint, not just custom-mapped ones.
+  if (error.message === "too_many_requests") {
+    return "Too many requests. Please wait a moment and try again.";
+  }
+
   const message = customErrorMap(error.message as LemmyErrorValue);
 
   if (message) return message;
