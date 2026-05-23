@@ -36,7 +36,7 @@ export default function Pack({ pack, onSelect }: PackProps) {
     if (community) {
       return !community.subscribed;
     }
-    if (follows?.find((f) => f.community.actor_id === ap_id)) return true;
+    if (follows?.find((f) => f.community.ap_id === ap_id)) return true;
     return false;
   }).length;
 

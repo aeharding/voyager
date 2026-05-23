@@ -8,6 +8,7 @@ import {
   updateTagVotes,
 } from "#/features/tags/userTagSlice";
 import { getRemoteHandle } from "#/helpers/lemmy";
+import { voteToIsUpvote } from "#/helpers/vote";
 import { AppDispatch, RootState } from "#/store";
 
 export const LOADING_CONTENT = -1;
@@ -132,7 +133,7 @@ export const voteOnComment =
     try {
       await clientSelector(getState())?.likeComment({
         comment_id: commentId,
-        score: vote,
+        is_upvote: voteToIsUpvote(vote),
       });
     } catch (error) {
       dispatch(updateCommentVote({ commentId, vote: oldVote }));

@@ -58,13 +58,13 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
           </div>
         </div>
         <div className={styles.stats}>
-          {formatNumber(community.counts.subscribers)} Subscriber
-          {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
-          <Ago date={community.community.published} /> Old{" "}
+          {formatNumber(community.community.subscribers)} Subscriber
+          {community.community.subscribers !== 1 ? "s" : ""} ·{" "}
+          <Ago date={community.community.published_at} /> Old{" "}
         </div>
-        {community.community.description && (
+        {community.community.summary && (
           <div className={styles.description}>
-            <InlineMarkdown>{community.community.description}</InlineMarkdown>
+            <InlineMarkdown>{community.community.summary}</InlineMarkdown>
           </div>
         )}
       </div>

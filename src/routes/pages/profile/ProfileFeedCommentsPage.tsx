@@ -35,7 +35,7 @@ export default function ProfileFeedCommentsPage() {
     return client.listPersonContent(
       {
         page_cursor,
-        type: "Comments",
+        type: "comments",
         limit: LIMIT,
         person_id: person.id,
         ...sortParams,

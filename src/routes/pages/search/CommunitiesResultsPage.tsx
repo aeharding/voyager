@@ -32,7 +32,7 @@ export default function CommunitiesResultsPage({
     { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
     {
       lemmyv0: "TopAll",
-      lemmyv1: "TopAll",
+      lemmyv1: "New",
       piefed: "Active",
     },
   );
@@ -50,7 +50,7 @@ export default function CommunitiesResultsPage({
     const response = await client.search(
       {
         limit: LIMIT,
-        q: search,
+        search_term: search,
         type_: "communities",
         listing_type: listingType,
         page_cursor,

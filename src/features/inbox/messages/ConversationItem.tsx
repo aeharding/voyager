@@ -11,7 +11,7 @@ import { chevronForwardOutline } from "ionicons/icons";
 import { useState } from "react";
 
 import { clientSelector } from "#/features/auth/authSelectors";
-import { PrivateMessageNotification } from "#/features/inbox/inboxSlice";
+import { isMessageRead, Message } from "#/features/inbox/inboxSlice";
 import ItemIcon from "#/features/labels/img/ItemIcon";
 import { blockUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
@@ -23,7 +23,7 @@ import Time from "./Time";
 import styles from "./ConversationItem.module.css";
 
 interface ConversationItemProps {
-  messages: PrivateMessageNotification[];
+  messages: Message[];
 }
 
 export default function ConversationItem({ messages }: ConversationItemProps) {
@@ -34,8 +34,11 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
     (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const client = useAppSelector(clientSelector);
+  const readByInboxItemId = useAppSelector(
+    (state) => state.inbox.readByInboxItemId,
+  );
 
-  const previewMsg = messages[0]!.data; // presorted, newest => oldest
+  const previewMsg = messages[0]!.view; // presorted, newest => oldest
 
   const person =
     previewMsg.creator.id === myUserId
@@ -44,12 +47,12 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
 
   const unread = !!messages.find(
     (msg) =>
-      !msg.notification.read &&
-      msg.data.private_message.creator_id !== myUserId,
+      !isMessageRead(msg, readByInboxItemId) &&
+      msg.view.private_message.creator_id !== myUserId,
   );
 
   async function onDelete() {
-    const theirs = messages.filter((m) => m.data.creator.id !== myUserId);
+    const theirs = messages.filter((m) => m.view.creator.id !== myUserId);
 
     const theirPotentialRecentMessage = theirs.pop();
 
@@ -79,7 +82,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
   }
 
   async function blockAndReportIfNeeded(
-    theirRecentMessage: PrivateMessageNotification,
+    theirRecentMessage: Message,
     report = false,
   ) {
     setLoading(true);
@@ -87,12 +90,12 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
     try {
       if (report) {
         await client.createPrivateMessageReport({
-          private_message_id: theirRecentMessage.data.private_message.id,
+          private_message_id: theirRecentMessage.view.private_message.id,
           reason: "Spam or abuse",
         });
       }
 
-      dispatch(blockUser(true, theirRecentMessage.data.creator.id));
+      dispatch(blockUser(true, theirRecentMessage.view.creator.id));
     } finally {
       setLoading(false);
     }
@@ -127,7 +130,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
               </h3>
               <span className={styles.openDetails}>
                 <span>
-                  <Time date={previewMsg.private_message.published} />
+                  <Time date={previewMsg.private_message.published_at} />
                 </span>
                 <IonIcon icon={chevronForwardOutline} />
               </span>

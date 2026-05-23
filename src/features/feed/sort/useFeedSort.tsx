@@ -294,9 +294,7 @@ function convertSearchSortToParams(
         sort as VgerPostSortTypeByMode["lemmyv0"],
       );
     case "lemmyv1":
-      return convertSearchSortToLemmyV1Params(
-        sort as VgerSearchSortTypeByMode["lemmyv1"],
-      );
+      return convertSearchSortToLemmyV1Params();
     case "piefed":
       return convertSearchSortToPiefedParams(
         sort as VgerSearchSortTypeByMode["piefed"],
@@ -304,24 +302,9 @@ function convertSearchSortToParams(
   }
 }
 
-function convertSearchSortToLemmyV1Params(
-  sort: VgerSearchSortTypeByMode["lemmyv1"],
-): SearchSortTypeByMode["lemmyv1"] {
-  switch (sort) {
-    case "Old":
-      return { mode: "lemmyv1" };
-    case "New":
-      return { mode: "lemmyv1" };
-    default:
-      if (isTopSort(sort)) {
-        return {
-          ...convertTopToLemmyV1Params(sort),
-          mode: "lemmyv1",
-        };
-      }
-
-      throw new Error(`Invalid sort: ${sort}`);
-  }
+function convertSearchSortToLemmyV1Params(): SearchSortTypeByMode["lemmyv1"] {
+  // v1's /search has no `sort` field — results are always default order.
+  return { mode: "lemmyv1" };
 }
 
 function convertSearchSortToPiefedParams(

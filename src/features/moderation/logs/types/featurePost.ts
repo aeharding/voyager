@@ -8,8 +8,7 @@ import { buildBaseData, buildPostMessage } from "./shared";
 
 export default function featurePost(item: ModlogItem): LogEntryData {
   const featured = !item.modlog.is_revert;
-  const scope =
-    item.modlog.kind === "admin_feature_post_site" ? " (Site)" : "";
+  const scope = item.modlog.kind === "admin_feature_post_site" ? " (Site)" : "";
   return {
     icon: featured ? megaphone : volumeOff,
     title: `${featured ? "Stickied" : "Unstickied"} Post${scope}`,

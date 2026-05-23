@@ -47,7 +47,7 @@ export default function useShareUserCommunity(
         text: instance,
         handler: () => {
           if (FEDI_REDIRECT_SERVICE_COMPATIBLE_HOSTS.includes(instance)) {
-            const fediLink = buildFediRedirectLink(instance, item.actor_id);
+            const fediLink = buildFediRedirectLink(instance, item.ap_id);
             if (fediLink) share(fediLink);
             return;
           }
@@ -70,7 +70,7 @@ export default function useShareUserCommunity(
         return share(buildLink(instance, getHandle(item)));
       }
       default: {
-        return share(item.actor_id);
+        return share(item.ap_id);
       }
     }
   }
@@ -81,7 +81,7 @@ export default function useShareUserCommunity(
     switch (defaultShare) {
       case OPostCommentShareType.ApId:
       case OPostCommentShareType.Community: {
-        await share(item.actor_id);
+        await share(item.ap_id);
         break;
       }
       case OPostCommentShareType.Ask:
@@ -95,7 +95,7 @@ export default function useShareUserCommunity(
         const fediRedirectHost = getFediRedirectHostFromShareType(defaultShare);
         if (!fediRedirectHost) break;
 
-        await share(buildFediRedirectLink(fediRedirectHost, item.actor_id)!);
+        await share(buildFediRedirectLink(fediRedirectHost, item.ap_id)!);
         break;
       }
     }
@@ -115,7 +115,7 @@ function generateUserCommunityInstanceCandidates(
 
   candidates.push(connectedInstance);
 
-  const communityActorHostname = parseUrl(community.actor_id)?.hostname;
+  const communityActorHostname = parseUrl(community.ap_id)?.hostname;
   if (communityActorHostname) candidates.push(communityActorHostname);
 
   return uniq(candidates);

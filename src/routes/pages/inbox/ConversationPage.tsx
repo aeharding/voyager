@@ -15,7 +15,7 @@ import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import ConversationsMoreActions from "#/features/feed/ConversationsMoreActions";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import {
-  PrivateMessageNotification,
+  Message as MessageEntry,
   syncMessages,
 } from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
@@ -36,7 +36,7 @@ import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ConversationPage.module.css";
 
 function useMessages(
-  allMessages: PrivateMessageNotification[],
+  allMessages: MessageEntry[],
   myUserId: number | undefined,
   handle: string,
 ) {
@@ -44,14 +44,14 @@ function useMessages(
     () =>
       allMessages
         .filter((m) =>
-          m.data.private_message.creator_id === myUserId
-            ? getHandle(m.data.recipient).toLowerCase() === handle.toLowerCase()
-            : getHandle(m.data.creator).toLowerCase() === handle.toLowerCase(),
+          m.view.private_message.creator_id === myUserId
+            ? getHandle(m.view.recipient).toLowerCase() === handle.toLowerCase()
+            : getHandle(m.view.creator).toLowerCase() === handle.toLowerCase(),
         )
         .sort(
           (a, b) =>
-            Date.parse(b.data.private_message.published) -
-            Date.parse(a.data.private_message.published),
+            Date.parse(b.view.private_message.published_at) -
+            Date.parse(a.view.private_message.published_at),
         )
         .reverse(),
     [allMessages, handle, myUserId],
@@ -176,7 +176,7 @@ export default function ConversationPage() {
             {messages.map((message, index) => (
               <div
                 className={styles.messageContainer}
-                key={message.data.private_message.id}
+                key={message.view.private_message.id}
               >
                 <Message message={message} first={index === 0} />
               </div>

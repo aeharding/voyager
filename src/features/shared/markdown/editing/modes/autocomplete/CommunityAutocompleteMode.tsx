@@ -11,9 +11,9 @@ import GenericAutocompleteMode, {
 export default function CommunityAutocomplete(props: AutocompleteModeProps) {
   const client = useClient();
 
-  async function fetchFn(q: string) {
+  async function fetchFn(searchTerm: string) {
     const { data } = await client.search({
-      q,
+      search_term: searchTerm,
       type_: "communities",
       ...getTopAllSearchSort(await client.getMode()),
     });
@@ -22,7 +22,7 @@ export default function CommunityAutocomplete(props: AutocompleteModeProps) {
   }
 
   function buildMd(item: Community) {
-    return `[${props.prefix}${getRemoteHandle(item)}](${item.actor_id})`;
+    return `[${props.prefix}${getRemoteHandle(item)}](${item.ap_id})`;
   }
 
   return (

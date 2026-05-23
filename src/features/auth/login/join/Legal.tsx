@@ -91,7 +91,7 @@ export default function Legal() {
           {site?.site_view.local_site.legal_information?.trim() ? (
             <Markdown
               className="collapse-md-margins"
-              id={`site-legal-${site?.site_view.site.actor_id}`}
+              id={`site-legal-${site?.site_view.site.ap_id}`}
             >
               {site.site_view.local_site.legal_information}
             </Markdown>

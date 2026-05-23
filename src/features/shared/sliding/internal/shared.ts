@@ -32,7 +32,12 @@ export function useSharedInboxActions(notification: Notification | undefined) {
     if (!notification) return;
 
     try {
-      await dispatch(markNotificationRead(notification, !isRead));
+      await dispatch(
+        markNotificationRead(
+          { kind: notification.kind, notificationId: notification.id },
+          !isRead,
+        ),
+      );
     } catch (error) {
       presentToast({
         message: "Failed to mark item as unread",

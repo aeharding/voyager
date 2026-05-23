@@ -64,7 +64,15 @@ export default function PrivateMessageMoreActions({
                 },
               });
 
-              await dispatch(markNotificationRead(notification, true));
+              await dispatch(
+                markNotificationRead(
+                  {
+                    kind: notification.kind,
+                    notificationId: notification.id,
+                  },
+                  true,
+                ),
+              );
               dispatch(syncMessages());
             })();
           },

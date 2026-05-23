@@ -13,7 +13,9 @@ export default function removeCommunity(item: ModlogItem): LogEntryData {
     icon: removed ? trash : arrowUndoCircle,
     title: `${removed ? "Removed" : "Restored"} Community`,
     by: item.moderator,
-    message: item.target_community ? getHandle(item.target_community) : undefined,
+    message: item.target_community
+      ? getHandle(item.target_community)
+      : undefined,
     link: item.target_community
       ? buildCommunityLink(item.target_community)
       : undefined,

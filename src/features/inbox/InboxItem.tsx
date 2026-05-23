@@ -1,6 +1,6 @@
 import { IonIcon, IonItem } from "@ionic/react";
-import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
-import { useCallback, useRef } from "react";
+import { albums, chatbubble, hammer, mail, personCircle } from "ionicons/icons";
+import { useCallback, useMemo, useRef } from "react";
 import { NotificationView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
@@ -8,6 +8,7 @@ import CommentMarkdown from "#/features/comment/CommentMarkdown";
 import Ago from "#/features/labels/Ago";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
+import { renderModlogData } from "#/features/moderation/logs/ModlogItem";
 import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import SlidingInbox from "#/features/shared/sliding/SlidingInbox";
 import { cx } from "#/helpers/css";
@@ -25,6 +26,7 @@ import InboxItemMoreActions, {
   InboxItemMoreActionsHandle,
 } from "./InboxItemMoreActions";
 import { getNotificationKey, markNotificationRead } from "./inboxSlice";
+import { inboxModActionTitle } from "./modActionTitle";
 import VoteArrow from "./VoteArrow";
 
 import styles from "./InboxItem.module.css";
@@ -53,7 +55,21 @@ export default function InboxItem({ item }: InboxItemProps) {
       ? (storeVote ?? (item.data.my_vote as 1 | 0 | -1 | undefined))
       : undefined;
 
+  // Modlog notifications (e.g. "your post was removed") aren't a
+  // comment/post/PM, so we render them through the same per-kind helpers
+  // the modlog page uses.
+  const modAction = useMemo(
+    () =>
+      item.data.type_ === "mod_action"
+        ? renderModlogData(item.data)
+        : undefined,
+    [item.data],
+  );
+
   function renderHeader() {
+    if (item.data.type_ === "mod_action") {
+      return <strong>{inboxModActionTitle(item.data)}</strong>;
+    }
     if (item.notification.kind === "mention" && item.data.type_ === "comment") {
       return (
         <>
@@ -95,12 +111,27 @@ export default function InboxItem({ item }: InboxItemProps) {
     }
   }
 
-  function renderContents() {
+  function renderBody() {
     if (item.data.type_ === "comment") {
-      return item.data.comment.content;
+      return (
+        <CommentMarkdown id={getItemId(item)}>
+          {item.data.comment.content}
+        </CommentMarkdown>
+      );
     }
     if (item.data.type_ === "private_message") {
-      return item.data.private_message.content;
+      return (
+        <CommentMarkdown id={getItemId(item)}>
+          {item.data.private_message.content}
+        </CommentMarkdown>
+      );
+    }
+    if (modAction) {
+      return (
+        <>
+          <p>{modAction.reason ?? "No reason provided"}</p>
+        </>
+      );
     }
   }
 
@@ -124,6 +155,17 @@ export default function InboxItem({ item }: InboxItemProps) {
         </>
       );
     }
+    if (modAction && item.data.type_ === "mod_action") {
+      const community = item.data.target_community;
+      return community ? (
+        <CommunityLink
+          community={community}
+          subscribed="NotSubscribed"
+          hideIcon
+          className={styles.label}
+        />
+      ) : undefined;
+    }
   }
 
   function getLink() {
@@ -137,6 +179,7 @@ export default function InboxItem({ item }: InboxItemProps) {
     if (item.data.type_ === "private_message") {
       return `/inbox/messages/${getHandle(item.data.creator)}`;
     }
+    if (modAction?.link) return buildGeneralBrowseLink(modAction.link);
     return "";
   }
 
@@ -155,11 +198,21 @@ export default function InboxItem({ item }: InboxItemProps) {
       return chatbubble;
     }
     if (item.notification.kind === "private_message") return mail;
+    // All mod_action kinds share the hammer — title carries the specifics.
+    if (item.notification.kind === "mod_action") return hammer;
   }
 
   async function markRead() {
     try {
-      await dispatch(markNotificationRead(item.notification, true));
+      await dispatch(
+        markNotificationRead(
+          {
+            kind: item.notification.kind,
+            notificationId: item.notification.id,
+          },
+          true,
+        ),
+      );
     } catch (error) {
       presentToast({
         message: "Failed to mark item as read",
@@ -211,11 +264,7 @@ export default function InboxItem({ item }: InboxItemProps) {
         </div>
         <div className={styles.content}>
           <div>{renderHeader()}</div>
-          <div className={styles.body}>
-            <CommentMarkdown id={getItemId(item)}>
-              {renderContents()}
-            </CommentMarkdown>
-          </div>
+          <div className={styles.body}>{renderBody()}</div>
           <div className={styles.footer}>
             <div>{renderFooterDetails()}</div>
             <aside>

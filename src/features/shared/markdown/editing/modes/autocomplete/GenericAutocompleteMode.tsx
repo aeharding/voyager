@@ -18,10 +18,10 @@ interface GenericAutocompleteModeProps<I> extends AutocompleteModeProps {
   /**
    * Return a search with candidates for a given query
    *
-   * @param q Search query
+   * @param searchTerm Search query
    * @returns Matches for the search
    */
-  fetchFn: (q: string) => Promise<I[]>;
+  fetchFn: (searchTerm: string) => Promise<I[]>;
 
   /**
    * Builds the markdown to replace incomplete user input with
@@ -32,7 +32,7 @@ interface GenericAutocompleteModeProps<I> extends AutocompleteModeProps {
 }
 
 export default function GenericAutocompleteMode<
-  I extends Pick<Community, "id" | "actor_id" | "local" | "name">,
+  I extends Pick<Community, "id" | "ap_id" | "local" | "name">,
 >({
   fetchFn,
   buildMd,

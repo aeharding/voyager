@@ -1,8 +1,8 @@
-import { CommentAggregates } from "threadiverse";
+import { CommentCounts } from "#/helpers/threadiverseCounts";
 
 // https://github.com/honestbleeps/Reddit-Enhancement-Suite/blob/e804618d97350d67cf0286283fc462756dc53d87/lib/modules/userTagger.js#L644
 export function getVoteWeightColor(
-  { upvotes, downvotes }: Pick<CommentAggregates, "upvotes" | "downvotes">,
+  { upvotes, downvotes }: Pick<CommentCounts, "upvotes" | "downvotes">,
   opacityMixin = 1,
 ) {
   const votes = upvotes - downvotes;

@@ -48,10 +48,7 @@ export default function ProfilePage() {
 
     return (
       <Profile
-        person={{
-          person: myPerson.local_user_view.person,
-          counts: myPerson.local_user_view.counts,
-        }}
+        person={{ person: myPerson.local_user_view.person }}
         onPull={() => dispatch(getSite()) satisfies Promise<void>}
       />
     );

@@ -3,8 +3,10 @@ import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
 import {
   GetUnreadCountResponse,
   Notification,
+  NotificationDataType,
   NotificationView,
   PageCursor,
+  PrivateMessageView,
 } from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
@@ -23,6 +25,44 @@ export function isPrivateMessageNotification(
   return item.data.type_ === "private_message";
 }
 
+/**
+ * A private message stored in the conversation/messages collection.
+ *
+ * `notificationId` is the server's notification row id (used for mark-read
+ * and for keying into `readByInboxItemId`). Undefined for locally-synthesized
+ * outgoing messages — the sender doesn't receive a server notification for
+ * their own send, so there's nothing to ACK and they're treated as read.
+ *
+ * Read state lives on `readByInboxItemId` (the same overlay used by the
+ * unified inbox), so both views derive from the same source of truth.
+ */
+export interface Message {
+  view: PrivateMessageView;
+  notificationId?: number;
+}
+
+export function messageFromNotification(
+  notification: PrivateMessageNotification,
+): Message {
+  return {
+    view: notification.data,
+    notificationId: notification.notification.id,
+  };
+}
+
+export function getMessageId(message: Message): number {
+  return message.view.private_message.id;
+}
+
+export function isMessageRead(
+  message: Message,
+  readByInboxItemId: Record<string, boolean>,
+): boolean {
+  // Synthetic outgoing messages have no server notification; treat as read.
+  if (message.notificationId === undefined) return true;
+  return !!readByInboxItemId[`private_message_${message.notificationId}`];
+}
+
 interface PostState {
   counts: {
     mentions: number;
@@ -32,7 +72,7 @@ interface PostState {
   lastUpdatedCounts: number;
   readByInboxItemId: Record<string, boolean>;
   messageSyncState: "init" | "syncing" | "synced";
-  messages: PrivateMessageNotification[];
+  messages: Message[];
   messagesLoading: boolean;
 }
 
@@ -70,26 +110,26 @@ export const inboxSlice = createSlice({
     },
     setNotificationReadStatus: (
       state,
-      action: PayloadAction<{ notification: Notification; read: boolean }>,
+      action: PayloadAction<{
+        kind: NotificationDataType;
+        notificationId: number;
+        read: boolean;
+      }>,
     ) => {
       state.readByInboxItemId[
-        getNotificationKey(action.payload.notification)
+        `${action.payload.kind}_${action.payload.notificationId}`
       ] = action.payload.read;
     },
     setAllReadStatus: (state) => {
       for (const [id, read] of Object.entries(state.readByInboxItemId)) {
         if (read) continue;
-
         state.readByInboxItemId[id] = true;
       }
     },
-    receivedMessages: (
-      state,
-      action: PayloadAction<PrivateMessageNotification[]>,
-    ) => {
+    receivedMessages: (state, action: PayloadAction<Message[]>) => {
       state.messages = uniqBy(
         [...action.payload, ...state.messages],
-        (m) => m.data.private_message.id,
+        getMessageId,
       );
     },
     sync: (state) => {
@@ -208,13 +248,18 @@ const _syncMessages = async (
           throw e;
         }
 
+        const messages = privateMessages.map(messageFromNotification);
+
         const newMessages = differenceBy(
-          privateMessages,
+          messages,
           getState().inbox.messages,
-          (msg) => msg.data.private_message.id,
+          getMessageId,
         );
 
-        dispatch(receivedMessages(privateMessages));
+        dispatch(receivedMessages(messages));
+        // Populate the shared read overlay so the conversation view can
+        // derive read state from the same source as the unified inbox.
+        dispatch(receivedInboxItems(privateMessages));
         dispatch(receivedUsers(privateMessages.map((m) => m.data.creator)));
         dispatch(receivedUsers(privateMessages.map((m) => m.data.recipient)));
 
@@ -244,16 +289,16 @@ export const conversationsByPersonIdSelector = createSelector(
     return sortBy(
       Object.values(
         groupBy(messages, (m) =>
-          m.data.private_message.creator_id === myUserId
-            ? m.data.private_message.recipient_id
-            : m.data.private_message.creator_id,
+          m.view.private_message.creator_id === myUserId
+            ? m.view.private_message.recipient_id
+            : m.view.private_message.creator_id,
         ),
       ).map((messages) =>
         sortBy(messages, [
-          (m) => -Date.parse(m.data.private_message.published),
+          (m) => -Date.parse(m.view.private_message.published_at),
         ]),
       ),
-      [(group) => -Date.parse(group[0]!.data.private_message.published)],
+      [(group) => -Date.parse(group[0]!.view.private_message.published_at)],
     );
   },
 );
@@ -263,24 +308,42 @@ export function getNotificationKey(notification: Notification): string {
 }
 
 export const markNotificationRead =
-  (notification: Notification, read: boolean) =>
+  (
+    args: { kind: NotificationDataType; notificationId: number },
+    read: boolean,
+  ) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const client = clientSelector(getState());
 
-    const initialRead =
-      !!getState().inbox.readByInboxItemId[getNotificationKey(notification)];
+    const key = `${args.kind}_${args.notificationId}`;
+    const initialRead = !!getState().inbox.readByInboxItemId[key];
 
-    dispatch(setNotificationReadStatus({ notification, read }));
+    dispatch(setNotificationReadStatus({ ...args, read }));
 
     try {
-      await client.markNotificationAsRead({ notification, read });
+      await client.markNotificationAsRead({
+        kind: args.kind,
+        notification_id: args.notificationId,
+        read,
+      });
     } catch (error) {
-      dispatch(
-        setNotificationReadStatus({ notification, read: initialRead }),
-      );
-
+      dispatch(setNotificationReadStatus({ ...args, read: initialRead }));
       throw error;
     }
 
     dispatch(getInboxCounts(true));
+  };
+
+export const markMessageRead =
+  (message: Message, read: boolean) => async (dispatch: AppDispatch) => {
+    // Synthetic outgoing messages have no server notification — nothing to
+    // ACK, and they're already treated as read by `isMessageRead`.
+    if (message.notificationId === undefined) return;
+
+    await dispatch(
+      markNotificationRead(
+        { kind: "private_message", notificationId: message.notificationId },
+        read,
+      ),
+    );
   };

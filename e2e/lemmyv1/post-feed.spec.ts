@@ -20,6 +20,8 @@ test("v1: clicking a post navigates to detail", async ({ page }) => {
   await page.getByText(fixturePosts[0]!.post.name).first().click();
 
   await expect(page).toHaveURL(
-    new RegExp(`/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.post.id}`),
+    new RegExp(
+      `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.post.id}`,
+    ),
   );
 });

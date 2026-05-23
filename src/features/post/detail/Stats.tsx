@@ -20,7 +20,7 @@ export default function Stats({ post }: StatsProps) {
       <Vote item={post} />
       <HappyStat post={post} />
       <TimeStat>
-        <Ago date={post.post.published} />
+        <Ago date={post.post.published_at} />
       </TimeStat>
       <Edited item={post} showDate />
     </div>

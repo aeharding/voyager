@@ -377,9 +377,9 @@ function normalize(instance: GetSiteResponse | LVInstance): Instance {
   }
 
   return {
-    url: new URL(instance.site_view.site.actor_id).hostname,
+    url: new URL(instance.site_view.site.ap_id).hostname,
     icon: instance.site_view.site.icon,
-    description: instance.site_view.site.description,
+    description: instance.site_view.site.summary,
     open: instance.site_view.local_site.registration_mode === "open",
   };
 }

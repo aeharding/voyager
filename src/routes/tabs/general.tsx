@@ -91,10 +91,10 @@ export default [
     <ProfileFeedHiddenPostsPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/upvoted">
-    <ProfileFeedVotedPage type="Upvoted" />
+    <ProfileFeedVotedPage likeType="liked_only" />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/downvoted">
-    <ProfileFeedVotedPage type="Downvoted" />
+    <ProfileFeedVotedPage likeType="disliked_only" />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/message">
     <ConversationPage />

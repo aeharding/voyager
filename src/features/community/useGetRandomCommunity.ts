@@ -35,7 +35,7 @@ export default function useGetRandomCommunity() {
       chosenRandomCommunity = response.community_view.community;
     } else {
       const totalCommunitiesCount =
-        store.getState().site.response?.site_view.counts?.communities;
+        store.getState().site.response?.site_view.local_site?.communities;
       if (!totalCommunitiesCount) return;
 
       let response;
@@ -55,11 +55,11 @@ export default function useGetRandomCommunity() {
       }
 
       const randomCommunitiesByPosts = sortBy(response.data, [
-        (c) => -c.counts.posts,
+        (c) => -c.community.posts,
       ]);
 
       const eligibleRandomCommunities = randomCommunitiesByPosts.filter(
-        (c) => c.counts.posts > 10,
+        (c) => c.community.posts > 10,
       );
 
       chosenRandomCommunity =

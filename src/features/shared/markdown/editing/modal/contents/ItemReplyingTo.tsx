@@ -26,7 +26,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
         <IonIcon icon={returnDownForwardSharp} /> {getHandle(item.creator)}{" "}
         <Vote item={item} />
         <Edited item={item} />
-        <Ago date={payload.published} className={styles.ago} />
+        <Ago date={payload.published_at} className={styles.ago} />
       </div>
       <div
         {...preventModalSwipeOnTextSelection}

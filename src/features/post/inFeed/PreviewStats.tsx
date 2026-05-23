@@ -17,9 +17,9 @@ export default function PreviewStats({ post }: PreviewStatsProps) {
   return (
     <div className={styles.container}>
       <Vote item={post} />
-      <Stat icon={chatbubbleOutline}>{formatNumber(post.counts.comments)}</Stat>
+      <Stat icon={chatbubbleOutline}>{formatNumber(post.post.comments)}</Stat>
       <TimeStat>
-        <Ago date={post.post.published} />
+        <Ago date={post.post.published_at} />
       </TimeStat>
     </div>
   );

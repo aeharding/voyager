@@ -73,7 +73,13 @@ export function VotableActionsImpl({
     async (score) => {
       if (presentLoginIfNeeded()) return;
 
-      if (notification) dispatch(markNotificationRead(notification, true));
+      if (notification)
+        dispatch(
+          markNotificationRead(
+            { kind: notification.kind, notificationId: notification.id },
+            true,
+          ),
+        );
 
       try {
         if (isPost) await dispatch(voteOnPost(item, score));
@@ -93,7 +99,13 @@ export function VotableActionsImpl({
   const reply: GenericBaseSlidingProps["reply"] = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
 
-    if (notification) dispatch(markNotificationRead(notification, true));
+    if (notification)
+      dispatch(
+        markNotificationRead(
+          { kind: notification.kind, notificationId: notification.id },
+          true,
+        ),
+      );
 
     const canModerate = getCanModerate(item.community);
 

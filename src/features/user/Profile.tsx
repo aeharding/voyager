@@ -36,7 +36,7 @@ interface ProfileProps extends Pick<
   ComponentProps<typeof PostCommentFeed>,
   "onPull"
 > {
-  person: Pick<PersonView, "person" | "counts">;
+  person: Pick<PersonView, "person">;
 }
 
 export default function Profile({ person, onPull }: ProfileProps) {
@@ -73,8 +73,8 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const header = (
     <MaxWidthContainer>
       <Scores
-        aggregates={person.counts}
-        accountCreated={person.person.published}
+        aggregates={person.person}
+        accountCreated={person.person.published_at}
       />
       <IonList inset>
         <IonItem

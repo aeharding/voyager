@@ -78,7 +78,7 @@ export default function BanUser({
           person_id: user.id,
           community_id: community.id,
           reason,
-          expires: !permanent
+          expires_at: !permanent
             ? Math.trunc(addDays(new Date(), days).getTime() / 1_000)
             : undefined,
           remove_or_restore_data: removeContent,

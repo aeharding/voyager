@@ -2,11 +2,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { timerOutline } from "ionicons/icons";
 import { useCallback } from "react";
 import { useRef } from "react";
-import {
-  ModlogItem as ModLogItemType,
-  ModlogKind,
-  Person,
-} from "threadiverse";
+import { ModlogItem as ModLogItemType, ModlogKind, Person } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import Ago from "#/features/labels/Ago";
@@ -60,7 +56,7 @@ export interface LogEntryData {
   link?: string;
 }
 
-function renderModlogData(item: ModLogItemType): LogEntryData {
+export function renderModlogData(item: ModLogItemType): LogEntryData {
   const kind = item.modlog.kind;
   switch (kind) {
     case "mod_remove_comment":

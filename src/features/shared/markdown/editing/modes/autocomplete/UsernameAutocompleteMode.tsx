@@ -11,9 +11,9 @@ import GenericAutocompleteMode, {
 export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   const client = useClient();
 
-  async function fetchFn(q: string) {
+  async function fetchFn(searchTerm: string) {
     const { data: users } = await client.search({
-      q,
+      search_term: searchTerm,
       type_: "users",
       ...getTopAllSearchSort(await client.getMode()),
     });
@@ -22,7 +22,7 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   }
 
   function buildMd(item: Person) {
-    return `[${props.prefix}${getRemoteHandle(item)}](${item.actor_id})`;
+    return `[${props.prefix}${getRemoteHandle(item)}](${item.ap_id})`;
   }
 
   return (

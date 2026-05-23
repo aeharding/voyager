@@ -75,7 +75,7 @@ export default function CrosspostContents({
         <div className={styles.stat}>
           <IonIcon icon={chatbubbleOutline} />{" "}
           {crosspost ? (
-            formatNumber(crosspost.counts.comments)
+            formatNumber(crosspost.post.comments)
           ) : (
             <IonSkeletonText className={styles.statIonSkeletonText} />
           )}

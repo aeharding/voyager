@@ -10,11 +10,7 @@ interface PostCommentFeed extends Omit<
 
 export default function InboxFeed({ ...rest }: PostCommentFeed) {
   return (
-    <Feed
-      renderItemContent={renderItemContent}
-      getIndex={getIndex}
-      {...rest}
-    />
+    <Feed renderItemContent={renderItemContent} getIndex={getIndex} {...rest} />
   );
 }
 

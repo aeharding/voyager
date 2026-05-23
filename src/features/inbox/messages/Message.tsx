@@ -15,14 +15,15 @@ import { cx } from "#/helpers/css";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import {
-  markNotificationRead,
-  PrivateMessageNotification,
+  isMessageRead,
+  markMessageRead,
+  Message as MessageEntry,
 } from "../inboxSlice";
 
 import styles from "./Message.module.css";
 
 interface MessageProps {
-  message: PrivateMessageNotification;
+  message: MessageEntry;
   first?: boolean;
 }
 
@@ -32,8 +33,11 @@ export default function Message({ message, first }: MessageProps) {
   const myUserId = useAppSelector(
     (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
+  const read = useAppSelector((state) =>
+    isMessageRead(message, state.inbox.readByInboxItemId),
+  );
 
-  const privateMessage = message.data;
+  const privateMessage = message.view;
 
   const thisIsMyMessage =
     privateMessage.private_message.creator_id === myUserId;
@@ -56,19 +60,14 @@ export default function Message({ message, first }: MessageProps) {
 
   // The thunk handles API call + optimistic update + counts refresh + rollback.
   const markReadEvent = useEffectEvent(() => {
-    dispatch(markNotificationRead(message.notification, true));
+    dispatch(markMessageRead(message, true));
   });
 
   useEffect(() => {
-    if (
-      message.notification.read ||
-      (thisIsMyMessage && !thisIsASelfMessage) ||
-      !focused
-    )
-      return;
+    if (read || (thisIsMyMessage && !thisIsASelfMessage) || !focused) return;
 
     markReadEvent();
-  }, [focused, message, thisIsMyMessage, thisIsASelfMessage]);
+  }, [focused, read, thisIsMyMessage, thisIsASelfMessage]);
 
   return (
     <div

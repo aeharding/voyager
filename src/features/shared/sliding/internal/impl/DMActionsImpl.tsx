@@ -26,7 +26,12 @@ export default function DMActionsImpl({
     <GenericBaseSliding
       onVote={async () => {
         if (notification) {
-          await dispatch(markNotificationRead(notification, true));
+          await dispatch(
+            markNotificationRead(
+              { kind: notification.kind, notificationId: notification.id },
+              true,
+            ),
+          );
         }
       }}
       currentVote={0}
@@ -43,7 +48,12 @@ export default function DMActionsImpl({
         });
 
         if (notification) {
-          await dispatch(markNotificationRead(notification, true));
+          await dispatch(
+            markNotificationRead(
+              { kind: notification.kind, notificationId: notification.id },
+              true,
+            ),
+          );
         }
         dispatch(syncMessages());
       }}

@@ -153,7 +153,7 @@ export default function useCommentModActions(commentView: CommentView) {
           handler: () => {
             presentAlert({
               message: `Remove ${
-                commentView.counts.child_count + 1
+                commentView.comment.child_count + 1
               } comments in comment chain?`,
               buttons: [
                 {

@@ -49,7 +49,7 @@ export default function SearchFeedResultsPage({
       {
         page_cursor,
         limit: LIMIT,
-        q: search,
+        search_term: search,
         type_: type,
         community_name: community,
         ...sortParams,

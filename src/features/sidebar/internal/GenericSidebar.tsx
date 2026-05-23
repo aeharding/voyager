@@ -1,8 +1,9 @@
-import { CommunityAggregates, Person, SiteAggregates } from "threadiverse";
+import { Person } from "threadiverse";
 
 import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import Markdown from "#/features/shared/markdown/Markdown";
+import { CommunityCounts, LocalSiteCounts } from "#/helpers/threadiverseCounts";
 
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
@@ -12,7 +13,7 @@ import styles from "./GenericSidebar.module.css";
 interface GenericSidebarProps {
   sidebar: string;
   people: Person[];
-  counts: SiteAggregates | CommunityAggregates | undefined;
+  counts: CommunityCounts | LocalSiteCounts | undefined;
   extraBadges?: React.ReactNode;
   type: "instance" | "community";
   banner?: string;

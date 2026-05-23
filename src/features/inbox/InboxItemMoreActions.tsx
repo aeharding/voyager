@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
 import { getNotificationKey, markNotificationRead } from "./inboxSlice";
+import ModActionMoreActions from "./ModActionMoreActions";
 import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 
 import styles from "./InboxItemMoreActions.module.css";
@@ -41,7 +42,13 @@ export default function InboxItemMoreActions({
 
         try {
           await dispatch(
-            markNotificationRead(item.notification, targetReadStatus),
+            markNotificationRead(
+              {
+                kind: item.notification.kind,
+                notificationId: item.notification.id,
+              },
+              targetReadStatus,
+            ),
           );
         } catch (error) {
           presentToast(buildMarkRead(targetReadStatus));
@@ -71,6 +78,9 @@ export default function InboxItemMoreActions({
           ref={ref}
         />
       );
+    }
+    if (item.data.type_ === "mod_action") {
+      return <ModActionMoreActions markReadAction={markReadAction} ref={ref} />;
     }
     return null;
   }

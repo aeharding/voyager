@@ -2,7 +2,11 @@ import { NotificationView } from "threadiverse";
 
 import { useAppSelector } from "#/store";
 
-import { BaseSlidingDM, BaseSlidingVote } from "./BaseSliding";
+import {
+  BaseSlidingDM,
+  BaseSlidingModAction,
+  BaseSlidingVote,
+} from "./BaseSliding";
 
 interface SlidingInboxProps extends React.PropsWithChildren {
   className?: string;
@@ -42,5 +46,16 @@ export default function SlidingInbox({
     );
   }
 
-  return <>{children}</>;
+  // mod_action (and any other non-votable kind): keep the swipe affordance
+  // so the list stays consistent. Vote/reply/save are no-ops; mark
+  // read/unread still works.
+  return (
+    <BaseSlidingModAction
+      actions={inbox}
+      className={className}
+      notification={item.notification}
+    >
+      {children}
+    </BaseSlidingModAction>
+  );
 }

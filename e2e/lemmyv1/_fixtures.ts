@@ -329,19 +329,16 @@ export const fixtureModlog = [
  */
 export async function mockV1(page: Page) {
   // nodeinfo discovery
-  await page.route(
-    `https://${V1_HOST}/.well-known/nodeinfo`,
-    async (route) => {
-      await route.fulfill({ json: wellknownNodeinfo });
-    },
-  );
+  await page.route(`https://${V1_HOST}/.well-known/nodeinfo`, async (route) => {
+    await route.fulfill({ json: wellknownNodeinfo });
+  });
   await page.route(`https://${V1_HOST}/nodeinfo/2.1`, async (route) => {
     await route.fulfill({ json: nodeinfo21 });
   });
 
   // Site bootstrap
   await page.route(
-    `**/api/v4/site${(/* trailing query */ "**")}`,
+    `**/api/v4/site${/* trailing query */ "**"}`,
     async (route) => {
       await route.fulfill({ json: siteResponse });
     },
