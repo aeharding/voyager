@@ -1,15 +1,13 @@
-import { Comment, Person, Post } from "threadiverse";
+import { Comment, Modlog, Person, Post } from "threadiverse";
 
 import { ModeratorRole } from "../../useCanModerate";
 
-interface ModItem {
-  when_: string;
-  reason?: string;
-  expires?: string;
-}
-
-export function buildBaseData({ when_, reason, expires }: ModItem) {
-  return { when: when_, reason, expires };
+export function buildBaseData(modlog: Modlog) {
+  return {
+    when: modlog.published_at,
+    reason: modlog.reason,
+    expires: modlog.expires_at,
+  };
 }
 
 export function buildPostMessage(post: Post): string {

@@ -59,42 +59,37 @@ export const resolveObject =
     dispatch: AppDispatch,
     getState: () => RootState,
   ): Promise<ResolveObjectResponse> => {
-    let object;
+    let object: ResolveObjectResponse;
 
     const q = normalizeObjectUrl(findFedilinkFromQuirkUrl(url));
 
     try {
       object = await clientSelector(getState()).resolveObject(
-        {
-          q,
-        },
+        { q },
         { signal },
       );
-    } catch (error) {
-      if (isNotFoundError(error)) {
-        try {
-          // FINE. We'll do it the hard/insecure way and ask original instance >:(
-          const fedilink = await resolveFedilink(q, { signal });
+    } catch (primaryError) {
+      if (!isNotFoundError(primaryError)) throw primaryError;
 
-          if (!fedilink) {
-            throw new Error("Could not find fedilink", { cause: error });
-          }
+      // FINE. We'll do it the hard/insecure way and ask original instance >:(
+      const fedilink = await resolveFedilink(q, { signal });
 
-          object = await clientSelector(getState()).resolveObject(
-            {
-              q: fedilink,
-            },
-            { signal },
-          );
-        } catch (error) {
-          if (isNotFoundError(error)) {
-            dispatch(couldNotFindUrl(url));
-          }
+      if (!fedilink) {
+        // Both the primary lookup and the fedilink fallback have nothing to
+        // give us — the object truly isn't findable. Mark it so the UI can
+        // dismiss its loading state and fall back to a plain link.
+        dispatch(couldNotFindUrl(url));
+        throw new Error("Could not find fedilink", { cause: primaryError });
+      }
 
-          throw error;
-        }
-      } else {
-        throw error;
+      try {
+        object = await clientSelector(getState()).resolveObject(
+          { q: fedilink },
+          { signal },
+        );
+      } catch (fallbackError) {
+        if (isNotFoundError(fallbackError)) dispatch(couldNotFindUrl(url));
+        throw fallbackError;
       }
     }
 

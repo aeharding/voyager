@@ -162,7 +162,7 @@ export default function Join({ answer }: JoinProps) {
             >
               <div slot="label">
                 Email{" "}
-                {site?.site_view.local_site.require_email_verification && (
+                {site?.site_view.local_site.email_verification_required && (
                   <IonText color="danger">(Required)</IonText>
                 )}
               </div>

@@ -6,7 +6,7 @@ import styles from "./Handle.module.css";
 
 interface HandleProps {
   showInstanceWhenRemote?: boolean;
-  item: Pick<Person, "name" | "local" | "actor_id">;
+  item: Pick<Person, "name" | "local" | "ap_id">;
 }
 
 export default function Handle(props: HandleProps) {

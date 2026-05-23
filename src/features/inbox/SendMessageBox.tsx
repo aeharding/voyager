@@ -55,7 +55,7 @@ export default function SendMessageBox({
       throw error;
     }
 
-    dispatch(receivedMessages([message.private_message_view]));
+    dispatch(receivedMessages([{ view: message.private_message_view }]));
 
     setLoading(false);
     setValue("");

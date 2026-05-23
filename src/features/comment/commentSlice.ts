@@ -8,6 +8,7 @@ import {
   updateTagVotes,
 } from "#/features/tags/userTagSlice";
 import { getRemoteHandle } from "#/helpers/lemmy";
+import { voteToIsUpvote } from "#/helpers/vote";
 import { AppDispatch, RootState } from "#/store";
 
 export const LOADING_CONTENT = -1;
@@ -132,7 +133,7 @@ export const voteOnComment =
     try {
       await clientSelector(getState())?.likeComment({
         comment_id: commentId,
-        score: vote,
+        is_upvote: voteToIsUpvote(vote),
       });
     } catch (error) {
       dispatch(updateCommentVote({ commentId, vote: oldVote }));
@@ -265,8 +266,8 @@ export const getCommentContent = createAsyncThunk(
 
     const log = await client.getModlog({ comment_id: commentId });
 
-    return log.data.filter((l) => "mod_remove_comment" in l)[0]?.comment
-      .content;
+    return log.data.find((l) => l.modlog.kind === "mod_remove_comment")
+      ?.target_comment?.content;
   },
   {
     condition: (commentId, { getState }) => {

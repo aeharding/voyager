@@ -1,18 +1,23 @@
 import { megaphone, volumeOff } from "ionicons/icons";
-import { ModFeaturePostView } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, buildPostMessage } from "./shared";
 
-export default function featurePost(item: ModFeaturePostView): LogEntryData {
+export default function featurePost(item: ModlogItem): LogEntryData {
+  const featured = !item.modlog.is_revert;
+  const scope = item.modlog.kind === "admin_feature_post_site" ? " (Site)" : "";
   return {
-    icon: item.mod_feature_post.featured ? megaphone : volumeOff,
-    title: `${item.mod_feature_post.featured ? "Stickied" : "Unstickied"} Post`,
+    icon: featured ? megaphone : volumeOff,
+    title: `${featured ? "Stickied" : "Unstickied"} Post${scope}`,
     by: item.moderator,
-    message: buildPostMessage(item.post),
-    link: buildPostLink(item.community, item.post),
-    ...buildBaseData(item.mod_feature_post),
+    message: item.target_post ? buildPostMessage(item.target_post) : undefined,
+    link:
+      item.target_community && item.target_post
+        ? buildPostLink(item.target_community, item.target_post)
+        : undefined,
+    ...buildBaseData(item.modlog),
   };
 }

@@ -82,7 +82,7 @@ export default function CommentHeader({
         {collapsed && (
           <>
             <div className={styles.amountCollapsed}>
-              {commentView.counts.child_count +
+              {commentView.comment.child_count +
                 (showCollapsedComment || stub ? 0 : 1)}
             </div>
             <IonIcon
@@ -112,7 +112,7 @@ export default function CommentHeader({
               deleted their <span className="ion-text-nowrap">comment :(</span>
             </div>
             <div className={styles.spacer} />
-            {renderAside(comment.updated || comment.published)}
+            {renderAside(comment.updated_at || comment.published_at)}
           </>
         );
       case StubType.ModRemoved:
@@ -131,7 +131,7 @@ export default function CommentHeader({
               &apos;s comment
             </div>
             <div className={styles.spacer} />
-            {renderAside(comment.updated || comment.published)}
+            {renderAside(comment.updated_at || comment.published_at)}
           </>
         );
       default:
@@ -174,7 +174,7 @@ export default function CommentHeader({
             ) : (
               <div className={styles.spacer} />
             )}
-            {renderAside(comment.published)}
+            {renderAside(comment.published_at)}
           </>
         );
     }

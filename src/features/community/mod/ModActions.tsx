@@ -26,13 +26,13 @@ export default function ModActions(props: UseModZoneActionsProps) {
 
 export function getFeedUrlName(type: ListingType): string {
   switch (type) {
-    case "All":
+    case "all":
       return "all";
-    case "Local":
+    case "local":
       return "local";
-    case "ModeratorView":
+    case "moderator_view":
       return "mod";
-    case "Subscribed":
+    case "subscribed":
       return "home";
   }
 }

@@ -13,6 +13,7 @@ import {
 } from "#/features/tags/userTagSlice";
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import { voteToIsUpvote } from "#/helpers/vote";
 import { db } from "#/services/db";
 import { IPostMetadata } from "#/services/db/types";
 import { AppDispatch, RootState } from "#/store";
@@ -329,7 +330,7 @@ export const voteOnPost =
     try {
       await clientSelector(getState())?.likePost({
         post_id: postId,
-        score: vote,
+        is_upvote: voteToIsUpvote(vote),
       });
     } catch (error) {
       dispatch(updatePostVote({ postId, vote: oldVote }));
@@ -439,7 +440,7 @@ export const modStickyPost =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const response = await clientSelector(getState())?.featurePost({
       post_id: postId,
-      feature_type: "Community",
+      feature_type: "community",
       featured: stickied,
     });
 

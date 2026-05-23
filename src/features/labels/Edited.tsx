@@ -20,9 +20,11 @@ interface EditedProps {
 export default function Edited({ item, showDate, className }: EditedProps) {
   const [present] = useIonAlert();
 
-  const updated = isPost(item) ? item.post.updated : item.comment.updated;
+  const updated = isPost(item) ? item.post.updated_at : item.comment.updated_at;
 
-  const created = new Date(item.counts.published);
+  const created = new Date(
+    isPost(item) ? item.post.published_at : item.comment.published_at,
+  );
 
   const edited = (() => {
     if (!updated) return;

@@ -63,7 +63,7 @@ export default function CommentTree({
 
   if (
     comment.absoluteDepth - baseDepth > MAX_COMMENT_DEPTH &&
-    comment.comment_view.counts.child_count >= 2
+    comment.comment_view.comment.child_count >= 2
   ) {
     return (
       <ContinueThread

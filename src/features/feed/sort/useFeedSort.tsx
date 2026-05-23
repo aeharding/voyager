@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   CommentSortType,
+  CommentSortTypeByMode,
   CommunitySortType,
   CommunitySortTypeByMode,
   PostSortType,
@@ -239,15 +240,47 @@ function convertCommunitySortToParams(
         sort as VgerCommunitySortTypeByMode["lemmyv0"],
       );
     case "lemmyv1":
-      return {
-        sort: sort as VgerCommunitySortTypeByMode["lemmyv1"],
-        mode: "lemmyv1",
-      };
+      return convertCommunitySortToLemmyV1Params(
+        sort as VgerCommunitySortTypeByMode["lemmyv1"],
+      );
     case "piefed":
       return {
         sort: sort as VgerCommunitySortTypeByMode["piefed"],
         mode: "piefed",
       };
+  }
+}
+
+function convertCommunitySortToLemmyV1Params(
+  sort: VgerCommunitySortTypeByMode["lemmyv1"],
+): CommunitySortTypeByMode["lemmyv1"] {
+  switch (sort) {
+    case "Hot":
+      return { sort: "hot", mode: "lemmyv1" };
+    case "New":
+      return { sort: "new", mode: "lemmyv1" };
+    case "Old":
+      return { sort: "old", mode: "lemmyv1" };
+    case "ActiveSixMonths":
+      return { sort: "active_six_months", mode: "lemmyv1" };
+    case "ActiveMonthly":
+      return { sort: "active_monthly", mode: "lemmyv1" };
+    case "ActiveWeekly":
+      return { sort: "active_weekly", mode: "lemmyv1" };
+    case "ActiveDaily":
+      return { sort: "active_daily", mode: "lemmyv1" };
+    case "Subscribers":
+      return { sort: "subscribers", mode: "lemmyv1" };
+    case "Posts":
+      return { sort: "posts", mode: "lemmyv1" };
+    case "Comments":
+      return { sort: "comments", mode: "lemmyv1" };
+    case "NameAsc":
+      return { sort: "name_asc", mode: "lemmyv1" };
+    case "NameDesc":
+      return { sort: "name_desc", mode: "lemmyv1" };
+    case "SubscribersLocal":
+      return { sort: "subscribers_local", mode: "lemmyv1" };
   }
 }
 
@@ -261,9 +294,7 @@ function convertSearchSortToParams(
         sort as VgerPostSortTypeByMode["lemmyv0"],
       );
     case "lemmyv1":
-      return convertSearchSortToLemmyV1Params(
-        sort as VgerSearchSortTypeByMode["lemmyv1"],
-      );
+      return convertSearchSortToLemmyV1Params();
     case "piefed":
       return convertSearchSortToPiefedParams(
         sort as VgerSearchSortTypeByMode["piefed"],
@@ -271,23 +302,9 @@ function convertSearchSortToParams(
   }
 }
 
-function convertSearchSortToLemmyV1Params(
-  sort: VgerSearchSortTypeByMode["lemmyv1"],
-): SearchSortTypeByMode["lemmyv1"] {
-  switch (sort) {
-    case "Old":
-    case "New":
-      return { sort, mode: "lemmyv1" };
-    default:
-      if (isTopSort(sort)) {
-        return {
-          ...convertTopToLemmyParams(sort),
-          mode: "lemmyv1",
-        };
-      }
-
-      throw new Error(`Invalid sort: ${sort}`);
-  }
+function convertSearchSortToLemmyV1Params(): SearchSortTypeByMode["lemmyv1"] {
+  // v1's /search has no `sort` field — results are always default order.
+  return { mode: "lemmyv1" };
 }
 
 function convertSearchSortToPiefedParams(
@@ -321,12 +338,31 @@ function convertCommentSortToParams(
     case "lemmyv0":
       return { sort, mode: "lemmyv0" };
     case "lemmyv1":
-      return { sort, mode: "lemmyv1" };
+      return convertCommentSortToLemmyV1Params(
+        sort as VgerCommentSortTypeByMode["lemmyv1"],
+      );
     case "piefed":
       return {
         sort: sort as VgerCommentSortTypeByMode["piefed"],
         mode: "piefed",
       };
+  }
+}
+
+function convertCommentSortToLemmyV1Params(
+  sort: VgerCommentSortTypeByMode["lemmyv1"],
+): CommentSortTypeByMode["lemmyv1"] {
+  switch (sort) {
+    case "Hot":
+      return { sort: "hot", mode: "lemmyv1" };
+    case "Top":
+      return { sort: "top", mode: "lemmyv1" };
+    case "New":
+      return { sort: "new", mode: "lemmyv1" };
+    case "Old":
+      return { sort: "old", mode: "lemmyv1" };
+    case "Controversial":
+      return { sort: "controversial", mode: "lemmyv1" };
   }
 }
 
@@ -381,23 +417,28 @@ function convertPostSortToLemmyV1Params(
 ): PostSortTypeByMode["lemmyv1"] {
   switch (sort) {
     case "Active":
+      return { sort: "active", mode: "lemmyv1" };
     case "Hot":
+      return { sort: "hot", mode: "lemmyv1" };
     case "New":
+      return { sort: "new", mode: "lemmyv1" };
     case "MostComments":
+      return { sort: "most_comments", mode: "lemmyv1" };
     case "NewComments":
+      return { sort: "new_comments", mode: "lemmyv1" };
     case "Scaled":
-      return { sort, mode: "lemmyv1" };
+      return { sort: "scaled", mode: "lemmyv1" };
     default:
       if (isTopSort(sort)) {
         return {
-          ...convertTopToLemmyParams(sort),
+          ...convertTopToLemmyV1Params(sort),
           mode: "lemmyv1",
         };
       }
 
       if (isControversialSort(sort)) {
         return {
-          ...convertControversialToLemmyParams(sort),
+          ...convertControversialToLemmyV1Params(sort),
           mode: "lemmyv1",
         };
       }
@@ -429,22 +470,22 @@ function convertPostSortToPiefedParams(
   }
 }
 
-function convertTopToLemmyParams(sort: VgerTopSort): {
-  sort: "Top";
+function convertTopToLemmyV1Params(sort: VgerTopSort): {
+  sort: "top";
   time_range_seconds?: number;
 } {
   return {
-    sort: "Top",
+    sort: "top",
     time_range_seconds: convertDurationToSeconds(topSortToDuration(sort)),
   };
 }
 
-function convertControversialToLemmyParams(sort: VgerControversialSort): {
-  sort: "Controversial";
+function convertControversialToLemmyV1Params(sort: VgerControversialSort): {
+  sort: "controversial";
   time_range_seconds?: number;
 } {
   return {
-    sort: "Controversial",
+    sort: "controversial",
     time_range_seconds: convertDurationToSeconds(
       controversialSortToDuration(sort),
     ),

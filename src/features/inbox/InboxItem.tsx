@@ -1,17 +1,14 @@
 import { IonIcon, IonItem } from "@ionic/react";
-import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
-import { useCallback, useRef } from "react";
-import {
-  CommentReplyView,
-  PersonMentionView,
-  PrivateMessageView,
-} from "threadiverse";
+import { albums, chatbubble, hammer, mail, personCircle } from "ionicons/icons";
+import { useCallback, useMemo, useRef } from "react";
+import { NotificationView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import CommentMarkdown from "#/features/comment/CommentMarkdown";
 import Ago from "#/features/labels/Ago";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
+import { renderModlogData } from "#/features/moderation/logs/ModlogItem";
 import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
 import SlidingInbox from "#/features/shared/sliding/SlidingInbox";
 import { cx } from "#/helpers/css";
@@ -28,15 +25,13 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import InboxItemMoreActions, {
   InboxItemMoreActionsHandle,
 } from "./InboxItemMoreActions";
-import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
+import { getNotificationKey, markNotificationRead } from "./inboxSlice";
+import { inboxModActionTitle } from "./modActionTitle";
 import VoteArrow from "./VoteArrow";
 
 import styles from "./InboxItem.module.css";
 
-export type InboxItemView =
-  | PersonMentionView
-  | CommentReplyView
-  | PrivateMessageView;
+export type InboxItemView = NotificationView;
 
 interface InboxItemProps {
   item: InboxItemView;
@@ -50,121 +45,174 @@ export default function InboxItem({ item }: InboxItemProps) {
   );
   const presentToast = useAppToast();
   const storeVote = useAppSelector((state) =>
-    "comment" in item
-      ? state.comment.commentVotesById[item.comment.id]
+    item.data.type_ === "comment"
+      ? state.comment.commentVotesById[item.data.comment.id]
       : undefined,
   );
 
   const vote =
-    "comment" in item
-      ? (storeVote ?? (item.my_vote as 1 | 0 | -1 | undefined))
+    item.data.type_ === "comment"
+      ? (storeVote ?? (item.data.my_vote as 1 | 0 | -1 | undefined))
       : undefined;
 
+  // Modlog notifications (e.g. "your post was removed") aren't a
+  // comment/post/PM, so we render them through the same per-kind helpers
+  // the modlog page uses.
+  const modAction = useMemo(
+    () =>
+      item.data.type_ === "mod_action"
+        ? renderModlogData(item.data)
+        : undefined,
+    [item.data],
+  );
+
   function renderHeader() {
-    if ("person_mention" in item) {
+    if (item.data.type_ === "mod_action") {
+      return <strong>{inboxModActionTitle(item.data)}</strong>;
+    }
+    if (item.notification.kind === "mention" && item.data.type_ === "comment") {
       return (
         <>
-          <strong>{item.creator.name}</strong> mentioned you on the post{" "}
+          <strong>{item.data.creator.name}</strong> mentioned you on the post{" "}
           <strong>
-            <PostTitleMarkdown>{item.post.name}</PostTitleMarkdown>
+            <PostTitleMarkdown>{item.data.post.name}</PostTitleMarkdown>
           </strong>
         </>
       );
     }
-    if ("comment_reply" in item) {
+    if (item.notification.kind === "reply" && item.data.type_ === "comment") {
       if (isPostReply(item)) {
         return (
           <>
-            <strong>{item.creator.name}</strong> replied to your post{" "}
+            <strong>{item.data.creator.name}</strong> replied to your post{" "}
             <strong>
-              <PostTitleMarkdown>{item.post.name}</PostTitleMarkdown>
+              <PostTitleMarkdown>{item.data.post.name}</PostTitleMarkdown>
             </strong>
           </>
         );
       } else {
         return (
           <>
-            <strong>{item.creator.name}</strong> replied to your comment in{" "}
+            <strong>{item.data.creator.name}</strong> replied to your comment in{" "}
             <strong>
-              <PostTitleMarkdown>{item.post.name}</PostTitleMarkdown>
+              <PostTitleMarkdown>{item.data.post.name}</PostTitleMarkdown>
             </strong>
           </>
         );
       }
     }
-    if ("private_message" in item) {
+    if (item.data.type_ === "private_message") {
       return (
         <>
-          <strong>{getHandle(item.creator)}</strong> sent you a private message
+          <strong>{getHandle(item.data.creator)}</strong> sent you a private
+          message
         </>
       );
     }
   }
 
-  function renderContents() {
-    if ("comment" in item) {
-      return item.comment.content;
+  function renderBody() {
+    if (item.data.type_ === "comment") {
+      return (
+        <CommentMarkdown id={getItemId(item)}>
+          {item.data.comment.content}
+        </CommentMarkdown>
+      );
     }
-
-    return item.private_message.content;
+    if (item.data.type_ === "private_message") {
+      return (
+        <CommentMarkdown id={getItemId(item)}>
+          {item.data.private_message.content}
+        </CommentMarkdown>
+      );
+    }
+    if (modAction) {
+      return (
+        <>
+          <p>{modAction.reason ?? "No reason provided"}</p>
+        </>
+      );
+    }
   }
 
   function renderFooterDetails() {
-    if ("comment" in item) {
+    if (item.data.type_ === "comment") {
       return (
         <>
           <PersonLink
-            person={item.creator}
+            person={item.data.creator}
             className={styles.label}
             showBadge={false}
             sourceUrl={getSourceUrl()}
           />{" "}
           in{" "}
           <CommunityLink
-            community={item.community}
-            subscribed={item.subscribed}
+            community={item.data.community}
+            subscribed={item.data.subscribed}
             hideIcon
             className={styles.label}
           />
         </>
       );
     }
+    if (modAction && item.data.type_ === "mod_action") {
+      const community = item.data.target_community;
+      return community ? (
+        <CommunityLink
+          community={community}
+          subscribed="NotSubscribed"
+          hideIcon
+          className={styles.label}
+        />
+      ) : undefined;
+    }
   }
 
   function getLink() {
-    if ("comment" in item) {
+    if (item.data.type_ === "comment") {
       return buildGeneralBrowseLink(
-        `/c/${getHandle(item.community)}/comments/${item.post.id}/${
-          item.comment.path
+        `/c/${getHandle(item.data.community)}/comments/${item.data.post.id}/${
+          item.data.comment.path
         }`,
       );
     }
-
-    return `/inbox/messages/${getHandle(item.creator)}`;
+    if (item.data.type_ === "private_message") {
+      return `/inbox/messages/${getHandle(item.data.creator)}`;
+    }
+    if (modAction?.link) return buildGeneralBrowseLink(modAction.link);
+    return "";
   }
 
   function getDate() {
-    if ("comment" in item) return item.comment.published;
-
-    return item.private_message.published;
+    return item.notification.published_at;
   }
 
   function getSourceUrl() {
-    if ("comment" in item) return item.comment.ap_id;
+    if (item.data.type_ === "comment") return item.data.comment.ap_id;
   }
 
   function getIcon() {
-    if ("person_mention" in item) return personCircle;
-    if ("comment_reply" in item) {
+    if (item.notification.kind === "mention") return personCircle;
+    if (item.notification.kind === "reply") {
       if (isPostReply(item)) return albums;
       return chatbubble;
     }
-    if ("private_message" in item) return mail;
+    if (item.notification.kind === "private_message") return mail;
+    // All mod_action kinds share the hammer — title carries the specifics.
+    if (item.notification.kind === "mod_action") return hammer;
   }
 
   async function markRead() {
     try {
-      await dispatch(markReadAction(item, true));
+      await dispatch(
+        markNotificationRead(
+          {
+            kind: item.notification.kind,
+            notificationId: item.notification.id,
+          },
+          true,
+        ),
+      );
     } catch (error) {
       presentToast({
         message: "Failed to mark item as read",
@@ -175,7 +223,7 @@ export default function InboxItem({ item }: InboxItemProps) {
     }
   }
 
-  const read = !!readByInboxItemId[getInboxItemId(item)];
+  const read = !!readByInboxItemId[getNotificationKey(item.notification)];
 
   const ellipsisHandleRef = useRef<InboxItemMoreActionsHandle>(undefined);
 
@@ -216,11 +264,7 @@ export default function InboxItem({ item }: InboxItemProps) {
         </div>
         <div className={styles.content}>
           <div>{renderHeader()}</div>
-          <div className={styles.body}>
-            <CommentMarkdown id={getItemId(item)}>
-              {renderContents()}
-            </CommentMarkdown>
-          </div>
+          <div className={styles.body}>{renderBody()}</div>
           <div className={styles.footer}>
             <div>{renderFooterDetails()}</div>
             <aside>
@@ -242,15 +286,5 @@ export default function InboxItem({ item }: InboxItemProps) {
 }
 
 function getItemId(item: InboxItemView): string {
-  switch (true) {
-    case "person_mention" in item:
-      return `mention-${item.person_mention.id}`;
-    case "comment_reply" in item:
-      return `comment-reply-${item.comment_reply.id}`;
-    case "private_message" in item:
-      return `private-message-${item.private_message.id}`;
-  }
-
-  // typescript should be smarter (this shouldn't be necessary)
-  throw new Error("getItemId: Unexpected item");
+  return `${item.notification.kind}-${item.notification.id}`;
 }

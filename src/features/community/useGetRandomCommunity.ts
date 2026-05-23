@@ -26,7 +26,7 @@ export default function useGetRandomCommunity() {
       let response;
 
       try {
-        response = await client.getRandomCommunity({ type_: "All" });
+        response = await client.getRandomCommunity({ type_: "all" });
       } catch (error) {
         presentToast(randomCommunityFailed);
         throw error;
@@ -35,14 +35,14 @@ export default function useGetRandomCommunity() {
       chosenRandomCommunity = response.community_view.community;
     } else {
       const totalCommunitiesCount =
-        store.getState().site.response?.site_view.counts?.communities;
+        store.getState().site.response?.site_view.local_site?.communities;
       if (!totalCommunitiesCount) return;
 
       let response;
 
       try {
         response = await client.listCommunities({
-          type_: "All",
+          type_: "all",
           limit: RANDOM_CHUNK,
           page_cursor: Math.floor(
             (Math.random() * totalCommunitiesCount) / RANDOM_CHUNK,
@@ -55,11 +55,11 @@ export default function useGetRandomCommunity() {
       }
 
       const randomCommunitiesByPosts = sortBy(response.data, [
-        (c) => -c.counts.posts,
+        (c) => -c.community.posts,
       ]);
 
       const eligibleRandomCommunities = randomCommunitiesByPosts.filter(
-        (c) => c.counts.posts > 10,
+        (c) => c.community.posts > 10,
       );
 
       chosenRandomCommunity =

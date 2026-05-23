@@ -32,12 +32,12 @@ export default function CommunitiesResultsPage({
     { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
     {
       lemmyv0: "TopAll",
-      lemmyv1: "TopAll",
+      lemmyv1: "New",
       piefed: "Active",
     },
   );
   const sortParams = useFeedSortParams("search", sort);
-  const [listingType, setListingType] = useState<ListingType>("All");
+  const [listingType, setListingType] = useState<ListingType>("all");
 
   const fetchFn: FetchFn<CommunityView> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
@@ -50,8 +50,8 @@ export default function CommunitiesResultsPage({
     const response = await client.search(
       {
         limit: LIMIT,
-        q: search,
-        type_: "Communities",
+        search_term: search,
+        type_: "communities",
         listing_type: listingType,
         page_cursor,
         ...sortParams,

@@ -22,7 +22,7 @@ import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 
 interface SearchPostsResultsProps {
-  type: "Posts" | "Comments";
+  type: "posts" | "comments";
 }
 
 export default function SearchFeedResultsPage({
@@ -36,7 +36,7 @@ export default function SearchFeedResultsPage({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const [sort, setSort] = useFeedSort("search", {
-    internal: `${type}Search`,
+    internal: type === "posts" ? "PostsSearch" : "CommentsSearch",
   });
   const sortParams = useFeedSortParams("search", sort);
 
@@ -49,7 +49,7 @@ export default function SearchFeedResultsPage({
       {
         page_cursor,
         limit: LIMIT,
-        q: search,
+        search_term: search,
         type_: type,
         community_name: community,
         ...sortParams,
@@ -60,10 +60,10 @@ export default function SearchFeedResultsPage({
     const data = response.data as PostCommentItem[];
 
     switch (type) {
-      case "Posts":
+      case "posts":
         dispatch(receivedPosts(data as PostView[]));
         break;
-      case "Comments":
+      case "comments":
         dispatch(receivedComments(data as CommentView[]));
     }
 

@@ -8,7 +8,7 @@ export default function SpecialSearchMenu() {
     (state) => state.community.trendingCommunities,
   );
   const communitiesCount = useAppSelector(
-    (state) => state.site.response?.site_view.counts?.communities,
+    (state) => state.site.response?.site_view.local_site?.communities,
   );
 
   // Prevent shift of content

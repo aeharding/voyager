@@ -128,9 +128,7 @@ export function PostPageContent({
     if (threadCommentId) return "Thread";
 
     return (
-      <>
-        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
-      </>
+      <>{postIfFound ? formatNumber(postIfFound.post.comments) : ""} Comments</>
     );
   })();
 

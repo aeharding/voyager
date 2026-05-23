@@ -7,7 +7,7 @@ import {
   textOutline,
 } from "ionicons/icons";
 import { use, useCallback, useImperativeHandle } from "react";
-import { PrivateMessageView } from "threadiverse";
+import { Notification, PrivateMessageView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
@@ -15,7 +15,7 @@ import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
 import store, { useAppDispatch } from "#/store";
 
-import { markRead, syncMessages } from "./inboxSlice";
+import { markNotificationRead, syncMessages } from "./inboxSlice";
 
 import styles from "./PrivateMessageMoreActions.module.css";
 
@@ -25,6 +25,7 @@ interface PrivateMessageMoreActionsHandle {
 
 interface PrivateMessageMoreActionsProps {
   item: PrivateMessageView;
+  notification: Notification;
   markReadAction: ActionSheetButton;
 
   ref: React.RefObject<PrivateMessageMoreActionsHandle | undefined>;
@@ -32,6 +33,7 @@ interface PrivateMessageMoreActionsProps {
 
 export default function PrivateMessageMoreActions({
   item,
+  notification,
   markReadAction,
   ref,
 }: PrivateMessageMoreActionsProps) {
@@ -62,7 +64,15 @@ export default function PrivateMessageMoreActions({
                 },
               });
 
-              await dispatch(markRead(item, true));
+              await dispatch(
+                markNotificationRead(
+                  {
+                    kind: notification.kind,
+                    notificationId: notification.id,
+                  },
+                  true,
+                ),
+              );
               dispatch(syncMessages());
             })();
           },
@@ -93,6 +103,7 @@ export default function PrivateMessageMoreActions({
   }, [
     dispatch,
     item,
+    notification,
     markReadAction,
     navigateToUser,
     presentPrivateMessageCompose,

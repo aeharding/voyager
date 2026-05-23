@@ -1,11 +1,12 @@
 import { FunctionComponent } from "react";
-import { PrivateMessageView } from "threadiverse";
+import { Notification, PrivateMessageView } from "threadiverse";
 
 import { cx } from "#/helpers/css";
 import { SwipeActions } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
 import DMActionsImpl from "./internal/impl/DMActionsImpl";
+import ModActionActionsImpl from "./internal/impl/ModActionActionsImpl";
 import { VotableActionsImpl } from "./internal/impl/VotableActionsImpl";
 import { SlideableVoteItem } from "./internal/shared";
 
@@ -14,6 +15,7 @@ import styles from "./BaseSliding.module.css";
 interface BaseSlidingVoteProps extends React.PropsWithChildren {
   className?: string;
   item: SlideableVoteItem;
+  notification?: Notification;
   rootIndex?: number;
   collapsed?: boolean;
   actions: SwipeActions;
@@ -21,7 +23,10 @@ interface BaseSlidingVoteProps extends React.PropsWithChildren {
 }
 
 function GenericBaseSlidingWrapper<
-  T extends BaseSlidingVoteProps | BaseSlidingDMProps,
+  T extends
+    | BaseSlidingVoteProps
+    | BaseSlidingDMProps
+    | BaseSlidingModActionProps,
 >({
   component: Component,
   ...props
@@ -56,7 +61,17 @@ export function BaseSlidingDM(props: BaseSlidingDMProps) {
   return <GenericBaseSlidingWrapper {...props} component={DMActionsImpl} />;
 }
 
-type BaseSlidingDMProps = { item: PrivateMessageView } & Omit<
-  BaseSlidingVoteProps,
-  "item"
->;
+export function BaseSlidingModAction(props: BaseSlidingModActionProps) {
+  return (
+    <GenericBaseSlidingWrapper {...props} component={ModActionActionsImpl} />
+  );
+}
+
+type BaseSlidingDMProps = {
+  item: PrivateMessageView;
+  notification?: Notification;
+} & Omit<BaseSlidingVoteProps, "item" | "notification">;
+
+type BaseSlidingModActionProps = {
+  notification?: Notification;
+} & Omit<BaseSlidingVoteProps, "item" | "notification">;

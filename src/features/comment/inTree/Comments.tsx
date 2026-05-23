@@ -242,7 +242,7 @@ export default function Comments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           ...sortParams,
-          type_: "All",
+          type_: "all",
           limit: 60,
           max_depth: maxDepth,
           page_cursor: currentPage,
@@ -361,9 +361,9 @@ export default function Comments({
           if (parent) {
             newComments.splice(parentIndex, 1, {
               ...parent,
-              counts: {
-                ...parent.counts,
-                child_count: parent.counts.child_count + 1,
+              comment: {
+                ...parent.comment,
+                child_count: parent.comment.child_count + 1,
               },
             });
           }

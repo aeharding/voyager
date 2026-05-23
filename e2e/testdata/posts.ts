@@ -1,6 +1,9 @@
-import type { PostView } from "threadiverse";
+// This is a v0 wire-shape fixture (served as a /api/v3 mock response and
+// parsed by threadiverse's v0 compat layer). The shape intentionally uses
+// the old v0 field names (`actor_id`, `published`, `counts`, etc.) — not the
+// threadiverse public type, which is v1-aligned.
 
-export const posts: PostView[] = [
+export const posts = [
   {
     post: {
       id: 999,
@@ -30,6 +33,8 @@ export const posts: PostView[] = [
       local: false,
       deleted: false,
       bot_account: false,
+      banned: false,
+      instance_id: 1,
     },
     community: {
       id: 111,
@@ -48,11 +53,13 @@ export const posts: PostView[] = [
       hidden: false,
       posting_restricted_to_mods: false,
       visibility: "Public",
+      instance_id: 1,
     },
     creator_banned_from_community: false,
     creator_is_moderator: false,
     creator_is_admin: false,
     counts: {
+      post_id: 999,
       comments: 20,
       score: 91,
       upvotes: 100,

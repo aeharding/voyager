@@ -55,7 +55,7 @@ export default function BulkSubscriber({
           ];
 
         if (community) return community.subscribed === "NotSubscribed";
-        if (follows?.find((f) => f.community.actor_id === ap_id)) return false;
+        if (follows?.find((f) => f.community.ap_id === ap_id)) return false;
 
         return true;
       });

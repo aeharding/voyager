@@ -1,13 +1,13 @@
 import { useIonAlert } from "@ionic/react";
-import { PersonAggregates } from "threadiverse";
 
 import Ago, { formatRelativeToNow } from "#/features/labels/Ago";
 import { formatNumber } from "#/helpers/number";
+import { PersonCounts } from "#/helpers/threadiverseCounts";
 
 import styles from "./Scores.module.css";
 
 interface ScoreProps {
-  aggregates: PersonAggregates;
+  aggregates: PersonCounts;
   accountCreated: string;
 }
 

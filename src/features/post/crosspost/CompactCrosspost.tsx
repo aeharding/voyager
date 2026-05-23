@@ -43,7 +43,7 @@ export default function CompactCrosspost(props: CrosspostProps) {
           <div className={styles.stat}>
             <IonIcon icon={chatbubbleOutline} />{" "}
             {crosspost ? (
-              formatNumber(crosspost.counts.comments)
+              formatNumber(crosspost.post.comments)
             ) : (
               <IonSkeletonText className={styles.statIonSkeletonText} />
             )}

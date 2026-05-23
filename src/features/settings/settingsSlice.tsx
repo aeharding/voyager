@@ -322,7 +322,7 @@ const baseState: SettingsState = {
       rememberCommunitySort: false,
       sort: {
         lemmyv0: "TopAll",
-        lemmyv1: "TopAll",
+        lemmyv1: "New",
         piefed: "Active",
       },
     },

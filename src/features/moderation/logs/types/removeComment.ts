@@ -1,22 +1,24 @@
 import { arrowUndoCircle, trash } from "ionicons/icons";
-import { ModRemoveCommentView } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
 import { buildCommentLink } from "#/helpers/appLinkBuilder";
 
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, buildCommentMessage } from "./shared";
 
-export default function removeComment(
-  item: ModRemoveCommentView,
-): LogEntryData {
+export default function removeComment(item: ModlogItem): LogEntryData {
+  const removed = !item.modlog.is_revert;
   return {
-    icon: item.mod_remove_comment.removed ? trash : arrowUndoCircle,
-    title: `${
-      item.mod_remove_comment.removed ? "Removed" : "Restored"
-    } Comment`,
+    icon: removed ? trash : arrowUndoCircle,
+    title: `${removed ? "Removed" : "Restored"} Comment`,
     by: item.moderator,
-    message: buildCommentMessage(item.comment),
-    link: buildCommentLink(item.community, item.comment),
-    ...buildBaseData(item.mod_remove_comment),
+    message: item.target_comment
+      ? buildCommentMessage(item.target_comment)
+      : undefined,
+    link:
+      item.target_community && item.target_comment
+        ? buildCommentLink(item.target_community, item.target_comment)
+        : undefined,
+    ...buildBaseData(item.modlog),
   };
 }

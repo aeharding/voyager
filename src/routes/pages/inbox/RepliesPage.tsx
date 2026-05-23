@@ -1,5 +1,5 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { CommentReplyView } from "threadiverse";
+import { NotificationView } from "threadiverse";
 
 import { FetchFn } from "#/features/feed/Feed";
 import InboxFeed from "#/features/feed/InboxFeed";
@@ -20,11 +20,12 @@ export default function RepliesPage({ type }: RepliesPageProps) {
   const dispatch = useAppDispatch();
   const client = useClient();
 
-  const fetchFn: FetchFn<CommentReplyView> = async (page_cursor, ...rest) => {
+  const fetchFn: FetchFn<NotificationView> = async (page_cursor, ...rest) => {
     // TODO - actually paginate properly if Lemmy implements
     // reply pagination filtering by comment and post
-    const response = await client.getReplies(
+    const response = await client.getNotifications(
       {
+        type_: "reply",
         page_cursor,
         limit: 50,
         unread_only: false,
@@ -63,7 +64,8 @@ export default function RepliesPage({ type }: RepliesPageProps) {
   );
 }
 
-export function isPostReply(reply: CommentReplyView): boolean {
+export function isPostReply(reply: NotificationView): boolean {
+  if (reply.data.type_ !== "comment") return false;
   // path = 0.xxxxx is a reply to a post
-  return reply.comment.path.split(".").length === 2;
+  return reply.data.comment.path.split(".").length === 2;
 }

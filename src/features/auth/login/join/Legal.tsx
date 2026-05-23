@@ -39,7 +39,7 @@ export default function Legal() {
                 if (
                   site?.site_view.local_site.application_question &&
                   site?.site_view.local_site.registration_mode ===
-                    "RequireApplication"
+                    "require_application"
                 )
                   return <Question />;
 
@@ -91,7 +91,7 @@ export default function Legal() {
           {site?.site_view.local_site.legal_information?.trim() ? (
             <Markdown
               className="collapse-md-margins"
-              id={`site-legal-${site?.site_view.site.actor_id}`}
+              id={`site-legal-${site?.site_view.site.ap_id}`}
             >
               {site.site_view.local_site.legal_information}
             </Markdown>

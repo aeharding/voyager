@@ -35,7 +35,7 @@ export default function ProfileFeedPostsPage() {
     return client.listPersonContent(
       {
         page_cursor,
-        type: "Posts",
+        type: "posts",
         limit: LIMIT,
         person_id: person.id,
         ...sortParams,

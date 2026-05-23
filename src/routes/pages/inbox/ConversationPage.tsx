@@ -8,14 +8,16 @@ import {
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { PrivateMessageView } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
 import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import ConversationsMoreActions from "#/features/feed/ConversationsMoreActions";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
-import { syncMessages } from "#/features/inbox/inboxSlice";
+import {
+  Message as MessageEntry,
+  syncMessages,
+} from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
 import AppHeader from "#/features/shared/AppHeader";
@@ -34,7 +36,7 @@ import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ConversationPage.module.css";
 
 function useMessages(
-  allMessages: PrivateMessageView[],
+  allMessages: MessageEntry[],
   myUserId: number | undefined,
   handle: string,
 ) {
@@ -42,14 +44,14 @@ function useMessages(
     () =>
       allMessages
         .filter((m) =>
-          m.private_message.creator_id === myUserId
-            ? getHandle(m.recipient).toLowerCase() === handle.toLowerCase()
-            : getHandle(m.creator).toLowerCase() === handle.toLowerCase(),
+          m.view.private_message.creator_id === myUserId
+            ? getHandle(m.view.recipient).toLowerCase() === handle.toLowerCase()
+            : getHandle(m.view.creator).toLowerCase() === handle.toLowerCase(),
         )
         .sort(
           (a, b) =>
-            Date.parse(b.private_message.published) -
-            Date.parse(a.private_message.published),
+            Date.parse(b.view.private_message.published_at) -
+            Date.parse(a.view.private_message.published_at),
         )
         .reverse(),
     [allMessages, handle, myUserId],
@@ -174,7 +176,7 @@ export default function ConversationPage() {
             {messages.map((message, index) => (
               <div
                 className={styles.messageContainer}
-                key={message.private_message.id}
+                key={message.view.private_message.id}
               >
                 <Message message={message} first={index === 0} />
               </div>

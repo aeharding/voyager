@@ -1,5 +1,5 @@
 import { ban, refresh } from "ionicons/icons";
-import { ModBanView } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
 import { buildUserLink } from "#/helpers/appLinkBuilder";
 import { getHandle, getItemActorName } from "#/helpers/lemmy";
@@ -7,16 +7,18 @@ import { getHandle, getItemActorName } from "#/helpers/lemmy";
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, getAdminRole } from "./shared";
 
-export default function banFromInstance(item: ModBanView): LogEntryData {
+export default function banFromInstance(item: ModlogItem): LogEntryData {
+  const banned = !item.modlog.is_revert;
   return {
-    icon: item.mod_ban.banned ? ban : refresh,
-    title: `${item.mod_ban.banned ? "Banned" : "Unbanned"} User`,
+    icon: banned ? ban : refresh,
+    title: `${banned ? "Banned" : "Unbanned"} User`,
     by: item.moderator,
     role: getAdminRole(item.moderator),
-    message:
-      getHandle(item.banned_person) +
-      (item.moderator ? ` from ${getItemActorName(item.moderator)}` : ""),
-    link: buildUserLink(item.banned_person),
-    ...buildBaseData(item.mod_ban),
+    message: item.target_person
+      ? getHandle(item.target_person) +
+        (item.moderator ? ` from ${getItemActorName(item.moderator)}` : "")
+      : undefined,
+    link: item.target_person ? buildUserLink(item.target_person) : undefined,
+    ...buildBaseData(item.modlog),
   };
 }

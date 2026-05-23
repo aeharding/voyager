@@ -64,7 +64,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
 
   const filterSubscribed =
-    noSubscribedInFeed && (type === "All" || type === "Local");
+    noSubscribedInFeed && (type === "all" || type === "local");
 
   const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -101,7 +101,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (filterSubscribed && !site) return <CenteredSpinner />;
 
     return (
-      <ShowSubscribedIconContext value={type === "All" || type === "Local"}>
+      <ShowSubscribedIconContext value={type === "all" || type === "local"}>
         <PageTypeContext value="special-feed">
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
@@ -109,7 +109,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               formatSortDuration={() => formatTimeLimitedSort(sort)}
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
               renderCustomEmptyContent={
-                type === "Subscribed" ? () => <EmptyHomeFeed /> : undefined
+                type === "subscribed" ? () => <EmptyHomeFeed /> : undefined
               }
             />
           </WaitUntilPostAppearanceResolved>
@@ -138,7 +138,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                   )}
                   <TitleSearch name={listingTypeTitle(type)}>
                     <IonButtons slot="end">
-                      {type === "ModeratorView" && <ModActions type={type} />}
+                      {type === "moderator_view" && <ModActions type={type} />}
                       <PostSort sort={sort} setSort={setSort} />
                       <SpecialFeedMoreActions type={type} />
                     </IonButtons>
@@ -160,12 +160,13 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
 export function listingTypeTitle(type: ListingType): string {
   switch (type) {
-    case "All":
-    case "Local":
-      return type;
-    case "Subscribed":
+    case "all":
+      return "All";
+    case "local":
+      return "Local";
+    case "subscribed":
       return "Home";
-    case "ModeratorView":
+    case "moderator_view":
       return "Modded";
   }
 }

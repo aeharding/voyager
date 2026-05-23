@@ -42,7 +42,7 @@ export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
       return;
     }
 
-    if (site?.site_view.local_site.registration_mode === "Closed") {
+    if (site?.site_view.local_site.registration_mode === "closed") {
       presentAlert(`Registration closed for ${url}`);
 
       return;

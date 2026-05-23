@@ -24,10 +24,10 @@ export default [
     <CommunityPage />
   </Route>,
   <Route exact path="/:tab/:actor/c/:community/search/posts/:search">
-    <SearchFeedResultsPage type="Posts" />
+    <SearchFeedResultsPage type="posts" />
   </Route>,
   <Route exact path="/:tab/:actor/c/:community/search/comments/:search">
-    <SearchFeedResultsPage type="Comments" />
+    <SearchFeedResultsPage type="comments" />
   </Route>,
   <Route exact path="/:tab/:actor/c/:community/sidebar">
     <CommunitySidebarPage />
@@ -55,19 +55,19 @@ export default [
     <ModqueuePage />
   </Route>,
   <Route exact path="/:tab/:actor/home">
-    <SpecialFeedPage type="Subscribed" />
+    <SpecialFeedPage type="subscribed" />
   </Route>,
   <Route exact path="/:tab/:actor/all">
-    <SpecialFeedPage type="All" />
+    <SpecialFeedPage type="all" />
   </Route>,
   <Route exact path="/:tab/:actor/local">
-    <SpecialFeedPage type="Local" />
+    <SpecialFeedPage type="local" />
   </Route>,
   <Route exact path="/:tab/:actor/mod">
-    <SpecialFeedPage type="ModeratorView" />
+    <SpecialFeedPage type="moderator_view" />
   </Route>,
   <Route exact path="/:tab/:actor/mod/comments">
-    <CommentsPage type="ModeratorView" />
+    <CommentsPage type="moderator_view" />
   </Route>,
   <Route exact path="/:tab/:actor/mod/log">
     <ModlogPage />
@@ -91,10 +91,10 @@ export default [
     <ProfileFeedHiddenPostsPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/upvoted">
-    <ProfileFeedVotedPage type="Upvoted" />
+    <ProfileFeedVotedPage likeType="liked_only" />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/downvoted">
-    <ProfileFeedVotedPage type="Downvoted" />
+    <ProfileFeedVotedPage likeType="disliked_only" />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/message">
     <ConversationPage />

@@ -43,3 +43,6 @@ fly.toml
 /playwright/.cache/
 
 *.css.d.ts
+
+# Local test credentials (voyager.lemmy.ml test accounts)
+.test-creds.json

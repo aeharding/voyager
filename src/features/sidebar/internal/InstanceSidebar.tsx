@@ -14,7 +14,7 @@ export default function InstanceSidebar() {
 
   if (!siteView || !admins) return <CenteredSpinner />;
 
-  const { site, counts } = siteView;
+  const { site, local_site } = siteView;
 
   return (
     <>
@@ -33,13 +33,13 @@ export default function InstanceSidebar() {
 
       <GenericSidebar
         type="instance"
-        sidebar={site.sidebar ?? site.description ?? ""}
+        sidebar={site.sidebar ?? site.summary ?? ""}
         people={admins.map((a) => a.person)}
-        counts={counts}
+        counts={local_site}
         extraBadges={<IonBadge color="dark">v{lemmyVersion}</IonBadge>}
         banner={site.banner}
-        name={site.actor_id}
-        id={site.actor_id}
+        name={site.ap_id}
+        id={site.ap_id}
       />
     </>
   );

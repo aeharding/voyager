@@ -19,7 +19,7 @@ export interface CommunityUseModZoneActionsProps {
 }
 
 export interface SpecialFeedUseModZoneActionsProps {
-  type: "ModeratorView";
+  type: "moderator_view";
 }
 
 export type UseModZoneActionsProps =

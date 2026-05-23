@@ -75,7 +75,7 @@ export default function Comment({
   const stub = isStubComment(comment, canModerate);
 
   const cannotCollapse =
-    (showCollapsedComment || stub) && !commentView.counts.child_count;
+    (showCollapsedComment || stub) && !commentView.comment.child_count;
 
   const collapsed = cannotCollapse ? false : _collapsed;
 

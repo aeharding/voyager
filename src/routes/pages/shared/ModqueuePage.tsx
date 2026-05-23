@@ -145,9 +145,9 @@ function convertPostReportViewToPostView(postReport: PostReportView): PostView {
     ...postReport,
     creator: postReport.post_creator,
 
-    // The below is mocked because properties are not available.
-    // See: https://github.com/LemmyNet/lemmy/issues/4200
-    unread_comments: 0,
+    // `banned_from_community` is the viewer's ban state for this community,
+    // which isn't part of `PostReportView` (it tracks the *target's* ban
+    // state via `creator_banned_from_community` instead). See lemmy/lemmy#4200.
     banned_from_community: false,
   };
 }

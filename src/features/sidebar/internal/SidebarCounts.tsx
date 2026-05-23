@@ -1,10 +1,10 @@
 import { IonBadge } from "@ionic/react";
-import { CommunityAggregates, SiteAggregates } from "threadiverse";
 
 import { formatNumber } from "#/helpers/number";
+import { CommunityCounts, LocalSiteCounts } from "#/helpers/threadiverseCounts";
 
 interface SidebarCountsProps {
-  counts: CommunityAggregates | SiteAggregates;
+  counts: CommunityCounts | LocalSiteCounts;
 }
 
 export default function SidebarCounts({ counts }: SidebarCountsProps) {

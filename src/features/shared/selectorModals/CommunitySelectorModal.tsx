@@ -19,8 +19,8 @@ export default function CommunitySelectorModal(
   async function search(query: string, signal?: AbortSignal) {
     const result = await client.search(
       {
-        q: query,
-        type_: "Communities",
+        search_term: query,
+        type_: "communities",
         ...getTopAllSearchSort(await client.getMode()),
         limit: LIMIT,
       },

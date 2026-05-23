@@ -1,15 +1,15 @@
 import { trashBin } from "ionicons/icons";
-import { AdminPurgePostView } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, getAdminRole } from "./shared";
 
-export default function purgePost(item: AdminPurgePostView): LogEntryData {
+export default function purgePost(item: ModlogItem): LogEntryData {
   return {
     icon: trashBin,
     title: "Purged Post",
-    by: item.admin,
-    role: getAdminRole(item.admin),
-    ...buildBaseData(item.admin_purge_post),
+    by: item.moderator,
+    role: getAdminRole(item.moderator),
+    ...buildBaseData(item.modlog),
   };
 }

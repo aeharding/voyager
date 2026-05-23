@@ -1,18 +1,22 @@
 import { arrowUndoCircle, trash } from "ionicons/icons";
-import { ModRemovePostView } from "threadiverse";
+import { ModlogItem } from "threadiverse";
 
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 
 import { LogEntryData } from "../ModlogItem";
 import { buildBaseData, buildPostMessage } from "./shared";
 
-export default function removePost(item: ModRemovePostView): LogEntryData {
+export default function removePost(item: ModlogItem): LogEntryData {
+  const removed = !item.modlog.is_revert;
   return {
-    icon: item.mod_remove_post.removed ? trash : arrowUndoCircle,
-    title: `${item.mod_remove_post.removed ? "Removed" : "Restored"} Post`,
+    icon: removed ? trash : arrowUndoCircle,
+    title: `${removed ? "Removed" : "Restored"} Post`,
     by: item.moderator,
-    message: buildPostMessage(item.post),
-    link: buildPostLink(item.community, item.post),
-    ...buildBaseData(item.mod_remove_post),
+    message: item.target_post ? buildPostMessage(item.target_post) : undefined,
+    link:
+      item.target_community && item.target_post
+        ? buildPostLink(item.target_community, item.target_post)
+        : undefined,
+    ...buildBaseData(item.modlog),
   };
 }

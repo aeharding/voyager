@@ -54,7 +54,7 @@ export default function PersonLink({
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
-    (admin) => admin.person.actor_id === person.actor_id,
+    (admin) => admin.person.ap_id === person.ap_id,
   );
   const { hideUsernames } = use(ShareImageContext);
   const presentUserActions = usePresentUserActions();
@@ -92,8 +92,8 @@ export default function PersonLink({
   else if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (
-    person.actor_id === "https://lemmy.world/u/aeharding" ||
-    person.actor_id === "https://vger.social/u/aeharding"
+    person.ap_id === "https://lemmy.world/u/aeharding" ||
+    person.ap_id === "https://vger.social/u/aeharding"
   )
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
@@ -116,7 +116,7 @@ export default function PersonLink({
       {showBadge && (
         <>
           {person.bot_account && " 🤖"}
-          <AgeBadge published={person.published} />
+          <AgeBadge published={person.published_at} />
         </>
       )}
       {showTag && tagsEnabled && (

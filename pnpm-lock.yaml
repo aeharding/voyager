@@ -15,7 +15,7 @@ patchedDependencies:
     hash: 4668f0c9ffd6f4db234f7372ce7623e4426b9d8427dd11439c4201723c6406a3
     path: patches/@capacitor__keyboard.patch
   openapi-fetch:
-    hash: 8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67
+    hash: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
     path: patches/openapi-fetch.patch
 
 importers:
@@ -218,8 +218,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: ^0.11.1
-        version: 0.11.1
+        specifier: ^0.12.2
+        version: 0.12.2
       ua-parser-js:
         specifier: ^2.0.9
         version: 2.0.9
@@ -4387,8 +4387,8 @@ packages:
   lemmy-js-client@0.20.0-alpha.18:
     resolution: {integrity: sha512-oZy8DboTWfUar4mPWpi7SYrOEjTBJxkvd1e6QaVwoA5UhqQV1WhxEYbzrpi/gXnEokaVQ0i5sjtL/Y2PHMO3MQ==}
 
-  lemmy-js-client@1.0.0-dont-return-actions.1:
-    resolution: {integrity: sha512-1eiLU+0ZBOqu//p2CRrO8hOTJbOWgpNYAB/R9I4sjuunp6i0oIzMhXNTg7hW8hQ8fyG7YO2BrgQQu861ZchnDg==}
+  lemmy-js-client@1.0.0-image-uploads-request.0:
+    resolution: {integrity: sha512-SLngw08pE84vRB2xoY2Gjm0zyY8OPhK9n1RaZFqPuGGgp9EsO44Av5n/PUSzH2o1hkpFETi9EkGp0FQmC4Ibaw==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -5038,11 +5038,11 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  openapi-fetch@0.14.1:
-    resolution: {integrity: sha512-l7RarRHxlEZYjMLd/PR0slfMVse2/vvIAGm75/F7J6MlQ8/b9uUQmUF2kCPrQhJqMXSxmYWObVgeYXbFYzZR+A==}
+  openapi-fetch@0.17.0:
+    resolution: {integrity: sha512-PsbZR1wAPcG91eEthKhN+Zn92FMHxv+/faECIwjXdxfTODGSGegYv0sc1Olz+HYPvKOuoXfp+0pA2XVt2cI0Ig==}
 
-  openapi-typescript-helpers@0.0.15:
-    resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
+  openapi-typescript-helpers@0.1.0:
+    resolution: {integrity: sha512-OKTGPthhivLw/fHz6c3OPtg72vi86qaMlqbJuVJ23qOvQ+53uw1n7HdmkJFibloF7QEjDrDkzJiOJuockM/ljw==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -5390,10 +5390,6 @@ packages:
 
   qs@6.15.1:
     resolution: {integrity: sha512-6YHEFRL9mfgcAvql/XhwTvf5jKcOiiupt2FiJxHkiX1z4j7WL8J/jRHYLluORvc1XxB5rV20KoeK00gVJamspg==}
-    engines: {node: '>=0.6'}
-
-  qs@6.15.2:
-    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
     engines: {node: '>=0.6'}
 
   quick-lru@4.0.1:
@@ -6052,8 +6048,8 @@ packages:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
 
-  threadiverse@0.11.1:
-    resolution: {integrity: sha512-vAvbsVLjme8QPwNIEXM5R1Pim3eF+W4ahcOWSXKLnNHmvOFWDmlHuqzhNdzcv9SEBf2W0vFSHTCYBh97E0YXpw==}
+  threadiverse@0.12.2:
+    resolution: {integrity: sha512-QUcCMaxOFiVB81bXOxmkf8Ggus1cO2/Bjb+s13mayGrMQEP0LzAFJVEaEZISGB/gPIyaxKWntcvTb3oxJpFGhA==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -9444,7 +9440,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.4.24
       on-finished: 2.4.1
-      qs: 6.15.2
+      qs: 6.15.1
       raw-body: 2.5.3
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -10444,7 +10440,7 @@ snapshots:
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
       proxy-addr: 2.0.7
-      qs: 6.15.2
+      qs: 6.15.1
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.2
@@ -11442,7 +11438,7 @@ snapshots:
 
   lemmy-js-client@0.20.0-alpha.18: {}
 
-  lemmy-js-client@1.0.0-dont-return-actions.1:
+  lemmy-js-client@1.0.0-image-uploads-request.0:
     dependencies:
       '@tsoa/runtime': 6.6.0
     transitivePeerDependencies:
@@ -12230,11 +12226,11 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openapi-fetch@0.14.1(patch_hash=8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67):
+  openapi-fetch@0.17.0(patch_hash=b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4):
     dependencies:
-      openapi-typescript-helpers: 0.0.15
+      openapi-typescript-helpers: 0.1.0
 
-  openapi-typescript-helpers@0.0.15: {}
+  openapi-typescript-helpers@0.1.0: {}
 
   optionator@0.9.4:
     dependencies:
@@ -12627,10 +12623,6 @@ snapshots:
   q@1.5.1: {}
 
   qs@6.15.1:
-    dependencies:
-      side-channel: 1.1.0
-
-  qs@6.15.2:
     dependencies:
       side-channel: 1.1.0
 
@@ -13490,13 +13482,13 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.11.1:
+  threadiverse@0.12.2:
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client-v0: lemmy-js-client@0.20.0-alpha.18
-      lemmy-js-client-v1: lemmy-js-client@1.0.0-dont-return-actions.1
-      openapi-fetch: 0.14.1(patch_hash=8a89bcc59bfa03e0e6a22b2ef455be592450945d7a80aa45c60d994e6db57a67)
-      zod: 3.25.76
+      lemmy-js-client-v1: lemmy-js-client@1.0.0-image-uploads-request.0
+      openapi-fetch: 0.17.0(patch_hash=b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4)
+      zod: 4.4.3
     transitivePeerDependencies:
       - supports-color
 

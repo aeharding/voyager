@@ -1,5 +1,5 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { PersonMentionView } from "threadiverse";
+import { NotificationView } from "threadiverse";
 
 import { FetchFn } from "#/features/feed/Feed";
 import InboxFeed from "#/features/feed/InboxFeed";
@@ -17,9 +17,10 @@ export default function MentionsPage() {
   const dispatch = useAppDispatch();
   const client = useClient();
 
-  const fetchFn: FetchFn<PersonMentionView> = async (page_cursor, ...rest) => {
-    const response = await client.getPersonMentions(
+  const fetchFn: FetchFn<NotificationView> = async (page_cursor, ...rest) => {
+    const response = await client.getNotifications(
       {
+        type_: "mention",
         page_cursor,
         limit: LIMIT,
         unread_only: false,

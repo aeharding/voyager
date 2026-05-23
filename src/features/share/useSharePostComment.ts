@@ -142,7 +142,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
         await onAsk();
         break;
       case OPostCommentShareType.Community: {
-        const instance = parseUrl(itemView.community.actor_id)?.hostname;
+        const instance = parseUrl(itemView.community.ap_id)?.hostname;
         if (instance) await shareInstance(instance);
         break;
       }
@@ -180,7 +180,7 @@ function generateInstanceCandidates(
   candidates.push(connectedInstance);
 
   const communityActorHostname = parseUrl(
-    postOrComment.community.actor_id,
+    postOrComment.community.ap_id,
   )?.hostname;
   if (communityActorHostname) candidates.push(communityActorHostname);
 

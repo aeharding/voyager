@@ -7,21 +7,23 @@ import {
   useRef,
   useState,
 } from "react";
-import { PrivateMessageView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import Markdown from "#/features/shared/markdown/Markdown";
 import { cx } from "#/helpers/css";
-import useClient from "#/helpers/useClient";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import { getInboxCounts, setReadStatus } from "../inboxSlice";
+import {
+  isMessageRead,
+  markMessageRead,
+  Message as MessageEntry,
+} from "../inboxSlice";
 
 import styles from "./Message.module.css";
 
 interface MessageProps {
-  message: PrivateMessageView;
+  message: MessageEntry;
   first?: boolean;
 }
 
@@ -31,12 +33,17 @@ export default function Message({ message, first }: MessageProps) {
   const myUserId = useAppSelector(
     (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
+  const read = useAppSelector((state) =>
+    isMessageRead(message, state.inbox.readByInboxItemId),
+  );
 
-  const thisIsMyMessage = message.private_message.creator_id === myUserId;
+  const privateMessage = message.view;
+
+  const thisIsMyMessage =
+    privateMessage.private_message.creator_id === myUserId;
   const thisIsASelfMessage =
-    message.private_message.creator_id === message.private_message.recipient_id;
-  const [loading, setLoading] = useState(false);
-  const client = useClient();
+    privateMessage.private_message.creator_id ===
+    privateMessage.private_message.recipient_id;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -46,41 +53,21 @@ export default function Message({ message, first }: MessageProps) {
   useIonViewDidLeave(() => setFocused(false));
 
   const onMessageLongPress = useCallback(() => {
-    presentReport(message);
-  }, [message, presentReport]);
+    presentReport(privateMessage);
+  }, [privateMessage, presentReport]);
 
   const bind = useLongPress(onMessageLongPress, { cancelOnMovement: 15 });
 
-  const markReadEvent = useEffectEvent(async () => {
-    if (loading) return;
-
-    setLoading(true);
-
-    try {
-      await client.markPrivateMessageAsRead({
-        private_message_id: message.private_message.id,
-        read: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-
-    await dispatch(setReadStatus({ item: message, read: true }));
-    await dispatch(getInboxCounts(true));
+  // The thunk handles API call + optimistic update + counts refresh + rollback.
+  const markReadEvent = useEffectEvent(() => {
+    dispatch(markMessageRead(message, true));
   });
 
   useEffect(() => {
-    if (
-      message.private_message.read ||
-      (thisIsMyMessage && !thisIsASelfMessage) ||
-      !focused
-    )
-      return;
+    if (read || (thisIsMyMessage && !thisIsASelfMessage) || !focused) return;
 
-    // Synchronize server-side read state with the focused message.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     markReadEvent();
-  }, [focused, message, thisIsMyMessage, thisIsASelfMessage]);
+  }, [focused, read, thisIsMyMessage, thisIsASelfMessage]);
 
   return (
     <div
@@ -93,10 +80,10 @@ export default function Message({ message, first }: MessageProps) {
       {...bind()}
     >
       <Markdown
-        id={`private-message_${message.private_message.id}`}
+        id={`private-message_${privateMessage.private_message.id}`}
         className="collapse-md-margins"
       >
-        {message.private_message.content}
+        {privateMessage.private_message.content}
       </Markdown>
     </div>
   );

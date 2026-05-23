@@ -11,14 +11,11 @@ import {
 import { CommentsContext } from "#/features/comment/inTree/CommentsContext";
 import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/CommentTree";
 import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootComment";
-import { markRead } from "#/features/inbox/inboxSlice";
+import { markNotificationRead } from "#/features/inbox/inboxSlice";
 import { getCanModerate } from "#/features/moderation/useCanModerate";
 import { savePost, voteOnPost } from "#/features/post/postSlice";
 import { useSharePostComment } from "#/features/share/useSharePostComment";
-import {
-  isInboxItem,
-  useSharedInboxActions,
-} from "#/features/shared/sliding/internal/shared";
+import { useSharedInboxActions } from "#/features/shared/sliding/internal/shared";
 import { isPost as _isPost } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
@@ -37,6 +34,7 @@ import GenericBaseSliding, {
 
 export function VotableActionsImpl({
   item,
+  notification,
   rootIndex,
   ...rest
 }: ComponentProps<typeof BaseSlidingVote>) {
@@ -49,7 +47,7 @@ export function VotableActionsImpl({
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
-  const shared = useSharedInboxActions(item);
+  const shared = useSharedInboxActions(notification);
   const { share } = useSharePostComment(item);
 
   const isPost = _isPost(item);
@@ -75,7 +73,13 @@ export function VotableActionsImpl({
     async (score) => {
       if (presentLoginIfNeeded()) return;
 
-      if (isInboxItem(item)) dispatch(markRead(item, true));
+      if (notification)
+        dispatch(
+          markNotificationRead(
+            { kind: notification.kind, notificationId: notification.id },
+            true,
+          ),
+        );
 
       try {
         if (isPost) await dispatch(voteOnPost(item, score));
@@ -89,13 +93,19 @@ export function VotableActionsImpl({
         throw error;
       }
     },
-    [presentLoginIfNeeded, isPost, dispatch, item, presentToast],
+    [presentLoginIfNeeded, isPost, dispatch, item, notification, presentToast],
   );
 
   const reply: GenericBaseSlidingProps["reply"] = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
 
-    if (isInboxItem(item)) dispatch(markRead(item, true));
+    if (notification)
+      dispatch(
+        markNotificationRead(
+          { kind: notification.kind, notificationId: notification.id },
+          true,
+        ),
+      );
 
     const canModerate = getCanModerate(item.community);
 
@@ -122,6 +132,7 @@ export function VotableActionsImpl({
   }, [
     item,
     isPost,
+    notification,
     presentCommentReply,
     presentLoginIfNeeded,
     prependComments,

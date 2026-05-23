@@ -84,7 +84,7 @@ export default function PrivateMessagePage({
 
     setCanDismiss(true);
     dismiss(message.private_message_view);
-    dispatch(receivedMessages([message.private_message_view]));
+    dispatch(receivedMessages([{ view: message.private_message_view }]));
   }
 
   return (

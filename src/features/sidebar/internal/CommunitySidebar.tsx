@@ -35,14 +35,15 @@ export default function CommunitySidebar({ community }: CommunitySidebarProps) {
       <GenericSidebar
         type="community"
         sidebar={
-          community.community.description ??
+          community.community.sidebar ??
+          community.community.summary ??
           "**No community description available**"
         }
         people={mods?.map((m) => m.moderator) ?? []}
-        counts={community.counts}
+        counts={community.community}
         banner={community.community.banner}
         name={`c/${getHandle(community.community)}`}
-        id={community.community.actor_id}
+        id={community.community.ap_id}
       />
     </>
   );

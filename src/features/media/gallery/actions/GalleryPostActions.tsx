@@ -86,7 +86,7 @@ export default function GalleryPostActions({
           >
             <div className={styles.section}>
               <IonIcon icon={chatbubbleOutline} />
-              <div className={styles.amount}>{post.counts.comments}</div>
+              <div className={styles.amount}>{post.post.comments}</div>
             </div>
           </Link>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
