@@ -182,7 +182,7 @@ export default function PostHeader({
             <ModeratableItemBannerOutlet />
             <div>
               <div className={styles.title} ref={titleRef}>
-                <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
+                <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>
                 <PostBadges post={post} />
               </div>
               {shouldHide !== "except-title" && text && (

@@ -76,12 +76,13 @@ export default function CompactPost({ post }: PostProps) {
               </div>
             )}
             <div className={styles.title}>
-              <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
+              <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>
               {domain && (
                 <>
+                  {" "}
                   <span className={styles.domain}>
                     (<span>{domain}</span>)
-                  </span>{" "}
+                  </span>
                 </>
               )}
               <PostBadges post={post} />

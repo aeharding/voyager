@@ -23,7 +23,7 @@ export default function PostBadges({ post }: PostBadgesProps) {
 
   return items.map((item, i) => (
     <Fragment key={i}>
-      {i > 0 && " "}
+      {" "}
       <PostBadge item={item} />
     </Fragment>
   ));

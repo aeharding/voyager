@@ -82,7 +82,7 @@ export default function LargePost({ post }: PostProps) {
           )}
 
           <div className={styles.title}>
-            <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
+            <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>
             <PostBadges post={post} />
           </div>
         </div>
