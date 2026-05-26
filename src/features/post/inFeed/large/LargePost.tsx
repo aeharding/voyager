@@ -12,7 +12,7 @@ import Crosspost from "#/features/post/crosspost/Crosspost";
 import AnnouncementIcon from "#/features/post/detail/AnnouncementIcon";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
-import PostTags from "#/features/post/shared/PostTags";
+import PostBadges from "#/features/post/shared/PostBadges";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
@@ -83,7 +83,7 @@ export default function LargePost({ post }: PostProps) {
 
           <div className={styles.title}>
             <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
-            <PostTags post={post} />
+            <PostBadges post={post} />
           </div>
         </div>
 

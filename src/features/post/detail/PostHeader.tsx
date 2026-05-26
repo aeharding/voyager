@@ -15,7 +15,7 @@ import Crosspost from "#/features/post/crosspost/Crosspost";
 import LargeFeedPostMedia from "#/features/post/inFeed/large/media/LargeFeedPostMedia";
 import PostLink from "#/features/post/link/PostLink";
 import { togglePostCollapse } from "#/features/post/postSlice";
-import PostTags from "#/features/post/shared/PostTags";
+import PostBadges from "#/features/post/shared/PostBadges";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import usePostUrlIsMedia from "#/features/post/usePostUrlIsMedia";
 import Markdown from "#/features/shared/markdown/Markdown";
@@ -183,7 +183,7 @@ export default function PostHeader({
             <div>
               <div className={styles.title} ref={titleRef}>
                 <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
-                <PostTags post={post} />
+                <PostBadges post={post} />
               </div>
               {shouldHide !== "except-title" && text && (
                 <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
