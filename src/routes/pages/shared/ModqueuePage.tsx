@@ -149,6 +149,8 @@ function convertPostReportViewToPostView(postReport: PostReportView): PostView {
     // which isn't part of `PostReportView` (it tracks the *target's* ban
     // state via `creator_banned_from_community` instead). See lemmy/lemmy#4200.
     banned_from_community: false,
+    notifications: "replies_and_mentions",
+    tags: [],
   };
 }
 

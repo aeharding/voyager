@@ -14,6 +14,7 @@ import CompactCrosspost from "#/features/post/crosspost/CompactCrosspost";
 import AnnouncementIcon from "#/features/post/detail/AnnouncementIcon";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
+import PostTags from "#/features/post/shared/PostTags";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
@@ -75,7 +76,7 @@ export default function CompactPost({ post }: PostProps) {
                 />
               </div>
             )}
-            <span className={styles.title}>
+            <div className={styles.title}>
               <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
               {domain && (
                 <>
@@ -85,7 +86,8 @@ export default function CompactPost({ post }: PostProps) {
                 </>
               )}
               {isNsfw(post) && <Nsfw />}
-            </span>
+              <PostTags post={post} />
+            </div>
             <div className={styles.aside}>
               <div className={styles.from}>
                 {post.post.featured_community || post.post.featured_local ? (
