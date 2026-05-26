@@ -6,7 +6,6 @@ import { CommentView, PostView } from "threadiverse";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
-import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "#/features/moderation/ModeratableItem";
@@ -16,6 +15,7 @@ import Crosspost from "#/features/post/crosspost/Crosspost";
 import LargeFeedPostMedia from "#/features/post/inFeed/large/media/LargeFeedPostMedia";
 import PostLink from "#/features/post/link/PostLink";
 import { togglePostCollapse } from "#/features/post/postSlice";
+import PostBadges from "#/features/post/shared/PostBadges";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import usePostUrlIsMedia from "#/features/post/usePostUrlIsMedia";
 import Markdown from "#/features/shared/markdown/Markdown";
@@ -182,8 +182,8 @@ export default function PostHeader({
             <ModeratableItemBannerOutlet />
             <div>
               <div className={styles.title} ref={titleRef}>
-                <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
-                {isNsfw(post) && <Nsfw />}
+                <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>
+                <PostBadges post={post} />
               </div>
               {shouldHide !== "except-title" && text && (
                 <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>

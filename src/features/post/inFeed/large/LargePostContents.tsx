@@ -2,10 +2,10 @@ import { use } from "react";
 import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
-import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import PostLink from "#/features/post/link/PostLink";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { cx } from "#/helpers/css";
+import { isNsfwBlurred } from "#/helpers/nsfw";
 import { useAppSelector } from "#/store";
 
 import usePostUrlIsMedia from "../../usePostUrlIsMedia";

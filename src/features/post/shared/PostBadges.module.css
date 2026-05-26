@@ -1,0 +1,15 @@
+.badge {
+  display: inline-block;
+  background: var(--lightroom-bg);
+  color: var(--ion-color-medium);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.nsfwBadge {
+  background: #ff0000;
+  background: color(display-p3 1 0 0);
+  color: white;
+}

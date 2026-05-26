@@ -4,10 +4,10 @@ import { MouseEvent } from "react";
 import { PostView } from "threadiverse";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
-import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import CachedImg from "#/features/media/CachedImg";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { cx } from "#/helpers/css";
+import { isNsfwBlurred } from "#/helpers/nsfw";
 import { forceSecureUrl } from "#/helpers/url";
 import {
   CompactThumbnailSizeType,

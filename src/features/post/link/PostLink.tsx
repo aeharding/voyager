@@ -3,7 +3,7 @@ import { PostView } from "threadiverse";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
-import { isNsfwBlurred } from "#/features/labels/Nsfw";
+import { isNsfwBlurred } from "#/helpers/nsfw";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../postSlice";

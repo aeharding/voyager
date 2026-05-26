@@ -3,12 +3,6 @@ import { PostView } from "threadiverse";
 import { getItemActorName } from "#/helpers/lemmy";
 import { OPostBlurNsfw, PostBlurNsfwType } from "#/services/db/types";
 
-import styles from "./Nsfw.module.css";
-
-export default function Nsfw() {
-  return <span className={styles.container}>NSFW</span>;
-}
-
 const NSFW_INSTANCES = ["fedinsfw.app"];
 
 export function isNsfw(post: PostView): boolean {

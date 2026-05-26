@@ -3,7 +3,6 @@ import { use } from "react";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
-import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import Save from "#/features/labels/Save";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
@@ -14,6 +13,7 @@ import CompactCrosspost from "#/features/post/crosspost/CompactCrosspost";
 import AnnouncementIcon from "#/features/post/detail/AnnouncementIcon";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
+import PostBadges from "#/features/post/shared/PostBadges";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import PostTitleMarkdown from "#/features/shared/markdown/PostTitleMarkdown";
@@ -75,17 +75,18 @@ export default function CompactPost({ post }: PostProps) {
                 />
               </div>
             )}
-            <span className={styles.title}>
-              <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
+            <div className={styles.title}>
+              <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>
               {domain && (
                 <>
+                  {" "}
                   <span className={styles.domain}>
                     (<span>{domain}</span>)
-                  </span>{" "}
+                  </span>
                 </>
               )}
-              {isNsfw(post) && <Nsfw />}
-            </span>
+              <PostBadges post={post} />
+            </div>
             <div className={styles.aside}>
               <div className={styles.from}>
                 {post.post.featured_community || post.post.featured_local ? (
