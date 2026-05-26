@@ -6,7 +6,6 @@ import { CommentView, PostView } from "threadiverse";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
-import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "#/features/moderation/ModeratableItem";
@@ -184,7 +183,6 @@ export default function PostHeader({
             <div>
               <div className={styles.title} ref={titleRef}>
                 <PostTitleMarkdown>{post.post.name}</PostTitleMarkdown>{" "}
-                {isNsfw(post) && <Nsfw />}
                 <PostTags post={post} />
               </div>
               {shouldHide !== "except-title" && text && (

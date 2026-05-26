@@ -7,3 +7,9 @@
   font-size: 13.125px;
   white-space: nowrap;
 }
+
+.nsfwTag {
+  background: #ff0000;
+  background: color(display-p3 1 0 0);
+  color: white;
+}

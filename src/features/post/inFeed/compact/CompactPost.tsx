@@ -3,7 +3,6 @@ import { use } from "react";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
-import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import Save from "#/features/labels/Save";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
@@ -85,7 +84,6 @@ export default function CompactPost({ post }: PostProps) {
                   </span>{" "}
                 </>
               )}
-              {isNsfw(post) && <Nsfw />}
               <PostTags post={post} />
             </div>
             <div className={styles.aside}>
