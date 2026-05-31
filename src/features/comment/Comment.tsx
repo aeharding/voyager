@@ -4,6 +4,7 @@ import AnimateHeight from "react-animate-height";
 import { CommentView } from "threadiverse";
 import { useLongPress } from "use-long-press";
 
+import { userPersonSelector } from "#/features/auth/siteSlice";
 import Save from "#/features/labels/Save";
 import { ModeratableItemBannerOutlet } from "#/features/moderation/ModeratableItem";
 import ModeratableItem from "#/features/moderation/ModeratableItem";
@@ -26,9 +27,19 @@ import { PositionedContainer } from "./elements/PositionedContainer";
 
 import styles from "./Comment.module.css";
 
+/**
+ * How a comment in the tree may be highlighted. The two modes never co-occur —
+ * a thread/permalink view highlights the navigated-to comment; the full post
+ * view highlights comments unread since `after` — so they're one prop.
+ */
+export type CommentHighlight =
+  | { type: "commentInThread"; commentId: number }
+  | { type: "unread"; after: Date };
+
 interface CommentProps {
   comment: CommentView;
-  highlightedCommentId?: number;
+
+  highlight?: CommentHighlight;
   depth?: number;
   absoluteDepth?: number;
   onClick?: (e: MouseEvent) => void;
@@ -47,7 +58,7 @@ interface CommentProps {
 
 export default function Comment({
   comment: commentView,
-  highlightedCommentId,
+  highlight,
   depth,
   absoluteDepth,
   onClick,
@@ -64,9 +75,21 @@ export default function Comment({
   const commentFromStore = useAppSelector(
     (state) => state.comment.commentById[commentView.comment.id],
   );
+  const myUserId = useAppSelector(userPersonSelector)?.id;
 
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentFromStore ?? commentView.comment;
+
+  const isThreadTarget =
+    highlight?.type === "commentInThread" && highlight.commentId === comment.id;
+
+  // Posted since the user last read the post (and not by them) → unread. Lemmy
+  // marks your own comments read on creation, so skipping them matches the
+  // server's own unread count.
+  const isUnread =
+    highlight?.type === "unread" &&
+    comment.creator_id !== myUserId &&
+    new Date(comment.published_at).getTime() > highlight.after.getTime();
 
   const canModerate = useCanModerate(commentView.community);
 
@@ -101,6 +124,7 @@ export default function Comment({
         mode="ios" // Use iOS style activatable tap highlight
         className={cx(
           styles.commentItem,
+          isUnread && styles.unread,
           !cannotCollapse && isTouchDevice() && "ion-activatable",
           `comment-${comment.id}`,
           itemClassName,
@@ -114,10 +138,7 @@ export default function Comment({
         }}
         {...bind()}
       >
-        <ModeratableItem
-          itemView={commentView}
-          highlighted={highlightedCommentId === comment.id}
-        >
+        <ModeratableItem itemView={commentView} highlighted={isThreadTarget}>
           <PositionedContainer
             depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
           >

@@ -6,6 +6,7 @@ import Vote from "#/features/labels/vote/Vote";
 import Stat from "#/features/post/detail/Stat";
 import TimeStat from "#/features/post/detail/TimeStat";
 import { formatNumber } from "#/helpers/number";
+import { useAppSelector } from "#/store";
 
 import styles from "./PreviewStats.module.css";
 
@@ -14,10 +15,27 @@ interface PreviewStatsProps {
 }
 
 export default function PreviewStats({ post }: PreviewStatsProps) {
+  // Locally read this session (overrides the server unread until next refresh).
+  const locallyRead = useAppSelector(
+    (state) => state.post.postReadCommentsAtById[post.post.id] != null,
+  );
+
+  // A never-opened post reports unread_comments === total (Lemmy's SQL falls
+  // back to the total when there's no read row), so a pill then is just noise.
+  // Mirror lemmy-ui: hide unless unread is non-zero and differs from the total.
+  const unread = post.unread_comments;
+  const showUnread =
+    !locallyRead && unread > 0 && unread !== post.post.comments;
+
   return (
     <div className={styles.container}>
       <Vote item={post} />
-      <Stat icon={chatbubbleOutline}>{formatNumber(post.post.comments)}</Stat>
+      <Stat icon={chatbubbleOutline}>
+        {formatNumber(post.post.comments)}
+        {showUnread && (
+          <span className={styles.unreadPill}>+{formatNumber(unread)}</span>
+        )}
+      </Stat>
       <TimeStat>
         <Ago date={post.post.published_at} />
       </TimeStat>

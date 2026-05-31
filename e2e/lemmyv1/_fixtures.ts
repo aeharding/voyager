@@ -28,7 +28,11 @@ const nodeinfo21 = {
 
 // --- Helpers for building v1 responses ---
 
-function person(over: { id: number; name: string; display_name?: string }) {
+export function person(over: {
+  id: number;
+  name: string;
+  display_name?: string;
+}) {
   return {
     id: over.id,
     name: over.name,
@@ -84,7 +88,7 @@ function community() {
   };
 }
 
-function postView(over: {
+export function postView(over: {
   id: number;
   name: string;
   body?: string;
@@ -144,7 +148,7 @@ function postView(over: {
   };
 }
 
-const me = person({ id: 100, name: "alex", display_name: "alex" });
+export const me = person({ id: 100, name: "alex", display_name: "alex" });
 const mod = person({ id: 101, name: "themod", display_name: "TheMod" });
 const bannedPerson = person({ id: 102, name: "badperson" });
 
@@ -154,7 +158,7 @@ export const fixturePosts = [
   postView({ id: 3, name: "Third v1 post", body: "v1 body 3", creator: me }),
 ];
 
-const siteResponse = {
+export const siteResponse = {
   site_view: {
     site: {
       id: 1,

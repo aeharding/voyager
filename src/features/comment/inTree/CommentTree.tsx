@@ -8,6 +8,7 @@ import useGetAppScrollable, {
 import { OTapToCollapseType } from "#/services/db/types";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import { type CommentHighlight } from "../Comment";
 import { toggleCommentCollapseState } from "../commentSlice";
 import CommentExpander from "./CommentExpander";
 import CommentHr from "./CommentHr";
@@ -18,7 +19,7 @@ export const MAX_COMMENT_DEPTH = 10;
 
 interface CommentTreeProps {
   comment: CommentNodeI;
-  highlightedCommentId?: number;
+  highlight?: CommentHighlight;
   first?: boolean;
   fullyCollapsed?: boolean;
   rootIndex: number;
@@ -27,7 +28,7 @@ interface CommentTreeProps {
 
 export default function CommentTree({
   comment,
-  highlightedCommentId,
+  highlight,
   first,
   fullyCollapsed,
   rootIndex,
@@ -43,14 +44,15 @@ export default function CommentTree({
   );
   const getAppScrollable = useGetAppScrollable();
 
+  const threadTargetId =
+    highlight?.type === "commentInThread" ? highlight.commentId : undefined;
+
   // Comment context chains don't show missing for parents
   const showMissing = (() => {
-    if (!highlightedCommentId) return true;
+    if (!threadTargetId) return true;
 
     if (
-      comment.comment_view.comment.path
-        .split(".")
-        .includes(`${highlightedCommentId}`)
+      comment.comment_view.comment.path.split(".").includes(`${threadTargetId}`)
     )
       return true;
 
@@ -89,7 +91,7 @@ export default function CommentTree({
       )}
       <FullyCollapsibleComment
         comment={comment.comment_view}
-        highlightedCommentId={highlightedCommentId}
+        highlight={highlight}
         depth={comment.absoluteDepth - baseDepth}
         absoluteDepth={comment.absoluteDepth}
         onClick={(e) => {
@@ -111,7 +113,7 @@ export default function CommentTree({
     ...comment.children.map((comment) => (
       <CommentTree
         key={comment.comment_view.comment.id}
-        highlightedCommentId={highlightedCommentId}
+        highlight={highlight}
         comment={comment}
         fullyCollapsed={collapsed || fullyCollapsed}
         rootIndex={rootIndex}
