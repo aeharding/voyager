@@ -47,6 +47,15 @@ interface PostState {
   postSavedById: Record<string, boolean | undefined>;
   postReadById: Record<string, boolean>;
   postCollapsedById: Record<string, boolean>;
+
+  /**
+   * Local override of a post's `read_comments_at`, set when its comments are
+   * read in-session. An override (not a mutation of the server `postById`
+   * PostView): the feed hides the unread pill while it's present, and the
+   * highlight boundary reads it. Cleared by `receivedPosts` so fresh server
+   * data is authoritative again.
+   */
+  postReadCommentsAtById: Record<string, string | undefined>;
 }
 
 const initialState: PostState = {
@@ -57,6 +66,7 @@ const initialState: PostState = {
   postSavedById: {},
   postReadById: {},
   postCollapsedById: {},
+  postReadCommentsAtById: {},
 };
 
 export const postSlice = createSlice({
@@ -79,6 +89,20 @@ export const postSlice = createSlice({
     updatePostRead: (state, action: PayloadAction<{ postId: number }>) => {
       state.postReadById[action.payload.postId] = true;
     },
+    /**
+     * Optimistically record that a post's comments were read in-session (an
+     * override, not a mutation of the server PostView). Hides the feed's unread
+     * pill and advances the highlight boundary so re-opening doesn't re-tint
+     * comments we just read. `receivedPosts` clears it so the server is
+     * authoritative again (the server is reset separately via getPost on open).
+     */
+    markPostCommentsRead: (
+      state,
+      action: PayloadAction<{ postId: number; readCommentsAt: string }>,
+    ) => {
+      state.postReadCommentsAtById[action.payload.postId] =
+        action.payload.readCommentsAt;
+    },
     receivedPostNotFound: (state, action: PayloadAction<number>) => {
       state.postById[action.payload] = "not-found";
     },
@@ -100,6 +124,12 @@ export const postSlice = createSlice({
 
         for (const post of posts) {
           state.postById[post.post.id] = post;
+
+          // Fresh server data is authoritative for unread comments; drop the
+          // local "read in-session" override so a refreshed unread count (e.g.
+          // new comments since) shows again.
+          delete state.postReadCommentsAtById[post.post.id];
+
           const hidden = postHiddenById[post.post.id];
           if (hidden)
             state.postHiddenById[post.post.id] = {
@@ -247,6 +277,7 @@ export const {
   resetPosts,
   updatePostSaved,
   updatePostRead,
+  markPostCommentsRead,
   receivedPostNotFound,
   postDeleted,
   togglePostCollapse,
@@ -295,6 +326,30 @@ export const setPostRead =
       post_ids: [postId],
       read: true,
     });
+  };
+
+/**
+ * Fetching a post is what records `read_comments` on the server — both Lemmy
+ * v0 and v1 call `update_read_comments` in their `get_post` handler, stamping
+ * read_comments_amount = current total and read_comments_at = now. (markPostAsRead
+ * only sets the `read` boolean and does NOT touch this.)
+ *
+ * Fired as a fire-and-forget side effect when opening a post so the "X new
+ * comments" feed pill reflects truly-new comments on the next feed fetch. The
+ * response is intentionally ignored — we don't want to overwrite the store (the
+ * response carries the pre-update boundary, which the open page already snapshotted).
+ */
+export const markPostCommentsReadOnServer =
+  (postId: number) =>
+  async (_dispatch: AppDispatch, getState: () => RootState) => {
+    if (!jwtSelector(getState())) return;
+    if (getState().settings.general.posts.disableMarkingRead) return;
+
+    try {
+      await clientSelector(getState()).getPost({ id: postId });
+    } catch {
+      // Best-effort: this only refreshes server-side read state.
+    }
   };
 
 export const setPostHidden =

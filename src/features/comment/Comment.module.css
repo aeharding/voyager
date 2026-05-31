@@ -7,6 +7,19 @@
   --min-height: 0;
 }
 
+/* New since the user last read the post (Lemmy v1 unread highlight).
+ * Tracks the theme's primary color; rgba() fallback (static blue) for browsers
+ * without color-mix (e.g. iOS 15, per browserslist). */
+.unread {
+  --background: rgba(var(--ion-color-primary-rgb), 0.08);
+  --background: color-mix(in srgb, var(--ion-color-primary) 8%, transparent);
+
+  :global(.ion-palette-dark) & {
+    --background: rgba(var(--ion-color-primary-rgb), 0.16);
+    --background: color-mix(in srgb, var(--ion-color-primary) 16%, transparent);
+  }
+}
+
 .content {
   padding-top: 0.35em;
 

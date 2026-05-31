@@ -30,6 +30,7 @@ import { AppVList, IndexedVirtuaItem } from "#/helpers/virtua";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import { type CommentHighlight } from "../Comment";
 import { receivedComments } from "../commentSlice";
 import { VgerCommentSortType } from "../CommentSort";
 import { CommentsContext } from "./CommentsContext";
@@ -56,6 +57,12 @@ interface CommentsProps {
   ref: React.RefObject<CommentsHandle | undefined>;
 
   virtualEnabled?: boolean;
+
+  /**
+   * Comments published after this timestamp are highlighted as unread. Snapshot
+   * of the post's read_comments_at at open (Lemmy v1 only; undefined otherwise).
+   */
+  unreadAfter?: string;
 }
 
 export default function Comments({
@@ -67,6 +74,7 @@ export default function Comments({
   threadCommentId,
   ref,
   virtualEnabled,
+  unreadAfter,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
   const [cursor, setCursor] = useState<PageCursor | undefined>();
@@ -401,10 +409,21 @@ export default function Comments({
   }
 
   const allComments = useMemo(() => {
+    // The two highlight modes are mutually exclusive (a thread/permalink view
+    // sets highlightedCommentId; the full post view passes unreadAfter), so
+    // collapse them into one discriminated `highlight` for the tree.
+    const highlight = ((): CommentHighlight | undefined => {
+      if (highlightedCommentId != null)
+        return { type: "commentInThread", commentId: highlightedCommentId };
+      if (unreadAfter != null)
+        return { type: "unread", after: new Date(unreadAfter) };
+      return undefined;
+    })();
+
     const tree = commentTree.map((comment, index) => (
       <CommentTree
         comment={comment}
-        highlightedCommentId={highlightedCommentId}
+        highlight={highlight}
         key={comment.comment_view.comment.id}
         first={index === 0}
         rootIndex={index + 1} /* Plus header index = 0 */
@@ -431,6 +450,7 @@ export default function Comments({
   }, [
     commentTree,
     highlightedCommentId,
+    unreadAfter,
     commentPath,
     maxContext,
     preservePositionFromBottomInScrollView,

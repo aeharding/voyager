@@ -218,8 +218,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: ^0.14.1
-        version: 0.14.1
+        specifier: ^0.14.2
+        version: 0.14.2
       ua-parser-js:
         specifier: ^2.0.9
         version: 2.0.9
@@ -1270,8 +1270,8 @@ packages:
   '@hapi/podium@5.0.2':
     resolution: {integrity: sha512-T7gf2JYHQQfEfewTQFbsaXoZxSvuXO/QBIGljucUQ/lmPnTTNAepoIKOakWNVWvo2fMEDjycu77r8k6dhreqHA==}
 
-  '@hapi/shot@6.0.2':
-    resolution: {integrity: sha512-WKK1ShfJTrL1oXC0skoIZQYzvLsyMDEF8lfcWuQBjpjCN29qivr9U36ld1z0nt6edvzv28etNMOqUF4klnHryw==}
+  '@hapi/shot@6.0.3':
+    resolution: {integrity: sha512-xKmKONUE5AxUNK+EQCSCz35UpPq4cSy6wRCFvMLCDHdyPeXsmAvwxvU4OemGqpWHtAQHyCPjnDbm/fEU9O6l/w==}
 
   '@hapi/somever@4.1.1':
     resolution: {integrity: sha512-lt3QQiDDOVRatS0ionFDNrDIv4eXz58IibQaZQDOg4DqqdNme8oa0iPWcE0+hkq/KTeBCPtEOjDOBKBKwDumVg==}
@@ -6048,8 +6048,8 @@ packages:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
 
-  threadiverse@0.14.1:
-    resolution: {integrity: sha512-s0cms96gIgVigsFSnr+MIaX2s4+ge6KBi5jPzIm0GDx5nF11SdO1+2AcrWG8BJEk5Ehz1sJixsQPsqzR1vDaQw==}
+  threadiverse@0.14.2:
+    resolution: {integrity: sha512-to/3T036nxBJGTAdGA/gwf2JBizkKTzev0CRH2yqRChgcYykwZgUOeNH8sYblRdOGiJ1w9UUL83l2kZ+oJfm0A==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -7836,7 +7836,7 @@ snapshots:
       '@hapi/hoek': 11.0.7
       '@hapi/mimos': 7.0.1
       '@hapi/podium': 5.0.2
-      '@hapi/shot': 6.0.2
+      '@hapi/shot': 6.0.3
       '@hapi/somever': 4.1.1
       '@hapi/statehood': 8.2.1
       '@hapi/subtext': 8.1.3
@@ -7884,7 +7884,7 @@ snapshots:
       '@hapi/teamwork': 6.0.1
       '@hapi/validate': 2.0.1
 
-  '@hapi/shot@6.0.2':
+  '@hapi/shot@6.0.3':
     dependencies:
       '@hapi/hoek': 11.0.7
       '@hapi/validate': 2.0.1
@@ -13482,7 +13482,7 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.14.1:
+  threadiverse@0.14.2:
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client-v0: lemmy-js-client@0.20.0-alpha.18

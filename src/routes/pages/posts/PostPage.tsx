@@ -7,7 +7,7 @@ import {
   IonToolbar,
   RefresherCustomEvent,
 } from "@ionic/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 import { CommentSort } from "#/features/comment/CommentSort";
@@ -27,6 +27,8 @@ import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
+
+import styles from "./PostPage.module.css";
 
 interface PostPageParams {
   id: string;
@@ -73,6 +75,22 @@ export function PostPageContent({
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
 
   const postIfFound = typeof post === "object" ? post : undefined;
+
+  // Locally read this session (set on open in PostDetail) → no "X New".
+  const locallyReadComments = useAppSelector(
+    (state) => state.post.postReadCommentsAtById[id] != null,
+  );
+
+  // Snapshot the "X New" count at open. Opening marks comments read (see
+  // PostDetail), which hides the live pill — but the title should keep showing
+  // how many were new when you opened. Captured before that override lands, so
+  // it persists; re-entry (override already set) shows none. Same gate as the
+  // pill. Empty on a cold deeplink (no post yet).
+  const [newCommentCount] = useState(() => {
+    if (locallyReadComments || typeof post !== "object") return undefined;
+    const unread = post.unread_comments;
+    return unread > 0 && unread !== post.post.comments ? unread : undefined;
+  });
 
   const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
     commentPath,
@@ -127,8 +145,19 @@ export function PostPageContent({
   const title = (() => {
     if (threadCommentId) return "Thread";
 
-    return (
+    const comments = (
       <>{postIfFound ? formatNumber(postIfFound.post.comments) : ""} Comments</>
+    );
+
+    if (newCommentCount == null) return comments;
+
+    return (
+      <div className={styles.titleWithUnread}>
+        <div>{comments}</div>
+        <div className={styles.unreadCount}>
+          {formatNumber(newCommentCount)} New
+        </div>
+      </div>
     );
   })();
 
