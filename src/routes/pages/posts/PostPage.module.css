@@ -9,5 +9,5 @@
 .unreadCount {
   font-size: 0.7em;
   font-weight: 600;
-  color: var(--ion-color-primary);
+  color: var(--ion-color-medium);
 }
