@@ -4,6 +4,7 @@ import { use, useEffect } from "react";
 
 import { TabContext } from "#/core/TabContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
+import YoutubePortalProvider from "#/features/media/external/youtube/YoutubePortalProvider";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
@@ -33,12 +34,14 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
     <>
       {children}
       <VideoPortalProvider>
-        <GalleryProvider>
-          <InnerTabbedRoutes
-            // Rebuild routing on instance change
-            key={selectedInstance ?? getDefaultServer()}
-          />
-        </GalleryProvider>
+        <YoutubePortalProvider>
+          <GalleryProvider>
+            <InnerTabbedRoutes
+              // Rebuild routing on instance change
+              key={selectedInstance ?? getDefaultServer()}
+            />
+          </GalleryProvider>
+        </YoutubePortalProvider>
       </VideoPortalProvider>
     </>
   );
