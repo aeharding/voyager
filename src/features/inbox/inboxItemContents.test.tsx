@@ -210,7 +210,9 @@ describe("getInboxItemIcon", () => {
 
   it("private message", () => {
     expect(
-      getInboxItemIcon(makeNotification("private_message", privateMessageData())),
+      getInboxItemIcon(
+        makeNotification("private_message", privateMessageData()),
+      ),
     ).toBe(mail);
   });
 
@@ -221,15 +223,15 @@ describe("getInboxItemIcon", () => {
   });
 
   it("subscribed comment uses the comment icon", () => {
-    expect(getInboxItemIcon(makeNotification("subscribed", commentData()))).toBe(
-      chatbubble,
-    );
+    expect(
+      getInboxItemIcon(makeNotification("subscribed", commentData())),
+    ).toBe(chatbubble);
   });
 
   it("mod action", () => {
-    expect(getInboxItemIcon(makeNotification("mod_action", modActionData()))).toBe(
-      hammer,
-    );
+    expect(
+      getInboxItemIcon(makeNotification("mod_action", modActionData())),
+    ).toBe(hammer);
   });
 });
 
@@ -259,9 +261,9 @@ describe("getInboxItemLink", () => {
 
 describe("getInboxItemSourceUrl", () => {
   it("comment ap_id", () => {
-    expect(getInboxItemSourceUrl(makeNotification("reply", commentData()))).toBe(
-      "https://example.com/comment/7",
-    );
+    expect(
+      getInboxItemSourceUrl(makeNotification("reply", commentData())),
+    ).toBe("https://example.com/comment/7");
   });
 
   it("post ap_id", () => {
