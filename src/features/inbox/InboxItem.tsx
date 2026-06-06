@@ -101,6 +101,42 @@ export default function InboxItem({ item }: InboxItemProps) {
         );
       }
     }
+    // New comment on a post in a community you've subscribed to notifications
+    // for (Lemmy v1 "subscribed" notifications).
+    if (
+      item.notification.kind === "subscribed" &&
+      item.data.type_ === "comment"
+    ) {
+      return (
+        <>
+          <strong>{item.data.creator.name}</strong> commented on{" "}
+          <strong>
+            <PostTitleMarkdown>{item.data.post.name}</PostTitleMarkdown>
+          </strong>
+        </>
+      );
+    }
+    // A new post: either in a subscribed community, or one that mentions you.
+    if (item.data.type_ === "post") {
+      const postTitle = (
+        <strong>
+          <PostTitleMarkdown>{item.data.post.name}</PostTitleMarkdown>
+        </strong>
+      );
+      if (item.notification.kind === "mention") {
+        return (
+          <>
+            <strong>{item.data.creator.name}</strong> mentioned you on the post{" "}
+            {postTitle}
+          </>
+        );
+      }
+      return (
+        <>
+          <strong>{item.data.creator.name}</strong> posted {postTitle}
+        </>
+      );
+    }
     if (item.data.type_ === "private_message") {
       return (
         <>
@@ -116,6 +152,13 @@ export default function InboxItem({ item }: InboxItemProps) {
       return (
         <CommentMarkdown id={getItemId(item)}>
           {item.data.comment.content}
+        </CommentMarkdown>
+      );
+    }
+    if (item.data.type_ === "post") {
+      return (
+        <CommentMarkdown id={getItemId(item)}>
+          {item.data.post.body ?? ""}
         </CommentMarkdown>
       );
     }
@@ -136,7 +179,7 @@ export default function InboxItem({ item }: InboxItemProps) {
   }
 
   function renderFooterDetails() {
-    if (item.data.type_ === "comment") {
+    if (item.data.type_ === "comment" || item.data.type_ === "post") {
       return (
         <>
           <PersonLink
@@ -176,6 +219,11 @@ export default function InboxItem({ item }: InboxItemProps) {
         }`,
       );
     }
+    if (item.data.type_ === "post") {
+      return buildGeneralBrowseLink(
+        `/c/${getHandle(item.data.community)}/comments/${item.data.post.id}`,
+      );
+    }
     if (item.data.type_ === "private_message") {
       return `/inbox/messages/${getHandle(item.data.creator)}`;
     }
@@ -189,6 +237,7 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   function getSourceUrl() {
     if (item.data.type_ === "comment") return item.data.comment.ap_id;
+    if (item.data.type_ === "post") return item.data.post.ap_id;
   }
 
   function getIcon() {
@@ -198,6 +247,9 @@ export default function InboxItem({ item }: InboxItemProps) {
       return chatbubble;
     }
     if (item.notification.kind === "private_message") return mail;
+    if (item.notification.kind === "subscribed") {
+      return item.data.type_ === "post" ? albums : chatbubble;
+    }
     // All mod_action kinds share the hammer — title carries the specifics.
     if (item.notification.kind === "mod_action") return hammer;
   }

@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
 import { getNotificationKey, markNotificationRead } from "./inboxSlice";
-import ModActionMoreActions from "./ModActionMoreActions";
+import MarkReadMoreActions from "./MarkReadMoreActions";
 import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 
 import styles from "./InboxItemMoreActions.module.css";
@@ -79,8 +79,8 @@ export default function InboxItemMoreActions({
         />
       );
     }
-    if (item.data.type_ === "mod_action") {
-      return <ModActionMoreActions markReadAction={markReadAction} ref={ref} />;
+    if (item.data.type_ === "mod_action" || item.data.type_ === "post") {
+      return <MarkReadMoreActions markReadAction={markReadAction} ref={ref} />;
     }
     return null;
   }

@@ -4,20 +4,22 @@ import { useCallback, useImperativeHandle } from "react";
 
 import styles from "./PrivateMessageMoreActions.module.css";
 
-interface ModActionMoreActionsHandle {
+interface MarkReadMoreActionsHandle {
   present: () => void;
 }
 
-interface ModActionMoreActionsProps {
+interface MarkReadMoreActionsProps {
   markReadAction: ActionSheetButton;
 
-  ref: React.RefObject<ModActionMoreActionsHandle | undefined>;
+  ref: React.RefObject<MarkReadMoreActionsHandle | undefined>;
 }
 
-export default function ModActionMoreActions({
+// Minimal ellipsis menu for notification kinds without their own actions
+// (mod actions, subscribed-community posts) — just mark read/unread.
+export default function MarkReadMoreActions({
   markReadAction,
   ref,
-}: ModActionMoreActionsProps) {
+}: MarkReadMoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
 
   const present = useCallback(() => {
