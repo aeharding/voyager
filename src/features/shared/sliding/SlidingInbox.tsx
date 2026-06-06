@@ -33,7 +33,7 @@ export default function SlidingInbox({
     );
   }
 
-  if (item.data.type_ === "comment") {
+  if (item.data.type_ === "comment" || item.data.type_ === "post") {
     return (
       <BaseSlidingVote
         actions={inbox}
