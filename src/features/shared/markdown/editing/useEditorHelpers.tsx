@@ -59,14 +59,20 @@ export default function useEditorHelpers(controller: EditorController) {
       const endCursorLocation =
         currentSelectionLocation + insertText.length - placeCursorFromEnd;
 
-      controller.setSelection(
-        endCursorLocation,
-        endCursorLocation + selectLength,
-      );
+      // Defer the selection until after the editor re-renders, so the
+      // contenteditable backend maps the offsets against the final (decorated)
+      // DOM rather than a transient one — otherwise multi-line inserts like
+      // code blocks land the selection a couple characters off.
+      setTimeout(() => {
+        controller.setSelection(
+          endCursorLocation,
+          endCursorLocation + selectLength,
+        );
 
-      if (initiallySelectedText && selectLength) {
-        controller.insertText(initiallySelectedText);
-      }
+        if (initiallySelectedText && selectLength) {
+          controller.insertText(initiallySelectedText);
+        }
+      });
     },
     [controller],
   );
