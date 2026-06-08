@@ -195,7 +195,13 @@ const compiler: Plugin<[], Root, ReactElement[]> = function () {
             className={styles.heading}
             data-depth={node.depth}
           >
-            {children}
+            {
+              // An empty heading ("##") has no child to form a syntax gap, so
+              // the `#` markers land in `children` as plain content — grey them.
+              "children" in node && node.children.length
+                ? children
+                : syntax(value.slice(segStart, segEnd), segStart)
+            }
           </span>
         );
       default:

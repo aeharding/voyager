@@ -112,6 +112,14 @@ describe("headings", () => {
     expect(h.textContent).toBe("## Head");
     expect(texts(h, '[class*="syntax"]')).toEqual(["## "]);
   });
+
+  it("mutes the markers of an empty heading (no content yet)", () => {
+    for (const md of ["##", "## "]) {
+      const h = el(decorate(md), '[data-depth="2"]');
+      expect(h.textContent).toBe(md);
+      expect(texts(h, '[class*="syntax"]')).toEqual([md]);
+    }
+  });
 });
 
 describe("links and images", () => {
