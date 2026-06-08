@@ -62,8 +62,12 @@ export default function useEditorHelpers(controller: EditorController) {
       // Defer the selection until after the editor re-renders, so the
       // contenteditable backend maps the offsets against the final (decorated)
       // DOM rather than a transient one — otherwise multi-line inserts like
-      // code blocks land the selection a couple characters off.
+      // code blocks land the selection a couple characters off. Re-focus first:
+      // by this point focus may have left the editor (action sheet dismiss),
+      // and a contenteditable only shows a selection while focused.
       setTimeout(() => {
+        controller.focus();
+
         controller.setSelection(
           endCursorLocation,
           endCursorLocation + selectLength,
