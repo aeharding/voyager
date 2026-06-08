@@ -9,11 +9,10 @@ import {
 
 import { cx } from "#/helpers/css";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
-import { useAppSelector } from "#/store";
 
 import MarkdownToolbar from "../MarkdownToolbar";
 import { createRichEditor } from "./createRichEditor";
-import { buildMarkdownDecorator } from "./markdownDecorator";
+import { decorateMarkdown } from "./markdownDecorator";
 
 import editorStyles from "../Editor.module.css";
 import styles from "./RichTextEditor.module.css";
@@ -86,23 +85,15 @@ function RichTextEditorInstance({
   children,
 }: RichTextEditorInstanceProps) {
   const keyboardOpen = useKeyboardOpen();
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
-  );
 
   // Created once per mount. `text` is the initial value; `onChange` is stable.
   const [{ controller, setHost }] = useState(() =>
     createRichEditor(text, onChange),
   );
 
-  const processor = useMemo(
-    () => buildMarkdownDecorator(connectedInstance),
-    [connectedInstance],
-  );
-
   const rendered = useMemo(() => {
     try {
-      return processor.processSync(text).result;
+      return decorateMarkdown(text);
     } catch {
       // Never let a decoration error break editing — fall back to plain lines
       return text.split("\n").map((line, i) => (
@@ -111,7 +102,7 @@ function RichTextEditorInstance({
         </div>
       ));
     }
-  }, [processor, text]);
+  }, [text]);
 
   function onKeyDown(e: KeyboardEvent) {
     switch (e.key) {

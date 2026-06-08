@@ -1,281 +1,259 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import superSub from "@aeharding/remark-lemmy-supersub";
-import type { Node, Root, RootContent } from "mdast";
+import { parse, postprocess, preprocess } from "micromark";
 import type { ReactElement, ReactNode } from "react";
 import remarkParse from "remark-parse";
-import { Plugin, unified } from "unified";
+import { unified } from "unified";
 
 import customRemarkGfm from "../../customRemarkGfm";
 
 import styles from "./RichTextEditor.module.css";
 
 /**
- * Adapted from editate's "With Remark" story:
- * https://github.com/inokawa/editate/blob/main/stories/advanced/With%20Remark.stories.tsx
+ * Decorates markdown *source* for the rich editor by tokenizing it with
+ * micromark — the lexer remark/mdast are built on — and styling each token in
+ * place. The text the user typed is never rewritten, only wrapped in styled
+ * spans, so editate keeps treating the contents as plain markdown.
  *
- * Parses the markdown source into mdast, then emits one `<div data-block>` per
- * source line with the raw markdown characters preserved (sliced from the
- * original string via node `position.offset`) wrapped in styled inline elements.
- * The text the user typed is never rewritten — only decorated — so editate can
- * keep treating the contents as plain markdown.
+ * Why micromark tokens (not the mdast tree): mdast is an *abstract* tree that
+ * normalizes syntax away, so a node's source position can span markers that
+ * don't belong to it (e.g. a fenced-code node inside a blockquote whose
+ * position includes the `>` continuation markers). Reverse-engineering syntax
+ * back out of mdast positions is fragile. micromark's token stream is the
+ * opposite: a flat list of precisely-positioned syntactic tokens where the `>`
+ * is always its own `blockQuoteMarker`, the language is `codeFencedFenceInfo`,
+ * the code is `codeFlowValue`, etc. — regardless of nesting. So decoration
+ * becomes a direct token-type → style mapping, which is how syntax highlighters
+ * work and why this handles markdown's nesting/edge cases for free.
+ *
+ * One subtlety the algorithm accounts for: micromark can emit *overlapping*
+ * leaf tokens (a `lineEnding` `"\n> "` alongside the `blockQuoteMarker` `">"`
+ * inside it). We resolve overlaps by painting the narrowest token last, so each
+ * character is owned by its most specific token.
  */
 
-declare module "unified" {
-  interface CompileResultMap {
-    reactElements: ReactElement[];
+/** Leaf token types that are pure markdown syntax — rendered muted (grey). */
+const SYNTAX_LEAF = new Set<string>([
+  "strongSequence",
+  "emphasisSequence",
+  "strikethroughSequence",
+  "atxHeadingSequence",
+  "codeTextSequence",
+  "codeFencedFenceSequence",
+  "labelMarker",
+  "labelImageMarker",
+  "resourceMarker",
+  "supMarker",
+  "subMarker",
+  "spoilerSequence",
+  "spoilerKeyword",
+  "listItemMarker",
+  "listItemValue",
+  "listItemPrefixWhitespace",
+  "blockQuoteMarker",
+  "blockQuotePrefixWhitespace",
+  "escapeMarker",
+  "thematicBreakSequence",
+  "whitespace",
+]);
+
+type ParseOptions = NonNullable<Parameters<typeof parse>[0]>;
+
+// The micromark extension set is independent of `connectedInstance` (that only
+// affects autolink tree-building, not tokenization), so build it once. Reusing
+// the same unified plugin set as Markdown rendering keeps the flavor identical.
+let extensionsCache: ParseOptions["extensions"];
+function micromarkExtensions(): ParseOptions["extensions"] {
+  if (!extensionsCache) {
+    const processor = unified()
+      .use(remarkParse)
+      .use(superSub)
+      .use(customRemarkGfm, { connectedInstance: "" })
+      .use(spoiler);
+    processor.freeze();
+    extensionsCache = (processor.data("micromarkExtensions") ??
+      []) as ParseOptions["extensions"];
   }
+  return extensionsCache;
 }
 
-function getRange(node: Node): [number, number] {
-  const start = node.position?.start?.offset;
-  const end = node.position?.end?.offset;
-  // These remark plugins always emit positions; if one is ever missing we throw
-  // and the caller falls back to rendering plain (undecorated) text.
-  if (start == null || end == null) throw new Error("Missing node position");
-  return [start, end];
+interface Leaf {
+  start: number;
+  end: number;
+  type: string;
+  /** Ancestor token types, outermost first (excludes the leaf's own type). */
+  stack: string[];
 }
 
-/** Wraps markdown syntax characters (`**`, `[`, `#`, …) in the muted style. */
-function syntax(text: string, key: number): ReactNode {
-  return (
-    <span className={styles.syntax} key={`s${key}`}>
+/**
+ * A leaf is a token whose `exit` immediately follows its `enter` (no children).
+ * Leaves carry the actual source characters; their ancestor stack carries the
+ * semantic context (inside strong/emphasis/link/codeFenced/…).
+ */
+function collectLeaves(source: string): Leaf[] {
+  const events = postprocess(
+    parse({ extensions: micromarkExtensions() })
+      .document()
+      .write(preprocess()(source, "utf8", true)),
+  );
+
+  const leaves: Leaf[] = [];
+  const stack: string[] = [];
+  let prevWasEnterOf: (typeof events)[number][1] | null = null;
+
+  for (const [phase, token] of events) {
+    if (phase === "enter") {
+      stack.push(token.type);
+      prevWasEnterOf = token;
+    } else {
+      if (prevWasEnterOf === token) {
+        leaves.push({
+          start: token.start.offset,
+          end: token.end.offset,
+          type: token.type,
+          stack: stack.slice(0, -1),
+        });
+      }
+      stack.pop();
+      prevWasEnterOf = null;
+    }
+  }
+
+  return leaves;
+}
+
+/**
+ * Maps each source offset to the index of the leaf that owns it. Overlaps are
+ * resolved narrowest-last (widest painted first) so the most specific token
+ * wins; uncovered offsets stay `-1` (rendered as plain text, preserving the
+ * text-fidelity invariant).
+ */
+function paint(leaves: Leaf[], length: number): Int32Array {
+  const owners = new Int32Array(length).fill(-1);
+  const order = [...leaves.keys()].sort(
+    (a, b) =>
+      leaves[b]!.end - leaves[b]!.start - (leaves[a]!.end - leaves[a]!.start),
+  );
+  for (const idx of order) {
+    const leaf = leaves[idx]!;
+    for (let o = leaf.start; o < leaf.end && o < length; o++) owners[o] = idx;
+  }
+  return owners;
+}
+
+/** The CSS classes a content leaf earns from its type + ancestor context. */
+function classNamesFor(leaf: Leaf): string {
+  const { type, stack } = leaf;
+
+  // Syntax markers (and the fenced-code language) read muted.
+  if (SYNTAX_LEAF.has(type) || stack.includes("codeFencedFenceInfo")) {
+    // The `^`/`~` markers stay muted but ride their content's vertical shift,
+    // so the whole `^x^` / `~x~` sits raised/lowered together.
+    if (type === "supMarker") return `${styles.syntax} ${styles.sup}`;
+    if (type === "subMarker") return `${styles.syntax} ${styles.sub}`;
+    return styles.syntax!;
+  }
+
+  const isCode = type === "codeFlowValue" || type === "codeTextData";
+  const cls: string[] = [];
+
+  if (type === "codeFlowValue") cls.push(styles.codeContent!); // mono, bg on div
+  if (type === "codeTextData") cls.push(styles.code!); // inline: mono + bg
+
+  if (stack.includes("strong")) cls.push(styles.bold!);
+  if (stack.includes("emphasis")) cls.push(styles.italic!);
+  if (stack.includes("strikethrough")) cls.push(styles.strike!);
+  if (stack.includes("sup")) cls.push(styles.sup!);
+  if (stack.includes("sub")) cls.push(styles.sub!);
+  if (stack.includes("spoilerName")) cls.push(styles.spoilerSummary!);
+
+  if (stack.includes("image")) {
+    // alt text muted; the URL (resourceDestination) stays link-colored
+    cls.push(
+      stack.includes("resourceDestination") ? styles.link! : styles.imageAlt!,
+    );
+  } else if (stack.includes("link")) {
+    cls.push(styles.link!);
+  }
+
+  // Quote prose reads italic + grey, but not its code (code stays monospace).
+  if (stack.includes("blockQuote") && !isCode) cls.push(styles.blockquote!);
+
+  return cls.join(" ");
+}
+
+function renderRun(leaf: Leaf, text: string, key: number): ReactNode {
+  const className = classNamesFor(leaf);
+  return className ? (
+    <span key={key} className={className}>
       {text}
     </span>
+  ) : (
+    text
   );
 }
 
 /**
- * Renders `[text](url)` / `![alt](url)` with the brackets/parens muted (syntax
- * grey), the inner label in `labelClassName`, and the URL in link blue. Splits
- * on the `](` separator + closing `)`; falls back to muted if markup is malformed.
+ * Decorates markdown into one `<div data-block>` per source line (the structure
+ * editate's block mode expects) with the raw characters preserved.
  */
-function renderBracketed(
-  key: number,
-  raw: string,
-  openLength: number,
-  labelClassName: string | undefined,
-): ReactNode {
-  const sep = raw.indexOf("](");
-  if (sep < openLength) {
-    return syntax(raw, key);
-  }
+export function decorateMarkdown(source: string): ReactElement[] {
+  const leaves = collectLeaves(source);
+  const owners = paint(leaves, source.length);
 
-  const rest = raw.slice(sep); // "](url)" (or "](url "title")")
-  const closeParen = rest.lastIndexOf(")");
+  const result: ReactElement[] = [];
+  let lineStart = 0;
 
-  return (
-    <span key={key}>
-      {syntax(raw.slice(0, openLength), key)}
-      <span className={labelClassName}>{raw.slice(openLength, sep)}</span>
-      {closeParen <= 2 ? (
-        syntax(rest, sep)
-      ) : (
-        <>
-          {syntax(rest.slice(0, 2), sep)}
-          <span className={styles.link}>{rest.slice(2, closeParen)}</span>
-          {syntax(rest.slice(closeParen), sep + closeParen)}
-        </>
-      )}
-    </span>
-  );
-}
+  source.split("\n").forEach((lineText, i) => {
+    const lineEnd = lineStart + lineText.length;
 
-const compiler: Plugin<[], Root, ReactElement[]> = function () {
-  const collectLines = (root: Root, value: string) => {
-    const lines: { start: number; end: number; nodes: RootContent[] }[] = [];
-    let offset = 0;
-    for (const line of value.split("\n")) {
-      const lineStart = offset;
-      const lineEnd = offset + line.length;
-      const nodes = root.children.filter((n) => {
-        const [nStart, nEnd] = getRange(n);
-        return nStart < lineEnd + 1 && nEnd > lineStart;
-      });
-      lines.push({ start: lineStart, end: lineEnd, nodes });
-      offset = lineEnd + 1;
-    }
-    return lines;
-  };
+    let isCodeBlock = false;
+    let isSpoiler = false;
+    let headingDepth = 0;
 
-  const renderNodeInLine = (
-    node: RootContent,
-    lineStart: number,
-    lineEnd: number,
-    value: string,
-  ): ReactNode => {
-    const [start, end] = getRange(node);
-    const segStart = Math.max(start, lineStart);
-    const segEnd = Math.min(end, lineEnd);
+    // One styled span per run. The line stays a single inline flow (no flex /
+    // structural wrappers) so the caret and typing/deletion behave exactly like
+    // a plain textarea — we only style characters, never restructure the line.
+    const nodes: ReactNode[] = [];
+    let o = lineStart;
+    while (o < lineEnd) {
+      const owner = owners[o]!;
+      let j = o + 1;
+      while (j < lineEnd && owners[j] === owner) j++;
+      const text = source.slice(o, j);
 
-    // The gaps around/between a node's children are its syntax markers (e.g.
-    // the `**` of bold, the `# ` of a heading) — render those muted. The
-    // children themselves are content and keep their semantic styling.
-    let children: ReactNode[];
-    if ("children" in node && node.children.length) {
-      children = [];
-      let offset = segStart;
-      for (const c of node.children) {
-        const [cStart, cEnd] = getRange(c);
-        if (offset < cStart && cStart < segEnd) {
-          children.push(syntax(value.slice(offset, cStart), offset));
-        }
-        if (cEnd > lineStart && cStart < lineEnd) {
-          children.push(renderNodeInLine(c, lineStart, lineEnd, value));
-        }
-        offset = Math.max(offset, Math.min(cEnd, segEnd));
+      if (owner < 0) {
+        nodes.push(text);
+      } else {
+        const leaf = leaves[owner]!;
+        if (
+          leaf.stack.includes("codeFenced") ||
+          leaf.stack.includes("codeIndented")
+        )
+          isCodeBlock = true;
+        if (leaf.stack.includes("spoiler")) isSpoiler = true;
+        if (leaf.type === "atxHeadingSequence")
+          headingDepth = leaf.end - leaf.start;
+        nodes.push(renderRun(leaf, text, o));
       }
-      if (offset < segEnd) {
-        children.push(syntax(value.slice(offset, segEnd), offset));
-      }
-    } else {
-      children = [value.slice(segStart, segEnd)];
+      o = j;
     }
 
-    // Custom Lemmy node types (sup/sub from supersub, summary from spoiler)
-    // aren't in the mdast type union, so match them by name first.
-    switch (node.type as string) {
-      case "sup":
-        return <sup key={segStart}>{children}</sup>;
-      case "sub":
-        return <sub key={segStart}>{children}</sub>;
-      case "summary":
-        return (
-          <strong key={segStart} className={styles.spoilerSummary}>
-            {children}
-          </strong>
-        );
-    }
+    result.push(
+      <div
+        key={i}
+        data-block
+        data-code-block={isCodeBlock || undefined}
+        data-spoiler={isSpoiler || undefined}
+        data-heading={headingDepth ? true : undefined}
+        data-depth={headingDepth || undefined}
+      >
+        {nodes.length ? nodes : <br />}
+      </div>,
+    );
 
-    switch (node.type) {
-      case "strong":
-        return <strong key={segStart}>{children}</strong>;
-      case "emphasis":
-        return <em key={segStart}>{children}</em>;
-      case "delete":
-        // Strike only the content, not the ~~ markers — `<del>`'s line-through
-        // propagates to descendants, so keep the markers outside it.
-        return children.length < 2 ? (
-          <del key={segStart}>{children}</del>
-        ) : (
-          <span key={segStart}>
-            {children[0]}
-            <del>{children.slice(1, -1)}</del>
-            {children[children.length - 1]}
-          </span>
-        );
-      case "inlineCode": {
-        // `code`: backticks muted, content monospace
-        const raw = value.slice(segStart, segEnd);
-        const open = raw.match(/^`+/)?.[0] ?? "";
-        const close = raw.match(/`+$/)?.[0] ?? "";
-        return (
-          <code key={segStart} className={styles.code}>
-            {syntax(open, segStart)}
-            {raw.slice(open.length, raw.length - close.length)}
-            {syntax(close, segEnd)}
-          </code>
-        );
-      }
-      case "link":
-        // [text](url): brackets + url muted, label in link blue
-        return renderBracketed(
-          segStart,
-          value.slice(segStart, segEnd),
-          1,
-          styles.link,
-        );
-      case "image":
-        // ![alt](url): brackets + url muted, alt also muted (de-emphasized)
-        return renderBracketed(
-          segStart,
-          value.slice(segStart, segEnd),
-          2,
-          styles.imageAlt,
-        );
-      case "blockquote":
-        return (
-          <span key={segStart} className={styles.blockquote}>
-            {children}
-          </span>
-        );
-      case "heading":
-        return (
-          <span
-            key={segStart}
-            className={styles.heading}
-            data-depth={node.depth}
-          >
-            {
-              // An empty heading ("##") has no child to form a syntax gap, so
-              // the `#` markers land in `children` as plain content — grey them.
-              "children" in node && node.children.length
-                ? children
-                : syntax(value.slice(segStart, segEnd), segStart)
-            }
-          </span>
-        );
-      default:
-        return children;
-    }
-  };
+    lineStart = lineEnd + 1;
+  });
 
-  this.compiler = (node, file) => {
-    const value = file.value ? String(file.value) : "";
-    const root = node as Root;
-    const lines = collectLines(root, value);
-    const result: ReactElement[] = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (!line) continue;
-      const { start, end, nodes } = line;
-      // Code blocks (fenced/indented) and spoilers are multi-line, so style the
-      // whole line div rather than an inline span per line.
-      const isCodeBlock = nodes.some((n) => n.type === "code");
-      const isSpoiler = nodes.some((n) => (n.type as string) === "details");
-      const contents: ReactNode[] = [];
-      let offset = start;
-      for (const n of nodes) {
-        const [nStart, nEnd] = getRange(n);
-        const segStart = Math.max(nStart, start);
-        const segEnd = Math.min(nEnd, end);
-        if (offset < segStart) {
-          contents.push(value.slice(offset, segStart));
-        }
-        if (segStart < segEnd) {
-          contents.push(renderNodeInLine(n, start, end, value));
-        }
-        offset = Math.max(offset, segEnd);
-      }
-      if (offset < end) {
-        contents.push(value.slice(offset, end));
-      }
-      result.push(
-        <div
-          key={i}
-          data-block
-          data-code-block={isCodeBlock || undefined}
-          data-spoiler={isSpoiler || undefined}
-        >
-          {contents.length ? contents : <br />}
-        </div>,
-      );
-    }
-
-    return result;
-  };
-};
-
-/**
- * Builds a unified processor that compiles markdown text into decorated
- * `ReactElement[]` lines. Mirrors the remark plugin set used by `Markdown.tsx`
- * so the decoration matches Voyager's exact markdown flavor.
- */
-export function buildMarkdownDecorator(connectedInstance: string) {
-  return unified()
-    .use(remarkParse)
-    .use(superSub)
-    .use(customRemarkGfm, { connectedInstance })
-    .use(spoiler)
-    .use(compiler);
+  return result;
 }
