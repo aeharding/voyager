@@ -1,4 +1,11 @@
-import { KeyboardEvent, ReactNode, useMemo, useState } from "react";
+import {
+  KeyboardEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { cx } from "#/helpers/css";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
@@ -24,22 +31,68 @@ export interface RichTextEditorProps {
  * setting). Built on editate's plain editor + a remark decorator so markdown
  * renders styled while typing. The contents stay plain markdown text. The whole
  * toolbar — including bold/italic/quote — is wired through the EditorController.
+ *
+ * editate is uncontrolled (its model is initialized once), so this wrapper
+ * re-initializes it whenever `text` changes from *outside* — text recovery, a
+ * parent reset, HMR — rather than from editate's own edits. Without this, the
+ * decorated DOM and editate's internal model would diverge and the editor would
+ * stop responding.
  */
 export default function RichTextEditor({
   text,
   setText,
+  ...rest
+}: RichTextEditorProps) {
+  // The last value editate produced; anything else is an external change.
+  const producedRef = useRef(text);
+  const [generation, setGeneration] = useState(0);
+
+  useEffect(() => {
+    if (text !== producedRef.current) {
+      // External change (text recovery, parent reset, HMR) — remount the
+      // instance so editate re-initializes from the new text.
+      producedRef.current = text;
+      setGeneration((g) => g + 1);
+    }
+  }, [text]);
+
+  const handleChange = (value: string) => {
+    producedRef.current = value;
+    setText(value);
+  };
+
+  return (
+    <RichTextEditorInstance
+      key={generation}
+      text={text}
+      onChange={handleChange}
+      {...rest}
+    />
+  );
+}
+
+interface RichTextEditorInstanceProps extends Omit<
+  RichTextEditorProps,
+  "setText"
+> {
+  onChange: (text: string) => void;
+}
+
+function RichTextEditorInstance({
+  text,
+  onChange,
   onSubmit,
   onDismiss,
   children,
-}: RichTextEditorProps) {
+}: RichTextEditorInstanceProps) {
   const keyboardOpen = useKeyboardOpen();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
 
-  // Created once. `text`/`setText` are the initial value + a stable state setter.
+  // Created once per mount. `text` is the initial value; `onChange` is stable.
   const [{ controller, setHost }] = useState(() =>
-    createRichEditor(text, setText),
+    createRichEditor(text, onChange),
   );
 
   const processor = useMemo(
