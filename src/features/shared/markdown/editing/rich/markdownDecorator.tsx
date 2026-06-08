@@ -152,7 +152,17 @@ const compiler: Plugin<[], Root, ReactElement[]> = function () {
       case "emphasis":
         return <em key={segStart}>{children}</em>;
       case "delete":
-        return <del key={segStart}>{children}</del>;
+        // Strike only the content, not the ~~ markers — `<del>`'s line-through
+        // propagates to descendants, so keep the markers outside it.
+        return children.length < 2 ? (
+          <del key={segStart}>{children}</del>
+        ) : (
+          <span key={segStart}>
+            {children[0]}
+            <del>{children.slice(1, -1)}</del>
+            {children[children.length - 1]}
+          </span>
+        );
       case "inlineCode": {
         // `code`: backticks muted, content monospace
         const raw = value.slice(segStart, segEnd);

@@ -90,8 +90,10 @@ describe("inline decoration (syntax muted, content styled)", () => {
     expect(el(decorate("_x_"), "em").textContent).toBe("_x_");
   });
 
-  it("strikethrough -> <del>", () => {
-    expect(el(decorate("~~x~~"), "del").textContent).toBe("~~x~~");
+  it("strikethrough: content in <del>, ~~ markers outside (muted)", () => {
+    const c = decorate("~~strike~~");
+    expect(el(c, "del").textContent).toBe("strike");
+    expect(texts(c, '[class*="syntax"]')).toEqual(["~~", "~~"]);
   });
 
   it("superscript -> <sup>, subscript -> <sub>", () => {
