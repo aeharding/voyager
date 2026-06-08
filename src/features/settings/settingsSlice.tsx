@@ -188,6 +188,7 @@ export interface SettingsState {
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
     defaultShare: PostCommentShareType;
+    richMarkdownEditor: boolean;
   };
   tags: {
     enabled: boolean;
@@ -315,6 +316,7 @@ const baseState: SettingsState = {
       upvoteOnSave: false,
     },
     preferNativeApps: true,
+    richMarkdownEditor: false,
     safari: {
       alwaysUseReaderMode: false,
     },
@@ -574,6 +576,10 @@ export const settingsSlice = createSlice({
     setRememberPostAppearance(state, action: PayloadAction<boolean>) {
       state.appearance.posts.rememberType = action.payload;
       db.setSetting("remember_post_appearance_type", action.payload);
+    },
+    setRichMarkdownEditor(state, action: PayloadAction<boolean>) {
+      state.general.richMarkdownEditor = action.payload;
+      db.setSetting("rich_markdown_editor", action.payload);
     },
     setShowCollapsedComment(state, action: PayloadAction<boolean>) {
       state.general.comments.showCollapsed = action.payload;
@@ -919,6 +925,7 @@ export const {
   setRememberCommunityCommentSort,
   setRememberCommunityPostSort,
   setRememberPostAppearance,
+  setRichMarkdownEditor,
   setShowCollapsedComment,
   setShowCommentImages,
   setShowCommunityIcons,
@@ -1046,6 +1053,7 @@ function hydrateStateWithGlobalSettings(
         upvoteOnSave: settings.upvote_on_save,
       },
       preferNativeApps: settings.prefer_native_apps,
+      richMarkdownEditor: settings.rich_markdown_editor,
       safari: {
         alwaysUseReaderMode: settings.always_use_reader_mode,
       },

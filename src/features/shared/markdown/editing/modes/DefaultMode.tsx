@@ -16,7 +16,7 @@ import {
   personOutline,
   remove,
 } from "ionicons/icons";
-import { MouseEvent, RefObject } from "react";
+import { MouseEvent } from "react";
 
 import {
   bold,
@@ -33,7 +33,8 @@ import { GO_VOYAGER_HOST } from "#/features/share/fediRedirect";
 import { htmlToMarkdown } from "#/helpers/markdown";
 import { isValidUrl } from "#/helpers/url";
 
-import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
+import { EditorController } from "../controller";
+import { applyMarkdownStyle, BOLD, ITALIC, QUOTE } from "../markdownStyle";
 import PreviewModal from "../PreviewModal";
 import useEditorHelpers from "../useEditorHelpers";
 import useUploadImage from "../useUploadImage";
@@ -44,7 +45,7 @@ import styles from "./DefaultMode.module.css";
 export interface SharedModeProps {
   type: "comment" | "post";
   text: string;
-  textareaRef: RefObject<HTMLTextAreaElement | undefined>;
+  controller: EditorController;
 }
 
 interface DefaultModeProps extends SharedModeProps {
@@ -54,7 +55,7 @@ interface DefaultModeProps extends SharedModeProps {
 export default function DefaultMode({
   type,
   text,
-  textareaRef,
+  controller,
   calculateMode,
 }: DefaultModeProps) {
   const [presentActionSheet] = useIonActionSheet();
@@ -75,7 +76,7 @@ export default function DefaultMode({
     selectionLocation,
     selectionLocationEnd,
     replySelectionRef,
-  } = useEditorHelpers(textareaRef);
+  } = useEditorHelpers(controller);
 
   function presentMoreOptions(e: MouseEvent) {
     e.preventDefault();
@@ -92,7 +93,7 @@ export default function DefaultMode({
                 "ion-modal.show-modal",
               ) as HTMLElement,
               onDidDismiss: () => {
-                requestAnimationFrame(() => textareaRef.current?.focus());
+                requestAnimationFrame(() => controller.focus());
               },
             });
           },
@@ -185,7 +186,7 @@ export default function DefaultMode({
   }
 
   function presentLinkInput() {
-    textareaRef.current?.focus(); // prevent keyboard flicker
+    controller.focus(); // prevent keyboard flicker
 
     const selectedText = text.slice(
       selectionLocation.current,
@@ -247,25 +248,25 @@ export default function DefaultMode({
     const locationBeforeInsert = selectionLocation.current;
     const currentSelectionLocation = locationBeforeInsert + markdownLink.length;
 
-    textareaRef.current?.focus();
-    document.execCommand("insertText", false, markdownLink);
+    controller.focus();
+    controller.insertText(markdownLink);
 
     setTimeout(() => {
       if (!text) {
         // place cursor inside brackets
-        textareaRef.current?.setSelectionRange(
+        controller.setSelection(
           locationBeforeInsert + 1,
           locationBeforeInsert + 1,
         );
       } else if (!url) {
         // select url placeholder
-        textareaRef.current?.setSelectionRange(
+        controller.setSelection(
           currentSelectionLocation - 4,
           currentSelectionLocation - 1,
         );
       } else {
         // place cursor after link
-        textareaRef.current?.setSelectionRange(
+        controller.setSelection(
           currentSelectionLocation,
           currentSelectionLocation,
         );
@@ -282,8 +283,8 @@ export default function DefaultMode({
 
     const toInsert = `${space}${prefix}`;
 
-    textareaRef.current?.focus();
-    document.execCommand("insertText", false, toInsert);
+    controller.focus();
+    controller.insertText(toInsert);
 
     calculateMode();
   }
@@ -305,19 +306,18 @@ export default function DefaultMode({
       onWillDismiss: (event) => {
         if (!event.detail.data) return;
 
-        textareaRef.current?.focus();
-        document.execCommand("insertText", false, event.detail.data);
+        controller.focus();
+        controller.insertText(event.detail.data);
       },
     });
   }
 
   async function onQuote(e: MouseEvent | TouchEvent) {
-    if (!textareaRef.current) return;
     const selection = replySelectionRef.current;
     if (!selection) return;
 
     // Safari will provide selection range inside textarea
-    // (Unwanted since md-quote handles that)
+    // (Unwanted since the quote style — applyMarkdownStyle(QUOTE) — handles that)
     if (selection.text && !selection.html) return;
 
     e.stopPropagation();
@@ -343,7 +343,7 @@ export default function DefaultMode({
     <>
       {jsx}
 
-      <markdown-toolbar for={TOOLBAR_TARGET_ID}>
+      <div className={styles.buttons}>
         <label htmlFor="photo-upload-toolbar">
           <div
             // Needs to be div for label click propagation
@@ -351,7 +351,7 @@ export default function DefaultMode({
             aria-label="Upload image"
             className={styles.button}
             onClick={() => {
-              textareaRef.current?.focus();
+              controller.focus();
               return true;
             }}
           >
@@ -376,25 +376,29 @@ export default function DefaultMode({
         <button className={styles.button} onClick={presentLinkInput}>
           <IonIcon icon={link} color="primary" />
         </button>
-        <md-bold>
-          <button className={styles.button}>
-            <IonIcon icon={bold} color="primary" />
-          </button>
-        </md-bold>
-        <md-italic>
-          <button className={styles.button}>
-            <IonIcon icon={italic} color="primary" />
-          </button>
-        </md-italic>
-        <md-quote>
-          <button className={styles.button} onClickCapture={onQuote}>
-            <IonIcon icon={quote} color="primary" />
-          </button>
-        </md-quote>
+        <button
+          className={styles.button}
+          onClick={() => applyMarkdownStyle(controller, BOLD)}
+        >
+          <IonIcon icon={bold} color="primary" />
+        </button>
+        <button
+          className={styles.button}
+          onClick={() => applyMarkdownStyle(controller, ITALIC)}
+        >
+          <IonIcon icon={italic} color="primary" />
+        </button>
+        <button
+          className={styles.button}
+          onClickCapture={onQuote}
+          onClick={() => applyMarkdownStyle(controller, QUOTE)}
+        >
+          <IonIcon icon={quote} color="primary" />
+        </button>
         <button className={styles.button} onClick={presentMoreOptions}>
           <IonIcon icon={ellipsisHorizontal} color="primary" />
         </button>
-      </markdown-toolbar>
+      </div>
     </>
   );
 }

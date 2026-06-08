@@ -64,9 +64,6 @@ importers:
       '@capacitor/status-bar':
         specifier: ^8.0.2
         version: 8.0.2(@capacitor/core@8.3.4)
-      '@github/markdown-toolbar-element':
-        specifier: ^2.2.3
-        version: 2.2.3
       '@ionic/core':
         specifier: npm:voyager-ionic-core@8.8.8
         version: voyager-ionic-core@8.8.8
@@ -124,6 +121,9 @@ importers:
       dexie-export-import:
         specifier: ^4.4.0
         version: 4.4.0(dexie@4.4.3)
+      editate:
+        specifier: ^0.6.6
+        version: 0.6.6
       es-toolkit:
         specifier: ^1.47.0
         version: 1.47.0
@@ -1203,9 +1203,6 @@ packages:
     peerDependenciesMeta:
       '@noble/hashes':
         optional: true
-
-  '@github/markdown-toolbar-element@2.2.3':
-    resolution: {integrity: sha512-AlquKGee+IWiAMYVB0xyHFZRMnu4n3X4HTvJHu79GiVJ1ojTukCWyxMlF5NMsecoLcBKsuBhx3QPv2vkE/zQ0A==}
 
   '@hapi/accept@6.0.3':
     resolution: {integrity: sha512-p72f9k56EuF0n3MwlBNThyVE5PXX40g+aQh+C/xbKrfzahM2Oispv3AXmOIU51t3j77zay1qrX7IIziZXspMlw==}
@@ -3285,6 +3282,9 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
+  editate@0.6.6:
+    resolution: {integrity: sha512-OqRVoDrpa47fRLKzr4uuFj/Uzuf/mWS0FGyHPZlQgddOlpp+VD2/EHViX73GYcolY7YRHy0tiZyrt7grO0pWEw==}
 
   editorconfig@1.0.7:
     resolution: {integrity: sha512-e0GOtq/aTQhVdNyDU9e02+wz9oDDM+SIOQxWME2QRjzRX5yyLAuHDE+0aE8vHb9XRC8XD37eO2u57+F09JqFhw==}
@@ -7773,8 +7773,6 @@ snapshots:
     optionalDependencies:
       '@noble/hashes': 1.8.0
 
-  '@github/markdown-toolbar-element@2.2.3': {}
-
   '@hapi/accept@6.0.3':
     dependencies:
       '@hapi/boom': 10.0.1
@@ -10113,6 +10111,10 @@ snapshots:
       readable-stream: 2.3.8
 
   eastasianwidth@0.2.0: {}
+
+  editate@0.6.6:
+    dependencies:
+      '@standard-schema/spec': 1.1.0
 
   editorconfig@1.0.7:
     dependencies:

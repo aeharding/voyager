@@ -1,10 +1,10 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { getSelectionHtml } from "#/helpers/dom";
 
-export default function useEditorHelpers(
-  textareaRef: RefObject<HTMLTextAreaElement | undefined>,
-) {
+import { EditorController } from "./controller";
+
+export default function useEditorHelpers(controller: EditorController) {
   const selectionLocation = useRef(0);
   const selectionLocationEnd = useRef(0);
   const replySelectionRef = useRef<{ text: string; html: string } | undefined>(
@@ -12,10 +12,13 @@ export default function useEditorHelpers(
   );
 
   useEffect(() => {
-    const onChange = () => {
-      selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
-      selectionLocationEnd.current = textareaRef.current?.selectionEnd ?? 0;
+    const updateEditorSelection = () => {
+      const { start, end } = controller.getSelection();
+      selectionLocation.current = start;
+      selectionLocationEnd.current = end;
+    };
 
+    const updateReplySelection = () => {
       // Not great to do this here, but if we don't,
       // safari will sometimes return selection.toString() === "" during onQuote
       const selection = window.getSelection();
@@ -28,44 +31,49 @@ export default function useEditorHelpers(
           : undefined;
     };
 
-    document.addEventListener("selectionchange", onChange);
+    const unsubscribe = controller.subscribe(
+      "selectionchange",
+      updateEditorSelection,
+    );
+    document.addEventListener("selectionchange", updateReplySelection);
 
     return () => {
-      document.removeEventListener("selectionchange", onChange);
+      unsubscribe();
+      document.removeEventListener("selectionchange", updateReplySelection);
     };
-  }, [textareaRef]);
+  }, [controller]);
 
   const insertInline = useCallback(
     (insertText: string, placeCursorFromEnd = 0, selectLength = 0) => {
-      const text = textareaRef.current?.value ?? "";
+      const text = controller.getValue();
       const currentSelectionLocation = selectionLocation.current;
 
       const initiallySelectedText = text
         .slice(selectionLocation.current, selectionLocationEnd.current)
         .trim();
 
-      textareaRef.current?.focus();
+      controller.focus();
 
-      document.execCommand("insertText", false, insertText);
+      controller.insertText(insertText);
 
       const endCursorLocation =
         currentSelectionLocation + insertText.length - placeCursorFromEnd;
 
-      textareaRef.current?.setSelectionRange(
+      controller.setSelection(
         endCursorLocation,
         endCursorLocation + selectLength,
       );
 
       if (initiallySelectedText && selectLength) {
-        document.execCommand("insertText", false, initiallySelectedText);
+        controller.insertText(initiallySelectedText);
       }
     },
-    [textareaRef],
+    [controller],
   );
 
   const insertBlock = useCallback(
     (blockText: string, placeCursorFromEnd = 0, selectLength = 0) => {
-      const text = textareaRef.current?.value ?? "";
+      const text = controller.getValue();
       const currentSelectionLocation = selectionLocation.current;
 
       const before = (() => {
@@ -110,7 +118,7 @@ export default function useEditorHelpers(
         selectLength,
       );
     },
-    [insertInline, textareaRef],
+    [insertInline, controller],
   );
 
   return useMemo(

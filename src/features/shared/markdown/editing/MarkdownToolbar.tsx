@@ -1,4 +1,3 @@
-import "@github/markdown-toolbar-element";
 import { IonContent } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -10,8 +9,6 @@ import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteM
 import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 
 import styles from "./MarkdownToolbar.module.css";
-
-export const TOOLBAR_TARGET_ID = "toolbar-target";
 
 export function MarkdownEditorIonContent(
   props: Omit<React.ComponentProps<typeof IonContent>, "className">,
@@ -44,7 +41,7 @@ export default function MarkdownToolbar({
   slot,
   ...rest
 }: MarkdownToolbarProps) {
-  const { textareaRef } = rest;
+  const { controller } = rest;
 
   const keyboardOpen = useKeyboardOpen();
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -52,10 +49,8 @@ export default function MarkdownToolbar({
   const [mode, setMode] = useState<MarkdownToolbarMode>({ type: "default" });
 
   const calculateMode = useCallback(() => {
-    if (!textareaRef.current) return;
-
-    const text = textareaRef.current.value;
-    const cursorPosition = textareaRef.current.selectionStart;
+    const text = controller.getValue();
+    const cursorPosition = controller.getSelection().start;
 
     // Use a regex to check if the entered text matches the pattern "@username@domain.com"
     const TYPEAHEAD_HANDLE_REGEX =
@@ -115,18 +110,12 @@ export default function MarkdownToolbar({
     }
 
     setMode({ type: "default" });
-  }, [textareaRef]);
+  }, [controller]);
 
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    textarea.addEventListener("input", calculateMode);
-
-    return () => {
-      textarea.removeEventListener("input", calculateMode);
-    };
-  }, [calculateMode, textareaRef]);
+  useEffect(
+    () => controller.subscribe("change", calculateMode),
+    [calculateMode, controller],
+  );
 
   const toolbar = (() => {
     switch (mode.type) {
@@ -141,7 +130,13 @@ export default function MarkdownToolbar({
 
   return (
     <>
-      <div className={styles.toolbarContainer} slot={slot}>
+      <div
+        className={styles.toolbarContainer}
+        slot={slot}
+        // Capture the caret before the toolbar steals focus, so inserts land
+        // at the cursor rather than at the start (contenteditable backend).
+        onPointerDownCapture={() => controller.snapshotSelection()}
+      >
         <div
           className={cx(styles.toolbar, keyboardOpen && styles.keyboardOpen)}
           ref={toolbarRef}

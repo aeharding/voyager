@@ -6,6 +6,7 @@ import {
   KeyboardEvent,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
 } from "react";
 
@@ -14,9 +15,12 @@ import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
+import { useAppSelector } from "#/store";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import MarkdownToolbar, { TOOLBAR_TARGET_ID } from "./MarkdownToolbar";
+import { createTextareaController } from "./controller";
+import MarkdownToolbar from "./MarkdownToolbar";
+import RichTextEditor from "./rich/RichTextEditor";
 import useEditorHelpers from "./useEditorHelpers";
 import useUploadImage from "./useUploadImage";
 
@@ -47,9 +51,21 @@ export default function Editor({
   ref,
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
+  const richMarkdownEditor = useAppSelector(
+    (state) => state.settings.general.richMarkdownEditor,
+  );
   const textareaRef = useRef<HTMLTextAreaElement>(undefined);
+  const mergedRef = useMergedRef(textareaRef, ref);
 
-  const { insertBlock } = useEditorHelpers(textareaRef);
+  const controller = useMemo(
+    () =>
+      // Lazy DOM access — the getter only runs inside handlers/effects, not render
+      // eslint-disable-next-line react-hooks/refs
+      createTextareaController(() => textareaRef.current),
+    [],
+  );
+
+  const { insertBlock } = useEditorHelpers(controller);
 
   const { uploadImage, jsx: uploadImageJsx } = useUploadImage("body");
 
@@ -72,6 +88,20 @@ export default function Editor({
       textareaRef.current?.setSelectionRange(len, len);
     }, 100);
   }, []);
+
+  // Opt-in experimental editor (no toolbar yet — see RICH_MARKDOWN_EDITOR_PLAN.md)
+  if (richMarkdownEditor) {
+    return (
+      <RichTextEditor
+        text={text}
+        setText={setText}
+        onSubmit={onSubmit}
+        onDismiss={onDismiss}
+      >
+        {children}
+      </RichTextEditor>
+    );
+  }
 
   async function onPaste(e: ClipboardEvent) {
     const image = e.clipboardData.files?.[0];
@@ -167,14 +197,13 @@ export default function Editor({
         <TextareaAutosizedForOnScreenKeyboard
           {...preventModalSwipeOnTextSelection}
           className={styles.textarea}
-          ref={useMergedRef(textareaRef, ref)}
+          ref={mergedRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           autoFocus
           autoCapitalize="on"
           autoCorrect="on"
           spellCheck
-          id={TOOLBAR_TARGET_ID}
           onKeyDown={(e) => {
             onKeyUpDownPaste(e);
 
@@ -204,7 +233,7 @@ export default function Editor({
         slot="fixed"
         type="comment"
         text={text}
-        textareaRef={textareaRef}
+        controller={controller}
       />
     </>
   );

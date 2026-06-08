@@ -1,0 +1,88 @@
+.editor {
+  flex: 1 0 auto;
+  min-height: 200px;
+  padding: 16px;
+
+  outline: 0;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  /* Match the textarea's line metrics so the caret feels native */
+  line-height: 1.4;
+
+  /* editate emits one <div data-block> per source line; collapse default margins */
+  & > [data-block] {
+    margin: 0;
+    min-height: 1.4em;
+  }
+
+  /* Code blocks span multiple lines, so style the whole line for a continuous
+     full-width background. No indent — content stays aligned with normal text. */
+  & > [data-block][data-code-block] {
+    font-family: var(--ion-font-family-monospace, monospace);
+    background: var(--ion-color-step-100, rgb(0 0 0 / 7%));
+  }
+}
+
+/* Markdown syntax characters (**, [], #, >, backticks, …) — muted, and reset to
+   normal weight/style so they stay de-emphasized inside bold/italic content */
+.syntax {
+  color: var(--ion-color-medium);
+  font-weight: normal;
+  font-style: normal;
+}
+
+.spoilerSummary {
+  font-weight: 700;
+}
+
+.heading {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heading[data-depth="1"] {
+  font-size: 1.5em;
+}
+
+.heading[data-depth="2"] {
+  font-size: 1.35em;
+}
+
+.heading[data-depth="3"] {
+  font-size: 1.2em;
+}
+
+.heading[data-depth="4"] {
+  font-size: 1.1em;
+}
+
+.heading[data-depth="5"] {
+  font-size: 1em;
+}
+
+.heading[data-depth="6"] {
+  font-size: 0.9em;
+  color: var(--ion-color-medium);
+}
+
+.link {
+  color: var(--ion-color-primary);
+}
+
+.imageAlt {
+  color: var(--ion-color-medium);
+}
+
+/* Quote content reads italic + grey; the `>` marker stays upright via .syntax */
+.blockquote {
+  color: var(--ion-color-medium);
+  font-style: italic;
+}
+
+.code {
+  font-family: var(--ion-font-family-monospace, monospace);
+  background: var(--ion-color-step-100, rgb(0 0 0 / 7%));
+  border-radius: 4px;
+}
