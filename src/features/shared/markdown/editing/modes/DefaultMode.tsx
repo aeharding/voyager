@@ -70,13 +70,8 @@ export default function DefaultMode({
 
   const { uploadImage, jsx } = useUploadImage("body");
 
-  const {
-    insertBlock,
-    insertInline,
-    selectionLocation,
-    selectionLocationEnd,
-    replySelectionRef,
-  } = useEditorHelpers(controller);
+  const { insertBlock, insertInline, replySelectionRef } =
+    useEditorHelpers(controller);
 
   function presentMoreOptions(e: MouseEvent) {
     e.preventDefault();
@@ -188,10 +183,8 @@ export default function DefaultMode({
   function presentLinkInput() {
     controller.focus(); // prevent keyboard flicker
 
-    const selectedText = text.slice(
-      selectionLocation.current,
-      selectionLocationEnd.current,
-    );
+    const { start, end } = controller.getSelection();
+    const selectedText = text.slice(start, end);
     const isUrl =
       selectedText &&
       isValidUrl(selectedText, { checkProtocol: true, allowRelative: false });
@@ -245,37 +238,35 @@ export default function DefaultMode({
 
     const markdownLink = `[${text}](${unwrappedUrl || "url"})`;
 
-    const locationBeforeInsert = selectionLocation.current;
+    const locationBeforeInsert = controller.getSelection().start;
     const currentSelectionLocation = locationBeforeInsert + markdownLink.length;
 
     controller.focus();
     controller.insertText(markdownLink);
 
-    setTimeout(() => {
-      if (!text) {
-        // place cursor inside brackets
-        controller.setSelection(
-          locationBeforeInsert + 1,
-          locationBeforeInsert + 1,
-        );
-      } else if (!url) {
-        // select url placeholder
-        controller.setSelection(
-          currentSelectionLocation - 4,
-          currentSelectionLocation - 1,
-        );
-      } else {
-        // place cursor after link
-        controller.setSelection(
-          currentSelectionLocation,
-          currentSelectionLocation,
-        );
-      }
-    });
+    if (!text) {
+      // place cursor inside brackets
+      controller.setSelection(
+        locationBeforeInsert + 1,
+        locationBeforeInsert + 1,
+      );
+    } else if (!url) {
+      // select url placeholder
+      controller.setSelection(
+        currentSelectionLocation - 4,
+        currentSelectionLocation - 1,
+      );
+    } else {
+      // place cursor after link
+      controller.setSelection(
+        currentSelectionLocation,
+        currentSelectionLocation,
+      );
+    }
   }
 
   function insertAutocomplete(prefix: "@" | "!") {
-    const index = selectionLocation.current;
+    const index = controller.getSelection().start;
 
     // Test previous character to see if separator needed
     const needsSpace = !/^$|\s|\(|\[/.test(text[index - 1] || "");

@@ -72,58 +72,6 @@ function docToText(editor: PlainEditor): string {
     .join("\n");
 }
 
-/** Locate a text node + offset for a global plain-text offset within a block. */
-function offsetWithinBlock(block: HTMLElement, offset: number): [Node, number] {
-  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
-  let remaining = offset;
-  let last: Node | null = null;
-  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    const len = node.textContent?.length ?? 0;
-    if (remaining <= len) return [node, remaining];
-    remaining -= len;
-    last = node;
-  }
-  // Past the end (e.g. an empty line with only a <br>) — clamp to the block end
-  if (last) return [last, last.textContent?.length ?? 0];
-  return [block, 0];
-}
-
-/**
- * Set the DOM selection for a global offset range by walking our own
- * `data-block` line structure. editate's offset→DOM mapping goes stale when
- * React re-renders the decorated children, so we resolve positions ourselves
- * (one block per source line, joined by newlines) and let editate's
- * selectionchange listener sync its model back from the DOM.
- */
-function setDomSelection(host: HTMLElement, start: number, end: number): void {
-  const blocks = Array.from(host.querySelectorAll<HTMLElement>("[data-block]"));
-  if (!blocks.length) return;
-
-  const locate = (offset: number): [Node, number] => {
-    let consumed = 0;
-    for (const block of blocks) {
-      const len = block.textContent?.length ?? 0;
-      if (offset <= consumed + len) {
-        return offsetWithinBlock(block, offset - consumed);
-      }
-      consumed += len + 1; // +1 for the newline between blocks
-    }
-    const lastBlock = blocks[blocks.length - 1]!;
-    return offsetWithinBlock(lastBlock, lastBlock.textContent?.length ?? 0);
-  };
-
-  const [startNode, startOffset] = locate(start);
-  const [endNode, endOffset] = locate(end);
-
-  const range = document.createRange();
-  range.setStart(startNode, startOffset);
-  range.setEnd(endNode, endOffset);
-
-  const selection = window.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
-}
-
 export function createEditateController(
   editor: PlainEditor,
   getHost: () => HTMLElement | null,
@@ -177,12 +125,7 @@ export function createEditateController(
     },
     setSelection: (start, end = start) => {
       committed = [start, end];
-      // Set the model (used by an immediately-following insertText) and the DOM
-      // directly — the latter is robust after a re-render, where editate's own
-      // offset→DOM mapping would otherwise collapse the selection.
       editor.selection = [start, end];
-      const host = getHost();
-      if (host) setDomSelection(host, start, end);
     },
     insertText: (text) => {
       getHost()?.focus();

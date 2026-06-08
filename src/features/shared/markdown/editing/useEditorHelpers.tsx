@@ -5,19 +5,13 @@ import { getSelectionHtml } from "#/helpers/dom";
 import { EditorController } from "./controller";
 
 export default function useEditorHelpers(controller: EditorController) {
-  const selectionLocation = useRef(0);
-  const selectionLocationEnd = useRef(0);
+  // The highlighted document text (e.g. a post being replied to), captured for
+  // the quote button. This is the global window selection, not the editor's.
   const replySelectionRef = useRef<{ text: string; html: string } | undefined>(
     undefined,
   );
 
   useEffect(() => {
-    const updateEditorSelection = () => {
-      const { start, end } = controller.getSelection();
-      selectionLocation.current = start;
-      selectionLocationEnd.current = end;
-    };
-
     const updateReplySelection = () => {
       // Not great to do this here, but if we don't,
       // safari will sometimes return selection.toString() === "" during onQuote
@@ -31,52 +25,32 @@ export default function useEditorHelpers(controller: EditorController) {
           : undefined;
     };
 
-    const unsubscribe = controller.subscribe(
-      "selectionchange",
-      updateEditorSelection,
-    );
     document.addEventListener("selectionchange", updateReplySelection);
-
-    return () => {
-      unsubscribe();
+    return () =>
       document.removeEventListener("selectionchange", updateReplySelection);
-    };
-  }, [controller]);
+  }, []);
 
   const insertInline = useCallback(
     (insertText: string, placeCursorFromEnd = 0, selectLength = 0) => {
       const text = controller.getValue();
-      const currentSelectionLocation = selectionLocation.current;
+      const { start, end } = controller.getSelection();
 
-      const initiallySelectedText = text
-        .slice(selectionLocation.current, selectionLocationEnd.current)
-        .trim();
+      const initiallySelectedText = text.slice(start, end).trim();
 
       controller.focus();
 
       controller.insertText(insertText);
 
-      const endCursorLocation =
-        currentSelectionLocation + insertText.length - placeCursorFromEnd;
+      const endCursorLocation = start + insertText.length - placeCursorFromEnd;
 
-      // Defer the selection until after the editor re-renders, so the
-      // contenteditable backend maps the offsets against the final (decorated)
-      // DOM rather than a transient one — otherwise multi-line inserts like
-      // code blocks land the selection a couple characters off. Re-focus first:
-      // by this point focus may have left the editor (action sheet dismiss),
-      // and a contenteditable only shows a selection while focused.
-      setTimeout(() => {
-        controller.focus();
+      controller.setSelection(
+        endCursorLocation,
+        endCursorLocation + selectLength,
+      );
 
-        controller.setSelection(
-          endCursorLocation,
-          endCursorLocation + selectLength,
-        );
-
-        if (initiallySelectedText && selectLength) {
-          controller.insertText(initiallySelectedText);
-        }
-      });
+      if (initiallySelectedText && selectLength) {
+        controller.insertText(initiallySelectedText);
+      }
     },
     [controller],
   );
@@ -84,40 +58,32 @@ export default function useEditorHelpers(controller: EditorController) {
   const insertBlock = useCallback(
     (blockText: string, placeCursorFromEnd = 0, selectLength = 0) => {
       const text = controller.getValue();
-      const currentSelectionLocation = selectionLocation.current;
+      const location = controller.getSelection().start;
 
       const before = (() => {
         if (
-          text[currentSelectionLocation - 1] &&
-          text[currentSelectionLocation - 1] === "\n" &&
-          text[currentSelectionLocation - 2] &&
-          text[currentSelectionLocation - 2] !== "\n"
+          text[location - 1] &&
+          text[location - 1] === "\n" &&
+          text[location - 2] &&
+          text[location - 2] !== "\n"
         )
           return "\n";
 
-        if (
-          text[currentSelectionLocation - 2] &&
-          text[currentSelectionLocation - 2] !== "\n"
-        )
-          return "\n\n";
+        if (text[location - 2] && text[location - 2] !== "\n") return "\n\n";
 
         return "";
       })();
 
       const after = (() => {
         if (
-          text[currentSelectionLocation] &&
-          text[currentSelectionLocation] === "\n" &&
-          text[currentSelectionLocation + 1] &&
-          text[currentSelectionLocation + 1] !== "\n"
+          text[location] &&
+          text[location] === "\n" &&
+          text[location + 1] &&
+          text[location + 1] !== "\n"
         )
           return "\n";
 
-        if (
-          text[currentSelectionLocation + 1] &&
-          text[currentSelectionLocation + 1] !== "\n"
-        )
-          return "\n\n";
+        if (text[location + 1] && text[location + 1] !== "\n") return "\n\n";
 
         return "";
       })();
@@ -135,16 +101,8 @@ export default function useEditorHelpers(controller: EditorController) {
     () => ({
       insertBlock,
       insertInline,
-      selectionLocation,
-      selectionLocationEnd,
       replySelectionRef,
     }),
-    [
-      insertBlock,
-      insertInline,
-      selectionLocation,
-      selectionLocationEnd,
-      replySelectionRef,
-    ],
+    [insertBlock, insertInline, replySelectionRef],
   );
 }
