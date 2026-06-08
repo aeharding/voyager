@@ -81,7 +81,7 @@ export function createEditateController(
   // Toolbar actions blur the editor — image upload even refocuses it mid-flow —
   // so we keep a "committed" selection: snapshotted when a toolbar interaction
   // begins (pointerdown) and frozen against spurious selection changes until the
-  // action inserts or the user edits again.
+  // action inserts or the user genuinely returns to the editor.
   let committed: readonly [number, number] = editor.selection;
   let frozen = false;
 
@@ -93,13 +93,28 @@ export function createEditateController(
     );
   };
 
+  const release = () => {
+    frozen = false;
+  };
+
+  // The freeze must survive a *spurious* refocus (e.g. closing the image picker
+  // collapses the caret to 0) but end on a *genuine* return to the editor.
+  // Distinguish them: only a real user interaction with the host — a tap, a
+  // key, or an edit — releases the freeze. Listeners are attached lazily once a
+  // snapshot is taken (by which point the host is mounted).
+  let releaseListenersAttached = false;
+  const attachReleaseListeners = () => {
+    const host = getHost();
+    if (!host || releaseListenersAttached) return;
+    releaseListenersAttached = true;
+    host.addEventListener("pointerdown", release);
+    host.addEventListener("keydown", release);
+  };
+
   editor.on("selectionchange", () => {
     if (!frozen && isHostFocused()) committed = editor.selection;
   });
-  // A real edit releases the freeze (e.g. the user cancelled a toolbar action)
-  editor.on("change", () => {
-    frozen = false;
-  });
+  editor.on("change", release);
 
   return {
     getValue: () => docToText(editor),
@@ -122,6 +137,7 @@ export function createEditateController(
     },
     focus: () => getHost()?.focus(),
     snapshotSelection: () => {
+      attachReleaseListeners();
       committed = editor.selection;
       frozen = true;
     },

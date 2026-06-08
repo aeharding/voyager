@@ -89,7 +89,7 @@ export default function Editor({
     }, 100);
   }, []);
 
-  // Opt-in experimental editor (no toolbar yet — see RICH_MARKDOWN_EDITOR_PLAN.md)
+  // Opt-in experimental editor (off by default)
   if (richMarkdownEditor) {
     return (
       <RichTextEditor

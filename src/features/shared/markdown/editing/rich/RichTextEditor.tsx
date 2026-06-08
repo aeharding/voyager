@@ -24,7 +24,6 @@ export interface RichTextEditorProps {
  * setting). Built on editate's plain editor + a remark decorator so markdown
  * renders styled while typing. The contents stay plain markdown text. The whole
  * toolbar — including bold/italic/quote — is wired through the EditorController.
- * See RICH_MARKDOWN_EDITOR_PLAN.md.
  */
 export default function RichTextEditor({
   text,
