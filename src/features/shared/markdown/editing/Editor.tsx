@@ -3,7 +3,6 @@ import {
   ClipboardEvent,
   Dispatch,
   DragEvent,
-  KeyboardEvent,
   SetStateAction,
   useEffect,
   useState,
@@ -18,15 +17,13 @@ import { useAppSelector } from "#/store";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
 import { createTextareaEditor } from "./controller";
+import { continueListOnEnter } from "./listContinuation";
 import MarkdownToolbar from "./MarkdownToolbar";
 import RichTextEditor from "./rich/RichTextEditor";
 import useEditorHelpers from "./useEditorHelpers";
 import useUploadImage from "./useUploadImage";
 
 import styles from "./Editor.module.css";
-
-const ORDERED_LIST_REGEX = /^(\d)\. /;
-const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;
 
 export interface EditorProps {
   text: string;
@@ -130,54 +127,6 @@ export default function Editor({
     event.preventDefault();
   }
 
-  async function autocompleteListIfNeeded(e: KeyboardEvent) {
-    const textarea = getTextarea();
-    if (!textarea || textarea.selectionStart !== textarea.selectionStart)
-      return;
-
-    const currentText = textarea.value.slice(0, textarea.selectionStart); // -1: already hit enter
-
-    const lastNewlineIndex = currentText.lastIndexOf("\n") ?? 0;
-
-    const lastLine = currentText.slice(
-      lastNewlineIndex + 1,
-      currentText.length,
-    );
-
-    const orderedMatch = lastLine.match(ORDERED_LIST_REGEX);
-    if (orderedMatch?.[1]) {
-      const listNumber = +orderedMatch[1];
-      if (listNumber >= 9) return; // only support up to 9 items for now to avoid annoying autocomplete
-
-      // if pressing <enter> on empty list item, bail and remove empty item
-      if (orderedMatch[0] === lastLine) {
-        textarea.setSelectionRange(
-          textarea.selectionStart - orderedMatch[0].length,
-          textarea.selectionStart,
-        );
-        return;
-      }
-
-      e.preventDefault();
-      document.execCommand("insertText", false, `\n${listNumber + 1}. `);
-    }
-
-    const unorderedMatch = lastLine.match(UNORDERED_LIST_REGEX);
-    if (unorderedMatch?.[1]) {
-      // if pressing <enter> on empty list item, bail and remove empty item
-      if (unorderedMatch[0] === lastLine) {
-        textarea.setSelectionRange(
-          textarea.selectionStart - unorderedMatch[0].length,
-          textarea.selectionStart,
-        );
-        return;
-      }
-
-      e.preventDefault();
-      document.execCommand("insertText", false, `\n${unorderedMatch?.[1]} `);
-    }
-  }
-
   return (
     <>
       {uploadImageJsx}
@@ -202,7 +151,7 @@ export default function Editor({
                 if (e.ctrlKey || e.metaKey) {
                   onSubmit?.();
                 } else {
-                  autocompleteListIfNeeded(e);
+                  continueListOnEnter(controller, e);
                 }
                 break;
               }
