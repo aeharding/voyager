@@ -53,15 +53,10 @@ jobs:
 
       - name: Build project
         run: pnpm build
-        env:
-          VITE_FORCE_LEMMY_INSECURE: 1
-          VITE_CUSTOM_LEMMY_SERVERS: localhost:8536
 
       - name: Install Playwright browser
         run: pnpm playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run Playwright tests
-        run: |
-          docker compose -f e2e/ci/docker-compose.yml up -d
-          sleep 10
-          pnpm exec playwright test --project="${{ matrix.project }}"
+        # The specs are fully page.route-mocked (no real Lemmy server needed).
+        run: pnpm exec playwright test --project="${{ matrix.project }}"
