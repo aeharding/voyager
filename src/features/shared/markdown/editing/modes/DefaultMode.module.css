@@ -1,26 +1,14 @@
 .buttons {
   display: flex;
-  align-items: center;
-  justify-content: space-evenly;
 
   height: 100%;
 
+  /* Each toolbar item (the upload <label> + the action <button>s) takes an
+     equal, full-height slice of the row. Icon centering lives on .button (and
+     the label's inner .button), so this only handles sizing. */
   > * {
     flex: 1;
     height: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    button {
-      height: 100%;
-      width: 100%;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
 }
 
