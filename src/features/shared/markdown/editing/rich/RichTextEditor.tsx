@@ -10,6 +10,7 @@ import {
 import { cx } from "#/helpers/css";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
+import { continueListOnEnter } from "../listContinuation";
 import MarkdownToolbar from "../MarkdownToolbar";
 import { createRichEditor } from "./createRichEditor";
 import { decorateMarkdown } from "./markdownDecorator";
@@ -110,6 +111,8 @@ function RichTextEditorInstance({
         if (e.ctrlKey || e.metaKey) {
           e.preventDefault();
           onSubmit?.();
+        } else {
+          continueListOnEnter(controller, e);
         }
         break;
       case "Escape":
