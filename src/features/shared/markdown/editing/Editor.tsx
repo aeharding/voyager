@@ -6,8 +6,7 @@ import {
   KeyboardEvent,
   SetStateAction,
   useEffect,
-  useMemo,
-  useRef,
+  useState,
 } from "react";
 
 import { useOnPaste } from "#/helpers/clipboard";
@@ -18,7 +17,7 @@ import useTextRecovery from "#/helpers/useTextRecovery";
 import { useAppSelector } from "#/store";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import { createTextareaController } from "./controller";
+import { createTextareaEditor } from "./controller";
 import MarkdownToolbar from "./MarkdownToolbar";
 import RichTextEditor from "./rich/RichTextEditor";
 import useEditorHelpers from "./useEditorHelpers";
@@ -54,16 +53,11 @@ export default function Editor({
   const richMarkdownEditor = useAppSelector(
     (state) => state.settings.general.richMarkdownEditor,
   );
-  const textareaRef = useRef<HTMLTextAreaElement>(undefined);
-  const mergedRef = useMergedRef(textareaRef, ref);
-
-  const controller = useMemo(
-    () =>
-      // Lazy DOM access — the getter only runs inside handlers/effects, not render
-      // eslint-disable-next-line react-hooks/refs
-      createTextareaController(() => textareaRef.current),
-    [],
-  );
+  // The element lives in the factory (set via a ref callback), so nothing reads
+  // a React ref during render — keeping this component React-Compiler-compilable.
+  const [{ controller, setTextarea, getTextarea }] =
+    useState(createTextareaEditor);
+  const mergedRef = useMergedRef(setTextarea, ref);
 
   const { insertBlock } = useEditorHelpers(controller);
 
@@ -75,19 +69,20 @@ export default function Editor({
   useTextRecovery(text, setText, !canRecoverText);
 
   useEffect(() => {
-    textareaRef.current?.focus({ preventScroll: true });
+    getTextarea()?.focus({ preventScroll: true });
 
     // iOS safari native has race sometimes
     setTimeout(() => {
-      if (!textareaRef.current) return;
+      const textarea = getTextarea();
+      if (!textarea) return;
 
-      textareaRef.current.focus({ preventScroll: true });
+      textarea.focus({ preventScroll: true });
 
       // Place cursor at end
-      const len = textareaRef.current.value.length;
-      textareaRef.current?.setSelectionRange(len, len);
+      const len = textarea.value.length;
+      textarea.setSelectionRange(len, len);
     }, 100);
-  }, []);
+  }, [getTextarea]);
 
   // Opt-in experimental editor (off by default)
   if (richMarkdownEditor) {
@@ -127,7 +122,7 @@ export default function Editor({
   async function onReceivedImage(image: File) {
     const markdown = await uploadImage(image, true);
 
-    textareaRef.current?.focus();
+    getTextarea()?.focus();
     insertBlock(markdown);
   }
 
@@ -136,16 +131,11 @@ export default function Editor({
   }
 
   async function autocompleteListIfNeeded(e: KeyboardEvent) {
-    if (
-      !textareaRef.current ||
-      textareaRef.current.selectionStart !== textareaRef.current.selectionStart
-    )
+    const textarea = getTextarea();
+    if (!textarea || textarea.selectionStart !== textarea.selectionStart)
       return;
 
-    const currentText = textareaRef.current.value.slice(
-      0,
-      textareaRef.current.selectionStart,
-    ); // -1: already hit enter
+    const currentText = textarea.value.slice(0, textarea.selectionStart); // -1: already hit enter
 
     const lastNewlineIndex = currentText.lastIndexOf("\n") ?? 0;
 
@@ -161,9 +151,9 @@ export default function Editor({
 
       // if pressing <enter> on empty list item, bail and remove empty item
       if (orderedMatch[0] === lastLine) {
-        textareaRef.current.setSelectionRange(
-          textareaRef.current.selectionStart - orderedMatch[0].length,
-          textareaRef.current.selectionStart,
+        textarea.setSelectionRange(
+          textarea.selectionStart - orderedMatch[0].length,
+          textarea.selectionStart,
         );
         return;
       }
@@ -176,9 +166,9 @@ export default function Editor({
     if (unorderedMatch?.[1]) {
       // if pressing <enter> on empty list item, bail and remove empty item
       if (unorderedMatch[0] === lastLine) {
-        textareaRef.current.setSelectionRange(
-          textareaRef.current.selectionStart - unorderedMatch[0].length,
-          textareaRef.current.selectionStart,
+        textarea.setSelectionRange(
+          textarea.selectionStart - unorderedMatch[0].length,
+          textarea.selectionStart,
         );
         return;
       }

@@ -64,6 +64,35 @@ export function createTextareaController(
   };
 }
 
+export interface TextareaEditor {
+  controller: EditorController;
+  /** Ref callback for the `<textarea>`. */
+  setTextarea: (node: HTMLTextAreaElement | null) => void;
+  /**
+   * The current `<textarea>`, for imperative use in effects/handlers. It's a
+   * plain closure variable (not a React ref), so reaching the DOM through it
+   * never reads a ref during render — which keeps the component compilable by
+   * the React Compiler. Mirrors `createRichEditor`'s `setHost` host handling.
+   */
+  getTextarea: () => HTMLTextAreaElement | null;
+}
+
+/**
+ * Bundles a textarea {@link EditorController} with the element it operates on,
+ * captured via a ref callback into a plain variable (never a React ref read
+ * during render).
+ */
+export function createTextareaEditor(): TextareaEditor {
+  let textarea: HTMLTextAreaElement | null = null;
+  return {
+    controller: createTextareaController(() => textarea),
+    setTextarea: (node) => {
+      textarea = node;
+    },
+    getTextarea: () => textarea,
+  };
+}
+
 type PlainEditor = ReturnType<typeof createPlainEditor>;
 
 function docToText(editor: PlainEditor): string {
