@@ -7,7 +7,14 @@ import { parseUriList } from "#/helpers/url";
 
 type TargetType = "markdown" | "url";
 
-export function useOnPaste(targetType: TargetType) {
+export function useOnPaste(
+  targetType: TargetType,
+  // How to insert the parsed text. Defaults to `execCommand` (fine for a plain
+  // <input>/<textarea>), but the editate rich editor must insert through its
+  // controller — `execCommand` doesn't sync editate's model.
+  insert: (text: string) => void = (text) =>
+    document.execCommand("insertText", false, text),
+) {
   const onPastePlainRef = useRef(false);
 
   function onKeyUpDown(e: KeyboardEvent) {
@@ -25,7 +32,7 @@ export function useOnPaste(targetType: TargetType) {
     if (!toInsert) return;
 
     e.preventDefault();
-    document.execCommand("insertText", false, toInsert);
+    insert(toInsert);
   }
 
   return {
