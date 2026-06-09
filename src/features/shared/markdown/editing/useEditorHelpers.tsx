@@ -1,21 +1,18 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { getSelectionHtml } from "#/helpers/dom";
 
-export default function useEditorHelpers(
-  textareaRef: RefObject<HTMLTextAreaElement | undefined>,
-) {
-  const selectionLocation = useRef(0);
-  const selectionLocationEnd = useRef(0);
+import { EditorController } from "./controller";
+
+export default function useEditorHelpers(controller: EditorController) {
+  // The highlighted document text (e.g. a post being replied to), captured for
+  // the quote button. This is the global window selection, not the editor's.
   const replySelectionRef = useRef<{ text: string; html: string } | undefined>(
     undefined,
   );
 
   useEffect(() => {
-    const onChange = () => {
-      selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
-      selectionLocationEnd.current = textareaRef.current?.selectionEnd ?? 0;
-
+    const updateReplySelection = () => {
       // Not great to do this here, but if we don't,
       // safari will sometimes return selection.toString() === "" during onQuote
       const selection = window.getSelection();
@@ -28,78 +25,65 @@ export default function useEditorHelpers(
           : undefined;
     };
 
-    document.addEventListener("selectionchange", onChange);
-
-    return () => {
-      document.removeEventListener("selectionchange", onChange);
-    };
-  }, [textareaRef]);
+    document.addEventListener("selectionchange", updateReplySelection);
+    return () =>
+      document.removeEventListener("selectionchange", updateReplySelection);
+  }, []);
 
   const insertInline = useCallback(
     (insertText: string, placeCursorFromEnd = 0, selectLength = 0) => {
-      const text = textareaRef.current?.value ?? "";
-      const currentSelectionLocation = selectionLocation.current;
+      const text = controller.getValue();
+      const { start, end } = controller.getSelection();
 
-      const initiallySelectedText = text
-        .slice(selectionLocation.current, selectionLocationEnd.current)
-        .trim();
+      const initiallySelectedText = text.slice(start, end).trim();
 
-      textareaRef.current?.focus();
+      controller.focus();
 
-      document.execCommand("insertText", false, insertText);
+      controller.insertText(insertText);
 
-      const endCursorLocation =
-        currentSelectionLocation + insertText.length - placeCursorFromEnd;
+      const endCursorLocation = start + insertText.length - placeCursorFromEnd;
 
-      textareaRef.current?.setSelectionRange(
+      controller.setSelection(
         endCursorLocation,
         endCursorLocation + selectLength,
       );
 
       if (initiallySelectedText && selectLength) {
-        document.execCommand("insertText", false, initiallySelectedText);
+        controller.insertText(initiallySelectedText);
       }
     },
-    [textareaRef],
+    [controller],
   );
 
   const insertBlock = useCallback(
     (blockText: string, placeCursorFromEnd = 0, selectLength = 0) => {
-      const text = textareaRef.current?.value ?? "";
-      const currentSelectionLocation = selectionLocation.current;
+      const text = controller.getValue();
+      const location = controller.getSelection().start;
 
       const before = (() => {
         if (
-          text[currentSelectionLocation - 1] &&
-          text[currentSelectionLocation - 1] === "\n" &&
-          text[currentSelectionLocation - 2] &&
-          text[currentSelectionLocation - 2] !== "\n"
+          text[location - 1] &&
+          text[location - 1] === "\n" &&
+          text[location - 2] &&
+          text[location - 2] !== "\n"
         )
           return "\n";
 
-        if (
-          text[currentSelectionLocation - 2] &&
-          text[currentSelectionLocation - 2] !== "\n"
-        )
-          return "\n\n";
+        if (text[location - 2] && text[location - 2] !== "\n") return "\n\n";
 
         return "";
       })();
 
       const after = (() => {
         if (
-          text[currentSelectionLocation] &&
-          text[currentSelectionLocation] === "\n" &&
-          text[currentSelectionLocation + 1] &&
-          text[currentSelectionLocation + 1] !== "\n"
+          text[location] &&
+          text[location] === "\n" &&
+          text[location + 1] &&
+          text[location + 1] !== "\n"
         )
           return "\n";
 
-        if (
-          text[currentSelectionLocation + 1] &&
-          text[currentSelectionLocation + 1] !== "\n"
-        )
-          return "\n\n";
+        if (text[location + 1] && text[location + 1] !== "\n") return "\n\n";
 
         return "";
       })();
@@ -110,23 +94,15 @@ export default function useEditorHelpers(
         selectLength,
       );
     },
-    [insertInline, textareaRef],
+    [insertInline, controller],
   );
 
   return useMemo(
     () => ({
       insertBlock,
       insertInline,
-      selectionLocation,
-      selectionLocationEnd,
       replySelectionRef,
     }),
-    [
-      insertBlock,
-      insertInline,
-      selectionLocation,
-      selectionLocationEnd,
-      replySelectionRef,
-    ],
+    [insertBlock, insertInline, replySelectionRef],
   );
 }

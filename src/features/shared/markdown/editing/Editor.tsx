@@ -6,7 +6,7 @@ import {
   KeyboardEvent,
   SetStateAction,
   useEffect,
-  useRef,
+  useState,
 } from "react";
 
 import { useOnPaste } from "#/helpers/clipboard";
@@ -14,9 +14,12 @@ import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
+import { useAppSelector } from "#/store";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import MarkdownToolbar, { TOOLBAR_TARGET_ID } from "./MarkdownToolbar";
+import { createTextareaEditor } from "./controller";
+import MarkdownToolbar from "./MarkdownToolbar";
+import RichTextEditor from "./rich/RichTextEditor";
 import useEditorHelpers from "./useEditorHelpers";
 import useUploadImage from "./useUploadImage";
 
@@ -47,9 +50,16 @@ export default function Editor({
   ref,
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
-  const textareaRef = useRef<HTMLTextAreaElement>(undefined);
+  const richMarkdownEditor = useAppSelector(
+    (state) => state.settings.general.richMarkdownEditor,
+  );
+  // The element lives in the factory (set via a ref callback), so nothing reads
+  // a React ref during render — keeping this component React-Compiler-compilable.
+  const [{ controller, setTextarea, getTextarea }] =
+    useState(createTextareaEditor);
+  const mergedRef = useMergedRef(setTextarea, ref);
 
-  const { insertBlock } = useEditorHelpers(textareaRef);
+  const { insertBlock } = useEditorHelpers(controller);
 
   const { uploadImage, jsx: uploadImageJsx } = useUploadImage("body");
 
@@ -59,19 +69,34 @@ export default function Editor({
   useTextRecovery(text, setText, !canRecoverText);
 
   useEffect(() => {
-    textareaRef.current?.focus({ preventScroll: true });
+    getTextarea()?.focus({ preventScroll: true });
 
     // iOS safari native has race sometimes
     setTimeout(() => {
-      if (!textareaRef.current) return;
+      const textarea = getTextarea();
+      if (!textarea) return;
 
-      textareaRef.current.focus({ preventScroll: true });
+      textarea.focus({ preventScroll: true });
 
       // Place cursor at end
-      const len = textareaRef.current.value.length;
-      textareaRef.current?.setSelectionRange(len, len);
+      const len = textarea.value.length;
+      textarea.setSelectionRange(len, len);
     }, 100);
-  }, []);
+  }, [getTextarea]);
+
+  // Opt-in experimental editor (off by default)
+  if (richMarkdownEditor) {
+    return (
+      <RichTextEditor
+        text={text}
+        setText={setText}
+        onSubmit={onSubmit}
+        onDismiss={onDismiss}
+      >
+        {children}
+      </RichTextEditor>
+    );
+  }
 
   async function onPaste(e: ClipboardEvent) {
     const image = e.clipboardData.files?.[0];
@@ -97,7 +122,7 @@ export default function Editor({
   async function onReceivedImage(image: File) {
     const markdown = await uploadImage(image, true);
 
-    textareaRef.current?.focus();
+    getTextarea()?.focus();
     insertBlock(markdown);
   }
 
@@ -106,16 +131,11 @@ export default function Editor({
   }
 
   async function autocompleteListIfNeeded(e: KeyboardEvent) {
-    if (
-      !textareaRef.current ||
-      textareaRef.current.selectionStart !== textareaRef.current.selectionStart
-    )
+    const textarea = getTextarea();
+    if (!textarea || textarea.selectionStart !== textarea.selectionStart)
       return;
 
-    const currentText = textareaRef.current.value.slice(
-      0,
-      textareaRef.current.selectionStart,
-    ); // -1: already hit enter
+    const currentText = textarea.value.slice(0, textarea.selectionStart); // -1: already hit enter
 
     const lastNewlineIndex = currentText.lastIndexOf("\n") ?? 0;
 
@@ -131,9 +151,9 @@ export default function Editor({
 
       // if pressing <enter> on empty list item, bail and remove empty item
       if (orderedMatch[0] === lastLine) {
-        textareaRef.current.setSelectionRange(
-          textareaRef.current.selectionStart - orderedMatch[0].length,
-          textareaRef.current.selectionStart,
+        textarea.setSelectionRange(
+          textarea.selectionStart - orderedMatch[0].length,
+          textarea.selectionStart,
         );
         return;
       }
@@ -146,9 +166,9 @@ export default function Editor({
     if (unorderedMatch?.[1]) {
       // if pressing <enter> on empty list item, bail and remove empty item
       if (unorderedMatch[0] === lastLine) {
-        textareaRef.current.setSelectionRange(
-          textareaRef.current.selectionStart - unorderedMatch[0].length,
-          textareaRef.current.selectionStart,
+        textarea.setSelectionRange(
+          textarea.selectionStart - unorderedMatch[0].length,
+          textarea.selectionStart,
         );
         return;
       }
@@ -167,14 +187,13 @@ export default function Editor({
         <TextareaAutosizedForOnScreenKeyboard
           {...preventModalSwipeOnTextSelection}
           className={styles.textarea}
-          ref={useMergedRef(textareaRef, ref)}
+          ref={mergedRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           autoFocus
           autoCapitalize="on"
           autoCorrect="on"
           spellCheck
-          id={TOOLBAR_TARGET_ID}
           onKeyDown={(e) => {
             onKeyUpDownPaste(e);
 
@@ -204,7 +223,7 @@ export default function Editor({
         slot="fixed"
         type="comment"
         text={text}
-        textareaRef={textareaRef}
+        controller={controller}
       />
     </>
   );

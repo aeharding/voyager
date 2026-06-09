@@ -39,7 +39,7 @@ export default function GenericAutocompleteMode<
   match,
   prefix,
   index,
-  textareaRef,
+  controller,
 }: GenericAutocompleteModeProps<I>) {
   const [items, setItems] = useState<I[]>([]);
 
@@ -61,13 +61,10 @@ export default function GenericAutocompleteMode<
   function select(item: I) {
     const md = `${buildMd(item)} `;
 
-    textareaRef.current?.focus();
+    controller.focus();
 
-    textareaRef.current?.setSelectionRange(
-      index,
-      index + prefix.length + match.length,
-    );
-    document.execCommand("insertText", false, md);
+    controller.setSelection(index, index + prefix.length + match.length);
+    controller.insertText(md);
   }
 
   return (

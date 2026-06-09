@@ -70,6 +70,7 @@ export interface GlobalSettingValueTypes {
   remember_community_comment_sort: boolean;
   remember_community_post_sort: boolean;
   remember_post_appearance_type: boolean;
+  rich_markdown_editor: boolean;
   show_collapsed_comment: boolean;
   show_comment_images: boolean;
   show_community_icons: boolean;
@@ -153,6 +154,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "remember_community_comment_sort",
   "remember_community_post_sort",
   "remember_post_appearance_type",
+  "rich_markdown_editor",
   "show_collapsed_comment",
   "show_comment_images",
   "show_community_icons",
