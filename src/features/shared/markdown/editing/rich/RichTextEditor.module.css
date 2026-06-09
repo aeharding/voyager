@@ -25,34 +25,35 @@
     background: var(--ion-color-step-100, rgb(0 0 0 / 7%));
   }
 
-  /* Heading sizing lives on the line div so the `#` markers and the line metrics
-     scale together; the markers stay muted via .syntax (which resets weight). */
-  & > [data-block][data-heading] {
+  /* Heading sizing lives on the line div (keyed by data-depth, set only on
+     headings) so the `#` markers and the line metrics scale together; the
+     markers stay muted via .syntax (which resets weight). */
+  & > [data-block][data-depth] {
     font-weight: 700;
     line-height: 1.2;
   }
 
-  & > [data-block][data-heading][data-depth="1"] {
+  & > [data-block][data-depth="1"] {
     font-size: 1.5em;
   }
 
-  & > [data-block][data-heading][data-depth="2"] {
+  & > [data-block][data-depth="2"] {
     font-size: 1.35em;
   }
 
-  & > [data-block][data-heading][data-depth="3"] {
+  & > [data-block][data-depth="3"] {
     font-size: 1.2em;
   }
 
-  & > [data-block][data-heading][data-depth="4"] {
+  & > [data-block][data-depth="4"] {
     font-size: 1.1em;
   }
 
-  & > [data-block][data-heading][data-depth="5"] {
+  & > [data-block][data-depth="5"] {
     font-size: 1em;
   }
 
-  & > [data-block][data-heading][data-depth="6"] {
+  & > [data-block][data-depth="6"] {
     font-size: 0.9em;
     color: var(--ion-color-medium);
   }

@@ -5,6 +5,8 @@ import type { ReactElement, ReactNode } from "react";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 
+import { cx } from "#/helpers/css";
+
 import customRemarkGfm from "../../customRemarkGfm";
 
 import styles from "./RichTextEditor.module.css";
@@ -26,36 +28,12 @@ import styles from "./RichTextEditor.module.css";
  * becomes a direct token-type → style mapping, which is how syntax highlighters
  * work and why this handles markdown's nesting/edge cases for free.
  *
- * One subtlety the algorithm accounts for: micromark can emit *overlapping*
- * leaf tokens (a `lineEnding` `"\n> "` alongside the `blockQuoteMarker` `">"`
- * inside it). We resolve overlaps by painting the narrowest token last, so each
- * character is owned by its most specific token.
+ * The pipeline: `collectLeaves` (tokenize) → `ownerByOffset` (assign each
+ * character to its token) → per line, `lineRuns` (group) + `blockStyle` (line
+ * attributes) → one `<div data-block>`.
  */
 
-/** Leaf token types that are pure markdown syntax — rendered muted (grey). */
-const SYNTAX_LEAF = new Set<string>([
-  "strongSequence",
-  "emphasisSequence",
-  "strikethroughSequence",
-  "atxHeadingSequence",
-  "codeTextSequence",
-  "codeFencedFenceSequence",
-  "labelMarker",
-  "labelImageMarker",
-  "resourceMarker",
-  "supMarker",
-  "subMarker",
-  "spoilerSequence",
-  "spoilerKeyword",
-  "listItemMarker",
-  "listItemValue",
-  "listItemPrefixWhitespace",
-  "blockQuoteMarker",
-  "blockQuotePrefixWhitespace",
-  "escapeMarker",
-  "thematicBreakSequence",
-  "whitespace",
-]);
+// --- Tokenizing ------------------------------------------------------------
 
 type ParseOptions = NonNullable<Parameters<typeof parse>[0]>;
 
@@ -86,9 +64,10 @@ interface Leaf {
 }
 
 /**
- * A leaf is a token whose `exit` immediately follows its `enter` (no children).
- * Leaves carry the actual source characters; their ancestor stack carries the
- * semantic context (inside strong/emphasis/link/codeFenced/…).
+ * Tokenizes the source into its *leaf* tokens — a token whose `exit` immediately
+ * follows its `enter` (no children). Leaves carry the actual source characters;
+ * their ancestor stack carries the semantic context (inside
+ * strong/emphasis/link/codeFenced/…).
  */
 function collectLeaves(source: string): Leaf[] {
   const events = postprocess(
@@ -123,67 +102,114 @@ function collectLeaves(source: string): Leaf[] {
 }
 
 /**
- * Maps each source offset to the index of the leaf that owns it. Overlaps are
- * resolved narrowest-last (widest painted first) so the most specific token
- * wins; uncovered offsets stay `-1` (rendered as plain text, preserving the
- * text-fidelity invariant).
+ * Maps each source offset to the leaf that owns it. micromark can emit
+ * *overlapping* leaves (a `lineEnding` `"\n> "` alongside the `blockQuoteMarker`
+ * `">"` inside it); we resolve that by painting widest-first so the *narrowest*
+ * (most specific) token wins. Offsets with no token stay `undefined` and render
+ * as plain text — preserving the text-fidelity invariant.
  */
-function paint(leaves: Leaf[], length: number): Int32Array {
-  const owners = new Int32Array(length).fill(-1);
-  const order = [...leaves.keys()].sort(
-    (a, b) =>
-      leaves[b]!.end - leaves[b]!.start - (leaves[a]!.end - leaves[a]!.start),
-  );
-  for (const idx of order) {
-    const leaf = leaves[idx]!;
-    for (let o = leaf.start; o < leaf.end && o < length; o++) owners[o] = idx;
+function ownerByOffset(leaves: Leaf[], length: number): (Leaf | undefined)[] {
+  const owners: (Leaf | undefined)[] = new Array(length);
+  const width = (leaf: Leaf) => leaf.end - leaf.start;
+
+  for (const leaf of [...leaves].sort((a, b) => width(b) - width(a))) {
+    for (let o = leaf.start; o < leaf.end && o < length; o++) owners[o] = leaf;
   }
   return owners;
 }
 
-/** The CSS classes a content leaf earns from its type + ancestor context. */
+// --- Styling ---------------------------------------------------------------
+
+/** Leaf token types that are pure markdown syntax — rendered muted (grey). */
+const SYNTAX_LEAF = new Set<string>([
+  "strongSequence",
+  "emphasisSequence",
+  "strikethroughSequence",
+  "atxHeadingSequence",
+  "codeTextSequence",
+  "codeFencedFenceSequence",
+  "labelMarker",
+  "labelImageMarker",
+  "resourceMarker",
+  "supMarker",
+  "subMarker",
+  "spoilerSequence",
+  "spoilerKeyword",
+  "listItemMarker",
+  "listItemValue",
+  "listItemPrefixWhitespace",
+  "blockQuoteMarker",
+  "blockQuotePrefixWhitespace",
+  "escapeMarker",
+  "thematicBreakSequence",
+  "whitespace",
+]);
+
+/** The CSS class string a leaf earns from its token type + ancestor context. */
 function classNamesFor(leaf: Leaf): string {
   const { type, stack } = leaf;
+  const within = (ancestor: string) => stack.includes(ancestor);
 
-  // Syntax markers (and the fenced-code language) read muted.
-  if (SYNTAX_LEAF.has(type) || stack.includes("codeFencedFenceInfo")) {
-    // The `^`/`~` markers stay muted but ride their content's vertical shift,
-    // so the whole `^x^` / `~x~` sits raised/lowered together.
-    if (type === "supMarker") return `${styles.syntax} ${styles.sup}`;
-    if (type === "subMarker") return `${styles.syntax} ${styles.sub}`;
-    return styles.syntax!;
+  // Syntax markers (incl. the fenced-code language) read muted. The ^/~ markers
+  // also ride their content's vertical shift, so the whole ^x^ / ~x~ moves as one.
+  if (SYNTAX_LEAF.has(type) || within("codeFencedFenceInfo")) {
+    return cx(
+      styles.syntax,
+      type === "supMarker" && styles.sup,
+      type === "subMarker" && styles.sub,
+    );
   }
 
   const isCode = type === "codeFlowValue" || type === "codeTextData";
-  const cls: string[] = [];
 
-  if (type === "codeFlowValue") cls.push(styles.codeContent!); // mono, bg on div
-  if (type === "codeTextData") cls.push(styles.code!); // inline: mono + bg
-
-  if (stack.includes("strong")) cls.push(styles.bold!);
-  if (stack.includes("emphasis")) cls.push(styles.italic!);
-  if (stack.includes("strikethrough")) cls.push(styles.strike!);
-  if (stack.includes("sup")) cls.push(styles.sup!);
-  if (stack.includes("sub")) cls.push(styles.sub!);
-  if (stack.includes("spoilerName")) cls.push(styles.spoilerSummary!);
-
-  if (stack.includes("image")) {
-    // alt text muted; the URL (resourceDestination) stays link-colored
-    cls.push(
-      stack.includes("resourceDestination") ? styles.link! : styles.imageAlt!,
-    );
-  } else if (stack.includes("link")) {
-    cls.push(styles.link!);
-  }
-
-  // Quote prose reads italic + grey, but not its code (code stays monospace).
-  if (stack.includes("blockQuote") && !isCode) cls.push(styles.blockquote!);
-
-  return cls.join(" ");
+  return cx(
+    type === "codeFlowValue" && styles.codeContent, // block code: mono (bg on div)
+    type === "codeTextData" && styles.code, //         inline code: mono + bg
+    within("strong") && styles.bold,
+    within("emphasis") && styles.italic,
+    within("strikethrough") && styles.strike,
+    within("sup") && styles.sup,
+    within("sub") && styles.sub,
+    within("spoilerName") && styles.spoilerSummary,
+    // image alt reads muted; its URL (and a link's label + URL) read link-colored
+    within("image") &&
+      (within("resourceDestination") ? styles.link : styles.imageAlt),
+    within("link") && styles.link,
+    // quote prose reads italic + grey, but code inside it stays monospace
+    within("blockQuote") && !isCode && styles.blockquote,
+  );
 }
 
-function renderRun(leaf: Leaf, text: string, key: number): ReactNode {
-  const className = classNamesFor(leaf);
+// --- Per-line rendering ----------------------------------------------------
+
+interface Run {
+  key: number;
+  text: string;
+  /** The token owning this run, or `undefined` for undecorated plain text. */
+  leaf: Leaf | undefined;
+}
+
+/** Groups a line's `[start, end)` offsets into runs of consecutive same-owner chars. */
+function lineRuns(
+  start: number,
+  end: number,
+  source: string,
+  owners: (Leaf | undefined)[],
+): Run[] {
+  const runs: Run[] = [];
+  let o = start;
+  while (o < end) {
+    const leaf = owners[o];
+    let j = o + 1;
+    while (j < end && owners[j] === leaf) j++;
+    runs.push({ key: o, text: source.slice(o, j), leaf });
+    o = j;
+  }
+  return runs;
+}
+
+function renderRun({ key, text, leaf }: Run): ReactNode {
+  const className = leaf && classNamesFor(leaf);
   return className ? (
     <span key={key} className={className}>
       {text}
@@ -194,66 +220,56 @@ function renderRun(leaf: Leaf, text: string, key: number): ReactNode {
 }
 
 /**
+ * Block-level styling for a line, derived from the tokens it contains: code
+ * blocks get a full-width background; headings get their size on the div (so the
+ * `#` markers and line metrics scale together). `headingDepth` is 0 when the
+ * line isn't a heading.
+ */
+function blockStyle(runs: Run[]): { codeBlock: boolean; headingDepth: number } {
+  const leaves = runs.flatMap((run) => (run.leaf ? [run.leaf] : []));
+  const within = (ancestor: string) =>
+    leaves.some((leaf) => leaf.stack.includes(ancestor));
+  const heading = leaves.find((leaf) => leaf.type === "atxHeadingSequence");
+
+  return {
+    codeBlock: within("codeFenced") || within("codeIndented"),
+    headingDepth: heading ? heading.end - heading.start : 0,
+  };
+}
+
+/** The `[start, end)` source offsets of each newline-separated line. */
+function lineRanges(source: string): Array<[start: number, end: number]> {
+  const ranges: Array<[number, number]> = [];
+  let start = 0;
+  for (const line of source.split("\n")) {
+    ranges.push([start, start + line.length]);
+    start += line.length + 1;
+  }
+  return ranges;
+}
+
+/**
  * Decorates markdown into one `<div data-block>` per source line (the structure
- * editate's block mode expects) with the raw characters preserved.
+ * editate's block mode expects), preserving the raw characters. Each line stays
+ * a single inline flow of styled spans — no structural wrappers — so the caret
+ * and typing/deletion behave exactly like a plain textarea.
  */
 export function decorateMarkdown(source: string): ReactElement[] {
-  const leaves = collectLeaves(source);
-  const owners = paint(leaves, source.length);
+  const owners = ownerByOffset(collectLeaves(source), source.length);
 
-  const result: ReactElement[] = [];
-  let lineStart = 0;
+  return lineRanges(source).map(([start, end], key) => {
+    const runs = lineRuns(start, end, source, owners);
+    const { codeBlock, headingDepth } = blockStyle(runs);
 
-  source.split("\n").forEach((lineText, i) => {
-    const lineEnd = lineStart + lineText.length;
-
-    let isCodeBlock = false;
-    let isSpoiler = false;
-    let headingDepth = 0;
-
-    // One styled span per run. The line stays a single inline flow (no flex /
-    // structural wrappers) so the caret and typing/deletion behave exactly like
-    // a plain textarea — we only style characters, never restructure the line.
-    const nodes: ReactNode[] = [];
-    let o = lineStart;
-    while (o < lineEnd) {
-      const owner = owners[o]!;
-      let j = o + 1;
-      while (j < lineEnd && owners[j] === owner) j++;
-      const text = source.slice(o, j);
-
-      if (owner < 0) {
-        nodes.push(text);
-      } else {
-        const leaf = leaves[owner]!;
-        if (
-          leaf.stack.includes("codeFenced") ||
-          leaf.stack.includes("codeIndented")
-        )
-          isCodeBlock = true;
-        if (leaf.stack.includes("spoiler")) isSpoiler = true;
-        if (leaf.type === "atxHeadingSequence")
-          headingDepth = leaf.end - leaf.start;
-        nodes.push(renderRun(leaf, text, o));
-      }
-      o = j;
-    }
-
-    result.push(
+    return (
       <div
-        key={i}
+        key={key}
         data-block
-        data-code-block={isCodeBlock || undefined}
-        data-spoiler={isSpoiler || undefined}
-        data-heading={headingDepth ? true : undefined}
+        data-code-block={codeBlock || undefined}
         data-depth={headingDepth || undefined}
       >
-        {nodes.length ? nodes : <br />}
-      </div>,
+        {runs.length ? runs.map(renderRun) : <br />}
+      </div>
     );
-
-    lineStart = lineEnd + 1;
   });
-
-  return result;
 }

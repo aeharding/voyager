@@ -79,11 +79,6 @@ describe("block structure", () => {
     expect(flagged).toHaveLength(3);
   });
 
-  it("flags spoiler lines with data-spoiler", () => {
-    const c = decorate("::: spoiler Title\nhidden\n:::");
-    expect(blocks(c).some((b) => b.hasAttribute("data-spoiler"))).toBe(true);
-  });
-
   it("mutes the fence and language identifier on a fenced code block", () => {
     const c = decorate("```js\nconst a = 1;\n```");
     expect(texts(c, '[class*="syntax"]')).toEqual(["```", "js", "```"]);
