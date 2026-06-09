@@ -11,9 +11,31 @@ on:
       - release/*
   workflow_dispatch:
 
+# A newer run for the same ref supersedes an in-progress one.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   playwright:
+    name: e2e (${{ matrix.project }})
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      # Report every browser independently — don't cancel the others when one fails.
+      fail-fast: false
+      matrix:
+        include:
+          - project: chromium
+            browser: chromium
+          - project: firefox
+            browser: firefox
+          - project: webkit
+            browser: webkit
+          - project: Mobile Chrome
+            browser: chromium
+          - project: Mobile Safari
+            browser: webkit
     steps:
       - uses: actions/checkout@v5
 
@@ -35,11 +57,11 @@ jobs:
           VITE_FORCE_LEMMY_INSECURE: 1
           VITE_CUSTOM_LEMMY_SERVERS: localhost:8536
 
-      - name: Install Playwright dependencies
-        run: pnpm playwright install --with-deps
+      - name: Install Playwright browser
+        run: pnpm playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run Playwright tests
         run: |
           docker compose -f e2e/ci/docker-compose.yml up -d
           sleep 10
-          pnpm test:e2e
+          pnpm exec playwright test --project="${{ matrix.project }}"
