@@ -8,10 +8,12 @@ import {
 } from "react";
 
 import { cx } from "#/helpers/css";
+import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
 import { continueListOnEnter } from "../listContinuation";
 import MarkdownToolbar from "../MarkdownToolbar";
+import useEditorBodyHandlers from "../useEditorBodyHandlers";
 import { createRichEditor } from "./createRichEditor";
 import { decorateMarkdown } from "./markdownDecorator";
 
@@ -92,6 +94,9 @@ function RichTextEditorInstance({
     createRichEditor(text, onChange),
   );
 
+  const { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown } =
+    useEditorBodyHandlers(controller);
+
   const rendered = useMemo(() => {
     try {
       return decorateMarkdown(text);
@@ -106,6 +111,7 @@ function RichTextEditorInstance({
   }, [text]);
 
   function onKeyDown(e: KeyboardEvent) {
+    onKeyUpDown(e); // track the paste-as-plain modifier (shift+meta/ctrl)
     switch (e.key) {
       case "Enter":
         if (e.ctrlKey || e.metaKey) {
@@ -123,6 +129,7 @@ function RichTextEditorInstance({
 
   return (
     <>
+      {jsx}
       <div
         className={cx(
           editorStyles.container,
@@ -133,6 +140,11 @@ function RichTextEditorInstance({
           ref={setHost}
           className={styles.editor}
           onKeyDown={onKeyDown}
+          onKeyUp={onKeyUpDown}
+          onPaste={onPaste}
+          onDropCapture={onDropCapture}
+          onDragOver={onDragOver}
+          {...preventModalSwipeOnTextSelection}
           autoCapitalize="on"
           autoCorrect="on"
           spellCheck

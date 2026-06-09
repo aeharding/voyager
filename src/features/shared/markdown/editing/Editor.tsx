@@ -1,14 +1,6 @@
 import { useMergedRef } from "@mantine/hooks";
-import {
-  ClipboardEvent,
-  Dispatch,
-  DragEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-import { useOnPaste } from "#/helpers/clipboard";
 import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
@@ -20,8 +12,7 @@ import { createTextareaEditor } from "./controller";
 import { continueListOnEnter } from "./listContinuation";
 import MarkdownToolbar from "./MarkdownToolbar";
 import RichTextEditor from "./rich/RichTextEditor";
-import useEditorHelpers from "./useEditorHelpers";
-import useUploadImage from "./useUploadImage";
+import useEditorBodyHandlers from "./useEditorBodyHandlers";
 
 import styles from "./Editor.module.css";
 
@@ -56,12 +47,8 @@ export default function Editor({
     useState(createTextareaEditor);
   const mergedRef = useMergedRef(setTextarea, ref);
 
-  const { insertBlock } = useEditorHelpers(controller);
-
-  const { uploadImage, jsx: uploadImageJsx } = useUploadImage("body");
-
-  const { onKeyUpDown: onKeyUpDownPaste, onPaste: onPasteMarkdown } =
-    useOnPaste("markdown");
+  const { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown } =
+    useEditorBodyHandlers(controller);
 
   useTextRecovery(text, setText, !canRecoverText);
 
@@ -95,41 +82,9 @@ export default function Editor({
     );
   }
 
-  async function onPaste(e: ClipboardEvent) {
-    const image = e.clipboardData.files?.[0];
-
-    if (image) {
-      e.preventDefault();
-
-      onReceivedImage(image);
-      return;
-    }
-
-    onPasteMarkdown(e);
-  }
-
-  async function onDragCapture(event: DragEvent) {
-    const image = event.dataTransfer.files[0];
-
-    if (!image) return;
-
-    onReceivedImage(image);
-  }
-
-  async function onReceivedImage(image: File) {
-    const markdown = await uploadImage(image, true);
-
-    getTextarea()?.focus();
-    insertBlock(markdown);
-  }
-
-  async function onDragOver(event: DragEvent) {
-    event.preventDefault();
-  }
-
   return (
     <>
-      {uploadImageJsx}
+      {jsx}
       <div
         className={cx(styles.container, keyboardOpen && styles.keyboardOpen)}
       >
@@ -144,7 +99,7 @@ export default function Editor({
           autoCorrect="on"
           spellCheck
           onKeyDown={(e) => {
-            onKeyUpDownPaste(e);
+            onKeyUpDown(e);
 
             switch (e.key) {
               case "Enter": {
@@ -160,9 +115,9 @@ export default function Editor({
                 break;
             }
           }}
-          onKeyUp={onKeyUpDownPaste}
+          onKeyUp={onKeyUpDown}
           onPaste={onPaste}
-          onDropCapture={onDragCapture}
+          onDropCapture={onDropCapture}
           onDragOver={onDragOver}
         />
         {children}
