@@ -68,7 +68,6 @@ export default function Markdown({
         {...props}
         components={{
           img: (props) => (
-            // @ts-expect-error React experimental change...
             <MarkdownImg
               {...props}
               onClick={(e) => e.stopPropagation()}
