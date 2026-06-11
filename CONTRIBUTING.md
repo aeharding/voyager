@@ -92,11 +92,39 @@ Finally, can run the project with `Ctrl+R`.
 
 ### Testing
 
-Voyager uses [Vitest](https://vitest.dev). You can run the test suite with:
+Voyager uses [Vitest](https://vitest.dev) for unit tests. You can run the test suite with:
 
 ```
 pnpm test
 ```
+
+#### End-to-end tests
+
+Voyager uses [Playwright](https://playwright.dev) for e2e tests. The suite is fully mocked: specs intercept all API traffic for a fake Lemmy v1 instance (`v1.test.lemmy`), so no real server is involved.
+
+On first run, install the browsers:
+
+```sh
+pnpm playwright install
+```
+
+Then:
+
+```sh
+pnpm test:e2e                            # all browsers
+pnpm test:e2e --project=chromium         # one browser
+pnpm test:e2e e2e/lemmyv1/smoke.spec.ts  # one spec
+pnpm test:e2e --ui                       # interactive UI mode
+pnpm test:e2e --debug                    # step through with inspector
+```
+
+When writing tests:
+
+- Import `test`/`expect` from `e2e/fixtures/test`. This auto-installs the mocked API (the `api` fixture) with app-startup defaults.
+- Override endpoints with `api.mock("GET /api/v4/post/list", { json: ... })`, and assert on outgoing requests with `api.calls()` / `api.waitForCall()`.
+- Response shapes mirror raw `lemmy-js-client` v1 types. Add reusable data factories to `e2e/fixtures/builders.ts`.
+- Use `test.use({ loggedIn: true })` to boot logged into the fake instance.
+- Always navigate to `/posts/v1.test.lemmy/...` (or use `loggedIn`) — the logged-out default instance is unmocked, and unmocked requests respond 404.
 
 ### 🚀 Releasing
 
