@@ -37,7 +37,10 @@ export default function PreviewStats({ post }: PreviewStatsProps) {
   return (
     <div className={styles.container}>
       <Vote item={post} />
-      <Stat icon={chatbubbleOutline}>
+      <Stat
+        icon={chatbubbleOutline}
+        iconClassName={showUnread ? styles.unreadIcon : undefined}
+      >
         {formatNumber(post.post.comments)}
         {showUnread && (
           <span className={styles.unreadPill}>+{formatNumber(unread)}</span>
