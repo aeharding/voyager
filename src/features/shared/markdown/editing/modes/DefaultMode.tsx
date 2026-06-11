@@ -192,6 +192,14 @@ export default function DefaultMode({
     const textCssClass = "link-text-button";
     const urlCssClass = "link-url-button";
 
+    function focusInput() {
+      const input = document.querySelector(
+        `.${isUrl || !selectedText ? textCssClass : urlCssClass}`,
+      );
+
+      if (input instanceof HTMLElement) input.focus();
+    }
+
     presentAlert({
       header: "Insert link",
       inputs: [
@@ -220,16 +228,13 @@ export default function DefaultMode({
           },
         },
       ],
+      onDidPresent: () => {
+        requestAnimationFrame(focusInput);
+      },
     });
 
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const input = document.querySelector(
-          `.${isUrl || !selectedText ? textCssClass : urlCssClass}`,
-        );
-
-        if (input instanceof HTMLElement) input.focus();
-      });
+      requestAnimationFrame(focusInput);
     });
   }
 
