@@ -12,6 +12,10 @@ export default defineConfig({
   use: {
     baseURL: serverURL,
 
+    // Service workers bypass route interception on WebKit (a second page
+    // load would hit the real network), and no spec depends on SW behavior.
+    serviceWorkers: "block",
+
     trace: "on-first-retry",
   },
 

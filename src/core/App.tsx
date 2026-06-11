@@ -73,6 +73,7 @@ import "./listeners";
   }
 
   setupIonicReact({
+    animated: !("__E2E_DISABLE_ANIMATIONS" in window), // e2e tests inject flag
     mode: getDeviceMode(),
     statusTap: false, // custom implementation listeners/statusTap.ts
     swipeBackEnabled:

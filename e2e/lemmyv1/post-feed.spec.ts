@@ -1,10 +1,7 @@
-import { expect, test } from "@playwright/test";
-
-import { fixturePosts, mockV1, V1_HOST } from "./_fixtures";
+import { fixturePosts, V1_HOST } from "../fixtures/builders";
+import { expect, test } from "../fixtures/test";
 
 test("v1: post feed loads", async ({ page }) => {
-  await mockV1(page);
-
   await page.goto(`/posts/${V1_HOST}/all`);
 
   for (const view of fixturePosts) {
@@ -13,8 +10,6 @@ test("v1: post feed loads", async ({ page }) => {
 });
 
 test("v1: clicking a post navigates to detail", async ({ page }) => {
-  await mockV1(page);
-
   await page.goto(`/posts/${V1_HOST}/all`);
 
   await page.getByText(fixturePosts[0]!.post.name).first().click();
