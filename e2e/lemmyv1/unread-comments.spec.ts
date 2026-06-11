@@ -212,11 +212,14 @@ test("v1: unread pill shows for opened-with-new, hidden for never-opened", async
 
   await page.goto(`/posts/${V1_HOST}/all`);
 
-  // Pill rendered on the opened-with-new post...
+  // Pill + comment icon dot rendered on the opened-with-new post...
   const unreadCard = page
     .locator("ion-item", { hasText: "Post with unread comments" })
     .first();
   await expect(unreadCard).toContainText("+2");
+  await expect(
+    unreadCard.locator("ion-icon[class*='unreadIcon']"),
+  ).toBeVisible();
 
   // ...and absent on the never-opened post.
   const neverCard = page
@@ -224,6 +227,9 @@ test("v1: unread pill shows for opened-with-new, hidden for never-opened", async
     .first();
   await expect(neverCard).toBeVisible();
   await expect(neverCard).not.toContainText("+");
+  await expect(neverCard.locator("ion-icon[class*='unreadIcon']")).toHaveCount(
+    0,
+  );
 });
 
 test("v1: unread pill hidden when the setting is off (default)", async ({

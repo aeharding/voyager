@@ -2,6 +2,24 @@
   composes: sharedStatsClass from "#/features/post/detail/Stats.module.css";
 }
 
+/* Notification-style dot on the comment icon when there are new comments.
+ * ion-icon has `contain: strict` (paint containment), so the dot must stay
+ * within the icon's own box — no negative offsets. */
+.unreadIcon {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.4em;
+    height: 0.4em;
+    border-radius: 50%;
+    background: var(--ion-color-primary);
+  }
+}
+
 .unreadPill {
   font-size: 0.8em;
   font-weight: 600;
