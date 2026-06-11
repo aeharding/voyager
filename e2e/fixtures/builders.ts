@@ -210,20 +210,24 @@ export const fixturePosts = [
   postView({ id: 3, name: "Third v1 post", body: "v1 body 3", creator: me }),
 ];
 
-// Raw v1 MyUserInfo returned by GET /account (getMyUser), so
-// `userPersonSelector` resolves to `me` for logged-in tests.
-export const myUser = {
-  community_blocks: [],
-  follows: [],
-  instance_communities_blocks: [],
-  instance_persons_blocks: [],
-  local_user_view: {
-    local_user: { admin: false, show_nsfw: false },
-    person: me,
-  },
-  moderates: [],
-  person_blocks: [],
-};
+// Raw v1 MyUserInfo returned by GET /account (getMyUser)
+export function myUserInfo(subject: ReturnType<typeof person>) {
+  return {
+    community_blocks: [],
+    follows: [],
+    instance_communities_blocks: [],
+    instance_persons_blocks: [],
+    local_user_view: {
+      local_user: { admin: false, show_nsfw: false },
+      person: subject,
+    },
+    moderates: [],
+    person_blocks: [],
+  };
+}
+
+// `userPersonSelector` resolves to `me` for logged-in tests
+export const myUser = myUserInfo(me);
 
 export const siteResponse = {
   site_view: {
