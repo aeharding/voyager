@@ -8,7 +8,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: "list",
+  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   use: {
     baseURL: serverURL,
 
@@ -16,6 +16,7 @@ export default defineConfig({
     // load would hit the real network), and no spec depends on SW behavior.
     serviceWorkers: "block",
 
+    screenshot: "only-on-failure",
     trace: "on-first-retry",
   },
 

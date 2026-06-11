@@ -28,14 +28,19 @@ jobs:
         include:
           - project: chromium
             browser: chromium
+            artifact: chromium
           - project: firefox
             browser: firefox
+            artifact: firefox
           - project: webkit
             browser: webkit
+            artifact: webkit
           - project: Mobile Chrome
             browser: chromium
+            artifact: mobile-chrome
           - project: Mobile Safari
             browser: webkit
+            artifact: mobile-safari
     steps:
       - uses: actions/checkout@v5
 
@@ -60,3 +65,15 @@ jobs:
       - name: Run Playwright tests
         # The specs are fully page.route-mocked (no real Lemmy server needed).
         run: pnpm exec playwright test --project="${{ matrix.project }}"
+
+      - name: Upload report
+        # On failure this includes traces/screenshots from test-results/
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ matrix.artifact }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
