@@ -1,32 +1,9 @@
-// Shared v1 (Lemmy 1.0) fixtures + route mocking.
+// Shared v1 (Lemmy 1.0) fixture data.
 // These response shapes match `lemmy-js-client-v1` types.
-
-import type { Page } from "@playwright/test";
 
 export const V1_HOST = "v1.test.lemmy";
 
-const NOW = "2026-05-21T12:00:00.000Z";
-
-// --- nodeinfo: tells threadiverse this is a Lemmy v1 instance ---
-
-const wellknownNodeinfo = {
-  links: [
-    {
-      rel: "http://nodeinfo.diaspora.software/ns/schema/2.1",
-      href: `https://${V1_HOST}/nodeinfo/2.1`,
-    },
-  ],
-};
-
-const nodeinfo21 = {
-  version: "2.1",
-  software: {
-    name: "lemmy",
-    version: "1.0.0-beta.1",
-  },
-};
-
-// --- Helpers for building v1 responses ---
+export const NOW = "2026-05-21T12:00:00.000Z";
 
 export function person(over: {
   id: number;
@@ -53,7 +30,7 @@ export function person(over: {
   };
 }
 
-function community() {
+export function community() {
   return {
     id: 111,
     name: "test_comm",
@@ -148,6 +125,81 @@ export function postView(over: {
   };
 }
 
+export function commentView(over: {
+  id: number;
+  content: string;
+  post?: Pick<ReturnType<typeof postView>, "post" | "community" | "creator">;
+  creator?: ReturnType<typeof person>;
+  published_at?: string;
+}) {
+  const post = over.post ?? fixturePosts[0]!;
+  const creator = over.creator ?? post.creator;
+
+  return {
+    comment: {
+      id: over.id,
+      creator_id: creator.id,
+      post_id: post.post.id,
+      content: over.content,
+      removed: false,
+      published_at: over.published_at ?? NOW,
+      updated_at: undefined,
+      deleted: false,
+      ap_id: `https://${V1_HOST}/comment/${over.id}`,
+      local: true,
+      path: `0.${over.id}`,
+      distinguished: false,
+      language_id: 0,
+      score: 1,
+      upvotes: 1,
+      downvotes: 0,
+      child_count: 0,
+      report_count: 0,
+      unresolved_report_count: 0,
+      federation_pending: false,
+      locked: false,
+    },
+    creator,
+    post: post.post,
+    community: post.community,
+    comment_actions: undefined,
+    community_actions: undefined,
+    person_actions: undefined,
+    can_mod: false,
+    creator_banned: false,
+    creator_ban_expires_at: undefined,
+    creator_is_admin: false,
+    creator_is_moderator: false,
+    creator_banned_from_community: false,
+    creator_community_ban_expires_at: undefined,
+  };
+}
+
+export function pagedResponse<T>(items: T[], nextPage: string | null = null) {
+  return { items, next_page: nextPage, prev_page: null };
+}
+
+export function personResponse(subject: ReturnType<typeof person>) {
+  return {
+    person_view: { person: subject, is_admin: false },
+    moderates: [],
+    site: undefined,
+  };
+}
+
+export function communityResponse() {
+  return {
+    community_view: {
+      community: community(),
+      community_actions: undefined,
+      banned_from_community: false,
+    },
+    moderators: [],
+    site: undefined,
+    discussion_languages: [],
+  };
+}
+
 export const me = person({ id: 100, name: "alex", display_name: "alex" });
 const mod = person({ id: 101, name: "themod", display_name: "TheMod" });
 const bannedPerson = person({ id: 102, name: "badperson" });
@@ -157,6 +209,21 @@ export const fixturePosts = [
   postView({ id: 2, name: "Second v1 post", body: "v1 body 2", creator: me }),
   postView({ id: 3, name: "Third v1 post", body: "v1 body 3", creator: me }),
 ];
+
+// Raw v1 MyUserInfo returned by GET /account (getMyUser), so
+// `userPersonSelector` resolves to `me` for logged-in tests.
+export const myUser = {
+  community_blocks: [],
+  follows: [],
+  instance_communities_blocks: [],
+  instance_persons_blocks: [],
+  local_user_view: {
+    local_user: { admin: false, show_nsfw: false },
+    person: me,
+  },
+  moderates: [],
+  person_blocks: [],
+};
 
 export const siteResponse = {
   site_view: {
@@ -325,60 +392,3 @@ export const fixtureModlog = [
     },
   }),
 ];
-
-/**
- * Set up Playwright route handlers that make voyager think it's
- * connected to a fresh Lemmy v1 instance. Mocks every endpoint the
- * v1 path touches at app startup, plus opt-in extras.
- */
-export async function mockV1(page: Page) {
-  // nodeinfo discovery
-  await page.route(`https://${V1_HOST}/.well-known/nodeinfo`, async (route) => {
-    await route.fulfill({ json: wellknownNodeinfo });
-  });
-  await page.route(`https://${V1_HOST}/nodeinfo/2.1`, async (route) => {
-    await route.fulfill({ json: nodeinfo21 });
-  });
-
-  // Site bootstrap
-  await page.route(
-    `**/api/v4/site${/* trailing query */ "**"}`,
-    async (route) => {
-      await route.fulfill({ json: siteResponse });
-    },
-  );
-
-  // Post list (PagedResponse<PostView>)
-  await page.route(`**/api/v4/post/list**`, async (route) => {
-    await route.fulfill({
-      json: {
-        items: fixturePosts,
-        next_page: null,
-        prev_page: null,
-      },
-    });
-  });
-
-  // Comment list (empty)
-  await page.route(`**/api/v4/comment/list**`, async (route) => {
-    await route.fulfill({
-      json: { items: [], next_page: null, prev_page: null },
-    });
-  });
-
-  // Modlog
-  await page.route(`**/api/v4/modlog**`, async (route) => {
-    await route.fulfill({
-      json: {
-        items: fixtureModlog,
-        next_page: null,
-        prev_page: null,
-      },
-    });
-  });
-
-  // Federated instances (paginated; throws UnsupportedError in adapter; voyager catches)
-  await page.route(`**/api/v4/federated_instances**`, async (route) => {
-    await route.fulfill({ status: 400, json: { error: "paginated" } });
-  });
-}
