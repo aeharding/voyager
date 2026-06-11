@@ -9,6 +9,14 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { me, mockV1, person, postView, V1_HOST } from "./_fixtures";
 
+// These tests load the app twice (settings page to enable the feature, then
+// the page under test). The first load registers the PWA service worker, and
+// on WebKit requests that flow through an active service worker bypass
+// Playwright's route interception — the second load would hit the real
+// network. Chromium intercepts SW traffic and Playwright disables SWs in
+// Firefox, so only WebKit needs this, but block uniformly for determinism.
+test.use({ serviceWorkers: "block" });
+
 const reader = me;
 const other = person({ id: 200, name: "otheruser" });
 
