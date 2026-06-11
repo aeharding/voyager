@@ -56,6 +56,7 @@ export interface GlobalSettingValueTypes {
   filtered_websites: string[];
   hide_alt_text: boolean;
   highlight_new_account: boolean;
+  highlight_new_comments: boolean;
   infinite_scrolling: boolean;
   jump_button_position: types.JumpButtonPositionType;
   large_show_voting_buttons: boolean;
@@ -141,6 +142,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "filtered_keywords",
   "filtered_websites",
   "highlight_new_account",
+  "highlight_new_comments",
   "infinite_scrolling",
   "jump_button_position",
   "large_show_voting_buttons",

@@ -5,6 +5,7 @@ import { ListHeader } from "#/features/settings/shared/formatting";
 import CollapsedByDefault from "./CollapsedByDefault";
 import DefaultSort from "./DefaultSort";
 import HighlightNewAccount from "./HighlightNewAccount";
+import HighlightNewComments from "./HighlightNewComments";
 import JumpButtonPosition from "./JumpButtonPosition";
 import RememberCommunityCommentSort from "./RememberCommunityCommentSort";
 import ShowCollapsed from "./ShowCollapsed";
@@ -22,6 +23,7 @@ export default function Comments() {
       <IonList inset>
         <DefaultSort />
         <RememberCommunityCommentSort />
+        <HighlightNewComments />
         <CollapsedByDefault />
         <TapToCollapse />
         <ShowJumpButton />
