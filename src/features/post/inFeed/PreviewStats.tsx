@@ -15,6 +15,10 @@ interface PreviewStatsProps {
 }
 
 export default function PreviewStats({ post }: PreviewStatsProps) {
+  const highlightNewComments = useAppSelector(
+    (state) => state.settings.general.comments.highlightNewComments,
+  );
+
   // Locally read this session (overrides the server unread until next refresh).
   const locallyRead = useAppSelector(
     (state) => state.post.postReadCommentsAtById[post.post.id] != null,
@@ -25,7 +29,10 @@ export default function PreviewStats({ post }: PreviewStatsProps) {
   // Mirror lemmy-ui: hide unless unread is non-zero and differs from the total.
   const unread = post.unread_comments;
   const showUnread =
-    !locallyRead && unread > 0 && unread !== post.post.comments;
+    highlightNewComments &&
+    !locallyRead &&
+    unread > 0 &&
+    unread !== post.post.comments;
 
   return (
     <div className={styles.container}>

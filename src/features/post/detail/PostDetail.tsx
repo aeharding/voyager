@@ -34,9 +34,8 @@ export default function PostDetail({
   virtualEnabled,
 }: PostDetailProps) {
   const dispatch = useAppDispatch();
-  const { showJumpButton, jumpButtonPosition } = useAppSelector(
-    (state) => state.settings.general.comments,
-  );
+  const { showJumpButton, jumpButtonPosition, highlightNewComments } =
+    useAppSelector((state) => state.settings.general.comments);
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const isSecondColumn = useIsSecondColumn();
   const commentsRef = useRef<CommentsHandle>(undefined);
@@ -167,7 +166,9 @@ export default function PostDetail({
         sort={sort}
         bottomPadding={bottomPadding}
         virtualEnabled={virtualEnabled}
-        unreadAfter={isFullPostView ? unreadAfter : undefined}
+        unreadAfter={
+          isFullPostView && highlightNewComments ? unreadAfter : undefined
+        }
       />
       {commentPath && <ViewAllComments onHeight={onHeight} />}
       {!commentPath && showJumpButton && <JumpFab />}

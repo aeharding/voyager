@@ -76,6 +76,10 @@ export function PostPageContent({
 
   const postIfFound = typeof post === "object" ? post : undefined;
 
+  const highlightNewComments = useAppSelector(
+    (state) => state.settings.general.comments.highlightNewComments,
+  );
+
   // Locally read this session (set on open in PostDetail) → no "X New".
   const locallyReadComments = useAppSelector(
     (state) => state.post.postReadCommentsAtById[id] != null,
@@ -87,6 +91,7 @@ export function PostPageContent({
   // it persists; re-entry (override already set) shows none. Same gate as the
   // pill. Empty on a cold deeplink (no post yet).
   const [newCommentCount] = useState(() => {
+    if (!highlightNewComments) return undefined;
     if (locallyReadComments || typeof post !== "object") return undefined;
     const unread = post.unread_comments;
     return unread > 0 && unread !== post.post.comments ? unread : undefined;

@@ -2,6 +2,9 @@
 // resets the server baseline, clearing the pill on open, and the per-comment
 // highlight (new since last read, excluding your own; suppressed in a
 // permalink/thread view).
+//
+// The feature is opt-in ("New Comments Highlightifier", off by default), so
+// every test first flips the toggle through the real settings UI.
 import { expect, type Page, test } from "@playwright/test";
 
 import { me, mockV1, person, postView, V1_HOST } from "./_fixtures";
@@ -141,10 +144,54 @@ async function loginAs(page: Page) {
   );
 }
 
+// Enables the setting through the settings page, then waits for the write to
+// land in IndexedDB (it must survive the full page load of the next goto).
+// Assumes the page is logged in (loginAs) so the app boots against the mocked
+// v1 host rather than the unmocked default instance.
+async function enableHighlightNewComments(page: Page) {
+  await page.goto("/settings/general");
+
+  const toggle = page.locator("ion-toggle", {
+    hasText: "New Comments Highlightifier",
+  });
+  await toggle.click();
+  await expect(toggle).toHaveJSProperty("checked", true);
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          new Promise((resolve) => {
+            const request = indexedDB.open("WefwefDB");
+            request.onsuccess = () => {
+              const db = request.result;
+              const getAll = db
+                .transaction("settings")
+                .objectStore("settings")
+                .getAll();
+              getAll.onsuccess = () => {
+                db.close();
+                resolve(
+                  getAll.result.some(
+                    (setting) =>
+                      setting.key === "highlight_new_comments" &&
+                      setting.value === true,
+                  ),
+                );
+              };
+            };
+          }),
+      ),
+    )
+    .toBe(true);
+}
+
 test("v1: unread pill shows for opened-with-new, hidden for never-opened", async ({
   page,
 }) => {
+  await loginAs(page);
   await mockV1(page);
+  await enableHighlightNewComments(page);
   await page.route(`**/api/v4/post/list**`, async (route) => {
     await route.fulfill({
       json: {
@@ -171,11 +218,32 @@ test("v1: unread pill shows for opened-with-new, hidden for never-opened", async
   await expect(neverCard).not.toContainText("+");
 });
 
+test("v1: unread pill hidden when the setting is off (default)", async ({
+  page,
+}) => {
+  await loginAs(page);
+  await mockV1(page);
+  await page.route(`**/api/v4/post/list**`, async (route) => {
+    await route.fulfill({
+      json: { items: [unreadPost], next_page: null, prev_page: null },
+    });
+  });
+
+  await page.goto(`/posts/${V1_HOST}/all`);
+
+  const unreadCard = page
+    .locator("ion-item", { hasText: "Post with unread comments" })
+    .first();
+  await expect(unreadCard).toBeVisible();
+  await expect(unreadCard).not.toContainText("+2");
+});
+
 test("v1: opening a post fires getPost (server read-comments reset) and clears the pill", async ({
   page,
 }) => {
   await loginAs(page);
   await mockV1(page);
+  await enableHighlightNewComments(page);
   await page.route(`**/api/v4/post/list**`, async (route) => {
     await route.fulfill({
       json: { items: [unreadPost], next_page: null, prev_page: null },
@@ -225,6 +293,7 @@ test("v1: opening a post fires getPost (server read-comments reset) and clears t
 test("v1: highlights new comments, not read or own ones", async ({ page }) => {
   await loginAs(page);
   await mockV1(page);
+  await enableHighlightNewComments(page);
   await page.route(`**/api/v4/post?*`, (route) =>
     route.fulfill({ json: { post_view: unreadPost } }),
   );
@@ -258,6 +327,7 @@ test("v1: comment-permalink view suppresses the unread highlight", async ({
 }) => {
   await loginAs(page);
   await mockV1(page);
+  await enableHighlightNewComments(page);
   await page.route(`**/api/v4/post?*`, (route) =>
     route.fulfill({ json: { post_view: unreadPost } }),
   );

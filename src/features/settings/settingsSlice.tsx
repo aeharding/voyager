@@ -146,6 +146,7 @@ export interface SettingsState {
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
       highlightNewAccount: boolean;
+      highlightNewComments: boolean;
       touchFriendlyLinks: boolean;
       showCommentImages: boolean;
       showCollapsed: boolean;
@@ -262,6 +263,7 @@ const baseState: SettingsState = {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
       highlightNewAccount: true,
+      highlightNewComments: false,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       rememberCommunitySort: false,
       showCollapsed: false,
@@ -502,6 +504,10 @@ export const settingsSlice = createSlice({
     setHighlightNewAccount(state, action: PayloadAction<boolean>) {
       state.general.comments.highlightNewAccount = action.payload;
       db.setSetting("highlight_new_account", action.payload);
+    },
+    setHighlightNewComments(state, action: PayloadAction<boolean>) {
+      state.general.comments.highlightNewComments = action.payload;
+      db.setSetting("highlight_new_comments", action.payload);
     },
     setInfiniteScrolling(state, action: PayloadAction<boolean>) {
       state.general.posts.infiniteScrolling = action.payload;
@@ -909,6 +915,7 @@ export const {
   setFontSizeMultiplier,
   setHideAltText,
   setHighlightNewAccount,
+  setHighlightNewComments,
   setInfiniteScrolling,
   setJumpButtonPosition,
   setLargeShowVotingButtons,
@@ -1012,6 +1019,7 @@ function hydrateStateWithGlobalSettings(
       comments: {
         collapseCommentThreads: settings.collapse_comment_threads,
         highlightNewAccount: settings.highlight_new_account,
+        highlightNewComments: settings.highlight_new_comments,
         jumpButtonPosition: settings.jump_button_position,
         rememberCommunitySort: settings.remember_community_comment_sort,
         showCollapsed: settings.show_collapsed_comment,
