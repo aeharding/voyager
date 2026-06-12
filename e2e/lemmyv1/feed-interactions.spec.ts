@@ -45,8 +45,7 @@ test("v1: changing sort refetches the feed", async ({ api, page }) => {
   await page.goto(`/posts/${V1_HOST}/all`);
   await expect(page.getByText("First v1 post")).toBeVisible();
 
-  // Sort is the first header end button on the special feed page
-  await page.locator('ion-buttons[slot="end"] ion-button').first().click();
+  await page.getByRole("button", { name: "Change sort" }).click();
   await page.getByRole("button", { name: "New", exact: true }).click();
 
   const call = await api.waitForCall(
@@ -88,9 +87,7 @@ test.describe("logged in", () => {
     await page.goto(`/posts/${V1_HOST}/all`);
 
     const item = page.locator("ion-item", { hasText: "First v1 post" }).first();
-    // Large post action bar: [ellipsis] [upvote] [downvote]
-    const actions = item.locator("div[class*='rightDetails']");
-    await actions.locator("button").nth(1).click();
+    await item.getByRole("button", { name: "Upvote" }).click();
 
     const call = await api.waitForCall("POST /api/v4/post/like");
     expect(call.body).toEqual({ post_id: 1, is_upvote: true });
@@ -119,9 +116,7 @@ test.describe("logged in", () => {
     await page.goto(`/posts/${V1_HOST}/all`);
 
     const item = page.locator("ion-item", { hasText: "First v1 post" }).first();
-    // Large post action bar: [ellipsis] [upvote] [downvote]
-    const actions = item.locator("div[class*='rightDetails']");
-    await actions.locator("button").nth(0).click();
+    await item.getByRole("button", { name: "More options" }).click();
     await page.getByRole("button", { name: "Hide", exact: true }).click();
 
     await expect(

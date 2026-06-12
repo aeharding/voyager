@@ -53,10 +53,7 @@ test.describe("logged in", () => {
     await page.goto(`/posts/${V1_HOST}/all`);
 
     const item = page.locator("ion-item", { hasText: "First v1 post" }).first();
-    const actions = item.locator("div[class*='rightDetails']");
-
-    // Large post action bar: [ellipsis] [upvote] [downvote]
-    await actions.locator("button").nth(1).click();
+    await item.getByRole("button", { name: "Upvote" }).click();
 
     await api.waitForCall("POST /api/v4/post/like");
 
