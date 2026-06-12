@@ -35,7 +35,7 @@ jobs:
     outputs:
       app_version: ${{ steps.app_version.outputs.app_version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Node.js
         uses: actions/setup-node@v6
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -132,7 +132,7 @@ jobs:
     if: inputs.release_behavior == 'publish_release'
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false # Don't clobber the PAT below
 

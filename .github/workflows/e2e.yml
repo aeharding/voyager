@@ -42,7 +42,7 @@ jobs:
             browser: webkit
             artifact: mobile-safari
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -68,7 +68,7 @@ jobs:
 
       - name: Upload report
         # On failure this includes traces/screenshots from test-results/
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.artifact }}
