@@ -98,7 +98,7 @@ test("v1: blocking a user from their profile", async ({ api, page }) => {
 
   await page.goto(`/posts/${V1_HOST}/u/otheruser`);
 
-  await page.locator('ion-buttons[slot="end"] ion-button').last().click();
+  await page.getByRole("button", { name: "More options" }).click();
   await page.getByRole("button", { name: "Block User", exact: true }).click();
 
   const call = await api.waitForCall("POST /api/v4/account/block/person");

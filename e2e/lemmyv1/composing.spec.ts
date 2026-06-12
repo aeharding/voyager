@@ -15,6 +15,7 @@ import {
 import { getSetting } from "../fixtures/db";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
+import { actionSheetButton, headerButton } from "../fixtures/ui";
 
 test.use({ loggedIn: true });
 
@@ -33,26 +34,21 @@ function mockThread(api: MockApi) {
   });
 }
 
-// Post detail header end buttons: [comment sort] [post ellipsis]
 function postEllipsis(page: Page) {
-  return page.locator('ion-buttons[slot="end"] ion-button').last();
+  return headerButton(page, "More options");
 }
 
-// Post header action bar (its own borderless item below the post):
-// [up] [down] [save] [reply] [share]. (The post-ellipsis "Reply"
-// intentionally skips the thread update, so use the action bar like a user
-// would on the detail page.)
+// The post action bar's reply. (The post-ellipsis "Reply" intentionally
+// skips the thread update, so use the action bar like a user would.)
 function postReplyButton(page: Page) {
-  return page
-    .locator("ion-item[class*='borderlessIonItem']")
-    .last()
-    .locator("button")
-    .nth(3);
+  return page.getByRole("button", { name: "Reply", exact: true });
 }
 
-// The ellipsis is the last header icon of a comment
 function commentEllipsis(page: Page, commentId: number) {
-  return page.locator(`.comment-${commentId} ion-icon[class*='icon']`).last();
+  return page
+    .locator(`.comment-${commentId}`)
+    .first()
+    .getByRole("button", { name: "Open comment options" });
 }
 
 // The reply/edit composer's submit ("Post" text on iOS, send icon on MD)
@@ -108,7 +104,7 @@ test("v1: replying to a comment sets parent_id", async ({ api, page }) => {
   await expect(page.getByText("my own comment")).toBeVisible();
 
   await commentEllipsis(page, 20).click();
-  await page.getByRole("button", { name: "Reply", exact: true }).click();
+  await actionSheetButton(page, "Reply").click();
 
   await page.locator("ion-modal textarea").fill("nested reply");
   await composerSubmit(page).click();
@@ -140,7 +136,7 @@ test("v1: editing own comment sends PUT and updates the thread", async ({
   await expect(page.getByText("my own comment")).toBeVisible();
 
   await commentEllipsis(page, 20).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await actionSheetButton(page, "Edit").click();
 
   await page.locator("ion-modal textarea").fill("edited comment");
   await composerSubmit(page).click();
@@ -166,7 +162,7 @@ test("v1: deleting own comment sends DELETE", async ({ api, page }) => {
   await expect(page.getByText("my own comment")).toBeVisible();
 
   await commentEllipsis(page, 20).click();
-  await page.getByRole("button", { name: "Delete", exact: true }).click();
+  await actionSheetButton(page, "Delete").click();
   // Confirmation sheet
   await page.getByRole("button", { name: "Delete Comment" }).click();
 
@@ -204,8 +200,7 @@ test("v1: creating a text post submits and navigates to it", async ({
   await page.goto(`/posts/${V1_HOST}/c/test_comm`);
   await expect(page.getByText("First v1 post")).toBeVisible();
 
-  // Community header end buttons: [sort] [ellipsis]
-  await page.locator('ion-buttons[slot="end"] ion-button').last().click();
+  await headerButton(page, "More options").click();
   await page.getByRole("button", { name: "Submit Post" }).click();
 
   const editor = page.locator("ion-modal", { hasText: "Post" }).first();
@@ -243,7 +238,7 @@ test("v1: editing own post sends PUT", async ({ api, page }) => {
   await expect(page.getByText("my own comment")).toBeVisible();
 
   await postEllipsis(page).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await actionSheetButton(page, "Edit").click();
 
   const editor = page.locator("ion-modal", { hasText: "Edit Post" });
   await editor.locator('input[placeholder="Title"]').fill("Renamed post");
@@ -265,7 +260,7 @@ test("v1: deleting own post sends DELETE", async ({ api, page }) => {
   await expect(page.getByText("my own comment")).toBeVisible();
 
   await postEllipsis(page).click();
-  await page.getByRole("button", { name: "Delete", exact: true }).click();
+  await actionSheetButton(page, "Delete").click();
   // Confirmation sheet
   await page.getByRole("button", { name: "Delete Post" }).click();
 

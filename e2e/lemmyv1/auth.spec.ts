@@ -162,15 +162,15 @@ test.describe("logged in", () => {
     await page.goto("/profile");
 
     // Profile header → accounts switcher → edit mode → remove → log out
-    await page.locator('ion-buttons[slot="secondary"] ion-button').click();
+    await page.getByRole("button", { name: "Accounts" }).click();
 
     const switcher = page.locator("ion-modal", { hasText: "Accounts" });
-    await switcher.locator('ion-buttons[slot="end"] ion-button').click();
+    await switcher.getByRole("button", { name: "Edit" }).click();
 
     const accountItem = switcher.locator("ion-item", {
       hasText: `alex@${V1_HOST}`,
     });
-    await accountItem.locator("ion-button").click();
+    await accountItem.getByRole("button", { name: "Remove" }).click();
     await switcher.getByRole("button", { name: "Log out" }).click();
 
     await api.waitForCall("POST /api/v4/account/auth/logout");
@@ -219,7 +219,7 @@ test("v1: multi-account: switching accounts switches credentials", async ({
     page.locator("ion-title", { hasText: `alex@${V1_HOST}` }).first(),
   ).toBeVisible();
 
-  await page.locator('ion-buttons[slot="secondary"] ion-button').click();
+  await page.getByRole("button", { name: "Accounts" }).click();
   await page.getByRole("radio", { name: `sam@${V1_HOST}` }).click();
 
   // The app refetches authed state with the newly active account's token

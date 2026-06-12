@@ -11,6 +11,7 @@ import {
 } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
+import { headerButton } from "../fixtures/ui";
 
 test.use({ loggedIn: true });
 
@@ -29,8 +30,7 @@ async function openCommunityActions(
   await page.goto(COMMUNITY_URL);
   await expect(page.getByText("First v1 post")).toBeVisible();
 
-  // Community header end buttons: [sort] [ellipsis]
-  await page.locator('ion-buttons[slot="end"] ion-button').last().click();
+  await headerButton(page, "More options").click();
 }
 
 function subscribedCommunityView() {

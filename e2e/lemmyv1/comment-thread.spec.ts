@@ -14,6 +14,7 @@ import {
 } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
+import { actionSheetButton } from "../fixtures/ui";
 
 const other = person({ id: 200, name: "otheruser" });
 
@@ -40,9 +41,11 @@ function mockThread(api: MockApi) {
   });
 }
 
-// The ellipsis is the last header icon of a comment
 function commentEllipsis(page: Page, commentId: number) {
-  return page.locator(`.comment-${commentId} ion-icon[class*='icon']`).last();
+  return page
+    .locator(`.comment-${commentId}`)
+    .first()
+    .getByRole("button", { name: "Open comment options" });
 }
 
 test("v1: nested comments render and collapse on tap", async ({
@@ -76,8 +79,7 @@ test("v1: changing comment sort refetches the thread", async ({
   await page.goto(POST_URL);
   await expect(page.getByText("parent comment")).toBeVisible();
 
-  // Header end buttons: [comment sort] [post ellipsis]
-  await page.locator('ion-buttons[slot="end"] ion-button').first().click();
+  await page.getByRole("button", { name: "Change sort" }).click();
   await page.getByRole("button", { name: "New", exact: true }).click();
 
   const call = await api.waitForCall(
@@ -102,7 +104,7 @@ test.describe("logged in", () => {
     await expect(page.getByText("parent comment")).toBeVisible();
 
     await commentEllipsis(page, 10).click();
-    await page.getByRole("button", { name: "Upvote", exact: true }).click();
+    await actionSheetButton(page, "Upvote").click();
 
     const call = await api.waitForCall("POST /api/v4/comment/like");
     expect(call.body).toEqual({ comment_id: 10, is_upvote: true });
@@ -120,7 +122,7 @@ test.describe("logged in", () => {
     await expect(page.getByText("parent comment")).toBeVisible();
 
     await commentEllipsis(page, 10).click();
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await actionSheetButton(page, "Save").click();
 
     const call = await api.waitForCall("PUT /api/v4/comment/save");
     expect(call.body).toEqual({ comment_id: 10, save: true });

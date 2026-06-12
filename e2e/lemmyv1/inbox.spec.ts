@@ -125,8 +125,7 @@ test("v1: mark all as read", async ({ api, page }) => {
   await page.goto("/inbox/unread");
   await expect(page.getByText("someone replied to you")).toBeVisible();
 
-  // Header checkmark button presents a confirmation sheet
-  await page.locator('ion-buttons[slot="end"] ion-button').last().click();
+  await page.getByRole("button", { name: "Mark all as read" }).click();
   await page.getByRole("button", { name: "Mark All Read" }).click();
 
   await api.waitForCall("POST /api/v4/account/notification/mark_as_read/all");

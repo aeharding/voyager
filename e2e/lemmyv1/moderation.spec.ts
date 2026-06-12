@@ -68,7 +68,7 @@ test("v1: reporting a post with a preset reason", async ({ api, page }) => {
   await page.goto(POST_URL);
   await expect(page.getByText("reportable comment")).toBeVisible();
 
-  await page.locator('ion-buttons[slot="end"] ion-button').last().click();
+  await page.getByRole("button", { name: "More options" }).click();
   await page.getByRole("button", { name: "Report", exact: true }).click();
   await page
     .getByRole("button", { name: "Breaks Community Rules", exact: true })
@@ -90,7 +90,11 @@ test("v1: reporting a comment with a custom reason", async ({ api, page }) => {
   await page.goto(POST_URL);
   await expect(page.getByText("reportable comment")).toBeVisible();
 
-  await page.locator(".comment-10 ion-icon[class*='icon']").last().click();
+  await page
+    .locator(".comment-10")
+    .first()
+    .getByRole("button", { name: "Open comment options" })
+    .click();
   await page.getByRole("button", { name: "Report", exact: true }).click();
   await page
     .getByRole("button", { name: "Custom Response", exact: true })
@@ -136,8 +140,7 @@ test("v1: moderator can remove a post", async ({ api, page }) => {
   await page.goto(POST_URL);
   await expect(page.getByText("reportable comment")).toBeVisible();
 
-  // Header end buttons (as mod): [shield] [comment sort] [post ellipsis]
-  await page.locator('ion-buttons[slot="end"] ion-button').first().click();
+  await page.getByRole("button", { name: "Moderator actions" }).click();
   await page.getByRole("button", { name: "Remove", exact: true }).click();
 
   const call = await api.waitForCall("POST /api/v4/post/remove");
