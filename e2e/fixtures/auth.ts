@@ -47,4 +47,6 @@ export async function loginAs(page: Page, api: MockApi) {
   api.mock("GET /api/v4/account/unread_counts", {
     json: { notification_count: 0 },
   });
+  // Fire-and-forget side effect of many logged-in interactions
+  api.mock("POST /api/v4/post/mark_as_read/many", { json: { success: true } });
 }

@@ -131,6 +131,8 @@ export function commentView(over: {
   post?: Pick<ReturnType<typeof postView>, "post" | "community" | "creator">;
   creator?: ReturnType<typeof person>;
   published_at?: string;
+  path?: string;
+  child_count?: number;
 }) {
   const post = over.post ?? fixturePosts[0]!;
   const creator = over.creator ?? post.creator;
@@ -147,13 +149,13 @@ export function commentView(over: {
       deleted: false,
       ap_id: `https://${V1_HOST}/comment/${over.id}`,
       local: true,
-      path: `0.${over.id}`,
+      path: over.path ?? `0.${over.id}`,
       distinguished: false,
       language_id: 0,
       score: 1,
       upvotes: 1,
       downvotes: 0,
-      child_count: 0,
+      child_count: over.child_count ?? 0,
       report_count: 0,
       unresolved_report_count: 0,
       federation_pending: false,
