@@ -181,6 +181,77 @@ export function pagedResponse<T>(items: T[], nextPage: string | null = null) {
   return { items, next_page: nextPage, prev_page: null };
 }
 
+export function privateMessageView(over: {
+  id: number;
+  content: string;
+  creator: ReturnType<typeof person>;
+  recipient: ReturnType<typeof person>;
+  read?: boolean;
+}) {
+  return {
+    private_message: {
+      id: over.id,
+      creator_id: over.creator.id,
+      recipient_id: over.recipient.id,
+      content: over.content,
+      deleted: false,
+      removed: false,
+      read: over.read ?? false,
+      published_at: NOW,
+      updated_at: undefined,
+      ap_id: `https://${V1_HOST}/private_message/${over.id}`,
+      local: true,
+    },
+    creator: over.creator,
+    recipient: over.recipient,
+  };
+}
+
+// Raw v1 NotificationView for a comment-based notification (reply/mention)
+export function commentNotification(over: {
+  id: number;
+  kind: "reply" | "mention" | "subscribed";
+  comment: ReturnType<typeof commentView>;
+  read?: boolean;
+}) {
+  return {
+    notification: {
+      id: over.id,
+      kind: over.kind,
+      creator_id: over.comment.creator.id,
+      recipient_id: me.id,
+      comment_id: over.comment.comment.id,
+      post_id: over.comment.post.id,
+      private_message_id: null,
+      modlog_id: null,
+      read: over.read ?? false,
+      published_at: over.comment.comment.published_at,
+    },
+    data: { type_: "comment", ...over.comment },
+  };
+}
+
+export function privateMessageNotification(over: {
+  id: number;
+  message: ReturnType<typeof privateMessageView>;
+}) {
+  return {
+    notification: {
+      id: over.id,
+      kind: "private_message",
+      creator_id: over.message.creator.id,
+      recipient_id: over.message.recipient.id,
+      comment_id: null,
+      post_id: null,
+      private_message_id: over.message.private_message.id,
+      modlog_id: null,
+      read: over.message.private_message.read,
+      published_at: over.message.private_message.published_at,
+    },
+    data: { type_: "private_message", ...over.message },
+  };
+}
+
 export function personResponse(subject: ReturnType<typeof person>) {
   return {
     person_view: { person: subject, is_admin: false },
