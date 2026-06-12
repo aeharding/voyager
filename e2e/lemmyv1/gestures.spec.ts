@@ -1,0 +1,94 @@
+// Swipe gestures, driven via mouse drag (SlidingItem also listens to
+// onMouseDown). Best-effort: gesture simulation is only reliable on desktop
+// chromium, so other projects skip.
+
+import type { Locator, Page } from "@playwright/test";
+
+import { fixturePosts, NOW, V1_HOST } from "../fixtures/builders";
+import { getSetting } from "../fixtures/db";
+import { expect, test } from "../fixtures/test";
+
+test.use({ loggedIn: true });
+
+test.skip(
+  ({ browserName, isMobile }) => browserName !== "chromium" || !!isMobile,
+  "gesture simulation is only reliable on desktop chromium",
+);
+
+async function swipeRight(page: Page, item: Locator) {
+  const box = await item.boundingBox();
+  if (!box) throw new Error("item has no bounding box");
+
+  const y = box.y + box.height / 2;
+  const startX = box.x + 40;
+
+  await page.mouse.move(startX, y);
+  await page.mouse.down();
+  // Drag until just past FIRST_ACTION_RATIO (1.75 would select the far
+  // action instead). Ionic's drag events are rAF-driven, so the steps need
+  // real time between them or the active action never registers.
+  for (let i = 1; i <= 40; i++) {
+    await page.mouse.move(startX + i * 25, y);
+    await page.waitForTimeout(40);
+
+    const ratio = await item.evaluate((el) =>
+      (el as HTMLIonItemSlidingElement).getSlidingRatio(),
+    );
+    if (Math.abs(ratio) >= 1.2) break;
+  }
+  // Let React commit the active-action state before releasing
+  await page.waitForTimeout(200);
+  await page.mouse.up();
+}
+
+test("v1: swiping a post right upvotes it", async ({ api, page }) => {
+  api.mock("POST /api/v4/post/like", () => {
+    const liked = structuredClone(fixturePosts[0]!);
+    liked.post.score = 2;
+    liked.post.upvotes = 2;
+    return {
+      json: {
+        post_view: {
+          ...liked,
+          post_actions: { voted_at: NOW, vote_is_upvote: true },
+        },
+      },
+    };
+  });
+
+  await page.goto(`/posts/${V1_HOST}/all`);
+
+  const item = page.locator("ion-item-sliding", {
+    hasText: "First v1 post",
+  });
+  await swipeRight(page, item);
+
+  const call = await api.waitForCall("POST /api/v4/post/like");
+  expect(call.body).toEqual({ post_id: 1, is_upvote: true });
+});
+
+test("v1: disabling left swipes turns the gesture off", async ({
+  api,
+  page,
+}) => {
+  await page.goto("/settings/gestures");
+
+  const toggle = page.locator("ion-toggle", {
+    hasText: "Disable Left Swipes",
+  });
+  await toggle.click();
+  await expect(toggle).toHaveJSProperty("checked", true);
+  await expect.poll(() => getSetting(page, "disable_left_swipes")).toBe(true);
+
+  await page.goto(`/posts/${V1_HOST}/all`);
+  await expect(page.getByText("First v1 post")).toBeVisible();
+
+  const item = page.locator("ion-item-sliding", {
+    hasText: "First v1 post",
+  });
+  await swipeRight(page, item);
+
+  // Give a would-be vote time to fire, then confirm nothing was sent
+  await page.waitForTimeout(1000);
+  expect(api.calls("POST /api/v4/post/like")).toHaveLength(0);
+});
