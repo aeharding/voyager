@@ -9,7 +9,6 @@ import PersonLink from "#/features/labels/links/PersonLink";
 import Vote from "#/features/labels/vote/Vote";
 import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
-import { ActionButton } from "#/features/post/actions/ActionButton";
 import ActionsContainer from "#/features/post/actions/ActionsContainer";
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 import UserScore from "#/features/tags/UserScore";
@@ -70,13 +69,11 @@ export default function CommentHeader({
       <>
         <ActionsContainer className={collapsed ? "ion-hide" : undefined}>
           {renderActions()}
-          <ActionButton>
-            <CommentEllipsis
-              comment={commentView}
-              rootIndex={rootIndex}
-              ref={commentEllipsisHandleRef}
-            />
-          </ActionButton>
+          <CommentEllipsis
+            comment={commentView}
+            rootIndex={rootIndex}
+            ref={commentEllipsisHandleRef}
+          />
           <Ago date={agoTimestamp} />
         </ActionsContainer>
         {collapsed && (

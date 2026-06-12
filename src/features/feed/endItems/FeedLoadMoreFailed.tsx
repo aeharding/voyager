@@ -12,8 +12,8 @@ export default function FeedLoadMoreFailed({
   pluralType = "posts",
 }: FeedLoadMoreFailedProps) {
   return (
-    <div onClick={() => fetchMore()} className={endPostStyles.container}>
+    <button onClick={() => fetchMore()} className={endPostStyles.button}>
       Failed to load more {pluralType}. {loading ? "Loading..." : "Try again?"}
-    </div>
+    </button>
   );
 }

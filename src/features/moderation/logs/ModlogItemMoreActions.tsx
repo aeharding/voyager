@@ -94,15 +94,15 @@ export default function ModlogItemMoreActions({
   );
 
   return (
-    <button className={styles.button}>
-      <IonIcon
-        className={styles.ellipsisIcon}
-        icon={ellipsisHorizontal}
-        onClick={(e) => {
-          e.stopPropagation();
-          present();
-        }}
-      />
+    <button
+      className={styles.button}
+      aria-label="More options"
+      onClick={(e) => {
+        e.stopPropagation();
+        present();
+      }}
+    >
+      <IonIcon className={styles.ellipsisIcon} icon={ellipsisHorizontal} />
     </button>
   );
 }
