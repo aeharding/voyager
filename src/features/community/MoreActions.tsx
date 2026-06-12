@@ -123,7 +123,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
 
 function buildButtonJsx(onClick?: () => void) {
   return (
-    <IonButton disabled={!onClick} onClick={onClick}>
+    <IonButton aria-label="More options" disabled={!onClick} onClick={onClick}>
       <HeaderEllipsisIcon slot="icon-only" />
     </IonButton>
   );

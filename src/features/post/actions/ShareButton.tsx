@@ -23,7 +23,7 @@ export default function ShareButton({ post }: ShareButtonProps) {
   });
 
   return (
-    <ActionButton {...bind()}>
+    <ActionButton aria-label="Share" {...bind()}>
       <IonIcon icon={getShareIcon()} />
     </ActionButton>
   );

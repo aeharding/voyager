@@ -2,6 +2,8 @@ import { ActionSheetButton, IonIcon, useIonActionSheet } from "@ionic/react";
 import { ellipsisHorizontal } from "ionicons/icons";
 import { useCallback, useImperativeHandle } from "react";
 
+import { ActionButton } from "#/features/post/actions/ActionButton";
+
 import styles from "./PrivateMessageMoreActions.module.css";
 
 interface MarkReadMoreActionsHandle {
@@ -32,13 +34,14 @@ export default function MarkReadMoreActions({
   useImperativeHandle(ref, () => ({ present }), [present]);
 
   return (
-    <IonIcon
-      className={styles.icon}
-      icon={ellipsisHorizontal}
+    <ActionButton
+      aria-label="More options"
       onClick={(e) => {
         e.stopPropagation();
         present();
       }}
-    />
+    >
+      <IonIcon className={styles.icon} icon={ellipsisHorizontal} />
+    </ActionButton>
   );
 }

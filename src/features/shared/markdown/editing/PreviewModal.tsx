@@ -62,7 +62,7 @@ export default function PreviewModal({
             </IonButtons>
           ) : (
             <IonButtons slot="start">
-              <IonButton onClick={() => onDismiss()}>
+              <IonButton aria-label="Done" onClick={() => onDismiss()}>
                 <IonIcon icon={arrowBackSharp} slot="icon-only" />
               </IonButton>
             </IonButtons>

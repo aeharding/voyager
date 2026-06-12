@@ -116,7 +116,10 @@ function AccountSwitcherContents({
         <IonToolbar>
           <IonButtons slot="start">
             {editing ? (
-              <IonButton onClick={() => presentLogin?.()}>
+              <IonButton
+                aria-label="Add account"
+                onClick={() => presentLogin?.()}
+              >
                 <IonIcon icon={add} />
               </IonButton>
             ) : (

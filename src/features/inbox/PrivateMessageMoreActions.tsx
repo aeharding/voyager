@@ -10,6 +10,7 @@ import { use, useCallback, useImperativeHandle } from "react";
 import { Notification, PrivateMessageView } from "threadiverse";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
+import { ActionButton } from "#/features/post/actions/ActionButton";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
@@ -121,13 +122,14 @@ export default function PrivateMessageMoreActions({
   );
 
   return (
-    <IonIcon
-      className={styles.icon}
-      icon={ellipsisHorizontal}
+    <ActionButton
+      aria-label="More options"
       onClick={(e) => {
         e.stopPropagation();
         present();
       }}
-    />
+    >
+      <IonIcon className={styles.icon} icon={ellipsisHorizontal} />
+    </ActionButton>
   );
 }

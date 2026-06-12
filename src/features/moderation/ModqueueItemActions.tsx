@@ -70,6 +70,7 @@ export default function ModqueueItemActions({
   return (
     <>
       <ActionButton
+        aria-label="Approve"
         className="large"
         onClick={(e) => {
           e.stopPropagation();
@@ -82,6 +83,7 @@ export default function ModqueueItemActions({
         />
       </ActionButton>
       <ActionButton
+        aria-label="Remove"
         className="large"
         onClick={(e) => {
           e.stopPropagation();

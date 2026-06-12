@@ -256,7 +256,7 @@ export default function GalleryActions({
   }
 
   return (
-    <ActionButton onClick={openActions}>
+    <ActionButton aria-label="More options" onClick={openActions}>
       <IonIcon icon={ellipsisHorizontal} />
     </ActionButton>
   );

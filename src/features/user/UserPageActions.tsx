@@ -23,6 +23,7 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
   return (
     <>
       <IonButton
+        aria-label="More options"
         disabled={!user}
         onClick={() => {
           if (!user) return;

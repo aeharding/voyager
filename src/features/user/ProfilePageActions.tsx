@@ -35,7 +35,7 @@ export default function ProfilePageActions() {
   }
 
   return (
-    <IonButton onClick={present}>
+    <IonButton aria-label="More options" onClick={present}>
       <HeaderEllipsisIcon slot="icon-only" />
     </IonButton>
   );

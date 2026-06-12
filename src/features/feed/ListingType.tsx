@@ -50,7 +50,7 @@ export default function ListingTypeFilter({
 
   return (
     <>
-      <IonButton onClick={() => setOpen(true)}>
+      <IonButton aria-label="Change listing type" onClick={() => setOpen(true)}>
         <IonIcon icon={getListingTypeIcon(listingType)} slot="icon-only" />
       </IonButton>
       <IonActionSheet

@@ -23,6 +23,7 @@ export default function ConversationsMoreActions({
   return (
     <>
       <IonButton
+        aria-label="More options"
         disabled={!person}
         onClick={() => {
           if (!person) return;

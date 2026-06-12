@@ -48,6 +48,8 @@ export function SaveButton({ post }: SaveButtonProps) {
 
   return (
     <ActionButton
+      aria-label="Save"
+      aria-pressed={!!mySaved}
       className={mySaved ? styles.button : undefined}
       onClick={onSavePost}
     >

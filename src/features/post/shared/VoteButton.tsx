@@ -56,6 +56,8 @@ export function VoteButton({ type, post }: VoteButtonProps) {
 
   return (
     <ActionButton
+      aria-label={type === "up" ? "Upvote" : "Downvote"}
+      aria-pressed={on}
       style={sv({ background: on ? activeColor : undefined })}
       className={cx(
         state.status === "entering" && styles.entering,

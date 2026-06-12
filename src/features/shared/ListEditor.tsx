@@ -32,6 +32,7 @@ export function ListEditButton() {
 
   return (
     <IonButton
+      aria-label={!editing ? "Edit" : "Done"}
       onClick={(e) => {
         setEditing((editing) => {
           if (e.target instanceof HTMLElement) {
@@ -65,6 +66,7 @@ export function RemoveItemButton() {
 
   return (
     <IonButton
+      aria-label="Remove"
       fill="clear"
       slot="start"
       ref={ref}

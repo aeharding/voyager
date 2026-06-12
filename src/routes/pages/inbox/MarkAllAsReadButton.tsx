@@ -10,6 +10,7 @@ export default function MarkAllAsReadButton() {
 
   return (
     <IonButton
+      aria-label="Mark all as read"
       onClick={() => {
         presentActionSheet({
           buttons: [

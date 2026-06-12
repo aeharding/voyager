@@ -18,7 +18,7 @@ export default function ModActions(props: UseModZoneActionsProps) {
   if (!role) return;
 
   return (
-    <IonButton onClick={onClick}>
+    <IonButton aria-label="Moderator actions" onClick={onClick}>
       <IonIcon icon={getModIcon(role)} color={getModColor(role)} />
     </IonButton>
   );

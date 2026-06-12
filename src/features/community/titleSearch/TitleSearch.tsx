@@ -70,7 +70,7 @@ export default function TitleSearch({ name, children, ref }: TitleSearchProps) {
         </AppTitle>
 
         <IonButtons slot="end">
-          <IonButton onClick={() => setSearching(false)}>
+          <IonButton aria-label="Cancel" onClick={() => setSearching(false)}>
             {isIosTheme() ? (
               "Cancel"
             ) : (

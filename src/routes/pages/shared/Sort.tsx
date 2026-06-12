@@ -106,7 +106,7 @@ export default function buildSort<S extends AnyVgerSort>(
     const sortIcon = findSortOption(sort, sortOptions)?.icon;
 
     return (
-      <IonButton onClick={() => sort && present(sort)}>
+      <IonButton aria-label="Change sort" onClick={() => sort && present(sort)}>
         <IonIcon icon={sortIcon ?? helpCircleOutline} slot="icon-only" />
       </IonButton>
     );

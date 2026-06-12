@@ -67,7 +67,7 @@ export default function ComposeButton() {
   return (
     <>
       <IonLoading isOpen={loading} />
-      <IonButton onClick={present}>
+      <IonButton aria-label="Compose message" onClick={present}>
         <IonIcon icon={createOutline} />
       </IonButton>
     </>
