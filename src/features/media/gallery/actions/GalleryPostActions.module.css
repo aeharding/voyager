@@ -19,6 +19,12 @@
   gap: 0.5rem;
 }
 
+.shareButton {
+  composes: plainButton from "#/features/shared/shared.module.css";
+
+  display: flex;
+}
+
 .amount {
   font-size: 1rem;
 }

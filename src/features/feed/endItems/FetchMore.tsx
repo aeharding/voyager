@@ -15,7 +15,7 @@ export default function FetchMore({
   page,
 }: FeedLoadMoreFailedProps) {
   return (
-    <div onClick={() => fetchMore()} className={styles.container}>
+    <button onClick={() => fetchMore()} className={styles.button}>
       {!loading ? (
         <IonLabel color="primary">
           Load Page {page + 1} <IonIcon icon={chevronDown} />
@@ -23,6 +23,6 @@ export default function FetchMore({
       ) : (
         <IonSpinner />
       )}
-    </div>
+    </button>
   );
 }

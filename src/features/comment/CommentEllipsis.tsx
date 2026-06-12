@@ -2,6 +2,7 @@ import { IonIcon, IonLoading } from "@ionic/react";
 import { ellipsisHorizontal } from "ionicons/icons";
 import { use, useImperativeHandle } from "react";
 
+import { ActionButton } from "#/features/post/actions/ActionButton";
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 
 import useCommentActions, { CommentActionsProps } from "./useCommentActions";
@@ -37,14 +38,15 @@ export default function CommentEllipsis({
   return (
     <>
       <IonLoading isOpen={loading} />
-      <IonIcon
-        className={styles.icon}
-        icon={ellipsisHorizontal}
+      <ActionButton
+        aria-label="Open comment options"
         onClick={(e) => {
           present();
           e.stopPropagation();
         }}
-      />
+      >
+        <IonIcon className={styles.icon} icon={ellipsisHorizontal} />
+      </ActionButton>
     </>
   );
 }

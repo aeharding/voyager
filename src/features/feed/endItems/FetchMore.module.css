@@ -7,3 +7,10 @@
   justify-content: center;
   color: var(--ion-color-medium);
 }
+
+.button {
+  composes: plainButton from "#/features/shared/shared.module.css";
+  composes: container;
+
+  width: 100%;
+}

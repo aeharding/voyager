@@ -89,7 +89,13 @@ export default function GalleryPostActions({
               <div className={styles.amount}>{post.post.comments}</div>
             </div>
           </Link>
-          <IonIcon icon={getShareIcon()} onClick={shareImage} />
+          <button
+            className={styles.shareButton}
+            aria-label="Share"
+            onClick={shareImage}
+          >
+            <IonIcon icon={getShareIcon()} />
+          </button>
           {isNative() ? (
             <GalleryActions post={post} src={src} videoRef={videoRef} />
           ) : (
