@@ -60,7 +60,12 @@ export default function HidePostsFab({ forceRefresh }: HidePostsFabProps) {
 
   return (
     <IonFab slot="fixed" vertical="bottom" horizontal="end">
-      <IonFabButton {...bind()}>
+      <IonFabButton
+        aria-label={
+          showHiddenPosts ? "Stop showing hidden posts" : "Hide read posts"
+        }
+        {...bind()}
+      >
         <IonIcon icon={showHiddenPosts ? eyeOutline : eyeOffOutline} />
       </IonFabButton>
     </IonFab>

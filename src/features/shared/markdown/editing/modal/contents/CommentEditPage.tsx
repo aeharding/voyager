@@ -73,7 +73,7 @@ export default function CommentEditPage({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => dismiss()}>
+            <IonButton aria-label="Cancel" onClick={() => dismiss()}>
               {isIosTheme() ? (
                 "Cancel"
               ) : (
@@ -87,6 +87,7 @@ export default function CommentEditPage({
               <IonSpinner />
             ) : (
               <IonButton
+                aria-label="Save"
                 strong
                 type="submit"
                 disabled={isSubmitDisabled}

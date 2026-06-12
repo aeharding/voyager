@@ -63,6 +63,7 @@ export default function NewPostText({
               <IonSpinner />
             ) : (
               <IonButton
+                aria-label="Post"
                 strong
                 type="submit"
                 onClick={submit}

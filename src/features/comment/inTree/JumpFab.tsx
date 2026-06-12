@@ -114,7 +114,7 @@ export default function JumpFab() {
 
   return (
     <IonFab slot="fixed" vertical={vertical} horizontal={horizontal}>
-      <IonFabButton {...bind()}>
+      <IonFabButton aria-label="Jump to next comment" {...bind()}>
         <IonIcon icon={chevronDownOutline} />
       </IonFabButton>
     </IonFab>

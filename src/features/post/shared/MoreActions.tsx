@@ -22,6 +22,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   return (
     <>
       <Button
+        aria-label="More options"
         onClick={(e) => {
           e.stopPropagation();
           openPostActions();

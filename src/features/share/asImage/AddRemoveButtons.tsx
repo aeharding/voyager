@@ -19,6 +19,7 @@ export default function AddRemoveButtons({
   return (
     <div className={styles.container}>
       <IonButton
+        aria-label="Remove parent comment"
         onClick={onRemove}
         disabled={removeDisabled}
         color=" "
@@ -26,7 +27,12 @@ export default function AddRemoveButtons({
       >
         <IonIcon icon={removeOutline} />
       </IonButton>
-      <IonButton onClick={onAdd} disabled={addDisabled} color=" ">
+      <IonButton
+        aria-label="Add parent comment"
+        onClick={onAdd}
+        disabled={addDisabled}
+        color=" "
+      >
         <IonIcon icon={addOutline} />
       </IonButton>
     </div>

@@ -369,29 +369,40 @@ export default function DefaultMode({
             }}
           />
         </label>
-        <button className={styles.button} onClick={presentLinkInput}>
+        <button
+          className={styles.button}
+          aria-label="Insert link"
+          onClick={presentLinkInput}
+        >
           <IonIcon icon={link} color="primary" />
         </button>
         <button
           className={styles.button}
+          aria-label="Bold"
           onClick={() => applyMarkdownStyle(controller, BOLD)}
         >
           <IonIcon icon={bold} color="primary" />
         </button>
         <button
           className={styles.button}
+          aria-label="Italic"
           onClick={() => applyMarkdownStyle(controller, ITALIC)}
         >
           <IonIcon icon={italic} color="primary" />
         </button>
         <button
           className={styles.button}
+          aria-label="Quote"
           onClickCapture={onQuote}
           onClick={() => applyMarkdownStyle(controller, QUOTE)}
         >
           <IonIcon icon={quote} color="primary" />
         </button>
-        <button className={styles.button} onClick={presentMoreOptions}>
+        <button
+          className={styles.button}
+          aria-label="More formatting options"
+          onClick={presentMoreOptions}
+        >
           <IonIcon icon={ellipsisHorizontal} color="primary" />
         </button>
       </div>

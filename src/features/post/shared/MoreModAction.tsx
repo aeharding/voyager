@@ -37,6 +37,7 @@ function Actions({ post, solidIcon, className, role }: ActionsProps) {
   return (
     <>
       <Button
+        aria-label="Moderator actions"
         onClick={(e) => {
           e.stopPropagation();
           presentPostModActions();

@@ -60,7 +60,10 @@ export default function ProfilePage() {
         <IonToolbar>
           {!accountsListEmpty && (
             <IonButtons slot="secondary">
-              <IonButton onClick={() => presentAccountSwitcher()}>
+              <IonButton
+                aria-label="Accounts"
+                onClick={() => presentAccountSwitcher()}
+              >
                 {isIosTheme() ? (
                   "Accounts"
                 ) : (

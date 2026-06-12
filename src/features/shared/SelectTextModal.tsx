@@ -65,7 +65,7 @@ export default function SelectTextModal({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={copy}>
+            <IonButton aria-label="Copy" onClick={copy}>
               <IonIcon icon={copyOutline} />
             </IonButton>
           </IonButtons>

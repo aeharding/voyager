@@ -211,7 +211,7 @@ function CommentReplyPageWithAccount({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => dismiss()}>
+            <IonButton aria-label="Cancel" onClick={() => dismiss()}>
               {isIosTheme() ? (
                 "Cancel"
               ) : (
@@ -236,6 +236,7 @@ function CommentReplyPageWithAccount({
               <IonSpinner />
             ) : (
               <IonButton
+                aria-label="Post"
                 strong
                 type="submit"
                 disabled={isSubmitDisabled}

@@ -30,6 +30,7 @@ export default function SourceUrlButton({
   return (
     <IonButton
       {...rest}
+      aria-label="Open source link"
       href={sourceUrl}
       target="_blank"
       rel="noopener noreferrer"

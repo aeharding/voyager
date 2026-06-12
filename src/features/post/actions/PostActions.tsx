@@ -21,7 +21,7 @@ export default function PostActions({ post, onReply }: PostActionsProps) {
       <VoteButton type="up" post={post} />
       <VoteButton type="down" post={post} />
       <SaveButton post={post} />
-      <ActionButton onClick={onReply}>
+      <ActionButton aria-label="Reply" onClick={onReply}>
         <IonIcon icon={arrowUndoOutline} />
       </ActionButton>
       <ShareButton post={post} />

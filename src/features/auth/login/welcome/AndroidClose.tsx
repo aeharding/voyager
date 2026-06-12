@@ -11,7 +11,7 @@ export default function AndroidClose() {
 
   return (
     <IonButtons className={styles.androidIonButtons} slot="start">
-      <IonButton onClick={dismiss}>
+      <IonButton aria-label="Close" onClick={dismiss}>
         <IonIcon icon={arrowBackSharp} slot="icon-only" />
       </IonButton>
     </IonButtons>
