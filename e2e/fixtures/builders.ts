@@ -69,6 +69,7 @@ export function postView(over: {
   id: number;
   name: string;
   body?: string;
+  url?: string;
   creator: ReturnType<typeof person>;
 }) {
   return {
@@ -90,7 +91,7 @@ export function postView(over: {
       language_id: 0,
       featured_community: false,
       featured_local: false,
-      url: undefined,
+      url: over.url,
       url_content_type: undefined,
       embed_title: undefined,
       embed_description: undefined,

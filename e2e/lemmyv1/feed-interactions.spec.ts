@@ -2,8 +2,6 @@
 // listing type, voting from the feed, the mark-read-on-open side effect,
 // local-only post hiding, and recovery after a failed page load.
 
-import type { Page } from "@playwright/test";
-
 import {
   fixturePosts,
   me,
@@ -13,6 +11,7 @@ import {
   V1_HOST,
 } from "../fixtures/builders";
 import { readDbRows } from "../fixtures/db";
+import { scrollFeedUntilVisible } from "../fixtures/scroll";
 import { expect, test } from "../fixtures/test";
 
 const page1Posts = Array.from({ length: 50 }, (_, i) =>
@@ -21,20 +20,6 @@ const page1Posts = Array.from({ length: 50 }, (_, i) =>
 const page2Posts = Array.from({ length: 10 }, (_, i) =>
   postView({ id: 51 + i, name: `Feed post ${51 + i}`, creator: me }),
 );
-
-// The feed is virtualized (virtua), so scroll the real scroll container and
-// wait for the target item to enter the DOM.
-async function scrollFeedUntilVisible(page: Page, text: string) {
-  await expect(async () => {
-    await page.evaluate(() => {
-      const scroller = document.querySelector(".ion-content-scroll-host");
-      scroller?.scrollTo({ top: scroller.scrollHeight });
-    });
-    await expect(page.getByText(text, { exact: true })).toBeVisible({
-      timeout: 1000,
-    });
-  }).toPass({ timeout: 15_000 });
-}
 
 test("v1: infinite scroll requests the next page with the cursor", async ({
   api,
