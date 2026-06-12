@@ -1,0 +1,31 @@
+diff --git a/package.json b/package.json
+index 389cc6b064b5f888e7f9d718f5440feabdce57ad..e690eb9c914e1391eb11c99687a9ba94a362bd7b 100644
+--- a/package.json
++++ b/package.json
+@@ -23,9 +23,9 @@
+     "./yargs": [
+       {
+         "import": "./yargs.mjs",
+-        "require": "./yargs"
++        "require": "./yargs.cjs"
+       },
+-      "./yargs"
++      "./yargs.cjs"
+     ]
+   },
+   "type": "module",
+diff --git a/yargs.cjs b/yargs.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..02c344cb280b0e7ff5c8d05cd4259404a2e173bf
+--- /dev/null
++++ b/yargs.cjs
+@@ -0,0 +1,9 @@
++// TODO: consolidate on using a helpers file at some point in the future, which
++// is the approach currently used to export Parser and applyExtends for ESM:
++const {applyExtends, cjsPlatformShim, Parser, Yargs, processArgv} = require('./build/index.cjs')
++Yargs.applyExtends = (config, cwd, mergeExtends) => {
++  return applyExtends(config, cwd, mergeExtends, cjsPlatformShim)
++}
++Yargs.hideBin = processArgv.hideBin
++Yargs.Parser = Parser
++module.exports = Yargs

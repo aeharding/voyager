@@ -5,6 +5,7 @@ patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
   "@capacitor/keyboard": patches/@capacitor__keyboard.patch
   openapi-fetch: patches/openapi-fetch.patch
+  yargs@17.7.2: patches/yargs@17.7.2.patch
 
 publicHoistPattern:
   - workbox-window

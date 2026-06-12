@@ -8,15 +8,10 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@8.8.10
 
 patchedDependencies:
-  '@capacitor/haptics':
-    hash: 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
-    path: patches/@capacitor__haptics.patch
-  '@capacitor/keyboard':
-    hash: 4668f0c9ffd6f4db234f7372ce7623e4426b9d8427dd11439c4201723c6406a3
-    path: patches/@capacitor__keyboard.patch
-  openapi-fetch:
-    hash: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
-    path: patches/openapi-fetch.patch
+  '@capacitor/haptics': 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
+  '@capacitor/keyboard': 4668f0c9ffd6f4db234f7372ce7623e4426b9d8427dd11439c4201723c6406a3
+  openapi-fetch: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
+  yargs@17.7.2: c3485db48f415f6b1ad3e0b89922cfd48cbcf932a7f87dd61f30f758e308cb9e
 
 importers:
 
@@ -8458,7 +8453,7 @@ snapshots:
       proxy-agent: 6.5.0
       semver: 7.8.4
       tar-fs: 3.1.2
-      yargs: 17.7.2
+      yargs: 17.7.2(patch_hash=c3485db48f415f6b1ad3e0b89922cfd48cbcf932a7f87dd61f30f758e308cb9e)
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
@@ -8750,7 +8745,7 @@ snapshots:
       tmp: 0.2.7
       ts-node: 10.9.2(@types/node@25.9.3)(typescript@6.0.3)
       yaml: 1.10.3
-      yargs: 17.7.2
+      yargs: 17.7.2(patch_hash=c3485db48f415f6b1ad3e0b89922cfd48cbcf932a7f87dd61f30f758e308cb9e)
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -8785,7 +8780,7 @@ snapshots:
       xcode: 3.0.1
       xml-js: 1.6.11
       xpath: 0.0.32
-      yargs: 17.7.2
+      yargs: 17.7.2(patch_hash=c3485db48f415f6b1ad3e0b89922cfd48cbcf932a7f87dd61f30f758e308cb9e)
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -13754,7 +13749,7 @@ snapshots:
       postcss-modules-local-by-default: 4.2.0(postcss@8.5.15)
       postcss-modules-scope: 3.2.1(postcss@8.5.15)
       postcss-modules-values: 4.0.0(postcss@8.5.15)
-      yargs: 17.7.2
+      yargs: 17.7.2(patch_hash=c3485db48f415f6b1ad3e0b89922cfd48cbcf932a7f87dd61f30f758e308cb9e)
 
   typed-query-selector@2.12.2: {}
 
@@ -14334,7 +14329,7 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 20.2.9
 
-  yargs@17.7.2:
+  yargs@17.7.2(patch_hash=c3485db48f415f6b1ad3e0b89922cfd48cbcf932a7f87dd61f30f758e308cb9e):
     dependencies:
       cliui: 8.0.1
       escalade: 3.2.0
