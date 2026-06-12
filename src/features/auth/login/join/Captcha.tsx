@@ -114,6 +114,7 @@ export default function Captcha({ url, ref }: CaptchaProps) {
         {captcha?.ok && (
           <>
             <img
+              alt=""
               className={styles.bg}
               src={`data:image/png;base64,${captcha.ok.png}`}
             />

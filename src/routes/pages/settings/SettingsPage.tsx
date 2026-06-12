@@ -165,6 +165,7 @@ export default function SettingsPage() {
           {isNative() && (
             <IonItem routerLink="/settings/app-icon" button detail>
               <img
+                alt=""
                 src={getIconSrc(icon)}
                 slot="start"
                 className={styles.appIcon}

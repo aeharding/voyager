@@ -88,6 +88,7 @@ export default function AboutThanksPage() {
           rel="noopener noreferrer"
         >
           <img
+            alt="Voyager contributors"
             src="https://contrib.rocks/image?repo=aeharding/voyager"
             className="ion-padding-start ion-padding-end ion-padding-bottom"
           />

@@ -34,7 +34,7 @@ export default function AppIconComponent() {
               slot="start"
               onClick={() => selectIcon(icon)}
             >
-              <img src={getIconSrc(icon)} className={styles.img} />
+              <img alt="" src={getIconSrc(icon)} className={styles.img} />
             </IonThumbnail>
 
             <IonRadio value={icon}>

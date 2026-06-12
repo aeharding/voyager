@@ -95,6 +95,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         <div className={styles.placeholderImg} />
       ) : (
         <img
+          alt="Share preview"
           className={styles.previewImg}
           draggable={false}
           src={imageSrc}
