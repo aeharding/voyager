@@ -37,6 +37,8 @@ export default function InAppExternalLink({
     return <El onClick={onClick} {...bind()} {...rest} />;
   }
 
+  // Generic wrapper: children always arrive via {...rest}
+  // eslint-disable-next-line jsx-a11y/anchor-has-content
   return <a href={href} onClick={onClick} {...bind()} {...rest} />;
 }
 

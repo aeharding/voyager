@@ -59,7 +59,7 @@ export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
     };
   }, [pictrsOptions, props.src]);
 
-  return <img {...props} src={src} />;
+  return <img alt="" {...props} src={src} />;
 }
 
 const defaultFormat = supportsWebp() ? "webp" : "jpg";

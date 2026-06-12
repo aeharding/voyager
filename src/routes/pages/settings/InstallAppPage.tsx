@@ -33,10 +33,12 @@ import styles from "./InstallAppPage.module.css";
 const ANDROID_APP_BADGES = [
   {
     src: "/badges/play.svg",
+    alt: "Get it on Google Play",
     href: "https://play.google.com/store/apps/details?id=app.vger.voyager",
   },
   {
     src: "/badges/fdroid.png",
+    alt: "Get it on F-Droid",
     href: "https://f-droid.org/en/packages/app.vger.voyager/",
   },
 ];
@@ -44,6 +46,7 @@ const ANDROID_APP_BADGES = [
 const IOS_APP_BADGES = [
   {
     src: "/badges/ios.svg",
+    alt: "Download on the App Store",
     href: "https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762",
   },
 ];
@@ -63,10 +66,10 @@ export default function InstallAppPage() {
 
   const nativeBadges = (
     <>
-      {relevantBadges.map(({ src, href }) => (
+      {relevantBadges.map(({ src, href, alt }) => (
         <div className={styles.badgeItem} key={src}>
           <a href={href} target="_blank" rel="noopener noreferrer">
-            <img className={styles.badgeImg} src={src} />
+            <img className={styles.badgeImg} src={src} alt={alt} />
           </a>
         </div>
       ))}
