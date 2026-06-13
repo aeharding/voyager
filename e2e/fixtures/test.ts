@@ -25,8 +25,8 @@ export const test = base.extend<Fixtures>({
         Object.assign(window, { __E2E_DISABLE_ANIMATIONS: true });
       });
 
-      const api = new MockApi(page);
-      await api.install();
+      const api = new MockApi();
+      await api.install(page);
 
       if (loggedIn) await loginAs(page, api);
 
