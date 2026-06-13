@@ -1,0 +1,123 @@
+/* Styles for decorateMarkdown() output. `.decorated` goes on the element whose
+   *direct* children are the decorator's `<div data-block>` lines; the rest are
+   the span-level classes the decorator assigns per token. Shared between the
+   rich editor and read-only views (e.g. the select text modal). */
+.decorated {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  /* Match the textarea's line metrics so the caret feels native */
+  line-height: 1.4;
+
+  /* one <div data-block> per source line; collapse default margins */
+  & > [data-block] {
+    margin: 0;
+    min-height: 1.4em;
+  }
+
+  /* Code blocks span multiple lines, so the line div carries a continuous
+     full-width background. No indent — content stays aligned with normal text.
+     Monospace is on .codeContent (not here) so a quoted code block's `>` marker
+     stays in the normal font. */
+  & > [data-block][data-code-block] {
+    background: var(--ion-color-step-100, rgb(0 0 0 / 7%));
+  }
+
+  /* Heading sizing lives on the line div (keyed by data-depth, set only on
+     headings) so the `#` markers and the line metrics scale together; the
+     markers stay muted via .syntax (which resets weight). */
+  & > [data-block][data-depth] {
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  & > [data-block][data-depth="1"] {
+    font-size: 1.5em;
+  }
+
+  & > [data-block][data-depth="2"] {
+    font-size: 1.35em;
+  }
+
+  & > [data-block][data-depth="3"] {
+    font-size: 1.2em;
+  }
+
+  & > [data-block][data-depth="4"] {
+    font-size: 1.1em;
+  }
+
+  & > [data-block][data-depth="5"] {
+    font-size: 1em;
+  }
+
+  & > [data-block][data-depth="6"] {
+    font-size: 0.9em;
+    color: var(--ion-color-medium);
+  }
+}
+
+/* Markdown syntax characters (**, [], #, >, backticks, …) — muted, and reset to
+   normal weight/style so they stay de-emphasized inside bold/italic content */
+.syntax {
+  color: var(--ion-color-medium);
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.italic {
+  font-style: italic;
+}
+
+/* line-through stops at the content edge; the ~~ markers are separate (muted)
+   spans, so they're never struck */
+.strike {
+  text-decoration: line-through;
+}
+
+.sup {
+  vertical-align: super;
+  font-size: 0.75em;
+}
+
+.sub {
+  vertical-align: sub;
+  font-size: 0.75em;
+}
+
+/* Quote prose reads italic + grey; the `>` marker stays upright via .syntax.
+   Defined before .link so a link inside a quote still reads link-colored. */
+.blockquote {
+  color: var(--ion-color-medium);
+  font-style: italic;
+}
+
+.link {
+  color: var(--ion-color-primary);
+}
+
+.imageAlt {
+  color: var(--ion-color-medium);
+}
+
+.spoilerSummary {
+  font-weight: 700;
+}
+
+/* Inline code: monospace + its own pill background */
+.code {
+  font-family: var(--ion-font-family-monospace, monospace);
+  background: var(--ion-color-step-100, rgb(0 0 0 / 7%));
+  border-radius: 4px;
+}
+
+/* Fenced/indented code block content: monospace only (the line div carries the
+   background) so surrounding syntax like a blockquote's `>` stays normal font */
+.codeContent {
+  font-family: var(--ion-font-family-monospace, monospace);
+}

@@ -9,7 +9,7 @@ import { cx } from "#/helpers/css";
 
 import customRemarkGfm from "../../customRemarkGfm";
 
-import styles from "./RichTextEditor.module.css";
+import styles from "./markdownDecorator.module.css";
 
 /**
  * Decorates markdown *source* for the rich editor by tokenizing it with
