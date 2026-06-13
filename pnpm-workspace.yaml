@@ -1,5 +1,6 @@
 overrides:
-  "@ionic/core": npm:voyager-ionic-core@8.8.8
+  "@ionic/core": npm:voyager-ionic-core@8.8.10
+  yargs: 17.7.3-candidate.0
 
 patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
@@ -17,3 +18,9 @@ updateConfig:
     - react-router-dom
     - "@types/react-router"
     - "@types/react-router-dom"
+
+minimumReleaseAge: 0
+
+allowBuilds:
+  core-js: true
+  esbuild: true

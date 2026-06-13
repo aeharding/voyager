@@ -8,7 +8,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV BUILD_FOSS_ONLY=true
 
-RUN corepack enable
+RUN npm install -g corepack && corepack enable
 
 # stage 1: build
 FROM base AS builder

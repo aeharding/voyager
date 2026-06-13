@@ -75,6 +75,9 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: "./src/setupTests.ts",
+    // Node >=25 defines a localStorage global that is undefined without
+    // --localstorage-file, shadowing jsdom's working implementation
+    execArgv: ["--no-experimental-webstorage"],
   },
   optimizeDeps: {
     exclude: ["mdast-util-gfm-autolink-literal-lemmy", "remark-lemmy-spoiler"],

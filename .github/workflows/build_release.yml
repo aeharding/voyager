@@ -34,7 +34,7 @@ jobs:
       id-token: write # aws + attestation
       attestations: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
@@ -72,7 +72,7 @@ jobs:
           zip -r Voyager-Web-$BUILD_LABEL.zip dist
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
 
@@ -92,7 +92,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
@@ -136,7 +136,7 @@ jobs:
           COMMIT_MSG: ${{ github.event.commits[0].message }}
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
 
@@ -153,7 +153,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
@@ -179,7 +179,7 @@ jobs:
           CI_PLATFORM: android
 
       - name: Set up JDK
-        uses: actions/setup-java@de5a937a1dc73fbc1a67d7d1aa4bebc1082f3190
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version-file: .tool-versions
@@ -197,7 +197,7 @@ jobs:
       - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
@@ -213,7 +213,7 @@ jobs:
     environment: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download bumped version artifacts
         if: inputs.is_main_build
@@ -246,7 +246,7 @@ jobs:
           CI_PLATFORM: android
 
       - name: Set up JDK
-        uses: actions/setup-java@de5a937a1dc73fbc1a67d7d1aa4bebc1082f3190
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version-file: .tool-versions
@@ -303,7 +303,7 @@ jobs:
         # https://github.com/softprops/action-gh-release/pull/372#issuecomment-1642643937
       - name: Changelog
         id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@bcae7115752d4ed746ff92feb666574428a79415 # v6.2.1
+        uses: mikepenz/release-changelog-builder-action@348e88fab4c37338b1e803ceb2d4a7a5db6c0833 # v6.2.2
         with:
           configurationJson: |
             {
