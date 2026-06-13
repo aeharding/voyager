@@ -8,10 +8,10 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { copyOutline } from "ionicons/icons";
-import { useRef } from "react";
-import TextareaAutosize from "react-textarea-autosize";
+import { FormEvent, useMemo, useRef } from "react";
 
-import { isTouchDevice } from "#/helpers/device";
+import { decorateMarkdown } from "#/features/shared/markdown/editing/rich/markdownDecorator";
+import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import {
   copyClipboardFailed,
@@ -21,6 +21,7 @@ import useAppToast from "#/helpers/useAppToast";
 
 import AppHeader from "./AppHeader";
 
+import decoratorStyles from "./markdown/editing/rich/markdownDecorator.module.css";
 import styles from "./SelectTextModal.module.css";
 
 interface SelectTextProps {
@@ -29,16 +30,31 @@ interface SelectTextProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-const touch = isTouchDevice();
+// Not isTouchDevice(): some desktops report touch capability with no
+// touchscreen (e.g. Firefox on Linux). The contenteditable branch is wanted
+// wherever focusing it can't pop an on-screen keyboard, so key on the
+// primary pointer instead.
+const desktopPointer = window.matchMedia(
+  "(hover: hover) and (pointer: fine)",
+).matches;
 
 export default function SelectTextModal({
   text,
   isOpen,
   setIsOpen,
 }: SelectTextProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const firstSelectRef = useRef(true);
   const presentToast = useAppToast();
+
+  const rendered = useMemo(() => {
+    try {
+      return decorateMarkdown(text);
+    } catch {
+      // Never let a decoration error break text selection — fall back to plain
+      return text;
+    }
+  }, [text]);
 
   async function copy() {
     try {
@@ -49,6 +65,10 @@ export default function SelectTextModal({
     }
 
     presentToast(copyClipboardSuccess);
+  }
+
+  function preventDefault(e: FormEvent | React.ClipboardEvent) {
+    e.preventDefault();
   }
 
   return (
@@ -83,35 +103,42 @@ export default function SelectTextModal({
       </AppHeader>
       <IonContent>
         <div className={styles.container}>
-          {touch ? (
+          {desktopPointer ? (
+            // Read-only contenteditable (same approach as the rich editor) so
+            // desktop gets a native caret + ctrl+A scoped to the text
             <div
-              {...preventModalSwipeOnTextSelection}
-              className={styles.selectable}
-            >
-              {text}
-            </div>
-          ) : (
-            <TextareaAutosize
-              className={styles.invisibleTextarea}
-              ref={textareaRef}
+              ref={contentRef}
+              className={cx(styles.editable, decoratorStyles.decorated)}
+              contentEditable
+              suppressContentEditableWarning
+              onBeforeInput={preventDefault}
+              onPaste={preventDefault}
+              onCut={preventDefault}
+              onDropCapture={preventDefault}
               onMouseMove={(e) => e.stopPropagation()}
               onClick={() => {
                 if (
                   !firstSelectRef.current ||
                   window.getSelection()?.toString()
                 )
-                  return true;
+                  return;
 
-                if (!(textareaRef.current instanceof HTMLTextAreaElement))
-                  return true;
+                if (!contentRef.current) return;
 
                 firstSelectRef.current = false;
-                textareaRef.current.focus();
-                textareaRef.current.select();
+                contentRef.current.focus();
+                window.getSelection()?.selectAllChildren(contentRef.current);
               }}
-              readOnly
-              value={text}
-            />
+            >
+              {rendered}
+            </div>
+          ) : (
+            <div
+              {...preventModalSwipeOnTextSelection}
+              className={cx(styles.selectable, decoratorStyles.decorated)}
+            >
+              {rendered}
+            </div>
           )}
         </div>
       </IonContent>
