@@ -27,6 +27,7 @@ import {
 } from "#/features/inbox/inboxSlice";
 import BackgroundReportSync from "#/features/moderation/BackgroundReportSync";
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import { useMode } from "#/helpers/threadiverse";
 import { getDefaultServer } from "#/services/app";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
@@ -63,6 +64,7 @@ function AuthLocation() {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+  const mode = useMode();
 
   const { presentLoginIfNeeded } = use(SharedDialogContext);
   const [isReauthNeeded, setIsReauthNeeded] = useState(false);
@@ -98,14 +100,15 @@ function AuthLocation() {
     } catch (error) {
       if (isLemmyError(error, "incorrect_login")) setIsReauthNeeded(true);
       else if (
+        mode === "piefed" &&
         error instanceof ResponseError &&
-        (error.status === 400 || error.status === 401)
+        error.status === 401
       )
         setIsReauthNeeded(true);
 
       throw error;
     }
-  }, [dispatch]);
+  }, [dispatch, mode]);
 
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
