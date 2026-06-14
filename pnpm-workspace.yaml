@@ -5,6 +5,7 @@ overrides:
 patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
   "@capacitor/keyboard": patches/@capacitor__keyboard.patch
+  editate@0.6.6: patches/editate@0.6.6.patch
   openapi-fetch: patches/openapi-fetch.patch
 
 publicHoistPattern:
