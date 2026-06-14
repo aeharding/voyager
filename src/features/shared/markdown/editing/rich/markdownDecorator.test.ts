@@ -1,7 +1,6 @@
-import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { decorateMarkdown } from "./markdownDecorator";
+import { decorateMarkdownToHtml } from "./markdownDecorator";
 
 /**
  * Tests for the rich-editor decorator. The headline invariant is *text
@@ -15,8 +14,11 @@ import { decorateMarkdown } from "./markdownDecorator";
  * inside carries `.blockquote`.
  */
 
+/** Parse the decorator's actual output (what the editor renders). */
 function decorate(markdown: string): HTMLElement {
-  return render(<div>{decorateMarkdown(markdown)}</div>).container;
+  const container = document.createElement("div");
+  container.innerHTML = decorateMarkdownToHtml(markdown);
+  return container;
 }
 
 function blocks(container: HTMLElement): HTMLElement[] {
@@ -211,5 +213,20 @@ describe("spoiler", () => {
   it("renders a bold summary", () => {
     const c = decorate("::: spoiler My Title\nbody\n:::");
     expect(el(c, '[class*="spoilerSummary"]').textContent).toBe("My Title");
+  });
+});
+
+describe("HTML serialization", () => {
+  it("escapes special characters — the markup is never assembled from strings", () => {
+    const source = "a < b & c > d <span>x</span>";
+    // `<span>` is escaped (no raw tags injected) and the text round-trips intact
+    expect(decorateMarkdownToHtml(source)).toContain("&lt;span&gt;");
+    expect(decorate(source).textContent).toBe(source);
+  });
+
+  it("emits a <br> for empty lines (a contenteditable requirement)", () => {
+    const lines = blocks(decorate("a\n\nb"));
+    expect(lines).toHaveLength(3);
+    expect(lines[1]!.querySelector("br")).not.toBeNull();
   });
 });

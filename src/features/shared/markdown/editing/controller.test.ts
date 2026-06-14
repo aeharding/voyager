@@ -114,6 +114,23 @@ describe("createEditateController", () => {
     expect(controller.getValue()).toBe("helloX world");
   });
 
+  it("follows the caret when a composition commits after the snapshot (Android GBoard)", () => {
+    // On Android the IME keeps a word composing; editate's *model* selection
+    // lags at where the composition started while the DOM caret advances. The
+    // toolbar snapshots on pointerdown (stale), then the composition commits
+    // (a `change`) with the caret now correct — the snapshot must follow it,
+    // else the action lands mid-word (e.g. Quote split "> hello world").
+    const { editor, host, controller } = setup("> hello ");
+    host.focus();
+    editor.selection = [8, 8]; // composition of "world" started here
+    controller.snapshotSelection(); // toolbar pointerdown (model still lags at 8)
+    host.blur(); // toolbar takes focus
+
+    editor.exec(null, "world"); // composition commits -> "> hello world", caret 13
+
+    expect(controller.getSelection()).toEqual({ start: 13, end: 13 });
+  });
+
   it("releases the freeze when the user taps back into the editor (cancelled action)", () => {
     const { editor, host, controller } = setup();
     host.focus();

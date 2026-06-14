@@ -143,7 +143,15 @@ export function createEditateController(
   editor.on("selectionchange", () => {
     if (!frozen && isHostFocused()) committed = editor.selection;
   });
-  editor.on("change", release);
+  editor.on("change", () => {
+    // A model change carries the post-edit caret. If a toolbar snapshot is
+    // frozen and waiting to act, follow that caret before releasing — this is
+    // how an IME composition committing (Android GBoard) updates an otherwise
+    // stale snapshot: at toolbar pointerdown the composition's model selection
+    // still lags at where it started, and only catches up when it commits.
+    if (frozen) committed = editor.selection;
+    release();
+  });
 
   return {
     getValue: () => docToText(editor),
