@@ -1,0 +1,67 @@
+diff --git a/lib/index.js b/lib/index.js
+index d75d1ecbebe4337c489bc53e27933a5e135332e3..85a8890bb761bf12d09acd74b17d34ca2ce994f0 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -621,7 +621,7 @@ const Rt = [], Ot = () => {}, Dt = t => {
+             Ot;
+             const {contentEditable: i, role: a, ariaMultiLine: l, ariaReadOnly: f} = o, u = o.style.whiteSpace;
+             o.role = "textbox", o.style.whiteSpace = "pre-wrap", o.ariaMultiLine = "true";
+-            let d = !1, p = null, h = !1, y = !1, k = !1;
++            let d = !1, p = null, h = !1, y = !1, k = !1, pec = !1;
+             const m = ht(o), E = (t => {
+                 const e = (n, r, o) => {
+                     const c = K, s = Q, i = Z, a = j, l = z;
+@@ -699,8 +699,16 @@ const Rt = [], Ot = () => {}, Dt = t => {
+                 })(o, E)));
+             }, I = () => {
+                 const t = O.k();
+-                O._(!1), t.length && (O.h(t), m.removeEventListener("selectionchange", q), kt(m, o, v(n, x), x[0] - x[1], E, !0), 
+-                m.addEventListener("selectionchange", q)), p && (F(p[1]), H(p[0]), p = null), h = !1;
++                O._(!1);
++                let ps = null;
++                pec && (pec = !1, ps = M(n, ((t, e) => {
++                    const n = yt(t), r = gt(n, t);
++                    if (!r) return [ [ [ 0 ], 0 ], [ [ 0 ], 0 ] ];
++                    const o = bt(t, e, r), c = pt(n.anchorNode, n.focusNode);
++                    return (0 === c ? n.anchorOffset > n.focusOffset : 2 & c) ? [ o[1], o[0] ] : o;
++                })(o, E)));
++                t.length && (O.h(t), m.removeEventListener("selectionchange", q), kt(m, o, v(n, x), x[0] - x[1], E, !0),
++                m.addEventListener("selectionchange", q)), p && (F(p[1]), H(p[0]), p = null), ps && (x = ps), h = !1;
+             }, P = t => {
+                 if (!h) for (const e of T("keyboard")) if (e(t)) return t.preventDefault(), void O._(!1);
+             }, L = () => {
+@@ -730,7 +738,7 @@ const Rt = [], Ot = () => {}, Dt = t => {
+                 }
+                 h || I();
+             }, N = () => {
+-                h || D(), h = !0;
++                h || (D(), O._(!0)), h = !0;
+             }, U = () => {
+                 I();
+             }, W = () => {
+@@ -803,12 +811,14 @@ const Rt = [], Ot = () => {}, Dt = t => {
+                 k = !0, J(t.dataTransfer);
+             }, nt = () => {
+                 k = !1;
++            }, pd = () => {
++                h && (pec = !0);
+             };
+-            m.addEventListener("selectionchange", q), o.addEventListener("keydown", P), o.addEventListener("input", L), 
++            m.addEventListener("selectionchange", q), o.addEventListener("keydown", P), o.addEventListener("input", L),
+             o.addEventListener("beforeinput", C), o.addEventListener("compositionstart", N), 
+             o.addEventListener("compositionend", U), o.addEventListener("focus", W), o.addEventListener("blur", G), 
+             o.addEventListener("copy", X), o.addEventListener("cut", Y), o.addEventListener("paste", $), 
+-            o.addEventListener("drop", tt), o.addEventListener("dragstart", et), o.addEventListener("dragend", nt);
++            o.addEventListener("drop", tt), o.addEventListener("dragstart", et), o.addEventListener("dragend", nt), o.addEventListener("pointerdown", pd);
+             const rt = [];
+             return T("mount").forEach(t => {
+                 const e = t(o);
+@@ -820,7 +830,7 @@ const Rt = [], Ot = () => {}, Dt = t => {
+                 o.removeEventListener("compositionstart", N), o.removeEventListener("compositionend", U), 
+                 o.removeEventListener("focus", W), o.removeEventListener("blur", G), o.removeEventListener("copy", X), 
+                 o.removeEventListener("cut", Y), o.removeEventListener("paste", $), o.removeEventListener("drop", tt), 
+-                o.removeEventListener("dragstart", et), o.removeEventListener("dragend", nt), rt.forEach(t => {
++                o.removeEventListener("dragstart", et), o.removeEventListener("dragend", nt), o.removeEventListener("pointerdown", pd), rt.forEach(t => {
+                     t();
+                 }));
+             };
