@@ -1,7 +1,6 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import superSub from "@aeharding/remark-lemmy-supersub";
 import { parse, postprocess, preprocess } from "micromark";
-import type { ReactElement, ReactNode } from "react";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 
@@ -183,7 +182,6 @@ function classNamesFor(leaf: Leaf): string {
 // --- Per-line rendering ----------------------------------------------------
 
 interface Run {
-  key: number;
   text: string;
   /** The token owning this run, or `undefined` for undecorated plain text. */
   leaf: Leaf | undefined;
@@ -202,21 +200,10 @@ function lineRuns(
     const leaf = owners[o];
     let j = o + 1;
     while (j < end && owners[j] === leaf) j++;
-    runs.push({ key: o, text: source.slice(o, j), leaf });
+    runs.push({ text: source.slice(o, j), leaf });
     o = j;
   }
   return runs;
-}
-
-function renderRun({ key, text, leaf }: Run): ReactNode {
-  const className = leaf && classNamesFor(leaf);
-  return className ? (
-    <span key={key} className={className}>
-      {text}
-    </span>
-  ) : (
-    text
-  );
 }
 
 /**
@@ -248,81 +235,75 @@ function lineRanges(source: string): Array<[start: number, end: number]> {
   return ranges;
 }
 
-/**
- * Decorates markdown into one `<div data-block>` per source line (the structure
- * editate's block mode expects), preserving the raw characters. Each line stays
- * a single inline flow of styled spans — no structural wrappers — so the caret
- * and typing/deletion behave exactly like a plain textarea.
- */
-export function decorateMarkdown(source: string): ReactElement[] {
-  const owners = ownerByOffset(collectLeaves(source), source.length);
+// --- Rendering -------------------------------------------------------------
 
-  return lineRanges(source).map(([start, end], key) => {
-    const runs = lineRuns(start, end, source, owners);
-    const { codeBlock, headingDepth } = blockStyle(runs);
-
-    return (
-      <div
-        key={key}
-        data-block
-        data-code-block={codeBlock || undefined}
-        data-depth={headingDepth || undefined}
-      >
-        {runs.length ? runs.map(renderRun) : <br />}
-      </div>
-    );
-  });
-}
-
-// --- HTML-string variant (for the contenteditable host) -------------------
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-function runToHtml({ text, leaf }: Run): string {
+/** A run as a styled `<span>`, or a bare text node when it's plain. */
+function runToNode({ text, leaf }: Run): HTMLSpanElement | Text {
   const className = leaf && classNamesFor(leaf);
-  const escaped = escapeHtml(text);
-  return className ? `<span class="${className}">${escaped}</span>` : escaped;
+  if (!className) return document.createTextNode(text);
+
+  const span = document.createElement("span");
+  span.className = className;
+  span.textContent = text;
+  return span;
+}
+
+/** The `<div data-block>` element for one decorated source line. */
+function lineToBlock(
+  start: number,
+  end: number,
+  source: string,
+  owners: (Leaf | undefined)[],
+): HTMLDivElement {
+  const runs = lineRuns(start, end, source, owners);
+  const { codeBlock, headingDepth } = blockStyle(runs);
+
+  const block = document.createElement("div");
+  block.dataset.block = "true";
+  if (codeBlock) block.dataset.codeBlock = "true";
+  if (headingDepth) block.dataset.depth = String(headingDepth);
+
+  // A single inline flow of styled spans — no structural wrappers — so the
+  // caret and typing/deletion behave exactly like a plain textarea. An empty
+  // line gets a `<br>` placeholder (a contenteditable requirement).
+  block.append(
+    ...(runs.length ? runs.map(runToNode) : [document.createElement("br")]),
+  );
+  return block;
 }
 
 /**
- * Same decoration as {@link decorateMarkdown}, serialized to an HTML string.
+ * Decorates markdown into the HTML for editate's contenteditable host: one
+ * `<div data-block>` per source line, preserving the raw characters.
  *
- * The rich editor renders this via `dangerouslySetInnerHTML` rather than as
- * React child elements. React then owns only the contenteditable host, never
- * the inner text/span nodes — so it can't reconcile (and crash with a stale
- * `removeChild`) against a DOM the browser/IME mutated underneath it during
- * composition, rapid deletion, or autocorrect. editate still sees real Text
- * nodes + `<br>`, so its DOM contract is unchanged.
+ * It's rendered via `dangerouslySetInnerHTML`, so React owns only the host
+ * element and never the inner text/span nodes — otherwise React reconciles them
+ * against a DOM the browser/IME mutates underneath it (during composition, rapid
+ * deletion, autocorrect) and crashes with a stale `removeChild`. editate still
+ * sees real Text nodes + `<br>`, so its DOM contract is unchanged.
+ *
+ * The nodes are built with the DOM API and serialized once, so the text is
+ * escaped by construction — the markup is never assembled from strings.
  */
 export function decorateMarkdownToHtml(source: string): string {
+  const root = document.createElement("div");
   try {
     const owners = ownerByOffset(collectLeaves(source), source.length);
-
-    return lineRanges(source)
-      .map(([start, end]) => {
-        const runs = lineRuns(start, end, source, owners);
-        const { codeBlock, headingDepth } = blockStyle(runs);
-        const attrs =
-          `data-block="true"` +
-          (codeBlock ? ` data-code-block="true"` : "") +
-          (headingDepth ? ` data-depth="${headingDepth}"` : "");
-        const inner = runs.length ? runs.map(runToHtml).join("") : "<br>";
-        return `<div ${attrs}>${inner}</div>`;
-      })
-      .join("");
+    for (const [start, end] of lineRanges(source)) {
+      root.append(lineToBlock(start, end, source, owners));
+    }
   } catch {
     // Never let a decoration error break editing — fall back to plain lines.
-    return source
-      .split("\n")
-      .map(
-        (line) =>
-          `<div data-block="true">${line ? escapeHtml(line) : "<br>"}</div>`,
-      )
-      .join("");
+    root.replaceChildren(
+      ...source.split("\n").map((line) => {
+        const block = document.createElement("div");
+        block.dataset.block = "true";
+        block.append(
+          line ? document.createTextNode(line) : document.createElement("br"),
+        );
+        return block;
+      }),
+    );
   }
+  return root.innerHTML;
 }

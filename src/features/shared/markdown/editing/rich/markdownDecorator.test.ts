@@ -1,7 +1,6 @@
-import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { decorateMarkdown, decorateMarkdownToHtml } from "./markdownDecorator";
+import { decorateMarkdownToHtml } from "./markdownDecorator";
 
 /**
  * Tests for the rich-editor decorator. The headline invariant is *text
@@ -15,8 +14,11 @@ import { decorateMarkdown, decorateMarkdownToHtml } from "./markdownDecorator";
  * inside carries `.blockquote`.
  */
 
+/** Parse the decorator's actual output (what the editor renders). */
 function decorate(markdown: string): HTMLElement {
-  return render(<div>{decorateMarkdown(markdown)}</div>).container;
+  const container = document.createElement("div");
+  container.innerHTML = decorateMarkdownToHtml(markdown);
+  return container;
 }
 
 function blocks(container: HTMLElement): HTMLElement[] {
@@ -214,41 +216,17 @@ describe("spoiler", () => {
   });
 });
 
-describe("decorateMarkdownToHtml (innerHTML variant for the contenteditable)", () => {
-  function decorateHtml(markdown: string): HTMLElement {
-    const div = document.createElement("div");
-    div.innerHTML = decorateMarkdownToHtml(markdown);
-    return div;
-  }
-
-  it.each(SAMPLES)("preserves the exact source: %j", (markdown) => {
-    expect(reconstruct(decorateHtml(markdown))).toBe(markdown);
-  });
-
-  it("escapes HTML-special characters (no raw markup injected)", () => {
+describe("HTML serialization", () => {
+  it("escapes special characters — the markup is never assembled from strings", () => {
     const source = "a < b & c > d <span>x</span>";
-    const html = decorateMarkdownToHtml(source);
-    expect(html).toContain("&lt;");
-    expect(html).toContain("&amp;");
-    expect(html).toContain("&gt;");
-    // text fidelity survives the escaping round-trip
-    expect(decorateHtml(source).textContent).toBe(source);
+    // `<span>` is escaped (no raw tags injected) and the text round-trips intact
+    expect(decorateMarkdownToHtml(source)).toContain("&lt;span&gt;");
+    expect(decorate(source).textContent).toBe(source);
   });
 
-  it("emits a <br> for empty lines (contenteditable requirement)", () => {
-    const blocks = decorateHtml("a\n\nb").querySelectorAll("[data-block]");
-    expect(blocks).toHaveLength(3);
-    expect(blocks[1]!.querySelector("br")).not.toBeNull();
-  });
-
-  it("produces the same styled spans as the React decorator", () => {
-    const md = "> ~~x~~ **y** and `z`";
-    const reactDom = render(<div>{decorateMarkdown(md)}</div>).container;
-    const htmlDom = decorateHtml(md);
-    const styled = (root: HTMLElement) =>
-      Array.from(root.querySelectorAll("[class]")).map(
-        (e) => `${e.className}:${e.textContent}`,
-      );
-    expect(styled(htmlDom)).toEqual(styled(reactDom));
+  it("emits a <br> for empty lines (a contenteditable requirement)", () => {
+    const lines = blocks(decorate("a\n\nb"));
+    expect(lines).toHaveLength(3);
+    expect(lines[1]!.querySelector("br")).not.toBeNull();
   });
 });
