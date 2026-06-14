@@ -273,3 +273,56 @@ export function decorateMarkdown(source: string): ReactElement[] {
     );
   });
 }
+
+// --- HTML-string variant (for the contenteditable host) -------------------
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function runToHtml({ text, leaf }: Run): string {
+  const className = leaf && classNamesFor(leaf);
+  const escaped = escapeHtml(text);
+  return className ? `<span class="${className}">${escaped}</span>` : escaped;
+}
+
+/**
+ * Same decoration as {@link decorateMarkdown}, serialized to an HTML string.
+ *
+ * The rich editor renders this via `dangerouslySetInnerHTML` rather than as
+ * React child elements. React then owns only the contenteditable host, never
+ * the inner text/span nodes — so it can't reconcile (and crash with a stale
+ * `removeChild`) against a DOM the browser/IME mutated underneath it during
+ * composition, rapid deletion, or autocorrect. editate still sees real Text
+ * nodes + `<br>`, so its DOM contract is unchanged.
+ */
+export function decorateMarkdownToHtml(source: string): string {
+  try {
+    const owners = ownerByOffset(collectLeaves(source), source.length);
+
+    return lineRanges(source)
+      .map(([start, end]) => {
+        const runs = lineRuns(start, end, source, owners);
+        const { codeBlock, headingDepth } = blockStyle(runs);
+        const attrs =
+          `data-block="true"` +
+          (codeBlock ? ` data-code-block="true"` : "") +
+          (headingDepth ? ` data-depth="${headingDepth}"` : "");
+        const inner = runs.length ? runs.map(runToHtml).join("") : "<br>";
+        return `<div ${attrs}>${inner}</div>`;
+      })
+      .join("");
+  } catch {
+    // Never let a decoration error break editing — fall back to plain lines.
+    return source
+      .split("\n")
+      .map(
+        (line) =>
+          `<div data-block="true">${line ? escapeHtml(line) : "<br>"}</div>`,
+      )
+      .join("");
+  }
+}

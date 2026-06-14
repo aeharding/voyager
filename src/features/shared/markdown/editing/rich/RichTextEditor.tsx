@@ -15,7 +15,7 @@ import { continueListOnEnter } from "../listContinuation";
 import MarkdownToolbar from "../MarkdownToolbar";
 import useEditorBodyHandlers from "../useEditorBodyHandlers";
 import { createRichEditor } from "./createRichEditor";
-import { decorateMarkdown } from "./markdownDecorator";
+import { decorateMarkdownToHtml } from "./markdownDecorator";
 
 import editorStyles from "../Editor.module.css";
 import styles from "./RichTextEditor.module.css";
@@ -97,18 +97,11 @@ function RichTextEditorInstance({
   const { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown } =
     useEditorBodyHandlers(controller);
 
-  const rendered = useMemo(() => {
-    try {
-      return decorateMarkdown(text);
-    } catch {
-      // Never let a decoration error break editing — fall back to plain lines
-      return text.split("\n").map((line, i) => (
-        <div key={i} data-block>
-          {line || <br />}
-        </div>
-      ));
-    }
-  }, [text]);
+  // Rendered as an HTML string via dangerouslySetInnerHTML (not React child
+  // elements) so React never reconciles nodes inside the contenteditable — the
+  // browser/IME mutate that subtree, and React-managed children there crash
+  // with a stale `removeChild` on Android (composition, rapid backspace, …).
+  const rendered = useMemo(() => decorateMarkdownToHtml(text), [text]);
 
   function onKeyDown(e: KeyboardEvent) {
     onKeyUpDown(e); // track the paste-as-plain modifier (shift+meta/ctrl)
@@ -148,9 +141,8 @@ function RichTextEditorInstance({
           autoCapitalize="on"
           autoCorrect="on"
           spellCheck
-        >
-          {rendered}
-        </div>
+          dangerouslySetInnerHTML={{ __html: rendered }}
+        />
         {children}
       </div>
 

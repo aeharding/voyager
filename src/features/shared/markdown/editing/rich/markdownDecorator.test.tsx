@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { decorateMarkdown } from "./markdownDecorator";
+import { decorateMarkdown, decorateMarkdownToHtml } from "./markdownDecorator";
 
 /**
  * Tests for the rich-editor decorator. The headline invariant is *text
@@ -211,5 +211,44 @@ describe("spoiler", () => {
   it("renders a bold summary", () => {
     const c = decorate("::: spoiler My Title\nbody\n:::");
     expect(el(c, '[class*="spoilerSummary"]').textContent).toBe("My Title");
+  });
+});
+
+describe("decorateMarkdownToHtml (innerHTML variant for the contenteditable)", () => {
+  function decorateHtml(markdown: string): HTMLElement {
+    const div = document.createElement("div");
+    div.innerHTML = decorateMarkdownToHtml(markdown);
+    return div;
+  }
+
+  it.each(SAMPLES)("preserves the exact source: %j", (markdown) => {
+    expect(reconstruct(decorateHtml(markdown))).toBe(markdown);
+  });
+
+  it("escapes HTML-special characters (no raw markup injected)", () => {
+    const source = "a < b & c > d <span>x</span>";
+    const html = decorateMarkdownToHtml(source);
+    expect(html).toContain("&lt;");
+    expect(html).toContain("&amp;");
+    expect(html).toContain("&gt;");
+    // text fidelity survives the escaping round-trip
+    expect(decorateHtml(source).textContent).toBe(source);
+  });
+
+  it("emits a <br> for empty lines (contenteditable requirement)", () => {
+    const blocks = decorateHtml("a\n\nb").querySelectorAll("[data-block]");
+    expect(blocks).toHaveLength(3);
+    expect(blocks[1]!.querySelector("br")).not.toBeNull();
+  });
+
+  it("produces the same styled spans as the React decorator", () => {
+    const md = "> ~~x~~ **y** and `z`";
+    const reactDom = render(<div>{decorateMarkdown(md)}</div>).container;
+    const htmlDom = decorateHtml(md);
+    const styled = (root: HTMLElement) =>
+      Array.from(root.querySelectorAll("[class]")).map(
+        (e) => `${e.className}:${e.textContent}`,
+      );
+    expect(styled(htmlDom)).toEqual(styled(reactDom));
   });
 });
