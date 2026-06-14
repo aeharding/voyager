@@ -17,14 +17,6 @@
     min-height: 1.4em;
   }
 
-  /* Code blocks span multiple lines, so the line div carries a continuous
-     full-width background. No indent — content stays aligned with normal text.
-     Monospace is on .codeContent (not here) so a quoted code block's `>` marker
-     stays in the normal font. */
-  & > [data-block][data-code-block] {
-    background: var(--ion-color-step-100, rgb(0 0 0 / 7%));
-  }
-
   /* Heading sizing lives on the line div (keyed by data-depth, set only on
      headings) so the `#` markers and the line metrics scale together; the
      markers stay muted via .syntax (which resets weight). */

@@ -28,8 +28,8 @@ import styles from "./RichTextEditor.module.css";
  * work and why this handles markdown's nesting/edge cases for free.
  *
  * The pipeline: `collectLeaves` (tokenize) → `ownerByOffset` (assign each
- * character to its token) → per line, `lineRuns` (group) + `blockStyle` (line
- * attributes) → one `<div data-block>`.
+ * character to its token) → per line, `lineRuns` (group) + `headingDepth` →
+ * one `<div data-block>`.
  */
 
 // --- Tokenizing ------------------------------------------------------------
@@ -207,21 +207,14 @@ function lineRuns(
 }
 
 /**
- * Block-level styling for a line, derived from the tokens it contains: code
- * blocks get a full-width background; headings get their size on the div (so the
- * `#` markers and line metrics scale together). `headingDepth` is 0 when the
- * line isn't a heading.
+ * A line's heading depth — its `#` count — set on the div so the markers and
+ * line metrics scale together. 0 when the line isn't a heading.
  */
-function blockStyle(runs: Run[]): { codeBlock: boolean; headingDepth: number } {
-  const leaves = runs.flatMap((run) => (run.leaf ? [run.leaf] : []));
-  const within = (ancestor: string) =>
-    leaves.some((leaf) => leaf.stack.includes(ancestor));
-  const heading = leaves.find((leaf) => leaf.type === "atxHeadingSequence");
-
-  return {
-    codeBlock: within("codeFenced") || within("codeIndented"),
-    headingDepth: heading ? heading.end - heading.start : 0,
-  };
+function headingDepth(runs: Run[]): number {
+  const heading = runs
+    .map((run) => run.leaf)
+    .find((leaf) => leaf?.type === "atxHeadingSequence");
+  return heading ? heading.end - heading.start : 0;
 }
 
 /** The `[start, end)` source offsets of each newline-separated line. */
@@ -256,12 +249,11 @@ function lineToBlock(
   owners: (Leaf | undefined)[],
 ): HTMLDivElement {
   const runs = lineRuns(start, end, source, owners);
-  const { codeBlock, headingDepth } = blockStyle(runs);
+  const depth = headingDepth(runs);
 
   const block = document.createElement("div");
   block.dataset.block = "true";
-  if (codeBlock) block.dataset.codeBlock = "true";
-  if (headingDepth) block.dataset.depth = String(headingDepth);
+  if (depth) block.dataset.depth = String(depth);
 
   // A single inline flow of styled spans — no structural wrappers — so the
   // caret and typing/deletion behave exactly like a plain textarea. An empty

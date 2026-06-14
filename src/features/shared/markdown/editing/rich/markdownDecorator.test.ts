@@ -74,13 +74,6 @@ describe("block structure", () => {
     expect(blocks(decorate("a\n\nb"))).toHaveLength(3);
   });
 
-  it("flags every code-block line with data-code-block", () => {
-    const flagged = blocks(decorate("```\ncode\n```")).filter((b) =>
-      b.hasAttribute("data-code-block"),
-    );
-    expect(flagged).toHaveLength(3);
-  });
-
   it("mutes the fence and language identifier on a fenced code block", () => {
     const c = decorate("```js\nconst a = 1;\n```");
     expect(texts(c, '[class*="syntax"]')).toEqual(["```", "js", "```"]);
@@ -93,13 +86,6 @@ describe("block structure", () => {
 });
 
 describe("code block nested in a blockquote", () => {
-  it("flags all lines as a code block (monospace inside a quote)", () => {
-    const flagged = blocks(decorate("> ```\n> code\n> ```")).filter((b) =>
-      b.hasAttribute("data-code-block"),
-    );
-    expect(flagged).toHaveLength(3);
-  });
-
   it("renders the > marker as muted syntax (normal font), code as codeContent", () => {
     const c = decorate('> ```bash\n> const foo = "baz";\n> ```');
     // every `>` continuation marker stays muted syntax, never monospace
