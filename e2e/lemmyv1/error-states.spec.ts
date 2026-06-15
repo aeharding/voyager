@@ -35,7 +35,15 @@ test("v1: missing community shows failed feed with retry", async ({
 
   await page.goto(`/posts/${V1_HOST}/c/missing_comm`);
 
-  await expect(page.getByText("Failed to load more posts.")).toBeVisible();
+  const retry = page.getByRole("button", {
+    name: /Failed to load more posts\./,
+  });
+  await expect(retry).toBeVisible();
+
+  // Regression guard: the retry control is a <button> for a11y but must keep
+  // its container layout. Composing `plainButton` used to clobber it to
+  // `inline-flex`/auto-width; assert the container's `display: flex` survives.
+  await expect(retry).toHaveCSS("display", "flex");
 });
 
 test.describe("logged in", () => {
