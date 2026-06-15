@@ -9,7 +9,7 @@
 }
 
 .button {
-  composes: plainButton from "#/features/shared/shared.module.css";
+  composes: unstyledButton from "#/features/shared/shared.module.css";
   composes: container;
 
   width: 100%;

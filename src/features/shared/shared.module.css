@@ -33,6 +33,23 @@
   display: inline-flex;
 }
 
+/* plainButton without its layout opinions (display, padding, width, font-size,
+   color), so it can compose a layout class without clobbering it. */
+.unstyledButton {
+  border: none;
+  margin: 0;
+  background: transparent;
+
+  /* inherit font family & smoothing from ancestor; size/color come from the
+     composed layout class */
+  font-family: inherit;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* TODO move transparentIonToolbar and closeButton to separate file/component */
 .transparentIonToolbar {
   --background: none;
