@@ -7,6 +7,7 @@ import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 import { useAppSelector } from "#/store";
 
+import MarkdownTextarea from "../../MarkdownTextarea";
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
 import { createTextareaEditor } from "./controller";
 import { continueListOnEnter } from "./listContinuation";
@@ -88,8 +89,9 @@ export default function Editor({
       <div
         className={cx(styles.container, keyboardOpen && styles.keyboardOpen)}
       >
-        <TextareaAutosizedForOnScreenKeyboard
+        <MarkdownTextarea
           {...preventModalSwipeOnTextSelection}
+          textareaComponent={TextareaAutosizedForOnScreenKeyboard}
           className={styles.textarea}
           ref={mergedRef}
           value={text}
