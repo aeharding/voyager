@@ -57,7 +57,8 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const nsfw = isNsfwBlurred(post, blurNsfw);
 
-  const isLink = !postUrlIsMedia && post.post.url;
+  const isLink =
+    (!postUrlIsMedia || postUrlIsMedia === "youtube") && post.post.url;
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -85,7 +86,7 @@ export default function Thumbnail({ post }: ImgProps) {
       return <IonIcon className={styles.fullsizeIcon} icon={link} />;
     }
 
-    if (postUrlIsMedia) {
+    if (postUrlIsMedia && postUrlIsMedia !== "youtube") {
       return (
         <CompactFeedPostMedia
           post={post}

@@ -1,6 +1,5 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { platformSupportsRedgif } from "#/features/media/external/redgifs/helpers";
 import { resetRedgifs } from "#/features/media/external/redgifs/redgifsSlice";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -11,8 +10,6 @@ export default function EmbedExternalMedia() {
   const embedExternalMedia = useAppSelector(
     (state) => state.settings.appearance.posts.embedExternalMedia,
   );
-
-  if (!platformSupportsRedgif()) return;
 
   return (
     <IonItem>
