@@ -101,6 +101,44 @@ function docToText(editor: PlainEditor): string {
     .join("\n");
 }
 
+/**
+ * Live plain-text value + caret offset read straight from the contenteditable,
+ * for use while an IME composition is mid-flight (see `subscribe`). editate
+ * doesn't update its model during composition, so its `doc`/`selection` lag the
+ * on-screen text — but the decorator keeps the DOM an exact source mirror (one
+ * `[data-block]` line per source line, raw characters preserved), so we can
+ * reconstruct the same global offsets editate uses: walk text nodes in order and
+ * join blocks with "\n".
+ */
+function liveDomState(
+  host: HTMLElement | null,
+): { value: string; caret: number } | null {
+  if (!host) return null;
+  const selection = host.ownerDocument.getSelection();
+  let value = "";
+  let caret: number | null = null;
+
+  Array.from(host.children).forEach((block, i) => {
+    if (i > 0) value += "\n";
+    const walker = host.ownerDocument.createTreeWalker(
+      block,
+      NodeFilter.SHOW_TEXT,
+    );
+    let node: Node | null;
+    while ((node = walker.nextNode()) !== null) {
+      if (selection?.focusNode === node) {
+        caret = value.length + selection.focusOffset;
+      }
+      value += node.nodeValue ?? "";
+    }
+    // An empty line holds only a <br>, so its caret sits on the block element
+    // itself rather than on a text node.
+    if (caret === null && selection?.focusNode === block) caret = value.length;
+  });
+
+  return { value, caret: caret ?? value.length };
+}
+
 export function createEditateController(
   editor: PlainEditor,
   getHost: () => HTMLElement | null,
@@ -113,6 +151,9 @@ export function createEditateController(
   // action inserts or the user genuinely returns to the editor.
   let committed: readonly [number, number] = editor.selection;
   let frozen = false;
+  // True while an IME composition is active (see `subscribe`). editate's model
+  // is stale during composition, so reads fall back to the live DOM.
+  let composing = false;
 
   const isHostFocused = () => {
     const host = getHost();
@@ -154,8 +195,18 @@ export function createEditateController(
   });
 
   return {
-    getValue: () => docToText(editor),
+    getValue: () => {
+      if (composing) {
+        const dom = liveDomState(getHost());
+        if (dom) return dom.value;
+      }
+      return docToText(editor);
+    },
     getSelection: () => {
+      if (composing) {
+        const dom = liveDomState(getHost());
+        if (dom) return { start: dom.caret, end: dom.caret };
+      }
       const [anchor, focus] =
         !frozen && isHostFocused() ? editor.selection : committed;
       return { start: Math.min(anchor, focus), end: Math.max(anchor, focus) };
@@ -178,6 +229,41 @@ export function createEditateController(
       committed = editor.selection;
       frozen = true;
     },
-    subscribe: (event, callback) => editor.on(event, callback),
+    subscribe: (event, callback) => {
+      if (event !== "change") return editor.on(event, callback);
+
+      // editate records and replays IME mutations on compositionend rather than
+      // updating its model mid-composition, so it emits no `change` event while
+      // an Android IME (GBoard) composes a word — leaving `getValue`/
+      // `getSelection` stale. Without this, the autocomplete typeahead freezes on
+      // the first keystroke after `!`/`@` until the word is committed. So: track
+      // composition, mirror the native `input` event while it's active (reads
+      // come from the live DOM), and clear `composing` before the committed
+      // `change` recompute so that one reads editate's now-fresh model.
+      const host = getHost();
+      const onCompositionStart = () => {
+        composing = true;
+      };
+      const onCompositionEnd = () => {
+        composing = false;
+      };
+      const onInput = () => {
+        if (composing) callback();
+      };
+      const offChange = editor.on("change", () => {
+        composing = false;
+        callback();
+      });
+      host?.addEventListener("compositionstart", onCompositionStart);
+      host?.addEventListener("compositionend", onCompositionEnd);
+      host?.addEventListener("input", onInput);
+
+      return () => {
+        offChange();
+        host?.removeEventListener("compositionstart", onCompositionStart);
+        host?.removeEventListener("compositionend", onCompositionEnd);
+        host?.removeEventListener("input", onInput);
+      };
+    },
   };
 }
