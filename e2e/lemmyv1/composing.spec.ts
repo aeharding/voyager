@@ -58,6 +58,37 @@ function composerSubmit(page: Page) {
     .locator('ion-buttons[slot="end"] ion-button');
 }
 
+// Flip on the opt-in rich editor through the real settings UI.
+async function enableRichEditor(page: Page) {
+  await page.goto("/settings/general");
+  const toggle = page.locator("ion-toggle", {
+    hasText: "Rich Markdown Editor",
+  });
+  await toggle.click();
+  await expect(toggle).toHaveJSProperty("checked", true);
+  await expect.poll(() => getSetting(page, "rich_markdown_editor")).toBe(true);
+}
+
+async function copyUrlToClipboard(page: Page, url: string) {
+  await page
+    .context()
+    .grantPermissions(["clipboard-read", "clipboard-write"])
+    .catch(() => undefined);
+  await page.evaluate(async (u) => {
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        "text/html": new Blob(
+          [`<meta charset='utf-8'><a href="${u}">${u}</a>`],
+          {
+            type: "text/html",
+          },
+        ),
+        "text/plain": new Blob([u], { type: "text/plain" }),
+      }),
+    ]);
+  }, url);
+}
+
 test("v1: replying to a post submits and renders the comment", async ({
   api,
   page,
@@ -283,14 +314,7 @@ test("v1: rich editor (opt-in) still submits plain markdown", async ({
     },
   });
 
-  // Enable the opt-in rich editor through the real settings UI
-  await page.goto("/settings/general");
-  const toggle = page.locator("ion-toggle", {
-    hasText: "Rich Markdown Editor",
-  });
-  await toggle.click();
-  await expect(toggle).toHaveJSProperty("checked", true);
-  await expect.poll(() => getSetting(page, "rich_markdown_editor")).toBe(true);
+  await enableRichEditor(page);
 
   await page.goto(POST_URL);
   await expect(page.getByText("my own comment")).toBeVisible();
@@ -303,6 +327,79 @@ test("v1: rich editor (opt-in) still submits plain markdown", async ({
 
   const call = await api.waitForCall("POST /api/v4/comment");
   expect(call.body).toEqual({ content: "rich editor reply", post_id: 1 });
+});
+
+test("v1: editor unwraps a pasted vger.to link", async ({ api, page }) => {
+  mockThread(api);
+  api.mock("POST /api/v4/comment", (call) => ({
+    json: {
+      comment_view: commentView({
+        id: 9999,
+        content: (call.body as { content: string }).content,
+        creator: me,
+      }),
+    },
+  }));
+
+  await page.goto(POST_URL);
+  await expect(page.getByText("my own comment")).toBeVisible();
+
+  await postReplyButton(page).click();
+
+  const textarea = page.locator("ion-modal textarea");
+  await expect(textarea).toBeVisible();
+
+  await copyUrlToClipboard(page, "https://vger.to/lemmy.world/post/123");
+  await textarea.click();
+  await page.keyboard.press("ControlOrMeta+v");
+
+  await expect(textarea).toHaveValue("https://lemmy.world/post/123");
+
+  await composerSubmit(page).click();
+
+  const call = await api.waitForCall("POST /api/v4/comment");
+  expect(call.body).toEqual({
+    content: "https://lemmy.world/post/123",
+    post_id: 1,
+  });
+});
+
+test("v1: rich editor unwraps a pasted vger.to link", async ({ api, page }) => {
+  mockThread(api);
+  api.mock("POST /api/v4/comment", (call) => ({
+    json: {
+      comment_view: commentView({
+        id: 9999,
+        content: (call.body as { content: string }).content,
+        creator: me,
+      }),
+    },
+  }));
+
+  await enableRichEditor(page);
+
+  await page.goto(POST_URL);
+  await expect(page.getByText("my own comment")).toBeVisible();
+
+  await postReplyButton(page).click();
+
+  const richEditor = page.locator('ion-modal [contenteditable="true"]');
+  await expect(richEditor).toBeVisible();
+
+  await copyUrlToClipboard(page, "https://vger.to/lemmy.world/post/123");
+  await richEditor.click();
+  await page.keyboard.press("ControlOrMeta+v");
+
+  await expect(richEditor).toContainText("https://lemmy.world/post/123");
+  await expect(richEditor).not.toContainText("vger.to");
+
+  await composerSubmit(page).click();
+
+  const call = await api.waitForCall("POST /api/v4/comment");
+  expect(call.body).toEqual({
+    content: "https://lemmy.world/post/123",
+    post_id: 1,
+  });
 });
 
 test("v1: dirty composer requires confirmation to dismiss", async ({

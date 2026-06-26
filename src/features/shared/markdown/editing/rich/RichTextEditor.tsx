@@ -134,7 +134,7 @@ function RichTextEditorInstance({
           className={styles.editor}
           onKeyDown={onKeyDown}
           onKeyUp={onKeyUpDown}
-          onPaste={onPaste}
+          onPasteCapture={onPaste}
           onDropCapture={onDropCapture}
           onDragOver={onDragOver}
           {...preventModalSwipeOnTextSelection}

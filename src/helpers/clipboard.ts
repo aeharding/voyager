@@ -32,6 +32,7 @@ export function useOnPaste(
     if (!toInsert) return;
 
     e.preventDefault();
+    e.stopPropagation();
     insert(toInsert);
   }
 
@@ -46,11 +47,9 @@ export function attemptParseFromClipboard(
   targetType: TargetType,
 ) {
   return (
-    (targetType === "markdown"
-      ? attemptParseHtmlFromClipboard(e)
-      : undefined) ||
     attemptParseUrlFromClipboard(e) ||
-    attemptParseTextFromClipboard(e)
+    attemptParseTextFromClipboard(e) ||
+    (targetType === "markdown" ? attemptParseHtmlFromClipboard(e) : undefined)
   );
 }
 
