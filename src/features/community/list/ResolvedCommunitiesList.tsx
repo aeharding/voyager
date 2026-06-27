@@ -99,16 +99,22 @@ function ResolvedCommunitiesList({
   const communitiesGroupedByLetter = useMemo(() => {
     return sortBy(
       Object.entries(
-        communities.reduce<Record<string, Community[]>>((acc, community) => {
-          const firstLetter = /[0-9]/.test(community.name[0]!)
-            ? "#"
-            : community.name[0]!.toUpperCase();
+        [...communities]
+          .sort((a, b) =>
+            getHandle(a).localeCompare(getHandle(b), undefined, {
+              sensitivity: "base",
+            }),
+          )
+          .reduce<Record<string, Community[]>>((acc, community) => {
+            const firstLetter = /[0-9]/.test(community.name[0]!)
+              ? "#"
+              : community.name[0]!.toUpperCase();
 
-          acc[firstLetter] ??= [];
-          acc[firstLetter]!.push(community);
+            acc[firstLetter] ??= [];
+            acc[firstLetter]!.push(community);
 
-          return acc;
-        }, {}),
+            return acc;
+          }, {}),
       ),
       [([letter]) => (letter === "#" ? "\uffff" : letter)], // sort # at bottom
     );
