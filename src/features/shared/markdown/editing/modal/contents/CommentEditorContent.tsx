@@ -4,7 +4,7 @@ import Editor, { EditorProps } from "../../Editor";
 import { MarkdownEditorIonContent } from "../../MarkdownToolbar";
 
 interface CommentEditorContentProps extends EditorProps {
-  ref?: React.RefObject<HTMLTextAreaElement | null>;
+  ref?: React.RefObject<HTMLElement | null>;
 }
 
 export default function CommentEditorContent(props: CommentEditorContentProps) {

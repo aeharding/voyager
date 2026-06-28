@@ -1,3 +1,4 @@
+import { useMergedRef } from "@mantine/hooks";
 import {
   KeyboardEvent,
   ReactNode,
@@ -26,6 +27,7 @@ export interface RichTextEditorProps {
   onSubmit?: () => unknown;
   onDismiss?: () => void;
   children?: ReactNode;
+  ref?: React.RefObject<HTMLElement | null>;
 }
 
 /**
@@ -86,10 +88,10 @@ function RichTextEditorInstance({
   onSubmit,
   onDismiss,
   children,
+  ref,
 }: RichTextEditorInstanceProps) {
   const keyboardOpen = useKeyboardOpen();
 
-  // Created once per mount. `text` is the initial value; `onChange` is stable.
   const [{ controller, setHost }] = useState(() =>
     createRichEditor(text, onChange),
   );
@@ -130,7 +132,7 @@ function RichTextEditorInstance({
         )}
       >
         <div
-          ref={setHost}
+          ref={useMergedRef(setHost, ref)}
           className={styles.editor}
           onKeyDown={onKeyDown}
           onKeyUp={onKeyUpDown}

@@ -1,20 +1,10 @@
-import { useMergedRef } from "@mantine/hooks";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
-import { cx } from "#/helpers/css";
-import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
-import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 import { useAppSelector } from "#/store";
 
-import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import { createTextareaEditor } from "./controller";
-import { continueListOnEnter } from "./listContinuation";
-import MarkdownToolbar from "./MarkdownToolbar";
+import PlainTextEditor from "./PlainTextEditor";
 import RichTextEditor from "./rich/RichTextEditor";
-import useEditorBodyHandlers from "./useEditorBodyHandlers";
-
-import styles from "./Editor.module.css";
 
 export interface EditorProps {
   text: string;
@@ -25,110 +15,27 @@ export interface EditorProps {
 
   children?: React.ReactNode;
 
-  ref?: React.RefObject<HTMLTextAreaElement | null>;
+  ref?: React.RefObject<HTMLElement | null>;
 }
 
+/**
+ * Backend-agnostic markdown editor entry point. Picks the active backend — the
+ * plain `<textarea>` editor or the opt-in rich editor — and owns the concerns
+ * shared by both (text recovery). All textarea/contenteditable specifics,
+ * including exposing the element through `ref`, live in the backend components.
+ */
 export default function Editor({
-  text,
-  setText,
-  children,
-  onSubmit,
-  onDismiss,
   canRecoverText = true,
-  ref,
+  ...props
 }: EditorProps) {
-  const keyboardOpen = useKeyboardOpen();
   const richMarkdownEditor = useAppSelector(
     (state) => state.settings.general.richMarkdownEditor,
   );
-  // The element lives in the factory (set via a ref callback), so nothing reads
-  // a React ref during render — keeping this component React-Compiler-compilable.
-  const [{ controller, setTextarea, getTextarea }] =
-    useState(createTextareaEditor);
-  const mergedRef = useMergedRef(setTextarea, ref);
 
-  const { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown } =
-    useEditorBodyHandlers(controller);
-
-  useTextRecovery(text, setText, !canRecoverText);
-
-  useEffect(() => {
-    getTextarea()?.focus({ preventScroll: true });
-
-    // iOS safari native has race sometimes
-    setTimeout(() => {
-      const textarea = getTextarea();
-      if (!textarea) return;
-
-      textarea.focus({ preventScroll: true });
-
-      // Place cursor at end
-      const len = textarea.value.length;
-      textarea.setSelectionRange(len, len);
-    }, 100);
-  }, [getTextarea]);
+  useTextRecovery(props.text, props.setText, !canRecoverText);
 
   // Opt-in experimental editor (off by default)
-  if (richMarkdownEditor) {
-    return (
-      <RichTextEditor
-        text={text}
-        setText={setText}
-        onSubmit={onSubmit}
-        onDismiss={onDismiss}
-      >
-        {children}
-      </RichTextEditor>
-    );
-  }
+  if (richMarkdownEditor) return <RichTextEditor {...props} />;
 
-  return (
-    <>
-      {jsx}
-      <div
-        className={cx(styles.container, keyboardOpen && styles.keyboardOpen)}
-      >
-        <TextareaAutosizedForOnScreenKeyboard
-          {...preventModalSwipeOnTextSelection}
-          className={styles.textarea}
-          ref={mergedRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          autoFocus
-          autoCapitalize="on"
-          autoCorrect="on"
-          spellCheck
-          onKeyDown={(e) => {
-            onKeyUpDown(e);
-
-            switch (e.key) {
-              case "Enter": {
-                if (e.ctrlKey || e.metaKey) {
-                  onSubmit?.();
-                } else {
-                  continueListOnEnter(controller, e);
-                }
-                break;
-              }
-              case "Escape":
-                onDismiss?.();
-                break;
-            }
-          }}
-          onKeyUp={onKeyUpDown}
-          onPaste={onPaste}
-          onDropCapture={onDropCapture}
-          onDragOver={onDragOver}
-        />
-        {children}
-      </div>
-
-      <MarkdownToolbar
-        slot="fixed"
-        type="comment"
-        text={text}
-        controller={controller}
-      />
-    </>
-  );
+  return <PlainTextEditor {...props} />;
 }
