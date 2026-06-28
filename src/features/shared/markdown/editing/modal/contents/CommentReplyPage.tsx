@@ -121,7 +121,7 @@ function CommentReplyPageWithAccount({
   const userHandle = useAppSelector(userHandleSelector);
   const isUsingAppAccount = account?.handle === userHandle;
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLElement>(null);
 
   async function submit() {
     if (isSubmitDisabled) return;
@@ -224,7 +224,7 @@ function CommentReplyPageWithAccount({
             onClick={() => {
               presentAccountSwitcher(() => {
                 requestAnimationFrame(() => {
-                  textareaRef.current?.focus();
+                  editorRef.current?.focus();
                 });
               });
             }}
@@ -255,7 +255,7 @@ function CommentReplyPageWithAccount({
       </AppHeader>
 
       <CommentEditorContent
-        ref={textareaRef}
+        ref={editorRef}
         text={replyContent}
         setText={setReplyContent}
         onSubmit={submit}
