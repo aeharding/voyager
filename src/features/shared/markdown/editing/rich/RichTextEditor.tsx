@@ -1,8 +1,14 @@
-import { useMergedRef } from "@mantine/hooks";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 
+import { EditorProps } from "../Editor";
 import EditorFrame from "../EditorFrame";
 import useEditorBodyHandlers from "../useEditorBodyHandlers";
 import { createRichEditor } from "./createRichEditor";
@@ -10,14 +16,7 @@ import { decorateMarkdownToHtml } from "./markdownDecorator";
 
 import styles from "./RichTextEditor.module.css";
 
-export interface RichTextEditorProps {
-  text: string;
-  setText: (text: string) => void;
-  onSubmit?: () => unknown;
-  onDismiss?: () => void;
-  children?: ReactNode;
-  ref?: React.RefObject<HTMLElement | null>;
-}
+export interface RichTextEditorProps extends EditorProps {}
 
 /**
  * Experimental "rich" markdown editor (opt-in via the `rich_markdown_editor`
@@ -84,6 +83,8 @@ function RichTextEditorInstance({
     createRichEditor(text, onChange),
   );
 
+  useImperativeHandle(ref, () => controller, [controller]);
+
   const { jsx, onPaste, onDropCapture, onDragOver, onKeyDown, onKeyUp } =
     useEditorBodyHandlers(controller, { onSubmit, onDismiss });
 
@@ -96,7 +97,7 @@ function RichTextEditorInstance({
   return (
     <EditorFrame controller={controller} text={text} uploadProgress={jsx}>
       <div
-        ref={useMergedRef(setHost, ref)}
+        ref={setHost}
         className={styles.editor}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
