@@ -223,7 +223,13 @@ export function createEditateController(
       committed = editor.selection;
       frozen = false;
     },
-    focus: () => getHost()?.focus(),
+    focus: () => {
+      getHost()?.focus();
+      // Restore the caret — focus() collapses a contenteditable to the start on
+      // iOS/WebKit (same fixup as insertText). A textarea keeps its selection
+      // natively, so the textarea controller needs none of this.
+      editor.selection = committed;
+    },
     snapshotSelection: () => {
       attachReleaseListeners();
       committed = editor.selection;

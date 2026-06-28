@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import useTextRecovery from "#/helpers/useTextRecovery";
 import { useAppSelector } from "#/store";
 
+import { EditorController } from "./controller";
 import PlainTextEditor from "./PlainTextEditor";
 import RichTextEditor from "./rich/RichTextEditor";
 
@@ -15,7 +16,7 @@ export interface EditorProps {
 
   children?: React.ReactNode;
 
-  ref?: React.RefObject<HTMLElement | null>;
+  ref?: React.RefObject<EditorController | null>;
 }
 
 /**

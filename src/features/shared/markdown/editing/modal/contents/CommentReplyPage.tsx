@@ -25,6 +25,7 @@ import { getClient } from "#/services/client";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import AppHeader from "../../../../AppHeader";
+import { EditorController } from "../../controller";
 import CommentEditorContent from "./CommentEditorContent";
 import ItemReplyingTo from "./ItemReplyingTo";
 import {
@@ -121,7 +122,7 @@ function CommentReplyPageWithAccount({
   const userHandle = useAppSelector(userHandleSelector);
   const isUsingAppAccount = account?.handle === userHandle;
 
-  const editorRef = useRef<HTMLElement>(null);
+  const editorRef = useRef<EditorController>(null);
 
   async function submit() {
     if (isSubmitDisabled) return;

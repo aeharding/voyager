@@ -1,28 +1,16 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
 import { createTextareaEditor } from "./controller";
+import { EditorProps } from "./Editor";
 import EditorFrame from "./EditorFrame";
 import useEditorBodyHandlers from "./useEditorBodyHandlers";
 
 import styles from "./Editor.module.css";
 
-export interface PlainTextEditorProps {
-  text: string;
-  setText: Dispatch<SetStateAction<string>>;
-  onSubmit?: () => unknown;
-  onDismiss?: () => void;
-  children?: React.ReactNode;
-  ref?: React.RefObject<HTMLElement | null>;
-}
+export interface PlainTextEditorProps extends EditorProps {}
 
 /**
  * Plain `<textarea>` markdown editor — the default backend. All textarea-only
@@ -42,16 +30,8 @@ export default function PlainTextEditor({
   // a React ref during render — keeping this component React-Compiler-compilable.
   const [{ controller, setTextarea, getTextarea }] =
     useState(createTextareaEditor);
-  // Expose the textarea through the external ref (used to refocus the editor,
-  // e.g. after the account switcher dismisses) alongside the controller's
-  // setter. Stable, so the textarea isn't detached/reattached on every render.
-  const setTextareaRef = useCallback(
-    (node: HTMLTextAreaElement | null) => {
-      setTextarea(node);
-      if (ref) ref.current = node;
-    },
-    [setTextarea, ref],
-  );
+
+  useImperativeHandle(ref, () => controller, [controller]);
 
   const { jsx, onPaste, onDropCapture, onDragOver, onKeyDown, onKeyUp } =
     useEditorBodyHandlers(controller, { onSubmit, onDismiss });
@@ -77,7 +57,7 @@ export default function PlainTextEditor({
       <TextareaAutosizedForOnScreenKeyboard
         {...preventModalSwipeOnTextSelection}
         className={styles.textarea}
-        ref={setTextareaRef}
+        ref={setTextarea}
         value={text}
         onChange={(e) => setText(e.target.value)}
         autoFocus
