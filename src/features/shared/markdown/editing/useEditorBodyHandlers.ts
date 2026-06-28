@@ -1,19 +1,29 @@
-import { ClipboardEvent, DragEvent } from "react";
+import { ClipboardEvent, DragEvent, KeyboardEvent } from "react";
 
 import { useOnPaste } from "#/helpers/clipboard";
 
 import { EditorController } from "./controller";
+import { continueListOnEnter } from "./listContinuation";
 import useEditorHelpers from "./useEditorHelpers";
 import useUploadImage from "./useUploadImage";
 
+interface EditorKeyboardActions {
+  onSubmit?: () => unknown;
+  onDismiss?: () => void;
+}
+
 /**
  * Body-level editor interactions shared by both backends — the `<textarea>` and
- * the editate rich editor: paste an image or rich text, and drag-and-drop an
- * image. Returns the handlers to spread onto the editable element plus the
- * upload-progress `jsx` to render. Everything goes through the
+ * the editate rich editor: paste an image or rich text, drag-and-drop an image,
+ * and the keyboard shortcuts (⌘/Ctrl+Enter to submit, Escape to dismiss, Enter
+ * to continue a markdown list). Returns the handlers to spread onto the editable
+ * element plus the upload-progress `jsx` to render. Everything goes through the
  * {@link EditorController}, so the behavior is identical on both.
  */
-export default function useEditorBodyHandlers(controller: EditorController) {
+export default function useEditorBodyHandlers(
+  controller: EditorController,
+  { onSubmit, onDismiss }: EditorKeyboardActions = {},
+) {
   const { insertBlock } = useEditorHelpers(controller);
   const { uploadImage, jsx } = useUploadImage("body");
   const { onKeyUpDown, onPaste: onPasteMarkdown } = useOnPaste(
@@ -57,5 +67,29 @@ export default function useEditorBodyHandlers(controller: EditorController) {
     e.preventDefault();
   }
 
-  return { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown };
+  function onKeyDown(e: KeyboardEvent) {
+    onKeyUpDown(e); // track the paste-as-plain modifier (shift+meta/ctrl)
+    switch (e.key) {
+      case "Enter":
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          onSubmit?.();
+        } else {
+          continueListOnEnter(controller, e);
+        }
+        break;
+      case "Escape":
+        onDismiss?.();
+        break;
+    }
+  }
+
+  return {
+    jsx,
+    onPaste,
+    onDropCapture,
+    onDragOver,
+    onKeyDown,
+    onKeyUp: onKeyUpDown,
+  };
 }
