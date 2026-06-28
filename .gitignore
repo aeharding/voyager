@@ -46,3 +46,5 @@ fly.toml
 
 # Local test credentials (voyager.lemmy.ml test accounts)
 .test-creds.json
+
+cdp-eval.mjs

@@ -47,8 +47,7 @@ export const commentSlice = createSlice({
 
         if (comment.my_vote)
           state.commentVotesById[comment.comment.id] = comment.my_vote as
-            | 1
-            | -1;
+            1 | -1;
 
         if (comment.saved) {
           state.commentSavedById[comment.comment.id] = comment.saved;

@@ -67,8 +67,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
   context: Context,
   feed?: AnyFeed | undefined,
   overrideSort?:
-    | VgerSortsByContextByMode[Context]
-    | VgerSortsByContext[Context],
+    VgerSortsByContextByMode[Context] | VgerSortsByContext[Context],
 ) {
   type Sort = VgerSortsByContext[Context];
 
@@ -76,9 +75,7 @@ export default function useFeedSort<Context extends FeedSortContext>(
   const mode = useMode();
 
   const feedSort = useAppSelector(getFeedSortSelectorBuilder(feed, context)) as
-    | Sort
-    | null
-    | undefined;
+    Sort | null | undefined;
   const defaultSort = useAppSelector((state) =>
     mode ? state.settings.general[context].sort[mode] : mode,
   ) as Sort | undefined;

@@ -53,13 +53,11 @@ export default function GalleryMedia({
   function onClick(e: MouseEvent) {
     if (!props.src) return;
 
-    if (
-      !(
-        e.currentTarget instanceof HTMLImageElement ||
-        e.currentTarget instanceof HTMLCanvasElement ||
-        e.currentTarget instanceof HTMLVideoElement
-      )
-    )
+    if (!(
+      e.currentTarget instanceof HTMLImageElement ||
+      e.currentTarget instanceof HTMLCanvasElement ||
+      e.currentTarget instanceof HTMLVideoElement
+    ))
       return;
 
     if (e.target instanceof HTMLElement && e.target.closest("a")) return;

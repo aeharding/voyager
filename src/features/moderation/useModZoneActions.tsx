@@ -23,8 +23,7 @@ export interface SpecialFeedUseModZoneActionsProps {
 }
 
 export type UseModZoneActionsProps =
-  | CommunityUseModZoneActionsProps
-  | SpecialFeedUseModZoneActionsProps;
+  CommunityUseModZoneActionsProps | SpecialFeedUseModZoneActionsProps;
 
 export default function useModZoneActions(props: UseModZoneActionsProps) {
   const [presentActionSheet] = useIonActionSheet();

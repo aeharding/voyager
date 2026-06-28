@@ -24,9 +24,7 @@ function getPostMedia(
   post: PostView | undefined,
 ): [string] | [string, string] | undefined {
   return getMixedContentPostMedia(post)?.map(forceSecureUrl) as
-    | [string]
-    | [string, string]
-    | undefined;
+    [string] | [string, string] | undefined;
 }
 
 function getMixedContentPostMedia(

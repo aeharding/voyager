@@ -38,8 +38,7 @@ export interface RecordedCall {
 type MockResponse = { status?: number; json: unknown } | { abort: string };
 
 type Responder =
-  | MockResponse
-  | ((call: RecordedCall) => MockResponse | Promise<MockResponse>);
+  MockResponse | ((call: RecordedCall) => MockResponse | Promise<MockResponse>);
 
 /** `"METHOD /api/v4/path"` — matched against pathname only (query ignored) */
 type Matcher = `${"GET" | "POST" | "PUT" | "DELETE"} /api/v4/${string}`;
