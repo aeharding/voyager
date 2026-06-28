@@ -6,14 +6,11 @@ import {
   useState,
 } from "react";
 
-import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
-import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
 import { createTextareaEditor } from "./controller";
-import { continueListOnEnter } from "./listContinuation";
-import MarkdownToolbar from "./MarkdownToolbar";
+import EditorFrame from "./EditorFrame";
 import useEditorBodyHandlers from "./useEditorBodyHandlers";
 
 import styles from "./Editor.module.css";
@@ -31,7 +28,7 @@ export interface PlainTextEditorProps {
  * Plain `<textarea>` markdown editor — the default backend. All textarea-only
  * concerns (the controller, focus/caret handling, DOM specifics) live here so
  * the parent {@link Editor} stays a backend-agnostic router. Mirrors
- * `RichTextEditor`.
+ * `RichTextEditor`; shared chrome lives in {@link EditorFrame}.
  */
 export default function PlainTextEditor({
   text,
@@ -41,7 +38,6 @@ export default function PlainTextEditor({
   onDismiss,
   ref,
 }: PlainTextEditorProps) {
-  const keyboardOpen = useKeyboardOpen();
   // The element lives in the factory (set via a ref callback), so nothing reads
   // a React ref during render — keeping this component React-Compiler-compilable.
   const [{ controller, setTextarea, getTextarea }] =
@@ -57,8 +53,8 @@ export default function PlainTextEditor({
     [setTextarea, ref],
   );
 
-  const { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown } =
-    useEditorBodyHandlers(controller);
+  const { jsx, onPaste, onDropCapture, onDragOver, onKeyDown, onKeyUp } =
+    useEditorBodyHandlers(controller, { onSubmit, onDismiss });
 
   useEffect(() => {
     getTextarea()?.focus({ preventScroll: true });
@@ -77,52 +73,24 @@ export default function PlainTextEditor({
   }, [getTextarea]);
 
   return (
-    <>
-      {jsx}
-      <div
-        className={cx(styles.container, keyboardOpen && styles.keyboardOpen)}
-      >
-        <TextareaAutosizedForOnScreenKeyboard
-          {...preventModalSwipeOnTextSelection}
-          className={styles.textarea}
-          ref={setTextareaRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          autoFocus
-          autoCapitalize="on"
-          autoCorrect="on"
-          spellCheck
-          onKeyDown={(e) => {
-            onKeyUpDown(e);
-
-            switch (e.key) {
-              case "Enter": {
-                if (e.ctrlKey || e.metaKey) {
-                  onSubmit?.();
-                } else {
-                  continueListOnEnter(controller, e);
-                }
-                break;
-              }
-              case "Escape":
-                onDismiss?.();
-                break;
-            }
-          }}
-          onKeyUp={onKeyUpDown}
-          onPaste={onPaste}
-          onDropCapture={onDropCapture}
-          onDragOver={onDragOver}
-        />
-        {children}
-      </div>
-
-      <MarkdownToolbar
-        slot="fixed"
-        type="comment"
-        text={text}
-        controller={controller}
+    <EditorFrame controller={controller} text={text} uploadProgress={jsx}>
+      <TextareaAutosizedForOnScreenKeyboard
+        {...preventModalSwipeOnTextSelection}
+        className={styles.textarea}
+        ref={setTextareaRef}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        autoFocus
+        autoCapitalize="on"
+        autoCorrect="on"
+        spellCheck
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onPaste={onPaste}
+        onDropCapture={onDropCapture}
+        onDragOver={onDragOver}
       />
-    </>
+      {children}
+    </EditorFrame>
   );
 }

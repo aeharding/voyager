@@ -1,24 +1,13 @@
 import { useMergedRef } from "@mantine/hooks";
-import {
-  KeyboardEvent,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
-import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
-import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
-import { continueListOnEnter } from "../listContinuation";
-import MarkdownToolbar from "../MarkdownToolbar";
+import EditorFrame from "../EditorFrame";
 import useEditorBodyHandlers from "../useEditorBodyHandlers";
 import { createRichEditor } from "./createRichEditor";
 import { decorateMarkdownToHtml } from "./markdownDecorator";
 
-import editorStyles from "../Editor.module.css";
 import styles from "./RichTextEditor.module.css";
 
 export interface RichTextEditorProps {
@@ -90,14 +79,13 @@ function RichTextEditorInstance({
   children,
   ref,
 }: RichTextEditorInstanceProps) {
-  const keyboardOpen = useKeyboardOpen();
-
+  // Created once per mount. `text` is the initial value; `onChange` is stable.
   const [{ controller, setHost }] = useState(() =>
     createRichEditor(text, onChange),
   );
 
-  const { jsx, onPaste, onDropCapture, onDragOver, onKeyUpDown } =
-    useEditorBodyHandlers(controller);
+  const { jsx, onPaste, onDropCapture, onDragOver, onKeyDown, onKeyUp } =
+    useEditorBodyHandlers(controller, { onSubmit, onDismiss });
 
   // Rendered as an HTML string via dangerouslySetInnerHTML (not React child
   // elements) so React never reconciles nodes inside the contenteditable — the
@@ -105,55 +93,23 @@ function RichTextEditorInstance({
   // with a stale `removeChild` on Android (composition, rapid backspace, …).
   const rendered = useMemo(() => decorateMarkdownToHtml(text), [text]);
 
-  function onKeyDown(e: KeyboardEvent) {
-    onKeyUpDown(e); // track the paste-as-plain modifier (shift+meta/ctrl)
-    switch (e.key) {
-      case "Enter":
-        if (e.ctrlKey || e.metaKey) {
-          e.preventDefault();
-          onSubmit?.();
-        } else {
-          continueListOnEnter(controller, e);
-        }
-        break;
-      case "Escape":
-        onDismiss?.();
-        break;
-    }
-  }
-
   return (
-    <>
-      {jsx}
+    <EditorFrame controller={controller} text={text} uploadProgress={jsx}>
       <div
-        className={cx(
-          editorStyles.container,
-          keyboardOpen && editorStyles.keyboardOpen,
-        )}
-      >
-        <div
-          ref={useMergedRef(setHost, ref)}
-          className={styles.editor}
-          onKeyDown={onKeyDown}
-          onKeyUp={onKeyUpDown}
-          onPasteCapture={onPaste}
-          onDropCapture={onDropCapture}
-          onDragOver={onDragOver}
-          {...preventModalSwipeOnTextSelection}
-          autoCapitalize="on"
-          autoCorrect="on"
-          spellCheck
-          dangerouslySetInnerHTML={{ __html: rendered }}
-        />
-        {children}
-      </div>
-
-      <MarkdownToolbar
-        slot="fixed"
-        type="comment"
-        text={text}
-        controller={controller}
+        ref={useMergedRef(setHost, ref)}
+        className={styles.editor}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onPasteCapture={onPaste}
+        onDropCapture={onDropCapture}
+        onDragOver={onDragOver}
+        {...preventModalSwipeOnTextSelection}
+        autoCapitalize="on"
+        autoCorrect="on"
+        spellCheck
+        dangerouslySetInnerHTML={{ __html: rendered }}
       />
-    </>
+      {children}
+    </EditorFrame>
   );
 }
