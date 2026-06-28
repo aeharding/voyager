@@ -9,8 +9,7 @@ import { useAppSelector } from "#/store";
 import useIsTwoColumnLayout from "./twoColumn/useIsTwoColumnLayout";
 
 type SecondColumnLocationDictionary =
-  | Record<string, Location | undefined>
-  | undefined;
+  Record<string, Location | undefined> | undefined;
 
 export default function OutletProvider({
   children,

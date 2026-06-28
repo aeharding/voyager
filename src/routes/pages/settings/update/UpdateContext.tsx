@@ -12,11 +12,7 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import { isNative } from "#/helpers/device";
 
 type UpdateStatus =
-  | "not-enabled"
-  | "loading"
-  | "current"
-  | "outdated"
-  | "error";
+  "not-enabled" | "loading" | "current" | "outdated" | "error";
 
 interface IUpdateContext {
   // used for determining whether page needs to be scrolled up first

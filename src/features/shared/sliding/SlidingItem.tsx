@@ -23,14 +23,10 @@ export interface SlidingItemAction {
 }
 
 export type ActionList = [
-  (
-    // short swipe action
-    SlidingItemAction | undefined
-  ),
-  (
-    // long swipe action
-    SlidingItemAction | undefined
-  ),
+  // short swipe action
+  SlidingItemAction | undefined,
+  // long swipe action
+  SlidingItemAction | undefined,
 ];
 
 export interface SlidingItemProps {

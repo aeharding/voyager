@@ -57,11 +57,7 @@ interface FavoriteItem {
 }
 
 export type ItemType =
-  | SeparatorItem
-  | SpecialItem
-  | CommunityItem
-  | FavoriteItem
-  | CustomItem;
+  SeparatorItem | SpecialItem | CommunityItem | FavoriteItem | CustomItem;
 
 interface CommunitiesListParams {
   actor: string;

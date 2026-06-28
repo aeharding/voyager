@@ -24,9 +24,7 @@ interface BaseSlidingVoteProps extends React.PropsWithChildren {
 
 function GenericBaseSlidingWrapper<
   T extends
-    | BaseSlidingVoteProps
-    | BaseSlidingDMProps
-    | BaseSlidingModActionProps,
+    BaseSlidingVoteProps | BaseSlidingDMProps | BaseSlidingModActionProps,
 >({
   component: Component,
   ...props

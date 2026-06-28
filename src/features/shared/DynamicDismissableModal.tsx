@@ -24,8 +24,7 @@ interface DynamicDismissableModalProps {
   isOpen: boolean;
 
   children:
-    | React.ReactElement
-    | ((props: DismissableProps) => React.ReactElement);
+    React.ReactElement | ((props: DismissableProps) => React.ReactElement);
 
   className?: string;
   dismissClassName?: string;
