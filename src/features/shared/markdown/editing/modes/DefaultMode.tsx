@@ -231,6 +231,11 @@ export default function DefaultMode({
       onDidPresent: () => {
         requestAnimationFrame(focusInput);
       },
+      onDidDismiss: () => {
+        // Restore the editor caret when the alert closes (e.g. Cancel) —
+        // refocusing a contenteditable otherwise collapses it to the start.
+        requestAnimationFrame(() => controller.focus());
+      },
     });
 
     requestAnimationFrame(() => {
