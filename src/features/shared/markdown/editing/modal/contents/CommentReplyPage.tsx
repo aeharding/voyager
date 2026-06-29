@@ -225,6 +225,13 @@ function CommentReplyPageWithAccount({
             onClick={() => {
               presentAccountSwitcher(() => {
                 requestAnimationFrame(() => {
+                  console.info("[caret] account-switch refocus (rAF)", {
+                    committed: editorRef.current?.getSelection(),
+                    active:
+                      document.activeElement?.className ||
+                      document.activeElement?.tagName,
+                    t: Math.round(performance.now()),
+                  });
                   editorRef.current?.focus();
                 });
               });

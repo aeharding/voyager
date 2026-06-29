@@ -182,6 +182,15 @@ export function createEditateController(
   };
 
   editor.on("selectionchange", () => {
+    console.info("[caret] selectionchange", {
+      sel: editor.selection,
+      committed,
+      frozen,
+      hostFocused: isHostFocused(),
+      active:
+        document.activeElement?.className || document.activeElement?.tagName,
+      t: Math.round(performance.now()),
+    });
     if (!frozen && isHostFocused()) committed = editor.selection;
   });
   editor.on("change", () => {
@@ -224,11 +233,25 @@ export function createEditateController(
       frozen = false;
     },
     focus: () => {
+      // Refocusing a contenteditable collapses the caret to the start, so
+      // restore it — e.g. so the user returns to where they were after the
+      // account switcher dismisses. editate writes the DOM selection on a
+      // programmatic set, so this moves the real caret, not just the model. A
+      // textarea keeps its selection natively and needs none of this.
+      console.info("[caret] focus() enter", {
+        committed,
+        active:
+          document.activeElement?.className || document.activeElement?.tagName,
+        t: Math.round(performance.now()),
+      });
       getHost()?.focus();
-      // Restore the caret — focus() collapses a contenteditable to the start on
-      // iOS/WebKit (same fixup as insertText). A textarea keeps its selection
-      // natively, so the textarea controller needs none of this.
       editor.selection = committed;
+      console.info("[caret] focus() after restore", {
+        sel: editor.selection,
+        active:
+          document.activeElement?.className || document.activeElement?.tagName,
+        t: Math.round(performance.now()),
+      });
     },
     snapshotSelection: () => {
       attachReleaseListeners();
