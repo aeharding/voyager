@@ -1,26 +1,23 @@
-import { LemmyErrorType, Person } from "threadiverse";
+import { isErrorCode, Person, ResponseErrorCode } from "threadiverse";
 
-type LemmyErrorValue = LemmyErrorType["error"];
-
-export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
-  if (!(error instanceof Error)) return;
-  return error.message === lemmyErrorValue;
+export function isLemmyError(error: unknown, code: ResponseErrorCode) {
+  return isErrorCode(error, code);
 }
 
 function getErrorMessage(
   error: unknown,
-  customErrorMap: (message: LemmyErrorValue) => string | undefined,
+  customErrorMap: (code: ResponseErrorCode) => string | undefined,
   unknownLemmyError?: string,
 ): string {
   if (!(error instanceof Error))
     return "Unknown error occurred, please try again.";
 
   // Server-level rate limiting — applies to any endpoint, not just custom-mapped ones.
-  if (error.message === "too_many_requests") {
+  if (isErrorCode(error, "too_many_requests")) {
     return "Too many requests. Please wait a moment and try again.";
   }
 
-  const message = customErrorMap(error.message as LemmyErrorValue);
+  const message = customErrorMap(error.message);
 
   if (message) return message;
 
@@ -36,7 +33,7 @@ export function getLoginErrorMessage(
       case "incorrect_totp_token":
         return "Incorrect 2nd factor code. Please try again.";
       case "not_found":
-      case "couldnt_find_person" as never: // TODO lemmy 0.19 and less support
+      case "couldnt_find_person": // TODO lemmy 0.19 and less support
         return `User not found. Is your account on ${instanceActorId}?`;
       case "incorrect_login":
         return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
