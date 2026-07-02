@@ -62,7 +62,7 @@
     "date-fns": "^4.4.0",
     "dexie": "^4.4.4",
     "dexie-export-import": "^4.4.0",
-    "editate": "0.6.8",
+    "editate": "0.6.9",
     "es-toolkit": "^1.49.0",
     "history": "^4.10.1",
     "immer": "^11.1.8",
