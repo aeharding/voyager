@@ -70,10 +70,8 @@ export function getVoteErrorMessage(error: unknown): string {
   return getErrorMessage(
     error,
     (error) => {
-      switch (true) {
-        case error instanceof InvalidBotActionError:
-          return "You marked your account as a bot, so you can't vote.";
-      }
+      if (error instanceof InvalidBotActionError)
+        return "You marked your account as a bot, so you can't vote.";
     },
     "Problem voting, please try again.",
   );
@@ -86,10 +84,8 @@ export function getBlockUserErrorMessage(
   return getErrorMessage(
     error,
     (error) => {
-      switch (true) {
-        case error instanceof CantBlockAdminError:
-          return `${blockingUser.name} is an admin. You can't block admins.`;
-      }
+      if (error instanceof CantBlockAdminError)
+        return `${blockingUser.name} is an admin. You can't block admins.`;
     },
     "Problem blocking user. Please try again.",
   );
