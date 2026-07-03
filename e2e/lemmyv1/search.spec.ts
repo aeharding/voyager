@@ -1,5 +1,8 @@
 // Search: posts and communities lookups (flat v1 /search response shape),
 // the empty state, and the random community jump.
+//
+// Stays lemmyv1-only: there's no seed-derived /search (results are v1 wire
+// shapes), and piefed doesn't support getRandomCommunity.
 
 import { build, fixturePosts, me, V1_HOST } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";

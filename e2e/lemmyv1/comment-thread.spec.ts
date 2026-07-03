@@ -1,6 +1,10 @@
 // Comment thread interactions: nested rendering + collapse/expand, comment
 // sort switching, voting/saving via the comment action sheet, and fetching
 // missing children ("N more replies") for deep threads.
+//
+// Stays lemmyv1-only: sort payloads are mode-specific ("new" here vs
+// piefed's "New"), and the vote/save/more-replies responses are wire-level
+// v1 payloads (the fakes have no vote state or max_depth model).
 
 import type { Page } from "@playwright/test";
 

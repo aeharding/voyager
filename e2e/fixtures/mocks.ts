@@ -10,11 +10,30 @@ import {
   FakeLemmyV1Instance,
   SeedPerson,
   SeedPost,
+  SeedStore,
 } from "threadiverse/testing";
 
 import { build, fixtureModlog, fixturePosts, me, V1_HOST } from "./builders";
 
 export type { Matcher, RecordedCall, Responder } from "threadiverse/testing";
+
+/**
+ * Voyager's provider-agnostic fixture content: the default user, the
+ * default community, the ids 1..3 feed posts, and the site name. Seeded
+ * into every fake instance (lemmyv1 and piefed) so shared specs assert on
+ * identical content regardless of provider.
+ */
+export function seedDefaults(seed: SeedStore) {
+  const seededMe = seed.person(me);
+  // First seeded community defaults to id 111, matching build.community()
+  const community = seed.community();
+  const posts = fixturePosts.map((post) =>
+    seed.post({ ...post, community, creator: seededMe }),
+  );
+  seed.site({ name: "Test site" });
+
+  return { me: seededMe, posts };
+}
 
 export class MockApi extends FakeLemmyV1Instance {
   /** The default logged-in-capable user, seeded into the store */
@@ -26,15 +45,9 @@ export class MockApi extends FakeLemmyV1Instance {
   constructor() {
     super({ host: V1_HOST });
 
-    this.me = this.seed.person(me);
-    // First seeded community defaults to id 111, matching build.community()
-    const community = this.seed.community();
-    this.posts = fixturePosts.map((post) =>
-      this.seed.post({ ...post, community, creator: this.me }),
-    );
-    this.seed.site({ name: "Test v1 site" });
+    ({ me: this.me, posts: this.posts } = seedDefaults(this.seed));
 
-    // No seed support for modlog yet — wire-level fixture
+    // No seed support for modlog yet — wire-level fixture (lemmyv1-only)
     this.mock("GET /api/v4/modlog", {
       json: build.pagedResponse(fixtureModlog),
     });

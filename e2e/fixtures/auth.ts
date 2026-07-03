@@ -1,6 +1,5 @@
 import type { Page } from "@playwright/test";
-
-import type { MockApi } from "./mocks";
+import type { SeedPerson, SeedStore } from "threadiverse/testing";
 
 import { V1_HOST } from "./builders";
 
@@ -34,14 +33,21 @@ export async function seedCredentials(
 }
 
 /**
- * Boot the app logged into the fake v1 instance: seeds credentials before
- * page load and marks the fixture user as authenticated — the fake derives
- * the account endpoints (my user, unread counts, notifications) from that.
+ * Boot the app logged into a fake instance: seeds credentials before page
+ * load and marks the fixture user as authenticated — the fake derives the
+ * account endpoints (my user, unread counts, notifications) from that.
  */
-export async function loginAs(page: Page, api: MockApi) {
-  const handle = `alex@${V1_HOST}`;
+export async function loginAs(
+  page: Page,
+  api: { host: string; me: SeedPerson; seed: SeedStore },
+) {
+  const handle = `${api.me.name}@${api.host}`;
 
-  await seedCredentials(page, [{ jwt: makeFakeJwt(), handle }], handle);
+  await seedCredentials(
+    page,
+    [{ jwt: makeFakeJwt({ iss: api.host }), handle }],
+    handle,
+  );
 
   api.seed.loggedInAs(api.me);
 }

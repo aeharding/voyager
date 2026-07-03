@@ -1,8 +1,14 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import type { Provider } from "./e2e/matrix/fixtures";
+
 const serverURL = "http://localhost:" + (process.env.CI ? "4173" : "5173");
 
-export default defineConfig({
+// e2e/matrix specs run against both provider fakes via the matrix-*
+// projects; the browser-matrix projects keep running everything else.
+const MATRIX_SPECS = "e2e/matrix/**/*.spec.ts";
+
+export default defineConfig<{ provider: Provider }>({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -23,23 +29,38 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testIgnore: MATRIX_SPECS,
       use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "firefox",
+      testIgnore: MATRIX_SPECS,
       use: { ...devices["Desktop Firefox"] },
     },
     {
       name: "webkit",
+      testIgnore: MATRIX_SPECS,
       use: { ...devices["Desktop Safari"] },
     },
     {
       name: "Mobile Chrome",
+      testIgnore: MATRIX_SPECS,
       use: { ...devices["Pixel 7"] },
     },
     {
       name: "Mobile Safari",
+      testIgnore: MATRIX_SPECS,
       use: { ...devices["iPhone 14"] },
+    },
+    {
+      name: "matrix-lemmyv1",
+      testMatch: MATRIX_SPECS,
+      use: { ...devices["Desktop Chrome"], provider: "lemmyv1" },
+    },
+    {
+      name: "matrix-piefed",
+      testMatch: MATRIX_SPECS,
+      use: { ...devices["Desktop Chrome"], provider: "piefed" },
     },
   ],
 

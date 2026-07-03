@@ -1,6 +1,10 @@
 // Feed interactions: cursor pagination via infinite scroll, sort switching,
 // listing type, voting from the feed, the mark-read-on-open side effect,
 // local-only post hiding, and recovery after a failed page load.
+//
+// Stays lemmyv1-only: pagination pages and the vote response are wire-level
+// v1 payloads, sort payloads are mode-specific ("new" here vs piefed's
+// "New"), and the hide-post test asserts on a v1 route.
 
 import { build, fixturePosts, me, NOW, V1_HOST } from "../fixtures/builders";
 import { readDbRows } from "../fixtures/db";
