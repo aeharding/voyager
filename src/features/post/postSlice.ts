@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Post, PostView } from "threadiverse";
+import { NotFoundError, Post, PostView } from "threadiverse";
 
 import {
   clientSelector,
@@ -411,11 +411,7 @@ export const getPost =
         id,
       });
     } catch (error) {
-      if (
-        isLemmyError(error, "couldnt_find_post" as never) || // TODO lemmy 0.19 and less support
-        isLemmyError(error, "not_found") ||
-        isLemmyError(error, "unknown")
-      ) {
+      if (error instanceof NotFoundError || isLemmyError(error, "unknown")) {
         dispatch(receivedPostNotFound(id));
       }
 

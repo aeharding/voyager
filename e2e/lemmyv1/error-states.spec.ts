@@ -65,8 +65,10 @@ test.describe("logged in", () => {
 
     await api.waitForCall("POST /api/v4/post/like");
 
-    // Error toast + score back to the original 1
-    await expect(page.getByText(/Problem voting/i)).toBeVisible();
+    // Error toast (rate_limit_error maps to the specific rate-limit
+    // message via threadiverse's RateLimitedError) + score back to the
+    // original 1
+    await expect(page.getByText(/Too many requests/i)).toBeVisible();
     await expect(item.getByText("1", { exact: true })).toBeVisible();
   });
 });

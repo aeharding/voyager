@@ -1,7 +1,12 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { compact } from "es-toolkit";
 import { useState } from "react";
-import { CommunityView, ListingType, ThreadiverseClient } from "threadiverse";
+import {
+  CommunityView,
+  ListingType,
+  NotFoundError,
+  ThreadiverseClient,
+} from "threadiverse";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
@@ -12,7 +17,6 @@ import useFeedSort, {
 } from "#/features/feed/sort/useFeedSort";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -103,11 +107,7 @@ async function findExactCommunity(
   try {
     return (await client.getCommunity({ name: sanitizedName })).community_view;
   } catch (error) {
-    if (
-      isLemmyError(error, "couldnt_find_community" as never) || // TODO lemmy 0.19 and less support
-      isLemmyError(error, "not_found")
-    )
-      return;
+    if (error instanceof NotFoundError) return;
 
     throw error;
   }

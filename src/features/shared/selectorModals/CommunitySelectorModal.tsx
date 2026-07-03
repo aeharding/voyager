@@ -21,7 +21,7 @@ export default function CommunitySelectorModal(
       {
         search_term: query,
         type_: "communities",
-        ...getTopAllSearchSort(await client.getMode()),
+        ...getTopAllSearchSort((await client.connect()).mode),
         limit: LIMIT,
       },
       { signal },

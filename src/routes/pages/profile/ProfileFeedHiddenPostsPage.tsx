@@ -8,6 +8,7 @@ import {
 import { compact } from "es-toolkit";
 import { useRef } from "react";
 import { useParams } from "react-router";
+import { NotFoundError } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { FetchFn } from "#/features/feed/Feed";
@@ -18,7 +19,6 @@ import useResetHiddenPosts from "#/features/feed/useResetHiddenPosts";
 import { postHiddenByIdSelector } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -78,11 +78,7 @@ export default function ProfileFeedHiddenPostsPage() {
         try {
           return await client.getPost({ id: postId }, ...rest);
         } catch (error) {
-          if (
-            isLemmyError(error, "couldnt_find_post" as never) ||
-            isLemmyError(error, "not_found")
-          )
-            return;
+          if (error instanceof NotFoundError) return;
 
           throw error;
         }

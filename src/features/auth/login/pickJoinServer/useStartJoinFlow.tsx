@@ -33,7 +33,7 @@ export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
 
     if (
       site &&
-      (await joinClientSelector(store.getState())?.getMode()) === "piefed"
+      (await joinClientSelector(store.getState())?.connect())?.mode === "piefed"
     ) {
       presentAlert(
         `Voyager doesn't support signups via Piefed right now, apologies!`,

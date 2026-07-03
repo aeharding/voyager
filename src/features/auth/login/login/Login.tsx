@@ -15,12 +15,13 @@ import {
   useIonActionSheet,
 } from "@ionic/react";
 import { use, useEffect, useRef, useState } from "react";
+import { IncorrectLoginError, Missing2faError } from "threadiverse";
 
 import { HelperText } from "#/features/settings/shared/formatting";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
-import { getLoginErrorMessage, isLemmyError } from "#/helpers/lemmyErrors";
+import { getLoginErrorMessage } from "#/helpers/lemmyErrors";
 import { loginSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_TERMS } from "#/helpers/voyager";
@@ -114,7 +115,7 @@ export default function Login({
     try {
       await dispatch(login(url, username, password));
     } catch (error) {
-      if (isLemmyError(error, "missing_totp_token")) {
+      if (error instanceof Missing2faError) {
         usernameRef.current
           ?.closest("ion-nav")
           ?.push(() => (
@@ -123,7 +124,7 @@ export default function Login({
         return;
       }
 
-      if (isLemmyError(error, "incorrect_login")) {
+      if (error instanceof IncorrectLoginError) {
         setPassword("");
       }
 
