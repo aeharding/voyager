@@ -21,7 +21,7 @@ import { HelperText } from "#/features/settings/shared/formatting";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
-import { getLoginErrorMessage } from "#/helpers/lemmyErrors";
+import { getLoginErrorMessage } from "#/helpers/errorMessages";
 import { loginSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_TERMS } from "#/helpers/voyager";

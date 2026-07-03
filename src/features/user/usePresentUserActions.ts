@@ -10,8 +10,8 @@ import { Person } from "threadiverse";
 
 import { usernameSelector } from "#/features/auth/authSelectors";
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
+import { getBlockUserErrorMessage } from "#/helpers/errorMessages";
 import { getHandle } from "#/helpers/lemmy";
-import { getBlockUserErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { buildBlockedUser } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";

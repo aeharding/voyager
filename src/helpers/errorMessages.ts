@@ -6,21 +6,11 @@ import {
   Incorrect2faError,
   IncorrectLoginError,
   InvalidBotActionError,
-  isErrorCode,
   NotFoundError,
   Person,
   RateLimitedError,
   RegistrationApplicationPendingError,
-  ResponseErrorCode,
 } from "threadiverse";
-
-/**
- * Escape hatch for server error codes threadiverse has no condition class
- * for. Prefer `instanceof` on the condition classes.
- */
-export function isLemmyError(error: unknown, code: ResponseErrorCode) {
-  return isErrorCode(error, code);
-}
 
 function getErrorMessage(
   error: unknown,

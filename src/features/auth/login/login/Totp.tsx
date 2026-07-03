@@ -15,7 +15,7 @@ import { Incorrect2faError, IncorrectLoginError } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
-import { getLoginErrorMessage } from "#/helpers/lemmyErrors";
+import { getLoginErrorMessage } from "#/helpers/errorMessages";
 import { loginSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";

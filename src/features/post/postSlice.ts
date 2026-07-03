@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { NotFoundError, Post, PostView } from "threadiverse";
+import { isErrorCode, NotFoundError, Post, PostView } from "threadiverse";
 
 import {
   clientSelector,
@@ -12,7 +12,6 @@ import {
   updateTagVotes,
 } from "#/features/tags/userTagSlice";
 import { getRemoteHandle } from "#/helpers/lemmy";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { voteToIsUpvote } from "#/helpers/vote";
 import { db } from "#/services/db";
 import { IPostMetadata } from "#/services/db/types";
@@ -411,7 +410,7 @@ export const getPost =
         id,
       });
     } catch (error) {
-      if (error instanceof NotFoundError || isLemmyError(error, "unknown")) {
+      if (error instanceof NotFoundError || isErrorCode(error, "unknown")) {
         dispatch(receivedPostNotFound(id));
       }
 

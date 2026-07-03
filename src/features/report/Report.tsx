@@ -1,9 +1,13 @@
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import { IonActionSheet, IonAlert } from "@ionic/react";
 import { useImperativeHandle, useState } from "react";
-import { CommentView, PostView, PrivateMessageView } from "threadiverse";
+import {
+  CommentView,
+  isErrorCode,
+  PostView,
+  PrivateMessageView,
+} from "threadiverse";
 
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { buildReported } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
@@ -67,7 +71,7 @@ export default function Report({
     } catch (error) {
       let errorDetail = "Please try again.";
 
-      if (isLemmyError(error, "couldnt_create_report")) {
+      if (isErrorCode(error, "couldnt_create_report")) {
         errorDetail = "You may have already reported this.";
       }
 

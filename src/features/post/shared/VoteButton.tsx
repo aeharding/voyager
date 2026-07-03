@@ -13,7 +13,7 @@ import {
   VOTE_COLORS,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import { cx, sv } from "#/helpers/css";
-import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import { getVoteErrorMessage } from "#/helpers/errorMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppDispatch, useAppSelector } from "#/store";
