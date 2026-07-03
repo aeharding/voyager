@@ -47,18 +47,22 @@ export function getLoginErrorMessage(
   instanceActorId: string,
 ): string {
   return getErrorMessage(error, (error) => {
-    if (error instanceof Incorrect2faError)
-      return "Incorrect 2nd factor code. Please try again.";
-    if (error instanceof NotFoundError)
-      return `User not found. Is your account on ${instanceActorId}?`;
-    if (error instanceof IncorrectLoginError)
-      return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
-    if (error instanceof EmailNotVerifiedError)
-      return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
-    if (error instanceof BannedError) return "You have been banned.";
-    if (error instanceof AccountDeletedError) return "Account deleted.";
-    if (error instanceof RegistrationApplicationPendingError)
-      return "Signup approval pending, try again later.";
+    switch (true) {
+      case error instanceof Incorrect2faError:
+        return "Incorrect 2nd factor code. Please try again.";
+      case error instanceof NotFoundError:
+        return `User not found. Is your account on ${instanceActorId}?`;
+      case error instanceof IncorrectLoginError:
+        return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
+      case error instanceof EmailNotVerifiedError:
+        return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
+      case error instanceof BannedError:
+        return "You have been banned.";
+      case error instanceof AccountDeletedError:
+        return "Account deleted.";
+      case error instanceof RegistrationApplicationPendingError:
+        return "Signup approval pending, try again later.";
+    }
   });
 }
 
@@ -66,8 +70,10 @@ export function getVoteErrorMessage(error: unknown): string {
   return getErrorMessage(
     error,
     (error) => {
-      if (error instanceof InvalidBotActionError)
-        return "You marked your account as a bot, so you can't vote.";
+      switch (true) {
+        case error instanceof InvalidBotActionError:
+          return "You marked your account as a bot, so you can't vote.";
+      }
     },
     "Problem voting, please try again.",
   );
@@ -80,8 +86,10 @@ export function getBlockUserErrorMessage(
   return getErrorMessage(
     error,
     (error) => {
-      if (error instanceof CantBlockAdminError)
-        return `${blockingUser.name} is an admin. You can't block admins.`;
+      switch (true) {
+        case error instanceof CantBlockAdminError:
+          return `${blockingUser.name} is an admin. You can't block admins.`;
+      }
     },
     "Problem blocking user. Please try again.",
   );
