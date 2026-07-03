@@ -13,8 +13,8 @@ const wireMe = build.person({
   display_name: me.displayName,
 });
 
-// TODO(seed): the derived post list has no cursor pagination — page shapes
-// stay wire-level
+// TODO(seed): the derived post list has no cursor pagination — page
+// *response* shapes stay wire-level (request assertions are canonical)
 const page1Posts = Array.from({ length: 50 }, (_, i) =>
   build.postView({ id: i + 1, name: `Feed post ${i + 1}`, creator: wireMe }),
 );
@@ -37,11 +37,9 @@ test("v1: infinite scroll requests the next page with the cursor", async ({
 
   await scrollFeedUntilVisible(page, "Feed post 55");
 
-  // `page_cursor` isn't part of getPosts' canonical decoded payload —
-  // assert on the wire requests
-  const listCalls = api.calls("GET /api/v4/post/list");
-  expect(listCalls.length).toBe(2);
-  expect(listCalls[1]!.query.get("page_cursor")).toBe("cursor-2");
+  const payloads = api.callsTo("getPosts");
+  expect(payloads.length).toBe(2);
+  expect(payloads[1]!.page_cursor).toBe("cursor-2");
 });
 
 test("v1: changing sort refetches the feed", async ({ api, page }) => {
@@ -51,13 +49,11 @@ test("v1: changing sort refetches the feed", async ({ api, page }) => {
   await page.getByRole("button", { name: "Change sort" }).click();
   await page.getByRole("button", { name: "New", exact: true }).click();
 
-  // `sort` isn't part of getPosts' canonical decoded payload — assert on
-  // the wire request
-  const call = await api.waitForCall(
-    "GET /api/v4/post/list",
-    (call) => call.query.get("sort") === "new",
+  const payload = await api.waitForPayload(
+    "getPosts",
+    (payload) => payload.sort === "new",
   );
-  expect(call.query.get("sort")).toBe("new");
+  expect(payload.sort).toBe("new");
 });
 
 test("v1: local listing type requests local posts", async ({ api, page }) => {

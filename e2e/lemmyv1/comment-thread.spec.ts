@@ -88,13 +88,11 @@ test("v1: changing comment sort refetches the thread", async ({
   await page.getByRole("button", { name: "Change sort" }).click();
   await page.getByRole("button", { name: "New", exact: true }).click();
 
-  // `sort` isn't part of getComments' canonical decoded payload — assert on
-  // the wire request
-  const call = await api.waitForCall(
-    "GET /api/v4/comment/list",
-    (call) => call.query.get("sort") === "new",
+  const payload = await api.waitForPayload(
+    "getComments",
+    (payload) => payload.sort === "new",
   );
-  expect(call.query.get("sort")).toBe("new");
+  expect(payload.sort).toBe("new");
 });
 
 test.describe("logged in", () => {
@@ -141,9 +139,10 @@ test("v1: missing children fetch on 'more replies' tap", async ({
   api,
   page,
 }) => {
-  // TODO(seed): the derived comment list ignores parent_id, so seeding the
-  // deep child would surface it in the initial load and hide the "more
-  // replies" affordance under test — keep the parent_id-aware wire mock.
+  // TODO(seed): the derived comment list honors parent_id but not max_depth,
+  // so seeding the deep child would surface it in the *initial* load too —
+  // `missing` would compute to 0 and hide the "more replies" affordance
+  // under test. Response side stays wire-level until seeds model depth.
   const deepChild = build.commentView({
     id: 12,
     content: "deep child comment",
@@ -165,11 +164,9 @@ test("v1: missing children fetch on 'more replies' tap", async ({
 
   await expect(page.getByText("deep child comment")).toBeVisible();
 
-  // `parent_id` isn't part of getComments' canonical decoded payload —
-  // assert on the wire request
-  const call = await api.waitForCall(
-    "GET /api/v4/comment/list",
-    (call) => call.query.get("parent_id") === "10",
+  const payload = await api.waitForPayload(
+    "getComments",
+    (payload) => payload.parent_id === 10,
   );
-  expect(call.query.get("parent_id")).toBe("10");
+  expect(payload.parent_id).toBe(10);
 });

@@ -60,24 +60,17 @@ test("v1: website filter hides posts linking to the domain", async ({
   api,
   page,
 }) => {
-  // TODO(seed): seeded posts *add to* the default feed; this test needs the
-  // feed to be exactly these two posts, so it stays wire-level
-  api.on.getPosts({
-    json: build.pagedResponse([
-      build.postView({
-        id: 70,
-        name: "Linked post",
-        url: "https://filtered.example/article",
-        creator: wireMe,
-      }),
-      build.postView({
-        id: 71,
-        name: "Text post",
-        body: "hi",
-        creator: wireMe,
-      }),
-    ]),
+  // The feed must be *exactly* these two posts — replace the fixture's
+  // default seed (clear() also wipes the logged-in state, so restore it)
+  api.seed.clear();
+  api.seed.loggedInAs(api.me);
+  api.seed.post({
+    id: 70,
+    name: "Linked post",
+    url: "https://filtered.example/article",
+    creator: api.me,
   });
+  api.seed.post({ id: 71, name: "Text post", body: "hi", creator: api.me });
 
   await page.goto("/settings/blocks");
   await page.getByText("Add Website").click();
@@ -122,7 +115,8 @@ test("v1: disabling infinite scroll shows a load-page button", async ({
 }) => {
   // Page 1 must exceed the auto-fill threshold (limit / 2) or the feed
   // fetches page 2 on its own regardless of the setting.
-  // TODO(seed): the derived post list has no cursor pagination — wire-level
+  // TODO(seed): the derived post list has no cursor pagination — page
+  // *response* shapes stay wire-level (request assertions are canonical)
   api.on.getPosts((call) =>
     call.query.get("page_cursor") === "cursor-2"
       ? {
@@ -158,8 +152,5 @@ test("v1: disabling infinite scroll shows a load-page button", async ({
 
   await scrollFeedUntilVisible(page, "Page two post");
 
-  // `page_cursor` isn't part of getPosts' canonical decoded payload —
-  // assert on the wire requests
-  const calls = api.calls("GET /api/v4/post/list");
-  expect(calls.at(-1)!.query.get("page_cursor")).toBe("cursor-2");
+  expect(api.callsTo("getPosts").at(-1)!.page_cursor).toBe("cursor-2");
 });

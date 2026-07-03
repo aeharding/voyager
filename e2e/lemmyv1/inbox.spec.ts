@@ -72,7 +72,6 @@ test("v1: opening a reply marks the notification read", async ({
   page,
 }) => {
   seedNotifications(api);
-  api.on.markNotificationAsRead({ json: { success: true } });
 
   await page.goto("/inbox/unread");
   await page.getByText("someone replied to you").click();
@@ -80,13 +79,14 @@ test("v1: opening a reply marks the notification read", async ({
   // v1 drops `kind` on the wire, so the decoded payload is partial
   const payload = await api.waitForPayload("markNotificationAsRead");
   expect(payload).toEqual({ notification_id: 301, read: true });
+
+  // The fake's mark-as-read mutates seed state — the derived unread count
+  // reflects it (badge is part of the tab's accessible name)
+  await expect(page.getByRole("tab", { name: "Inbox 2" })).toBeVisible();
 });
 
 test("v1: mark all as read", async ({ api, page }) => {
   seedNotifications(api);
-  api.mock("POST /api/v4/account/notification/mark_as_read/all", {
-    json: { success: true },
-  });
 
   await page.goto("/inbox/unread");
   await expect(page.getByText("someone replied to you")).toBeVisible();
@@ -94,7 +94,11 @@ test("v1: mark all as read", async ({ api, page }) => {
   await page.getByRole("button", { name: "Mark all as read" }).click();
   await page.getByRole("button", { name: "Mark All Read" }).click();
 
-  await api.waitForCall("POST /api/v4/account/notification/mark_as_read/all");
+  // The fake's mark-all mutates seed state — the refetched derived unread
+  // count is 0, so the tab badge clears
+  await expect(
+    page.getByRole("tab", { name: "Inbox", exact: true }),
+  ).toBeVisible();
 });
 
 test("v1: conversation renders and sends a private message", async ({

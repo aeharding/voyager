@@ -27,9 +27,8 @@ export class MockApi extends FakeLemmyV1Instance {
     super({ host: V1_HOST });
 
     this.me = this.seed.person(me);
-    // id pinned to build.community()'s default (111) so seeds and wire-level
-    // fixtures refer to the same community
-    const community = this.seed.community({ id: 111 });
+    // First seeded community defaults to id 111, matching build.community()
+    const community = this.seed.community();
     this.posts = fixturePosts.map((post) =>
       this.seed.post({ ...post, community, creator: this.me }),
     );
