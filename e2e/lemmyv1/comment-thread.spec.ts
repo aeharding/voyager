@@ -4,40 +4,46 @@
 
 import type { Page } from "@playwright/test";
 
-import {
-  commentView,
-  fixturePosts,
-  me,
-  pagedResponse,
-  person,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, fixturePosts, me, V1_HOST } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
 import { actionSheetButton } from "../fixtures/ui";
 
-const other = person({ id: 200, name: "otheruser" });
+const other = { id: 200, name: "otheruser" };
 
-const parentComment = commentView({
-  id: 10,
-  content: "parent comment",
-  creator: other,
-  path: "0.10",
-  child_count: 1,
+const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.id}`;
+
+function seedThread(api: MockApi) {
+  api.seed.comment({
+    id: 10,
+    content: "parent comment",
+    creator: api.seed.person(other),
+    path: "0.10",
+    childCount: 1,
+  });
+  api.seed.comment({
+    id: 11,
+    content: "child comment",
+    creator: api.me,
+    path: "0.10.11",
+  });
+}
+
+const wireMe = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
 });
-const childComment = commentView({
-  id: 11,
-  content: "child comment",
-  creator: me,
-  path: "0.10.11",
-});
 
-const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.post.id}`;
-
-function mockThread(api: MockApi) {
-  api.mock("GET /api/v4/post", { json: { post_view: fixturePosts[0] } });
-  api.mock("GET /api/v4/comment/list", {
-    json: pagedResponse([parentComment, childComment]),
+// Wire view of the seeded parent comment, for custom write-response payloads
+function wireParentComment() {
+  return build.commentView({
+    id: 10,
+    content: "parent comment",
+    creator: build.person(other),
+    path: "0.10",
+    child_count: 1,
+    post: build.postView({ ...fixturePosts[0]!, creator: wireMe }),
   });
 }
 
@@ -52,7 +58,7 @@ test("v1: nested comments render and collapse on tap", async ({
   api,
   page,
 }) => {
-  mockThread(api);
+  seedThread(api);
 
   await page.goto(POST_URL);
 
@@ -74,7 +80,7 @@ test("v1: changing comment sort refetches the thread", async ({
   api,
   page,
 }) => {
-  mockThread(api);
+  seedThread(api);
 
   await page.goto(POST_URL);
   await expect(page.getByText("parent comment")).toBeVisible();
@@ -82,6 +88,8 @@ test("v1: changing comment sort refetches the thread", async ({
   await page.getByRole("button", { name: "Change sort" }).click();
   await page.getByRole("button", { name: "New", exact: true }).click();
 
+  // `sort` isn't part of getComments' canonical decoded payload — assert on
+  // the wire request
   const call = await api.waitForCall(
     "GET /api/v4/comment/list",
     (call) => call.query.get("sort") === "new",
@@ -93,9 +101,9 @@ test.describe("logged in", () => {
   test.use({ loggedIn: true });
 
   test("v1: upvote comment from action sheet", async ({ api, page }) => {
-    mockThread(api);
-    api.mock("POST /api/v4/comment/like", () => {
-      const liked = structuredClone(parentComment);
+    seedThread(api);
+    api.on.likeComment(() => {
+      const liked = wireParentComment();
       Object.assign(liked.comment, { score: 2, upvotes: 2 });
       return { json: { comment_view: liked } };
     });
@@ -106,14 +114,14 @@ test.describe("logged in", () => {
     await commentEllipsis(page, 10).click();
     await actionSheetButton(page, "Upvote").click();
 
-    const call = await api.waitForCall("POST /api/v4/comment/like");
-    expect(call.body).toEqual({ comment_id: 10, is_upvote: true });
+    const payload = await api.waitForPayload("likeComment");
+    expect(payload).toEqual({ comment_id: 10, is_upvote: true });
   });
 
   test("v1: save comment from action sheet", async ({ api, page }) => {
-    mockThread(api);
-    api.mock("PUT /api/v4/comment/save", () => {
-      const saved = structuredClone(parentComment);
+    seedThread(api);
+    api.on.saveComment(() => {
+      const saved = wireParentComment();
       Object.assign(saved, { comment_actions: { saved_at: "2026-05-21" } });
       return { json: { comment_view: saved } };
     });
@@ -124,8 +132,8 @@ test.describe("logged in", () => {
     await commentEllipsis(page, 10).click();
     await actionSheetButton(page, "Save").click();
 
-    const call = await api.waitForCall("PUT /api/v4/comment/save");
-    expect(call.body).toEqual({ comment_id: 10, save: true });
+    const payload = await api.waitForPayload("saveComment");
+    expect(payload).toEqual({ comment_id: 10, save: true });
   });
 });
 
@@ -133,18 +141,21 @@ test("v1: missing children fetch on 'more replies' tap", async ({
   api,
   page,
 }) => {
-  const deepChild = commentView({
+  // TODO(seed): the derived comment list ignores parent_id, so seeding the
+  // deep child would surface it in the initial load and hide the "more
+  // replies" affordance under test — keep the parent_id-aware wire mock.
+  const deepChild = build.commentView({
     id: 12,
     content: "deep child comment",
-    creator: me,
+    creator: wireMe,
     path: "0.10.12",
+    post: build.postView({ ...fixturePosts[0]!, creator: wireMe }),
   });
 
-  api.mock("GET /api/v4/post", { json: { post_view: fixturePosts[0] } });
-  api.mock("GET /api/v4/comment/list", (call) =>
+  api.on.getComments((call) =>
     call.query.get("parent_id") === "10"
-      ? { json: pagedResponse([deepChild]) }
-      : { json: pagedResponse([parentComment]) },
+      ? { json: build.pagedResponse([deepChild]) }
+      : { json: build.pagedResponse([wireParentComment()]) },
   );
 
   await page.goto(POST_URL);
@@ -154,6 +165,8 @@ test("v1: missing children fetch on 'more replies' tap", async ({
 
   await expect(page.getByText("deep child comment")).toBeVisible();
 
+  // `parent_id` isn't part of getComments' canonical decoded payload —
+  // assert on the wire request
   const call = await api.waitForCall(
     "GET /api/v4/comment/list",
     (call) => call.query.get("parent_id") === "10",

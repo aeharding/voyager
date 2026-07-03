@@ -5,31 +5,32 @@
 //
 // The feature is opt-in ("New Comments Highlightifier", off by default), so
 // every test first flips the toggle through the real settings UI.
+//
+// TODO(seed): seeds can't express post_actions.read_comments_at/
+// read_comments_amount (or per-comment published times relative to that
+// boundary), so this spec stays wire-level via `build`.
 
 import type { Page } from "@playwright/test";
 
-import {
-  commentView,
-  me,
-  pagedResponse,
-  person,
-  postView,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, me, V1_HOST } from "../fixtures/builders";
 import { getSetting } from "../fixtures/db";
 import { expect, test } from "../fixtures/test";
 
 test.use({ loggedIn: true });
 
-const reader = me;
-const other = person({ id: 200, name: "otheruser" });
+const reader = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
+});
+const other = build.person({ id: 200, name: "otheruser" });
 
 const BOUNDARY = "2026-05-21T12:00:00.000Z"; // matches unreadPost.read_comments_at
 const BEFORE = "2026-05-20T12:00:00.000Z"; // read
 const AFTER = "2026-05-22T12:00:00.000Z"; // new since last read
 
 // 4 comments total, 2 already read → unread = 4 - 2 = 2 (pill shows "+2").
-const unreadPostBase = postView({
+const unreadPostBase = build.postView({
   id: 500,
   name: "Post with unread comments",
   creator: reader,
@@ -46,7 +47,7 @@ const unreadPost = {
 
 // Never opened: no post_actions → threadiverse reports unread = total (4),
 // which the pill suppresses (unread === total).
-const neverOpenedPostBase = postView({
+const neverOpenedPostBase = build.postView({
   id: 501,
   name: "Never opened post",
   creator: reader,
@@ -57,21 +58,21 @@ const neverOpenedPost = {
   post_actions: undefined,
 };
 
-const readComment = commentView({
+const readComment = build.commentView({
   id: 5001,
   content: "read comment by other",
   post: unreadPost,
   creator: other,
   published_at: BEFORE,
 });
-const unreadComment = commentView({
+const unreadComment = build.commentView({
   id: 5002,
   content: "unread comment by other",
   post: unreadPost,
   creator: other,
   published_at: AFTER,
 });
-const ownUnreadComment = commentView({
+const ownUnreadComment = build.commentView({
   id: 5003,
   content: "own comment after boundary",
   post: unreadPost,
@@ -100,8 +101,8 @@ test("v1: unread pill shows for opened-with-new, hidden for never-opened", async
   page,
 }) => {
   await enableHighlightNewComments(page);
-  api.mock("GET /api/v4/post/list", {
-    json: pagedResponse([unreadPost, neverOpenedPost]),
+  api.on.getPosts({
+    json: build.pagedResponse([unreadPost, neverOpenedPost]),
   });
 
   await page.goto(`/posts/${V1_HOST}/all`);
@@ -130,7 +131,7 @@ test("v1: unread pill hidden when the setting is off (default)", async ({
   api,
   page,
 }) => {
-  api.mock("GET /api/v4/post/list", { json: pagedResponse([unreadPost]) });
+  api.on.getPosts({ json: build.pagedResponse([unreadPost]) });
 
   await page.goto(`/posts/${V1_HOST}/all`);
 
@@ -146,12 +147,8 @@ test("v1: opening a post fires getPost (server read-comments reset) and clears t
   page,
 }) => {
   await enableHighlightNewComments(page);
-  api.mock("GET /api/v4/post/list", { json: pagedResponse([unreadPost]) });
-  api.mock("GET /api/v4/post", { json: { post_view: unreadPost } });
-  // markPostAsRead side call — swallow so nothing hits real network.
-  api.mock("POST /api/v4/post/mark_as_read/many", {
-    json: { success: true },
-  });
+  api.on.getPosts({ json: build.pagedResponse([unreadPost]) });
+  api.on.getPost({ json: { post_view: unreadPost } });
 
   await page.goto(`/posts/${V1_HOST}/all`);
 
@@ -170,9 +167,7 @@ test("v1: opening a post fires getPost (server read-comments reset) and clears t
   await expect(title).toContainText("4 Comments");
   await expect(title).toContainText("2 New");
 
-  await expect
-    .poll(() => api.calls("GET /api/v4/post").length)
-    .toBeGreaterThan(0);
+  await expect.poll(() => api.callsTo("getPost").length).toBeGreaterThan(0);
 
   // The pill is cleared optimistically on open (off-screen); confirm it's gone
   // once the feed is visible again.
@@ -190,12 +185,9 @@ test("v1: highlights new comments, not read or own ones", async ({
   page,
 }) => {
   await enableHighlightNewComments(page);
-  api.mock("GET /api/v4/post", { json: { post_view: unreadPost } });
-  api.mock("POST /api/v4/post/mark_as_read/many", {
-    json: { success: true },
-  });
-  api.mock("GET /api/v4/comment/list", {
-    json: pagedResponse([readComment, unreadComment, ownUnreadComment]),
+  api.on.getPost({ json: { post_view: unreadPost } });
+  api.on.getComments({
+    json: build.pagedResponse([readComment, unreadComment, ownUnreadComment]),
   });
 
   await page.goto(`/posts/${V1_HOST}/c/test_comm/comments/500`);
@@ -215,12 +207,9 @@ test("v1: comment-permalink view suppresses the unread highlight", async ({
   page,
 }) => {
   await enableHighlightNewComments(page);
-  api.mock("GET /api/v4/post", { json: { post_view: unreadPost } });
-  api.mock("POST /api/v4/post/mark_as_read/many", {
-    json: { success: true },
-  });
-  api.mock("GET /api/v4/comment/list", {
-    json: pagedResponse([unreadComment]),
+  api.on.getPost({ json: { post_view: unreadPost } });
+  api.on.getComments({
+    json: build.pagedResponse([unreadComment]),
   });
 
   // Permalink to the after-boundary comment: a partial view of the post.

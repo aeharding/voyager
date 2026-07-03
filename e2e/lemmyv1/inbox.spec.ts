@@ -2,72 +2,45 @@
 // marking single items and everything read, conversations + sending a
 // private message, and boxes navigation.
 
-import {
-  commentNotification,
-  commentView,
-  fixturePosts,
-  me,
-  pagedResponse,
-  person,
-  personResponse,
-  privateMessageNotification,
-  privateMessageView,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, me, V1_HOST } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
 
 test.use({ loggedIn: true });
 
-const other = person({ id: 200, name: "otheruser" });
+const other = { id: 200, name: "otheruser" };
 
-const replyNotification = commentNotification({
-  id: 301,
-  kind: "reply",
-  comment: commentView({
-    id: 31,
-    content: "someone replied to you",
-    creator: other,
-  }),
-});
-const mentionNotification = commentNotification({
-  id: 302,
-  kind: "mention",
-  comment: commentView({
-    id: 32,
-    content: "someone mentioned you",
-    creator: other,
-  }),
-});
-const messageNotification = privateMessageNotification({
-  id: 303,
-  message: privateMessageView({
+// A reply (id 301), a mention (id 302), and a private message — all unread.
+// The fake derives the unified list, the type_/unread_only filters, and the
+// unread count from these.
+function seedNotifications(api: MockApi) {
+  const otherPerson = api.seed.person(other);
+
+  api.seed.reply({
+    id: 301,
+    comment: api.seed.comment({
+      id: 31,
+      content: "someone replied to you",
+      creator: otherPerson,
+    }),
+  });
+  api.seed.mention({
+    id: 302,
+    comment: api.seed.comment({
+      id: 32,
+      content: "someone mentioned you",
+      creator: otherPerson,
+    }),
+  });
+  api.seed.privateMessage({
     id: 41,
     content: "psst, a private message",
-    creator: other,
-    recipient: me,
-  }),
-});
-
-// The same endpoint serves the unified inbox and (filtered) the messages sync
-function mockNotifications(api: MockApi) {
-  api.mock("GET /api/v4/account/notification/list", (call) =>
-    call.query.get("type_") === "private_message"
-      ? { json: pagedResponse([messageNotification]) }
-      : {
-          json: pagedResponse([
-            replyNotification,
-            mentionNotification,
-            messageNotification,
-          ]),
-        },
-  );
+    creator: otherPerson,
+  });
 }
 
 test("v1: tab badge shows unread count", async ({ api, page }) => {
-  api.mock("GET /api/v4/account/unread_counts", {
-    json: { notification_count: 3 },
-  });
+  seedNotifications(api);
 
   await page.goto(`/posts/${V1_HOST}/all`);
 
@@ -79,7 +52,7 @@ test("v1: unread view lists replies, mentions, and messages", async ({
   api,
   page,
 }) => {
-  mockNotifications(api);
+  seedNotifications(api);
 
   await page.goto("/inbox/unread");
 
@@ -87,37 +60,30 @@ test("v1: unread view lists replies, mentions, and messages", async ({
   await expect(page.getByText("someone mentioned you")).toBeVisible();
   await expect(page.getByText("psst, a private message")).toBeVisible();
 
-  const call = await api.waitForCall(
-    "GET /api/v4/account/notification/list",
-    (call) => call.query.get("unread_only") === "true",
+  const payload = await api.waitForPayload(
+    "getNotifications",
+    (payload) => payload.unread_only === true,
   );
-  expect(call.query.get("unread_only")).toBe("true");
+  expect(payload.unread_only).toBe(true);
 });
 
 test("v1: opening a reply marks the notification read", async ({
   api,
   page,
 }) => {
-  mockNotifications(api);
-  api.mock("GET /api/v4/post", { json: { post_view: fixturePosts[0] } });
-  api.mock("GET /api/v4/comment/list", {
-    json: pagedResponse([replyNotification.data]),
-  });
-  api.mock("POST /api/v4/account/notification/mark_as_read", {
-    json: { success: true },
-  });
+  seedNotifications(api);
+  api.on.markNotificationAsRead({ json: { success: true } });
 
   await page.goto("/inbox/unread");
   await page.getByText("someone replied to you").click();
 
-  const call = await api.waitForCall(
-    "POST /api/v4/account/notification/mark_as_read",
-  );
-  expect(call.body).toEqual({ notification_id: 301, read: true });
+  // v1 drops `kind` on the wire, so the decoded payload is partial
+  const payload = await api.waitForPayload("markNotificationAsRead");
+  expect(payload).toEqual({ notification_id: 301, read: true });
 });
 
 test("v1: mark all as read", async ({ api, page }) => {
-  mockNotifications(api);
+  seedNotifications(api);
   api.mock("POST /api/v4/account/notification/mark_as_read/all", {
     json: { success: true },
   });
@@ -135,15 +101,18 @@ test("v1: conversation renders and sends a private message", async ({
   api,
   page,
 }) => {
-  mockNotifications(api);
-  api.mock("GET /api/v4/person", { json: personResponse(other) });
-  api.mock("POST /api/v4/private_message", (call) => ({
+  seedNotifications(api);
+  api.on.createPrivateMessage((call) => ({
     json: {
-      private_message_view: privateMessageView({
+      private_message_view: build.privateMessageView({
         id: 42,
         content: (call.body as { content: string }).content,
-        creator: me,
-        recipient: other,
+        creator: build.person({
+          id: me.id,
+          name: me.name,
+          display_name: me.displayName,
+        }),
+        recipient: build.person(other),
       }),
     },
   }));
@@ -156,14 +125,14 @@ test("v1: conversation renders and sends a private message", async ({
   await page.getByPlaceholder("Message").fill("hello back!");
   await page.getByRole("button", { name: "Send message" }).click();
 
-  const call = await api.waitForCall("POST /api/v4/private_message");
-  expect(call.body).toEqual({ content: "hello back!", recipient_id: 200 });
+  const payload = await api.waitForPayload("createPrivateMessage");
+  expect(payload).toEqual({ content: "hello back!", recipient_id: 200 });
 
   await expect(page.getByText("hello back!")).toBeVisible();
 });
 
 test("v1: boxes page navigates to mentions", async ({ api, page }) => {
-  mockNotifications(api);
+  seedNotifications(api);
 
   await page.goto("/inbox");
 

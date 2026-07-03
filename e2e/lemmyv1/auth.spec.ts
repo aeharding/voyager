@@ -5,28 +5,22 @@
 import type { Page } from "@playwright/test";
 
 import { makeFakeJwt, seedCredentials } from "../fixtures/auth";
-import {
-  me,
-  myUser,
-  myUserInfo,
-  pagedResponse,
-  person,
-  personResponse,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, me, V1_HOST } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
 
 const jwt = makeFakeJwt();
 
-// GET /account, /person etc. fire once authed (or when the profile renders)
+const wireMe = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
+});
+
+// The account endpoints (my user, unread counts) and profile lookups fire
+// once authed — the fake derives them all from the logged-in seed
 function mockAuthedBootstrap(api: MockApi) {
-  api.mock("GET /api/v4/account", { json: myUser });
-  api.mock("GET /api/v4/account/unread_counts", {
-    json: { notification_count: 0 },
-  });
-  api.mock("GET /api/v4/person", { json: personResponse(me) });
-  api.mock("GET /api/v4/person/content", { json: pagedResponse([]) });
+  api.seed.loggedInAs(api.me);
 }
 
 // Drives the shared modal flow: profile tab (logged out) → welcome →
@@ -56,7 +50,7 @@ test("v1: login: full UI flow from welcome to logged in", async ({
   page,
 }) => {
   mockAuthedBootstrap(api);
-  api.mock("POST /api/v4/account/auth/login", { json: { jwt } });
+  api.on.login({ json: { jwt } });
 
   await openLoginPage(page);
 
@@ -66,8 +60,8 @@ test("v1: login: full UI flow from welcome to logged in", async ({
 
   await expect(page.getByText("Logged in!")).toBeVisible();
 
-  const loginCall = await api.waitForCall("POST /api/v4/account/auth/login");
-  expect(loginCall.body).toEqual({
+  const payload = await api.waitForPayload("login");
+  expect(payload).toEqual({
     username_or_email: "alex",
     password: "hunter2",
   });
@@ -77,11 +71,11 @@ test("v1: login: full UI flow from welcome to logged in", async ({
 
 test("v1: login: 2FA challenge path", async ({ api, page }) => {
   mockAuthedBootstrap(api);
-  api.mock("POST /api/v4/account/auth/login", (call) => {
+  api.on.login((call) => {
     const body = call.body as { totp_2fa_token?: string };
 
     if (!body.totp_2fa_token)
-      return { status: 400, json: { error: "missing_totp_token" } };
+      return { error: { code: "missing_totp_token", status: 400 } };
 
     return { json: { jwt } };
   });
@@ -102,11 +96,11 @@ test("v1: login: 2FA challenge path", async ({ api, page }) => {
 
   await expect(page.getByText("Logged in!")).toBeVisible();
 
-  const retry = await api.waitForCall(
-    "POST /api/v4/account/auth/login",
-    (call) => !!(call.body as { totp_2fa_token?: string }).totp_2fa_token,
+  const retry = await api.waitForPayload(
+    "login",
+    (payload) => !!payload.totp_2fa_token,
   );
-  expect(retry.body).toEqual({
+  expect(retry).toEqual({
     username_or_email: "alex",
     password: "hunter2",
     totp_2fa_token: "123456",
@@ -117,10 +111,7 @@ test("v1: login: incorrect credentials shows error and clears password", async (
   api,
   page,
 }) => {
-  api.mock("POST /api/v4/account/auth/login", {
-    status: 400,
-    json: { error: "incorrect_login" },
-  });
+  api.on.login({ error: { code: "incorrect_login", status: 400 } });
 
   await openLoginPage(page);
 
@@ -156,8 +147,6 @@ test.describe("logged in", () => {
     page,
   }) => {
     api.mock("POST /api/v4/account/auth/logout", { json: { success: true } });
-    api.mock("GET /api/v4/person", { json: personResponse(me) });
-    api.mock("GET /api/v4/person/content", { json: pagedResponse([]) });
 
     await page.goto("/profile");
 
@@ -189,7 +178,7 @@ test("v1: multi-account: switching accounts switches credentials", async ({
   api,
   page,
 }) => {
-  const sam = person({ id: 201, name: "sam", display_name: "sam" });
+  const sam = build.person({ id: 201, name: "sam", display_name: "sam" });
   const jwtAlex = makeFakeJwt({ iss: V1_HOST, sub: "alex" });
   const jwtSam = makeFakeJwt({ iss: V1_HOST, sub: "sam" });
 
@@ -202,17 +191,17 @@ test("v1: multi-account: switching accounts switches credentials", async ({
     `alex@${V1_HOST}`,
   );
 
+  // Both accounts read their profile + unread counts once active
+  api.seed.loggedInAs(api.me);
+
+  // Which "my user" comes back depends on the Authorization header — the
+  // seed store has a single logged-in user, so this stays wire-level
   api.mock("GET /api/v4/account", (call) => ({
     json:
       call.headers["authorization"] === `Bearer ${jwtSam}`
-        ? myUserInfo(sam)
-        : myUser,
+        ? build.myUserInfo({ person: sam })
+        : build.myUserInfo({ person: wireMe }),
   }));
-  api.mock("GET /api/v4/account/unread_counts", {
-    json: { notification_count: 0 },
-  });
-  api.mock("GET /api/v4/person", { json: personResponse(me) });
-  api.mock("GET /api/v4/person/content", { json: pagedResponse([]) });
 
   await page.goto("/profile");
   await expect(

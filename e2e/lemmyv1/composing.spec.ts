@@ -4,14 +4,7 @@
 
 import type { Page } from "@playwright/test";
 
-import {
-  commentView,
-  fixturePosts,
-  me,
-  pagedResponse,
-  postView,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, fixturePosts, me, V1_HOST } from "../fixtures/builders";
 import { getSetting } from "../fixtures/db";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
@@ -19,19 +12,26 @@ import { actionSheetButton, headerButton } from "../fixtures/ui";
 
 test.use({ loggedIn: true });
 
-const myComment = commentView({
-  id: 20,
-  content: "my own comment",
-  creator: me,
+const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.id}`;
+
+function seedThread(api: MockApi) {
+  api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
+}
+
+// Wire shapes for custom write-response payloads (the fake derives reads
+// from seeds, but write responses are the spec's to define)
+const wireMe = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
 });
 
-const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.post.id}`;
+function wirePost() {
+  return build.postView({ ...fixturePosts[0]!, creator: wireMe });
+}
 
-function mockThread(api: MockApi) {
-  api.mock("GET /api/v4/post", { json: { post_view: fixturePosts[0] } });
-  api.mock("GET /api/v4/comment/list", {
-    json: pagedResponse([myComment]),
-  });
+function wireComment(over: { id: number; content: string; path?: string }) {
+  return build.commentView({ ...over, creator: wireMe, post: wirePost() });
 }
 
 function postEllipsis(page: Page) {
@@ -93,13 +93,12 @@ test("v1: replying to a post submits and renders the comment", async ({
   api,
   page,
 }) => {
-  mockThread(api);
-  api.mock("POST /api/v4/comment", (call) => ({
+  seedThread(api);
+  api.on.createComment((call) => ({
     json: {
-      comment_view: commentView({
+      comment_view: wireComment({
         id: 9999,
         content: (call.body as { content: string }).content,
-        creator: me,
       }),
     },
   }));
@@ -112,20 +111,19 @@ test("v1: replying to a post submits and renders the comment", async ({
   await page.locator("ion-modal textarea").fill("fresh reply");
   await composerSubmit(page).click();
 
-  const call = await api.waitForCall("POST /api/v4/comment");
-  expect(call.body).toEqual({ content: "fresh reply", post_id: 1 });
+  const payload = await api.waitForPayload("createComment");
+  expect(payload).toEqual({ content: "fresh reply", post_id: 1 });
 
   await expect(page.getByText("fresh reply")).toBeVisible();
 });
 
 test("v1: replying to a comment sets parent_id", async ({ api, page }) => {
-  mockThread(api);
-  api.mock("POST /api/v4/comment", {
+  seedThread(api);
+  api.on.createComment({
     json: {
-      comment_view: commentView({
+      comment_view: wireComment({
         id: 9999,
         content: "nested reply",
-        creator: me,
         path: "0.20.9999",
       }),
     },
@@ -140,8 +138,8 @@ test("v1: replying to a comment sets parent_id", async ({ api, page }) => {
   await page.locator("ion-modal textarea").fill("nested reply");
   await composerSubmit(page).click();
 
-  const call = await api.waitForCall("POST /api/v4/comment");
-  expect(call.body).toEqual({
+  const payload = await api.waitForPayload("createComment");
+  expect(payload).toEqual({
     content: "nested reply",
     post_id: 1,
     parent_id: 20,
@@ -152,13 +150,12 @@ test("v1: editing own comment sends PUT and updates the thread", async ({
   api,
   page,
 }) => {
-  mockThread(api);
-  api.mock("PUT /api/v4/comment", (call) => ({
+  seedThread(api);
+  api.on.editComment((call) => ({
     json: {
-      comment_view: commentView({
+      comment_view: wireComment({
         id: 20,
         content: (call.body as { content: string }).content,
-        creator: me,
       }),
     },
   }));
@@ -172,8 +169,8 @@ test("v1: editing own comment sends PUT and updates the thread", async ({
   await page.locator("ion-modal textarea").fill("edited comment");
   await composerSubmit(page).click();
 
-  const call = await api.waitForCall("PUT /api/v4/comment");
-  expect(call.body).toEqual({ comment_id: 20, content: "edited comment" });
+  const payload = await api.waitForPayload("editComment");
+  expect(payload).toEqual({ comment_id: 20, content: "edited comment" });
 
   await expect(page.locator(".comment-20").first()).toContainText(
     "edited comment",
@@ -181,11 +178,10 @@ test("v1: editing own comment sends PUT and updates the thread", async ({
 });
 
 test("v1: deleting own comment sends DELETE", async ({ api, page }) => {
-  mockThread(api);
-  api.mock("DELETE /api/v4/comment", () => {
-    const deleted = structuredClone(myComment);
+  seedThread(api);
+  api.on.deleteComment(() => {
+    const deleted = wireComment({ id: 20, content: "" });
     deleted.comment.deleted = true;
-    deleted.comment.content = "";
     return { json: { comment_view: deleted } };
   });
 
@@ -197,8 +193,8 @@ test("v1: deleting own comment sends DELETE", async ({ api, page }) => {
   // Confirmation sheet
   await page.getByRole("button", { name: "Delete Comment" }).click();
 
-  const call = await api.waitForCall("DELETE /api/v4/comment");
-  expect((call.body as { comment_id: number }).comment_id).toBe(20);
+  const payload = await api.waitForPayload("deleteComment");
+  expect(payload.comment_id).toBe(20);
 
   await expect(page.getByText("my own comment")).not.toBeVisible();
 });
@@ -207,26 +203,14 @@ test("v1: creating a text post submits and navigates to it", async ({
   api,
   page,
 }) => {
-  const createdPost = postView({
+  const createdPost = build.postView({
     id: 999,
     name: "Fresh new post",
     body: "fresh post body",
-    creator: me,
+    creator: wireMe,
   });
-  api.mock("POST /api/v4/post", { json: { post_view: createdPost } });
-  api.mock("GET /api/v4/post", { json: { post_view: createdPost } });
-  api.mock("GET /api/v4/community", {
-    json: {
-      community_view: {
-        community: fixturePosts[0]!.community,
-        community_actions: undefined,
-        banned_from_community: false,
-      },
-      moderators: [],
-      site: undefined,
-      discussion_languages: [],
-    },
-  });
+  api.on.createPost({ json: { post_view: createdPost } });
+  api.on.getPost({ json: build.postResponse(createdPost) });
 
   await page.goto(`/posts/${V1_HOST}/c/test_comm`);
   await expect(page.getByText("First v1 post")).toBeVisible();
@@ -245,8 +229,8 @@ test("v1: creating a text post submits and navigates to it", async ({
 
   await editor.getByRole("button", { name: "Post", exact: true }).click();
 
-  const call = await api.waitForCall("POST /api/v4/post");
-  expect(call.body).toMatchObject({
+  const payload = await api.waitForPayload("createPost");
+  expect(payload).toMatchObject({
     name: "Fresh new post",
     body: "fresh post body",
     community_id: 111,
@@ -258,9 +242,9 @@ test("v1: creating a text post submits and navigates to it", async ({
 });
 
 test("v1: editing own post sends PUT", async ({ api, page }) => {
-  mockThread(api);
-  api.mock("PUT /api/v4/post", (call) => {
-    const edited = structuredClone(fixturePosts[0]!);
+  seedThread(api);
+  api.on.editPost((call) => {
+    const edited = wirePost();
     edited.post.name = (call.body as { name: string }).name;
     return { json: { post_view: edited } };
   });
@@ -275,14 +259,14 @@ test("v1: editing own post sends PUT", async ({ api, page }) => {
   await editor.locator('input[placeholder="Title"]').fill("Renamed post");
   await editor.getByRole("button", { name: "Save", exact: true }).click();
 
-  const call = await api.waitForCall("PUT /api/v4/post");
-  expect(call.body).toMatchObject({ post_id: 1, name: "Renamed post" });
+  const payload = await api.waitForPayload("editPost");
+  expect(payload).toMatchObject({ post_id: 1, name: "Renamed post" });
 });
 
 test("v1: deleting own post sends DELETE", async ({ api, page }) => {
-  mockThread(api);
-  api.mock("DELETE /api/v4/post", () => {
-    const deleted = structuredClone(fixturePosts[0]!);
+  seedThread(api);
+  api.on.deletePost(() => {
+    const deleted = wirePost();
     deleted.post.deleted = true;
     return { json: { post_view: deleted } };
   });
@@ -295,22 +279,18 @@ test("v1: deleting own post sends DELETE", async ({ api, page }) => {
   // Confirmation sheet
   await page.getByRole("button", { name: "Delete Post" }).click();
 
-  const call = await api.waitForCall("DELETE /api/v4/post");
-  expect((call.body as { post_id: number }).post_id).toBe(1);
+  const payload = await api.waitForPayload("deletePost");
+  expect(payload.post_id).toBe(1);
 });
 
 test("v1: rich editor (opt-in) still submits plain markdown", async ({
   api,
   page,
 }) => {
-  mockThread(api);
-  api.mock("POST /api/v4/comment", {
+  seedThread(api);
+  api.on.createComment({
     json: {
-      comment_view: commentView({
-        id: 9999,
-        content: "rich editor reply",
-        creator: me,
-      }),
+      comment_view: wireComment({ id: 9999, content: "rich editor reply" }),
     },
   });
 
@@ -325,18 +305,17 @@ test("v1: rich editor (opt-in) still submits plain markdown", async ({
   await richEditor.fill("rich editor reply");
   await composerSubmit(page).click();
 
-  const call = await api.waitForCall("POST /api/v4/comment");
-  expect(call.body).toEqual({ content: "rich editor reply", post_id: 1 });
+  const payload = await api.waitForPayload("createComment");
+  expect(payload).toEqual({ content: "rich editor reply", post_id: 1 });
 });
 
 test("v1: editor unwraps a pasted vger.to link", async ({ api, page }) => {
-  mockThread(api);
-  api.mock("POST /api/v4/comment", (call) => ({
+  seedThread(api);
+  api.on.createComment((call) => ({
     json: {
-      comment_view: commentView({
+      comment_view: wireComment({
         id: 9999,
         content: (call.body as { content: string }).content,
-        creator: me,
       }),
     },
   }));
@@ -357,21 +336,20 @@ test("v1: editor unwraps a pasted vger.to link", async ({ api, page }) => {
 
   await composerSubmit(page).click();
 
-  const call = await api.waitForCall("POST /api/v4/comment");
-  expect(call.body).toEqual({
+  const payload = await api.waitForPayload("createComment");
+  expect(payload).toEqual({
     content: "https://lemmy.world/post/123",
     post_id: 1,
   });
 });
 
 test("v1: rich editor unwraps a pasted vger.to link", async ({ api, page }) => {
-  mockThread(api);
-  api.mock("POST /api/v4/comment", (call) => ({
+  seedThread(api);
+  api.on.createComment((call) => ({
     json: {
-      comment_view: commentView({
+      comment_view: wireComment({
         id: 9999,
         content: (call.body as { content: string }).content,
-        creator: me,
       }),
     },
   }));
@@ -395,8 +373,8 @@ test("v1: rich editor unwraps a pasted vger.to link", async ({ api, page }) => {
 
   await composerSubmit(page).click();
 
-  const call = await api.waitForCall("POST /api/v4/comment");
-  expect(call.body).toEqual({
+  const payload = await api.waitForPayload("createComment");
+  expect(payload).toEqual({
     content: "https://lemmy.world/post/123",
     post_id: 1,
   });
@@ -406,7 +384,7 @@ test("v1: dirty composer requires confirmation to dismiss", async ({
   api,
   page,
 }) => {
-  mockThread(api);
+  seedThread(api);
 
   await page.goto(POST_URL);
   await expect(page.getByText("my own comment")).toBeVisible();

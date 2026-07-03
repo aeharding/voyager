@@ -1,20 +1,11 @@
 // Error handling: 404s for posts and communities, vote failure rollback,
 // and an unreachable instance.
 
-import {
-  fixturePosts,
-  NOW,
-  pagedResponse,
-  V1_HOST,
-} from "../fixtures/builders";
+import { V1_HOST } from "../fixtures/builders";
 import { expect, test } from "../fixtures/test";
 
-test("v1: missing post renders not-found state", async ({ api, page }) => {
-  api.mock("GET /api/v4/post", {
-    status: 404,
-    json: { error: "not_found" },
-  });
-
+test("v1: missing post renders not-found state", async ({ page }) => {
+  // Post 12345 is not seeded, so the fake 404s the lookup
   await page.goto(`/posts/${V1_HOST}/c/test_comm/comments/12345`);
 
   await expect(page.getByText("Post not found")).toBeVisible();
@@ -24,14 +15,10 @@ test("v1: missing community shows failed feed with retry", async ({
   api,
   page,
 }) => {
-  api.mock("GET /api/v4/community", {
-    status: 404,
-    json: { error: "couldnt_find_community" },
+  api.on.getCommunity({
+    error: { code: "couldnt_find_community", status: 404 },
   });
-  api.mock("GET /api/v4/post/list", {
-    status: 404,
-    json: { error: "couldnt_find_community" },
-  });
+  api.on.getPosts({ error: { code: "couldnt_find_community", status: 404 } });
 
   await page.goto(`/posts/${V1_HOST}/c/missing_comm`);
 
@@ -53,17 +40,14 @@ test.describe("logged in", () => {
     api,
     page,
   }) => {
-    api.mock("POST /api/v4/post/like", {
-      status: 400,
-      json: { error: "rate_limit_error" },
-    });
+    api.on.likePost({ error: { code: "rate_limit_error", status: 400 } });
 
     await page.goto(`/posts/${V1_HOST}/all`);
 
     const item = page.locator("ion-item", { hasText: "First v1 post" }).first();
     await item.getByRole("button", { name: "Upvote" }).click();
 
-    await api.waitForCall("POST /api/v4/post/like");
+    await api.waitForPayload("likePost");
 
     // Error toast (rate_limit_error maps to the specific rate-limit
     // message via threadiverse's RateLimitedError) + score back to the
@@ -77,7 +61,7 @@ test("v1: unreachable instance shows feed error, not a spinner", async ({
   api,
   page,
 }) => {
-  api.mock("GET /api/v4/post/list", { abort: "connectionrefused" });
+  api.on.getPosts({ abort: "connectionrefused" });
 
   await page.goto(`/posts/${V1_HOST}/all`);
 
