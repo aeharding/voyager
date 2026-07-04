@@ -92,11 +92,10 @@ type Payload<Operation extends keyof BaseClient> = Partial<
  * union isn't callable.) Anything provider-specific belongs in
  * e2e/lemmyv1.
  */
-export interface MatrixApi
-  extends Pick<
-    FakeInstance,
-    "calls" | "host" | "mock" | "mockOnce" | "waitForCall"
-  > {
+export interface MatrixApi extends Pick<
+  FakeInstance,
+  "calls" | "host" | "mock" | "mockOnce" | "waitForCall"
+> {
   /** Canonical payloads of the requests an operation received */
   callsTo<Operation extends SharedDecodableOperation>(
     operation: Operation,
