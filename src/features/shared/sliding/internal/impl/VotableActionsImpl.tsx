@@ -16,8 +16,8 @@ import { getCanModerate } from "#/features/moderation/useCanModerate";
 import { savePost, voteOnPost } from "#/features/post/postSlice";
 import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { useSharedInboxActions } from "#/features/shared/sliding/internal/shared";
+import { getVoteErrorMessage } from "#/helpers/errorMessages";
 import { isPost as _isPost } from "#/helpers/lemmy";
-import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,
   replyStubError,

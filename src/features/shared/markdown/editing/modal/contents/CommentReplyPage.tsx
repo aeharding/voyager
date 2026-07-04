@@ -7,7 +7,12 @@ import {
 } from "@ionic/react";
 import { arrowBackSharp, send } from "ionicons/icons";
 import { RefObject, useEffect, useRef, useState } from "react";
-import { CommentView, PostView, ResolveObjectResponse } from "threadiverse";
+import {
+  CommentView,
+  isErrorCode,
+  PostView,
+  ResolveObjectResponse,
+} from "threadiverse";
 
 import {
   getInstanceFromHandle,
@@ -17,7 +22,6 @@ import {
 import { receivedComments } from "#/features/comment/commentSlice";
 import MultilineTitle from "#/features/shared/MultilineTitle";
 import { isIosTheme } from "#/helpers/device";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { commentPosted } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
@@ -178,7 +182,7 @@ function CommentReplyPageWithAccount({
         }
       }
     } catch (error) {
-      const errorDescription = isLemmyError(error, "language_not_allowed")
+      const errorDescription = isErrorCode(error, "language_not_allowed")
         ? "Please select a language in your lemmy profile settings."
         : "Please try again.";
 

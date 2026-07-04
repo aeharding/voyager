@@ -1,52 +1,56 @@
-import { LemmyErrorType, Person } from "threadiverse";
-
-type LemmyErrorValue = LemmyErrorType["error"];
-
-export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
-  if (!(error instanceof Error)) return;
-  return error.message === lemmyErrorValue;
-}
+import {
+  AccountDeletedError,
+  BannedError,
+  CantBlockAdminError,
+  EmailNotVerifiedError,
+  Incorrect2faError,
+  IncorrectLoginError,
+  InvalidBotActionError,
+  NotFoundError,
+  Person,
+  RateLimitedError,
+  RegistrationApplicationPendingError,
+} from "threadiverse";
 
 function getErrorMessage(
   error: unknown,
-  customErrorMap: (message: LemmyErrorValue) => string | undefined,
-  unknownLemmyError?: string,
+  customErrorMap: (error: Error) => string | undefined,
+  unknownError?: string,
 ): string {
   if (!(error instanceof Error))
     return "Unknown error occurred, please try again.";
 
   // Server-level rate limiting — applies to any endpoint, not just custom-mapped ones.
-  if (error.message === "too_many_requests") {
+  if (error instanceof RateLimitedError) {
     return "Too many requests. Please wait a moment and try again.";
   }
 
-  const message = customErrorMap(error.message as LemmyErrorValue);
+  const message = customErrorMap(error);
 
   if (message) return message;
 
-  return unknownLemmyError ?? "Connection error, please try again.";
+  return unknownError ?? "Connection error, please try again.";
 }
 
 export function getLoginErrorMessage(
   error: unknown,
   instanceActorId: string,
 ): string {
-  return getErrorMessage(error, (message) => {
-    switch (message) {
-      case "incorrect_totp_token":
+  return getErrorMessage(error, (error) => {
+    switch (true) {
+      case error instanceof Incorrect2faError:
         return "Incorrect 2nd factor code. Please try again.";
-      case "not_found":
-      case "couldnt_find_person" as never: // TODO lemmy 0.19 and less support
+      case error instanceof NotFoundError:
         return `User not found. Is your account on ${instanceActorId}?`;
-      case "incorrect_login":
+      case error instanceof IncorrectLoginError:
         return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
-      case "email_not_verified":
+      case error instanceof EmailNotVerifiedError:
         return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
-      case "site_ban":
+      case error instanceof BannedError:
         return "You have been banned.";
-      case "deleted":
+      case error instanceof AccountDeletedError:
         return "Account deleted.";
-      case "registration_application_is_pending":
+      case error instanceof RegistrationApplicationPendingError:
         return "Signup approval pending, try again later.";
     }
   });
@@ -55,11 +59,9 @@ export function getLoginErrorMessage(
 export function getVoteErrorMessage(error: unknown): string {
   return getErrorMessage(
     error,
-    (message) => {
-      switch (message) {
-        case "invalid_bot_action":
-          return "You marked your account as a bot, so you can't vote.";
-      }
+    (error) => {
+      if (error instanceof InvalidBotActionError)
+        return "You marked your account as a bot, so you can't vote.";
     },
     "Problem voting, please try again.",
   );
@@ -71,11 +73,9 @@ export function getBlockUserErrorMessage(
 ): string {
   return getErrorMessage(
     error,
-    (message) => {
-      switch (message) {
-        case "cant_block_admin":
-          return `${blockingUser.name} is an admin. You can't block admins.`;
-      }
+    (error) => {
+      if (error instanceof CantBlockAdminError)
+        return `${blockingUser.name} is an admin. You can't block admins.`;
     },
     "Problem blocking user. Please try again.",
   );

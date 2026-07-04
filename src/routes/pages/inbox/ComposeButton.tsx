@@ -1,10 +1,10 @@
 import { IonButton, IonIcon, IonLoading, useIonAlert } from "@ionic/react";
 import { createOutline } from "ionicons/icons";
 import { useState } from "react";
+import { NotFoundError } from "threadiverse";
 
 import { getUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
@@ -26,8 +26,7 @@ export default function ComposeButton() {
     } catch (error) {
       presentToast({
         message:
-          isLemmyError(error, "couldnt_find_person" as never) || // TODO lemmy 0.19 and less support
-          isLemmyError(error, "not_found")
+          error instanceof NotFoundError
             ? `Could not find user with handle ${handle}`
             : "Server error. Please try again.",
         color: "danger",

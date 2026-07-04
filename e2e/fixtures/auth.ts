@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
+import type { SeedPerson, SeedStore } from "threadiverse/testing";
 
-import { myUser, V1_HOST } from "./builders";
-import type { MockApi } from "./mocks";
+import { V1_HOST } from "./builders";
 
 /**
  * Structurally valid JWT (the app reads the payload via `parseJWT`, e.g.
@@ -33,20 +33,21 @@ export async function seedCredentials(
 }
 
 /**
- * Boot the app logged into the fake v1 instance: seeds credentials before
- * page load and mocks the authed bootstrap calls.
+ * Boot the app logged into a fake instance: seeds credentials before page
+ * load and marks the fixture user as authenticated — the fake derives the
+ * account endpoints (my user, unread counts, notifications) from that.
  */
-export async function loginAs(page: Page, api: MockApi) {
-  const handle = `alex@${V1_HOST}`;
+export async function loginAs(
+  page: Page,
+  api: { host: string; me: SeedPerson; seed: SeedStore },
+) {
+  const handle = `${api.me.name}@${api.host}`;
 
-  await seedCredentials(page, [{ jwt: makeFakeJwt(), handle }], handle);
+  await seedCredentials(
+    page,
+    [{ jwt: makeFakeJwt({ iss: api.host }), handle }],
+    handle,
+  );
 
-  // Authed `getSite` fires getMyUser (GET /account); mock it so every
-  // logged-in test is deterministic.
-  api.mock("GET /api/v4/account", { json: myUser });
-  api.mock("GET /api/v4/account/unread_counts", {
-    json: { notification_count: 0 },
-  });
-  // Fire-and-forget side effect of many logged-in interactions
-  api.mock("POST /api/v4/post/mark_as_read/many", { json: { success: true } });
+  api.seed.loggedInAs(api.me);
 }

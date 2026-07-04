@@ -11,10 +11,11 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { use, useEffect, useRef, useState } from "react";
+import { Incorrect2faError, IncorrectLoginError } from "threadiverse";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
-import { getLoginErrorMessage, isLemmyError } from "#/helpers/lemmyErrors";
+import { getLoginErrorMessage } from "#/helpers/errorMessages";
 import { loginSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
@@ -59,8 +60,8 @@ export default function Totp({ url, username, password }: TotpProps) {
       await dispatch(login(url, username, password, totp));
     } catch (error) {
       if (
-        isLemmyError(error, "incorrect_totp_token") ||
-        isLemmyError(error, "incorrect_login")
+        error instanceof Incorrect2faError ||
+        error instanceof IncorrectLoginError
       ) {
         setTotp("");
       }

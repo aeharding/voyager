@@ -15,7 +15,7 @@ export default function CommunityAutocomplete(props: AutocompleteModeProps) {
     const { data } = await client.search({
       search_term: searchTerm,
       type_: "communities",
-      ...getTopAllSearchSort(await client.getMode()),
+      ...getTopAllSearchSort((await client.connect()).mode),
     });
 
     return (data as CommunityView[]).map((view) => view.community);

@@ -26,12 +26,12 @@ import {
 import useCommentModActions from "#/features/moderation/useCommentModActions";
 import { useSharePostComment } from "#/features/share/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
+import { getVoteErrorMessage } from "#/helpers/errorMessages";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "#/helpers/lemmy";
-import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   commentDeleted,

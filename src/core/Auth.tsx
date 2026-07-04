@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useLocation } from "react-router";
-import { ResponseError } from "threadiverse";
+import { IncorrectLoginError, ResponseError } from "threadiverse";
 
 import {
   activeAccountSelector,
@@ -26,7 +26,6 @@ import {
   syncMessages,
 } from "#/features/inbox/inboxSlice";
 import BackgroundReportSync from "#/features/moderation/BackgroundReportSync";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useMode } from "#/helpers/threadiverse";
 import { getDefaultServer } from "#/services/app";
 import store, { useAppDispatch, useAppSelector } from "#/store";
@@ -98,7 +97,7 @@ function AuthLocation() {
     try {
       await dispatch(_getInboxCounts());
     } catch (error) {
-      if (isLemmyError(error, "incorrect_login")) setIsReauthNeeded(true);
+      if (error instanceof IncorrectLoginError) setIsReauthNeeded(true);
       else if (
         mode === "piefed" &&
         error instanceof ResponseError &&

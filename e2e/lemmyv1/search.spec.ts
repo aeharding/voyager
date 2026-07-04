@@ -1,13 +1,10 @@
 // Search: posts and communities lookups (flat v1 /search response shape),
 // the empty state, and the random community jump.
+//
+// Stays lemmyv1-only: there's no seed-derived /search (results are v1 wire
+// shapes), and piefed doesn't support getRandomCommunity.
 
-import {
-  community,
-  communityResponse,
-  fixturePosts,
-  pagedResponse,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, fixturePosts, me, V1_HOST } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
 
@@ -24,25 +21,26 @@ const emptySearchResponse = {
   prev_page: null,
 };
 
-function communityView() {
-  return {
-    community: community(),
-    community_actions: undefined,
-    banned_from_community: false,
-  };
-}
+const wireMe = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
+});
 
+// TODO(seed): no seed-derived /search yet — results stay wire-level
 function mockSearch(
   api: MockApi,
   results: Partial<typeof emptySearchResponse>,
 ) {
-  api.mock("GET /api/v4/search", {
-    json: { ...emptySearchResponse, ...results },
-  });
+  api.on.search({ json: { ...emptySearchResponse, ...results } });
 }
 
 test("v1: searching posts renders results", async ({ api, page }) => {
-  mockSearch(api, { posts: fixturePosts });
+  mockSearch(api, {
+    posts: fixturePosts.map((post) =>
+      build.postView({ ...post, creator: wireMe }),
+    ),
+  });
 
   await page.goto("/search");
   await page.getByRole("searchbox").fill("v1");
@@ -50,13 +48,13 @@ test("v1: searching posts renders results", async ({ api, page }) => {
 
   await expect(page.getByText("First v1 post")).toBeVisible();
 
-  const call = await api.waitForCall("GET /api/v4/search");
-  expect(call.query.get("search_term")).toBe("v1");
-  expect(call.query.get("type_")).toBe("posts");
+  const payload = await api.waitForPayload("search");
+  expect(payload.search_term).toBe("v1");
+  expect(payload.type_).toBe("posts");
 });
 
 test("v1: searching communities renders results", async ({ api, page }) => {
-  mockSearch(api, { communities: [communityView()] });
+  mockSearch(api, { communities: [build.communityView()] });
 
   await page.goto("/search");
   await page.getByRole("searchbox").fill("test");
@@ -66,8 +64,8 @@ test("v1: searching communities renders results", async ({ api, page }) => {
   await expect(page.getByText("test_comm").first()).toBeVisible();
   await expect(page.getByText("1 Subscriber")).toBeVisible();
 
-  const call = await api.waitForCall("GET /api/v4/search");
-  expect(call.query.get("type_")).toBe("communities");
+  const payload = await api.waitForPayload("search");
+  expect(payload.type_).toBe("communities");
 });
 
 test("v1: empty search results show the empty state", async ({ api, page }) => {
@@ -81,13 +79,12 @@ test("v1: empty search results show the empty state", async ({ api, page }) => {
 });
 
 test("v1: random community navigates to a community", async ({ api, page }) => {
-  api.mock("GET /api/v4/community/random", {
-    json: { community_view: communityView() },
+  api.on.getRandomCommunity({
+    json: { community_view: build.communityView() },
   });
-  api.mock("GET /api/v4/community", { json: communityResponse() });
   // The special search menu only renders once trending communities resolve
   api.mock("GET /api/v4/community/list", {
-    json: pagedResponse([communityView()]),
+    json: build.pagedResponse([build.communityView()]),
   });
 
   await page.goto(`/posts/${V1_HOST}/all`);

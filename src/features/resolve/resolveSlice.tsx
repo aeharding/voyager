@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ResolveObjectResponse } from "threadiverse";
+import { NotFoundError, ResolveObjectResponse } from "threadiverse";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
@@ -9,8 +9,6 @@ import { extractLemmyLinkFromPotentialFediRedirectService } from "#/features/sha
 import { getDetermineSoftware } from "#/features/shared/useDetermineSoftware";
 import { POTENTIAL_OBJECTS } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
-import { isLemmyError } from "#/helpers/lemmyErrors";
-import { isPiefedError } from "#/helpers/piefedErrors";
 import resolveFedilink from "#/services/activitypub";
 import { AppDispatch, RootState } from "#/store";
 
@@ -204,16 +202,5 @@ function findPiefedCommentIdFromUrl(url: URL): number | undefined {
 }
 
 function isNotFoundError(error: unknown): boolean {
-  return (
-    // TODO START lemmy 0.19 and less support
-    isLemmyError(error, "couldnt_find_object" as never) ||
-    isLemmyError(error, "couldnt_find_post" as never) ||
-    isLemmyError(error, "couldnt_find_comment" as never) ||
-    isLemmyError(error, "couldnt_find_person" as never) ||
-    isLemmyError(error, "couldnt_find_community" as never) ||
-    // TODO END
-    isLemmyError(error, "not_found") ||
-    isPiefedError(error, "No object found.") ||
-    false
-  );
+  return error instanceof NotFoundError;
 }

@@ -15,7 +15,7 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
     const { data: users } = await client.search({
       search_term: searchTerm,
       type_: "users",
-      ...getTopAllSearchSort(await client.getMode()),
+      ...getTopAllSearchSort((await client.connect()).mode),
     });
 
     return (users as PersonView[]).map((u) => u.person);

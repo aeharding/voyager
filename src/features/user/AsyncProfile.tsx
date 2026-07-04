@@ -6,11 +6,10 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { useCallback, useEffect, useEffectEvent, useState } from "react";
-import { GetPersonDetailsResponse } from "threadiverse";
+import { GetPersonDetailsResponse, NotFoundError } from "threadiverse";
 
 import Profile from "#/features/user/Profile";
 import { getUser } from "#/features/user/userSlice";
-import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -40,10 +39,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
       } catch (error) {
         if (signal?.aborted) throw error;
 
-        if (
-          isLemmyError(error, "couldnt_find_person" as never) || // TODO lemmy 0.19 and less support
-          isLemmyError(error, "not_found")
-        ) {
+        if (error instanceof NotFoundError) {
           await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
 
           if (router.canGoBack()) {

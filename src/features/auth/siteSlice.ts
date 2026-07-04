@@ -146,7 +146,7 @@ export const getSoftware =
     let software;
 
     try {
-      software = await clientSelector(getState()).getSoftware();
+      software = (await clientSelector(getState()).connect()).software;
     } catch (error) {
       // Site or user changed before site response resolved
       if (getState().auth.connectedInstance !== instance) return;

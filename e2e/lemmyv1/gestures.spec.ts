@@ -4,7 +4,7 @@
 
 import type { Locator, Page } from "@playwright/test";
 
-import { fixturePosts, NOW, V1_HOST } from "../fixtures/builders";
+import { build, fixturePosts, me, NOW, V1_HOST } from "../fixtures/builders";
 import { getSetting } from "../fixtures/db";
 import { expect, test } from "../fixtures/test";
 
@@ -42,10 +42,18 @@ async function swipeRight(page: Page, item: Locator) {
 }
 
 test("v1: swiping a post right upvotes it", async ({ api, page }) => {
-  api.mock("POST /api/v4/post/like", () => {
-    const liked = structuredClone(fixturePosts[0]!);
-    liked.post.score = 2;
-    liked.post.upvotes = 2;
+  api.on.likePost(() => {
+    // The fake has no vote state — the upvoted response is the spec's to
+    // define, so it stays wire-level
+    const liked = build.postView({
+      ...fixturePosts[0]!,
+      creator: build.person({
+        id: me.id,
+        name: me.name,
+        display_name: me.displayName,
+      }),
+    });
+    Object.assign(liked.post, { score: 2, upvotes: 2 });
     return {
       json: {
         post_view: {
@@ -63,8 +71,8 @@ test("v1: swiping a post right upvotes it", async ({ api, page }) => {
   });
   await swipeRight(page, item);
 
-  const call = await api.waitForCall("POST /api/v4/post/like");
-  expect(call.body).toEqual({ post_id: 1, is_upvote: true });
+  const payload = await api.waitForPayload("likePost");
+  expect(payload).toEqual({ post_id: 1, is_upvote: true });
 });
 
 test("v1: disabling left swipes turns the gesture off", async ({
@@ -90,5 +98,5 @@ test("v1: disabling left swipes turns the gesture off", async ({
 
   // Give a would-be vote time to fire, then confirm nothing was sent
   await page.waitForTimeout(1000);
-  expect(api.calls("POST /api/v4/post/like")).toHaveLength(0);
+  expect(api.callsTo("likePost")).toHaveLength(0);
 });

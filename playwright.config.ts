@@ -1,8 +1,24 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import type { Provider } from "./e2e/matrix/fixtures";
+
 const serverURL = "http://localhost:" + (process.env.CI ? "4173" : "5173");
 
-export default defineConfig({
+// e2e/matrix specs run the full browser × provider grid; the plain
+// browser projects keep running everything else (provider-specific specs).
+const MATRIX_SPECS = "e2e/matrix/**/*.spec.ts";
+
+const BROWSERS = [
+  { device: devices["Desktop Chrome"], name: "chromium" },
+  { device: devices["Desktop Firefox"], name: "firefox" },
+  { device: devices["Desktop Safari"], name: "webkit" },
+  { device: devices["Pixel 7"], name: "mobile-chrome" },
+  { device: devices["iPhone 14"], name: "mobile-safari" },
+];
+
+const PROVIDERS: Provider[] = ["lemmyv1", "piefed"];
+
+export default defineConfig<{ provider: Provider }>({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -21,26 +37,20 @@ export default defineConfig({
   },
 
   projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
-    {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 7"] },
-    },
-    {
-      name: "Mobile Safari",
-      use: { ...devices["iPhone 14"] },
-    },
+    // Provider-specific specs (e2e/lemmyv1, etc.) run once per browser.
+    ...BROWSERS.map((browser) => ({
+      name: browser.name,
+      testIgnore: MATRIX_SPECS,
+      use: { ...browser.device },
+    })),
+    // Shared specs (e2e/matrix) run the full browser × provider grid.
+    ...BROWSERS.flatMap((browser) =>
+      PROVIDERS.map((provider) => ({
+        name: `${browser.name}-${provider}`,
+        testMatch: MATRIX_SPECS,
+        use: { ...browser.device, provider },
+      })),
+    ),
   ],
 
   webServer: {

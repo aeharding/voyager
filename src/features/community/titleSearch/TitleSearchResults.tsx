@@ -174,7 +174,7 @@ export default function TitleSearchResults() {
       limit: 20,
       type_: "communities",
       listing_type: "all",
-      ...getTopAllSearchSort(await client.getMode()),
+      ...getTopAllSearchSort((await client.connect()).mode),
     });
 
     setSearchPayload(result.data as CommunityView[]);

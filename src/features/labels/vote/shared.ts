@@ -7,7 +7,7 @@ import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { voteOnComment } from "#/features/comment/commentSlice";
 import { voteOnPost } from "#/features/post/postSlice";
-import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import { getVoteErrorMessage } from "#/helpers/errorMessages";
 import { downvotesDisabled } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useHapticFeedback from "#/helpers/useHapticFeedback";

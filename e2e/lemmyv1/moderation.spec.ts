@@ -1,33 +1,34 @@
 // Moderation + reporting: reporting posts (preset reason) and comments
 // (custom reason), the modqueue, and removing a post as a moderator.
 
-import {
-  commentView,
-  community,
-  fixturePosts,
-  me,
-  myUserInfo,
-  NOW,
-  pagedResponse,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, fixturePosts, me, NOW, V1_HOST } from "../fixtures/builders";
 import type { MockApi } from "../fixtures/mocks";
 import { expect, test } from "../fixtures/test";
 
 test.use({ loggedIn: true });
 
-const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.post.id}`;
+const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.id}`;
+
+const wireMe = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
+});
+
+function wirePost() {
+  return build.postView({ ...fixturePosts[0]!, creator: wireMe });
+}
 
 // Raw v1 PostReportView (postView fields + report extras)
 function postReportView(reason: string) {
   return {
-    ...fixturePosts[0]!,
-    post_creator: me,
+    ...wirePost(),
+    post_creator: wireMe,
     post_report: {
       id: 1,
       creator_id: me.id,
-      post_id: fixturePosts[0]!.post.id,
-      original_post_name: fixturePosts[0]!.post.name,
+      post_id: fixturePosts[0]!.id,
+      original_post_name: fixturePosts[0]!.name,
       original_post_url: undefined,
       original_post_body: undefined,
       reason,
@@ -40,27 +41,23 @@ function postReportView(reason: string) {
   };
 }
 
-// GET /account override making `me` a moderator of the fixture community
+// GET /account override making `me` a moderator of the fixture community.
+// The seed store can't express moderator status, so this stays wire-level.
 function asModerator(api: MockApi) {
   api.mock("GET /api/v4/account", {
     json: {
-      ...myUserInfo(me),
-      moderates: [{ community: community(), moderator: me }],
+      ...build.myUserInfo({ person: wireMe }),
+      moderates: [{ community: build.community(), moderator: wireMe }],
     },
   });
 }
 
-function mockThread(api: MockApi) {
-  api.mock("GET /api/v4/post", { json: { post_view: fixturePosts[0] } });
-  api.mock("GET /api/v4/comment/list", {
-    json: pagedResponse([
-      commentView({ id: 10, content: "reportable comment", creator: me }),
-    ]),
-  });
+function seedThread(api: MockApi) {
+  api.seed.comment({ id: 10, content: "reportable comment", creator: api.me });
 }
 
 test("v1: reporting a post with a preset reason", async ({ api, page }) => {
-  mockThread(api);
+  seedThread(api);
   api.mock("POST /api/v4/post/report", {
     json: { post_report_view: postReportView("Breaks Community Rules") },
   });
@@ -84,7 +81,7 @@ test("v1: reporting a post with a preset reason", async ({ api, page }) => {
 });
 
 test("v1: reporting a comment with a custom reason", async ({ api, page }) => {
-  mockThread(api);
+  seedThread(api);
   api.mock("POST /api/v4/comment/report", { json: {} });
 
   await page.goto(POST_URL);
@@ -117,22 +114,22 @@ test("v1: reporting a comment with a custom reason", async ({ api, page }) => {
 test("v1: modqueue lists open reports", async ({ api, page }) => {
   asModerator(api);
   api.mock("GET /api/v4/report/list", {
-    json: pagedResponse([
+    json: build.pagedResponse([
       { type_: "post", ...postReportView("Reported for testing") },
     ]),
   });
 
   await page.goto(`/posts/${V1_HOST}/mod/modqueue`);
 
-  await expect(page.getByText(fixturePosts[0]!.post.name)).toBeVisible();
+  await expect(page.getByText(fixturePosts[0]!.name)).toBeVisible();
   await expect(page.getByText("1 Report")).toBeVisible();
 });
 
 test("v1: moderator can remove a post", async ({ api, page }) => {
   asModerator(api);
-  mockThread(api);
+  seedThread(api);
   api.mock("POST /api/v4/post/remove", () => {
-    const removed = structuredClone(fixturePosts[0]!);
+    const removed = wirePost();
     removed.post.removed = true;
     return { json: { post_view: removed } };
   });

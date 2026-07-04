@@ -3,19 +3,18 @@
 // Pattern: flip the setting through the real UI, wait for the Dexie write,
 // then assert the effect on a fresh page load.
 
-import {
-  me,
-  pagedResponse,
-  person,
-  personResponse,
-  postView,
-  V1_HOST,
-} from "../fixtures/builders";
+import { build, me, V1_HOST } from "../fixtures/builders";
 import { getSetting } from "../fixtures/db";
 import { scrollFeedUntilVisible } from "../fixtures/scroll";
 import { expect, test } from "../fixtures/test";
 
 test.use({ loggedIn: true });
+
+const wireMe = build.person({
+  id: me.id,
+  name: me.name,
+  display_name: me.displayName,
+});
 
 test("v1: compact post size hides body previews in the feed", async ({
   page,
@@ -54,24 +53,24 @@ test("v1: keyword filter hides matching posts client-side", async ({
   await expect(page.getByText("First v1 post")).toBeVisible();
   await expect(page.getByText("Second v1 post")).not.toBeVisible();
   // Filtering is local — the full page was still requested
-  expect(api.calls("GET /api/v4/post/list").length).toBeGreaterThan(0);
+  expect(api.callsTo("getPosts").length).toBeGreaterThan(0);
 });
 
 test("v1: website filter hides posts linking to the domain", async ({
   api,
   page,
 }) => {
-  api.mock("GET /api/v4/post/list", {
-    json: pagedResponse([
-      postView({
-        id: 70,
-        name: "Linked post",
-        url: "https://filtered.example/article",
-        creator: me,
-      }),
-      postView({ id: 71, name: "Text post", body: "hi", creator: me }),
-    ]),
+  // The feed must be *exactly* these two posts — replace the fixture's
+  // default seed (clear() also wipes the logged-in state, so restore it)
+  api.seed.clear();
+  api.seed.loggedInAs(api.me);
+  api.seed.post({
+    id: 70,
+    name: "Linked post",
+    url: "https://filtered.example/article",
+    creator: api.me,
   });
+  api.seed.post({ id: 71, name: "Text post", body: "hi", creator: api.me });
 
   await page.goto("/settings/blocks");
   await page.getByText("Add Website").click();
@@ -89,11 +88,14 @@ test("v1: website filter hides posts linking to the domain", async ({
 });
 
 test("v1: blocking a user from their profile", async ({ api, page }) => {
-  const other = person({ id: 200, name: "otheruser" });
-  api.mock("GET /api/v4/person", { json: personResponse(other) });
-  api.mock("GET /api/v4/person/content", { json: pagedResponse([]) });
+  api.seed.person({ id: 200, name: "otheruser" });
   api.mock("POST /api/v4/account/block/person", {
-    json: { person_view: personResponse(other).person_view, blocked: true },
+    json: {
+      person_view: build.personResponse(
+        build.person({ id: 200, name: "otheruser" }),
+      ).person_view,
+      blocked: true,
+    },
   });
 
   await page.goto(`/posts/${V1_HOST}/u/otheruser`);
@@ -112,18 +114,24 @@ test("v1: disabling infinite scroll shows a load-page button", async ({
   page,
 }) => {
   // Page 1 must exceed the auto-fill threshold (limit / 2) or the feed
-  // fetches page 2 on its own regardless of the setting
-  api.mock("GET /api/v4/post/list", (call) =>
+  // fetches page 2 on its own regardless of the setting.
+  // TODO(seed): the derived post list has no cursor pagination — page
+  // *response* shapes stay wire-level (request assertions are canonical)
+  api.on.getPosts((call) =>
     call.query.get("page_cursor") === "cursor-2"
       ? {
-          json: pagedResponse([
-            postView({ id: 99, name: "Page two post", creator: me }),
+          json: build.pagedResponse([
+            build.postView({ id: 99, name: "Page two post", creator: wireMe }),
           ]),
         }
       : {
-          json: pagedResponse(
+          json: build.pagedResponse(
             Array.from({ length: 30 }, (_, i) =>
-              postView({ id: i + 1, name: `Feed post ${i + 1}`, creator: me }),
+              build.postView({
+                id: i + 1,
+                name: `Feed post ${i + 1}`,
+                creator: wireMe,
+              }),
             ),
             "cursor-2",
           ),
@@ -144,6 +152,5 @@ test("v1: disabling infinite scroll shows a load-page button", async ({
 
   await scrollFeedUntilVisible(page, "Page two post");
 
-  const calls = api.calls("GET /api/v4/post/list");
-  expect(calls.at(-1)!.query.get("page_cursor")).toBe("cursor-2");
+  expect(api.callsTo("getPosts").at(-1)!.page_cursor).toBe("cursor-2");
 });
