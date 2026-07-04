@@ -41,13 +41,37 @@ jobs:
           - project: Mobile Safari
             browser: webkit
             artifact: mobile-safari
-          # Provider-matrix projects (shared specs against each fake backend)
-          - project: matrix-lemmyv1
+          # Provider-matrix grid (shared specs: browser × fake backend)
+          - project: chromium-lemmyv1
             browser: chromium
-            artifact: matrix-lemmyv1
-          - project: matrix-piefed
+            artifact: chromium-lemmyv1
+          - project: chromium-piefed
             browser: chromium
-            artifact: matrix-piefed
+            artifact: chromium-piefed
+          - project: firefox-lemmyv1
+            browser: firefox
+            artifact: firefox-lemmyv1
+          - project: firefox-piefed
+            browser: firefox
+            artifact: firefox-piefed
+          - project: webkit-lemmyv1
+            browser: webkit
+            artifact: webkit-lemmyv1
+          - project: webkit-piefed
+            browser: webkit
+            artifact: webkit-piefed
+          - project: mobile-chrome-lemmyv1
+            browser: chromium
+            artifact: mobile-chrome-lemmyv1
+          - project: mobile-chrome-piefed
+            browser: chromium
+            artifact: mobile-chrome-piefed
+          - project: mobile-safari-lemmyv1
+            browser: webkit
+            artifact: mobile-safari-lemmyv1
+          - project: mobile-safari-piefed
+            browser: webkit
+            artifact: mobile-safari-piefed
     steps:
       - uses: actions/checkout@v6
 

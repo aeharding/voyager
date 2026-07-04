@@ -4,9 +4,19 @@ import type { Provider } from "./e2e/matrix/fixtures";
 
 const serverURL = "http://localhost:" + (process.env.CI ? "4173" : "5173");
 
-// e2e/matrix specs run against both provider fakes via the matrix-*
-// projects; the browser-matrix projects keep running everything else.
+// e2e/matrix specs run the full browser × provider grid; the plain
+// browser projects keep running everything else (provider-specific specs).
 const MATRIX_SPECS = "e2e/matrix/**/*.spec.ts";
+
+const BROWSERS = [
+  { device: devices["Desktop Chrome"], name: "chromium" },
+  { device: devices["Desktop Firefox"], name: "firefox" },
+  { device: devices["Desktop Safari"], name: "webkit" },
+  { device: devices["Pixel 7"], name: "mobile-chrome" },
+  { device: devices["iPhone 14"], name: "mobile-safari" },
+];
+
+const PROVIDERS: Provider[] = ["lemmyv1", "piefed"];
 
 export default defineConfig<{ provider: Provider }>({
   testDir: "./e2e",
@@ -52,16 +62,13 @@ export default defineConfig<{ provider: Provider }>({
       testIgnore: MATRIX_SPECS,
       use: { ...devices["iPhone 14"] },
     },
-    {
-      name: "matrix-lemmyv1",
-      testMatch: MATRIX_SPECS,
-      use: { ...devices["Desktop Chrome"], provider: "lemmyv1" },
-    },
-    {
-      name: "matrix-piefed",
-      testMatch: MATRIX_SPECS,
-      use: { ...devices["Desktop Chrome"], provider: "piefed" },
-    },
+    ...BROWSERS.flatMap((browser) =>
+      PROVIDERS.map((provider) => ({
+        name: `${browser.name}-${provider}`,
+        testMatch: MATRIX_SPECS,
+        use: { ...browser.device, provider },
+      })),
+    ),
   ],
 
   webServer: {
