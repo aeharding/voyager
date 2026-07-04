@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   playwright:
-    name: e2e (${{ matrix.project }})
+    name: ${{ matrix.project }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
