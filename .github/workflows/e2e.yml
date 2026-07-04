@@ -35,10 +35,10 @@ jobs:
           - project: webkit
             browser: webkit
             artifact: webkit
-          - project: Mobile Chrome
+          - project: mobile-chrome
             browser: chromium
             artifact: mobile-chrome
-          - project: Mobile Safari
+          - project: mobile-safari
             browser: webkit
             artifact: mobile-safari
           # Provider-matrix grid (shared specs: browser × fake backend)

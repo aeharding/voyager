@@ -37,31 +37,13 @@ export default defineConfig<{ provider: Provider }>({
   },
 
   projects: [
-    {
-      name: "chromium",
+    // Provider-specific specs (e2e/lemmyv1, etc.) run once per browser.
+    ...BROWSERS.map((browser) => ({
+      name: browser.name,
       testIgnore: MATRIX_SPECS,
-      use: { ...devices["Desktop Chrome"] },
-    },
-    {
-      name: "firefox",
-      testIgnore: MATRIX_SPECS,
-      use: { ...devices["Desktop Firefox"] },
-    },
-    {
-      name: "webkit",
-      testIgnore: MATRIX_SPECS,
-      use: { ...devices["Desktop Safari"] },
-    },
-    {
-      name: "Mobile Chrome",
-      testIgnore: MATRIX_SPECS,
-      use: { ...devices["Pixel 7"] },
-    },
-    {
-      name: "Mobile Safari",
-      testIgnore: MATRIX_SPECS,
-      use: { ...devices["iPhone 14"] },
-    },
+      use: { ...browser.device },
+    })),
+    // Shared specs (e2e/matrix) run the full browser × provider grid.
     ...BROWSERS.flatMap((browser) =>
       PROVIDERS.map((provider) => ({
         name: `${browser.name}-${provider}`,
