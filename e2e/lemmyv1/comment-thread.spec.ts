@@ -3,8 +3,8 @@
 // missing children ("N more replies") for deep threads.
 //
 // Stays lemmyv1-only: sort payloads are mode-specific ("new" here vs
-// piefed's "New"), and the vote/save/more-replies responses are wire-level
-// v1 payloads (the fakes have no vote state or max_depth model).
+// piefed's "New"), and the more-replies response is a wire-level v1 payload
+// (the fakes have no max_depth model). Vote/save are now seed-derived.
 
 import type { Page } from "@playwright/test";
 
@@ -104,11 +104,6 @@ test.describe("logged in", () => {
 
   test("v1: upvote comment from action sheet", async ({ api, page }) => {
     seedThread(api);
-    api.on.likeComment(() => {
-      const liked = wireParentComment();
-      Object.assign(liked.comment, { score: 2, upvotes: 2 });
-      return { json: { comment_view: liked } };
-    });
 
     await page.goto(POST_URL);
     await expect(page.getByText("parent comment")).toBeVisible();
@@ -118,15 +113,15 @@ test.describe("logged in", () => {
 
     const payload = await api.waitForPayload("likeComment");
     expect(payload).toEqual({ comment_id: 10, is_upvote: true });
+
+    // The fake derives the vote; the comment reflects the new score (1 → 2)
+    await expect(
+      page.locator(".comment-10").first().getByText("2", { exact: true }),
+    ).toBeVisible();
   });
 
   test("v1: save comment from action sheet", async ({ api, page }) => {
     seedThread(api);
-    api.on.saveComment(() => {
-      const saved = wireParentComment();
-      Object.assign(saved, { comment_actions: { saved_at: "2026-05-21" } });
-      return { json: { comment_view: saved } };
-    });
 
     await page.goto(POST_URL);
     await expect(page.getByText("parent comment")).toBeVisible();
@@ -136,6 +131,10 @@ test.describe("logged in", () => {
 
     const payload = await api.waitForPayload("saveComment");
     expect(payload).toEqual({ comment_id: 10, save: true });
+
+    // The fake derives the saved state; reopening the sheet now offers Unsave
+    await commentEllipsis(page, 10).click();
+    await expect(actionSheetButton(page, "Unsave")).toBeVisible();
   });
 });
 

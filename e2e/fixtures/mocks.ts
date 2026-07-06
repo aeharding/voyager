@@ -52,4 +52,9 @@ export class MockApi extends FakeLemmyV1Instance {
       json: build.pagedResponse(fixtureModlog),
     });
   }
+
+  /** A valid provider wire community response, for follow/community writes */
+  get communityResponse(): unknown {
+    return this.build.communityResponse();
+  }
 }
