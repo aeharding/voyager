@@ -58,6 +58,7 @@ import TabbedRoutes from "#/routes/TabbedRoutes";
 
 import Auth from "./Auth";
 import Listeners from "./listeners";
+import WindowChrome from "./tauri/WindowChrome";
 // Setup global app lifecycle listeners
 import { SharedDialogContextProvider } from "#/features/auth/SharedDialogContext";
 
@@ -105,6 +106,7 @@ export default function App() {
                               </OutletProvider>
                             </Auth>
                           </SharedDialogContextProvider>
+                          <WindowChrome />
                         </IonApp>
                       </AppToastProvider>
                     </TabContextProvider>

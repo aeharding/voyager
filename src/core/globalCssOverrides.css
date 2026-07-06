@@ -389,3 +389,9 @@ html:not(.theme-has-custom-background):not(.ion-palette-dark) {
     opacity: var(--background-activated-opacity);
   }
 }
+
+/* Tauri desktop app with client-side window decorations */
+html.tauri {
+  --window-controls-width: 128px;
+  --window-controls-height: 56px;
+}

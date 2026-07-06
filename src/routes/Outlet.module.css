@@ -19,6 +19,18 @@
     max-width: 520px;
   }
 
+  /* Reserve space for Tauri window controls in the rightmost column header
+     (second column when two column, else the sole main column) */
+  :global(html.tauri) & {
+    > :global(.ion-page) ion-header ion-toolbar:first-of-type,
+    > ion-router-outlet:only-child
+      :global(.ion-page)
+      ion-header
+      ion-toolbar:first-of-type {
+      padding-inline-end: var(--window-controls-width);
+    }
+  }
+
   /* First column (main content) */
   > ion-router-outlet > :global(.ion-page),
   /* Second column */
