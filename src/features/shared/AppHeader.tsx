@@ -17,7 +17,7 @@ import { isTauri } from "#/helpers/device";
 import { onFinishStopClick } from "#/helpers/longPress";
 import { OutletContext } from "#/routes/OutletProvider";
 import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
-import store from "#/store";
+import store, { useAppSelector } from "#/store";
 
 export default function AppHeader(props: ComponentProps<typeof IonHeader>) {
   if (props.collapse) return <IonHeader {...props} />;
@@ -43,12 +43,16 @@ function UncollapsedAppHeader(props: ComponentProps<typeof AppHeader>) {
 function TauriAppHeader(props: ComponentProps<typeof IonHeader>) {
   const { isTwoColumnLayout } = use(OutletContext);
   const isSecondColumn = useIsSecondColumn();
+  const systemWindowFrame = useAppSelector(
+    (state) => state.settings.appearance.general.systemWindowFrame,
+  );
 
   // Skip headers in modals — the underlying page header keeps the buttons
   const [el, setEl] = useState<HTMLElement | null>(null);
   const inModal = el ? !!el.closest("ion-modal") : true;
 
-  const showWindowButtons = !inModal && (isSecondColumn || !isTwoColumnLayout);
+  const showWindowButtons =
+    !systemWindowFrame && !inModal && (isSecondColumn || !isTwoColumnLayout);
 
   return (
     <IonHeader ref={setEl} {...props}>

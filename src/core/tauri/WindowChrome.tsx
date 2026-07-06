@@ -2,17 +2,21 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
 
 import { isTauri } from "#/helpers/device";
+import { useAppSelector } from "#/store";
 
 import styles from "./WindowChrome.module.css";
 
 /**
  * Client-side window decorations for the Tauri desktop app.
  *
- * The native titlebar is disabled (`decorations: false` in tauri.conf.json)
- * so the app header doubles as the titlebar. Since Linux doesn't natively
- * resize undecorated windows (tauri#8519), this renders invisible resize
- * zones along the window edges. The window management buttons live in the
- * app header (see WindowButtons, injected by AppHeader).
+ * The native titlebar is disabled by default (`decorations: false` in
+ * tauri.conf.json) so the app header doubles as the titlebar. Since Linux
+ * doesn't natively resize undecorated windows (tauri#8519), this renders
+ * invisible resize zones along the window edges. The window management
+ * buttons live in the app header (see WindowButtons, injected by AppHeader).
+ *
+ * Users can opt back into the native titlebar ("Use System Titlebar"
+ * setting), applied at runtime via setDecorations.
  */
 export default function WindowChrome() {
   if (!isTauri()) return;
@@ -22,8 +26,15 @@ export default function WindowChrome() {
 
 function TauriWindowChrome() {
   const maximized = useWindowMaximized();
+  const systemWindowFrame = useAppSelector(
+    (state) => state.settings.appearance.general.systemWindowFrame,
+  );
 
-  if (maximized) return;
+  useEffect(() => {
+    getCurrentWindow().setDecorations(systemWindowFrame);
+  }, [systemWindowFrame]);
+
+  if (systemWindowFrame || maximized) return;
 
   return <ResizeEdges />;
 }

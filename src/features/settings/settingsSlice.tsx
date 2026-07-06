@@ -102,6 +102,7 @@ export interface SettingsState {
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
       profileLabel: ProfileLabelType;
+      systemWindowFrame: boolean;
       twoColumnLayout: TwoColumnLayout;
     };
     posts: {
@@ -232,6 +233,7 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
+      systemWindowFrame: false,
       // Desktop app: wide window, so default to two columns
       twoColumnLayout: isTauri() ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
@@ -624,6 +626,10 @@ export const settingsSlice = createSlice({
 
       db.setSetting("subscribed_icon", action.payload);
     },
+    setSystemWindowFrame(state, action: PayloadAction<boolean>) {
+      state.appearance.general.systemWindowFrame = action.payload;
+      db.setSetting("system_window_frame", action.payload);
+    },
     setTagsEnabled(state, action: PayloadAction<boolean>) {
       state.tags.enabled = action.payload;
 
@@ -943,6 +949,7 @@ export const {
   setShowHideReadButton,
   setShowJumpButton,
   setSubscribedIcon,
+  setSystemWindowFrame,
   setTagsEnabled,
   setTagsHideInstance,
   setTagsSaveSource,
@@ -991,6 +998,7 @@ function hydrateStateWithGlobalSettings(
       },
       general: {
         profileLabel: settings.profile_label,
+        systemWindowFrame: settings.system_window_frame,
         twoColumnLayout: settings.two_column_layout,
         userInstanceUrlDisplay: settings.user_instance_url_display,
       },

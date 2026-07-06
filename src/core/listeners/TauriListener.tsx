@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { toggleMaximize } from "#/core/tauri/WindowChrome";
 import { isTauri } from "#/helpers/device";
 import { isExternalUrl } from "#/helpers/url";
+import store from "#/store";
 
 const INTERACTIVE_SELECTOR = [
   "ion-button",
@@ -62,6 +63,8 @@ export default function TauriListener() {
     // (drag to move, double-click to maximize)
     function onMouseDown(event: MouseEvent) {
       if (event.button !== 0) return;
+      if (store.getState().settings.appearance.general.systemWindowFrame)
+        return;
       if (!(event.target instanceof Element)) return;
       if (!event.target.closest("ion-header")) return;
       if (event.target.closest(INTERACTIVE_SELECTOR)) return;
