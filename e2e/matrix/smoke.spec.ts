@@ -14,6 +14,7 @@ test("post detail page renders post + comments", async ({ api, page }) => {
   );
 
   await expect(page.getByText(fixturePosts[0]!.name).first()).toBeVisible();
+  await expect(page.getByText(fixturePosts[0]!.body).first()).toBeVisible();
   await expect(page.getByText("A comment body").first()).toBeVisible();
 });
 
