@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
 import { buildImageSrc } from "#/features/media/CachedImg";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
 import { getServerUrl } from "#/services/nativeFetch";
 
@@ -25,35 +25,36 @@ const domToBlobOptions: DomToBlobOptions = {
 
     return node.tagName !== "VIDEO";
   },
-  fetchFn: isNative()
-    ? async (url) => {
-        // Pass through relative URLs to browser fetching
-        // !: running in native environment
-        if (url.startsWith(`${getServerUrl!()}/`)) {
-          return false;
+  fetchFn:
+    getPlatform() === "capacitor"
+      ? async (url) => {
+          // Pass through relative URLs to browser fetching
+          // !: running in native environment
+          if (url.startsWith(`${getServerUrl!()}/`)) {
+            return false;
+          }
+
+          // Attempt upgrade to https (insecure will be blocked)
+          if (url.startsWith("http://")) {
+            url = url.replace(/^http:\/\//, "https://");
+          }
+
+          const nativeResponse = await CapacitorHttp.get({
+            // if pictrs, convert large gifs to jpg
+            url: buildImageSrc(url, { format: "jpg" }),
+            responseType: "blob",
+            headers: {
+              "User-Agent": "VoyagerApp/1.0",
+            },
+          });
+
+          // Workaround that will probably break in a future capacitor upgrade
+          // https://github.com/ionic-team/capacitor/issues/6126
+          return `data:${
+            nativeResponse.headers["Content-Type"] || "image/png"
+          };base64,${nativeResponse.data}`;
         }
-
-        // Attempt upgrade to https (insecure will be blocked)
-        if (url.startsWith("http://")) {
-          url = url.replace(/^http:\/\//, "https://");
-        }
-
-        const nativeResponse = await CapacitorHttp.get({
-          // if pictrs, convert large gifs to jpg
-          url: buildImageSrc(url, { format: "jpg" }),
-          responseType: "blob",
-          headers: {
-            "User-Agent": "VoyagerApp/1.0",
-          },
-        });
-
-        // Workaround that will probably break in a future capacitor upgrade
-        // https://github.com/ionic-team/capacitor/issues/6126
-        return `data:${
-          nativeResponse.headers["Content-Type"] || "image/png"
-        };base64,${nativeResponse.data}`;
-      }
-    : undefined,
+      : undefined,
 };
 
 const shareAsImageRenderRoot = document.querySelector(
@@ -122,7 +123,7 @@ export default function useShareImage({
 
     const webSharePayload: ShareData = { files: [file] };
 
-    if (isNative()) {
+    if (getPlatform() === "capacitor") {
       const data = await blobToString(blob);
       const file = await Filesystem.writeFile({
         data,

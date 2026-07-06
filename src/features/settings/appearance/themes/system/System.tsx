@@ -1,7 +1,7 @@
 import { IonLabel, IonList } from "@ionic/react";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
-import { isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 import { useAppSelector } from "#/store";
 
 import DarkMode from "./DarkMode";
@@ -20,7 +20,9 @@ export default function System() {
         <IonLabel>System</IonLabel>
       </ListHeader>
       <IonList inset>
-        {!isNative() || isAndroid() ? <DeviceMode /> : undefined}
+        {getPlatform() !== "capacitor" || isAndroid() ? (
+          <DeviceMode />
+        ) : undefined}
         <DarkMode />
       </IonList>
 

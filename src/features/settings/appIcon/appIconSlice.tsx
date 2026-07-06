@@ -2,7 +2,7 @@ import { AppIcon as CapAppIcon } from "@capacitor-community/app-icon";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { without } from "es-toolkit";
 
-import { isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 import { AppDispatch } from "#/store";
 
 /**
@@ -65,7 +65,7 @@ export const updateAppIcon =
   };
 
 export const fetchAppIcon = () => async (dispatch: AppDispatch) => {
-  if (!isNative()) return;
+  if (getPlatform() !== "capacitor") return;
 
   const { value } = await CapAppIcon.getName();
 

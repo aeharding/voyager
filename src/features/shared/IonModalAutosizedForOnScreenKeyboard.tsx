@@ -3,7 +3,7 @@ import { useDocumentVisibility } from "@mantine/hooks";
 import React, { useCallback, useEffect, useRef } from "react";
 
 import { cx, sv } from "#/helpers/css";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 import styles from "./IonModalAutosizedForOnScreenKeyboard.module.css";
 
@@ -97,7 +97,7 @@ function PWAIonModal(props: PWAIonModalProps) {
   );
 }
 
-const Modal = isNative() ? IonModal : PWAIonModal;
+const Modal = getPlatform() === "capacitor" ? IonModal : PWAIonModal;
 
 /**
  * This component is only needed for Safari PWAs. It is not necessary for native.

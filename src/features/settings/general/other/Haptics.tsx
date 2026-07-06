@@ -1,6 +1,6 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setEnableHapticFeedback } from "../../settingsSlice";
@@ -12,7 +12,7 @@ export default function Haptics() {
   );
 
   // Some devices do not support haptics
-  if (!isNative() && !("vibrate" in window.navigator)) return;
+  if (getPlatform() !== "capacitor" && !("vibrate" in window.navigator)) return;
 
   return (
     <IonItem>

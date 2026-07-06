@@ -25,14 +25,6 @@ export const getPlatform = memoize((): Platform => {
   return "web";
 });
 
-export function isNative() {
-  return getPlatform() === "capacitor";
-}
-
-export function isTauri() {
-  return getPlatform() === "tauri";
-}
-
 /**
  * Run `VITE_FORCE_NO_CORS=true` in dev to test with following command to disable CORS for easier testing
  *
@@ -100,7 +92,7 @@ export let androidNavMode: Promise<NavModes> | undefined;
 
 export function getAndroidNavMode() {
   if (androidNavMode !== undefined) return androidNavMode;
-  if (!isAndroid() || !isNative()) return;
+  if (!isAndroid() || getPlatform() !== "capacitor") return;
 
   const promise = NavMode.getNavigationMode().then(({ mode }) => mode);
   androidNavMode = promise;

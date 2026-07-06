@@ -5,7 +5,10 @@ import {
   BiometricMethodResult,
 } from "capacitor-biometric-lock";
 
-import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
+import {
+  getPlatform,
+  isAppleDeviceInstalledToHomescreen,
+} from "#/helpers/device";
 import { AppDispatch, RootState } from "#/store";
 
 interface BiometricState {
@@ -130,7 +133,8 @@ export const retrieveBiometricLockConfigIfNeeded =
 export const initializeBiometricSliceDataIfNeeded =
   () => async (dispatch: AppDispatch) => {
     // Only supported on native iOS
-    if (!isNative() || !isAppleDeviceInstalledToHomescreen()) return;
+    if (getPlatform() !== "capacitor" || !isAppleDeviceInstalledToHomescreen())
+      return;
 
     dispatch(retrieveBiometricTypeIfNeeded());
     dispatch(retrieveBiometricLockConfigIfNeeded());

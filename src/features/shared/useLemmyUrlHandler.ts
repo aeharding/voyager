@@ -5,7 +5,7 @@ import {
   resolveObject,
   unfurlRedirectServiceIfNeeded,
 } from "#/features/resolve/resolveSlice";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppNavigation from "#/helpers/useAppNavigation";
 import useAppToast from "#/helpers/useAppToast";
@@ -137,7 +137,7 @@ export default function useLemmyUrlHandler() {
       } catch (error) {
         if (abortCtrl.signal.aborted) return "aborted";
 
-        if (isNative()) {
+        if (getPlatform() === "capacitor") {
           openNativeBrowser(url.toString());
         } else {
           // Force a not found state so next time

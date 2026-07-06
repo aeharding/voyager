@@ -4,7 +4,7 @@ import { chevronDownOutline } from "ionicons/icons";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
 import { useAppPageVListHandleRef } from "#/helpers/AppPage";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { findCurrentPage } from "#/helpers/ionic";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppSelector } from "#/store";
@@ -98,7 +98,7 @@ export default function JumpFab() {
     const index = +potentialIndex;
     if (isNaN(index)) return;
 
-    if (isNative()) vibrate({ style: ImpactStyle.Light });
+    if (getPlatform() === "capacitor") vibrate({ style: ImpactStyle.Light });
 
     virtuaRef.current?.scrollToIndex(index, { smooth: true });
   }

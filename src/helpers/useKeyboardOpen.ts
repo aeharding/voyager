@@ -2,11 +2,11 @@ import { Keyboard } from "@capacitor/keyboard";
 import { useEffect, useState } from "react";
 
 import BooleanWatcher from "./BooleanWatcher";
-import { isNative } from "./device";
+import { getPlatform } from "./device";
 
 const keyboardWatcher = new BooleanWatcher(false);
 
-if (isNative()) {
+if (getPlatform() === "capacitor") {
   Keyboard.addListener("keyboardWillShow", () =>
     keyboardWatcher.setValue(true),
   );
@@ -24,7 +24,7 @@ export default function useKeyboardOpen() {
   useEffect(() => {
     const nativeListener = (open: boolean) => setKeyboardOpen(open);
 
-    if (isNative()) {
+    if (getPlatform() === "capacitor") {
       keyboardWatcher.addEventListener(nativeListener);
 
       return () => {

@@ -3,7 +3,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import React, { createContext, useEffect, useLayoutEffect } from "react";
 
 import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
 } from "#/helpers/useSystemDarkMode";
@@ -82,7 +82,7 @@ export default function GlobalStyles({ children }: React.PropsWithChildren) {
   const theme = useAppSelector((state) => state.settings.appearance.theme);
 
   useLayoutEffect(() => {
-    if (isNative()) {
+    if (getPlatform() === "capacitor") {
       StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
     }
   }, [isDark]);
@@ -102,7 +102,7 @@ export default function GlobalStyles({ children }: React.PropsWithChildren) {
   }, [theme, pureBlack, isDark]);
 
   useEffect(() => {
-    if (!isNative()) return;
+    if (getPlatform() !== "capacitor") return;
 
     const keyboardStyle = (() => {
       if (usingSystemDarkMode) return KeyboardStyle.Default;

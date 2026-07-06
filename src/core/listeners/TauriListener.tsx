@@ -3,7 +3,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 import { useEffect } from "react";
 
 import { toggleMaximize } from "#/core/tauri/WindowChrome";
-import { isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { isExternalUrl } from "#/helpers/url";
 import store from "#/store";
 
@@ -33,7 +33,7 @@ const INTERACTIVE_SELECTOR = [
  */
 export default function TauriListener() {
   useEffect(() => {
-    if (!isTauri()) return;
+    if (getPlatform() !== "tauri") return;
 
     function onClick(event: MouseEvent) {
       if (event.defaultPrevented) return;

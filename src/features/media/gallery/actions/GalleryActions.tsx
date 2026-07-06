@@ -19,7 +19,7 @@ import { ActionButton } from "#/features/post/actions/ActionButton";
 import { savePost } from "#/features/post/postSlice";
 import { useShare } from "#/features/share/share";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
-import { getShareIcon, isNative, ua } from "#/helpers/device";
+import { getPlatform, getShareIcon, ua } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
@@ -129,7 +129,7 @@ export default function GalleryActions({
               icon: getShareIcon(),
               handler: () => {
                 (async () => {
-                  if (!isNative()) {
+                  if (getPlatform() !== "capacitor") {
                     share(src);
                     return;
                   }

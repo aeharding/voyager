@@ -1,4 +1,4 @@
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 // Save capacitor shimmed fetch
 const nativeFetch = window.fetch;
@@ -7,7 +7,7 @@ const nativeFetch = window.fetch;
 // without polluting the global scope
 // https://github.com/ionic-team/capacitor/issues/7746#issuecomment-2506629023
 
-if (isNative()) {
+if (getPlatform() === "capacitor") {
   // @ts-expect-error https://github.com/ionic-team/capacitor/blob/77e4668fa8dbb24b4561387e101547f74e37538e/core/native-bridge.ts#L456
   window.fetch = window.CapacitorWebFetch;
 

@@ -14,7 +14,7 @@ import { CommunityView, PostView } from "threadiverse";
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { useAppPageRef } from "#/helpers/AppPage";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import FloatingDialog from "#/helpers/FloatingDialog";
 import { buildCrosspostBody, getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -58,7 +58,7 @@ export default function CreateCrosspostDialog({
     });
 
   useEffect(() => {
-    if (!isNative()) return;
+    if (getPlatform() !== "capacitor") return;
 
     StatusBar.hide();
 

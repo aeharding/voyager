@@ -1,7 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
 
-import { isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { useAppSelector } from "#/store";
 
 import styles from "./WindowChrome.module.css";
@@ -20,7 +20,7 @@ import styles from "./WindowChrome.module.css";
  * via setDecorations.
  */
 export default function WindowChrome() {
-  if (!isTauri()) return;
+  if (getPlatform() !== "tauri") return;
 
   return <TauriWindowChrome />;
 }

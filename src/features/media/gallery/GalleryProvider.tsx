@@ -20,7 +20,7 @@ import { OutPortalPlayer } from "#/features/media/video/PortaledPlayer";
 import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
-import { getSafeArea, isAndroid, isNative, ua } from "#/helpers/device";
+import { getPlatform, getSafeArea, isAndroid, ua } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GalleryPostActions from "./actions/GalleryPostActions";
@@ -405,7 +405,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       instance.on("openingAnimationStart", () => {
         preventControlsIfNeeded();
 
-        if (isNative()) StatusBar.hide();
+        if (getPlatform() === "capacitor") StatusBar.hide();
       });
 
       instance.on("imageClickAction", (e) => {
@@ -423,7 +423,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       }
 
       instance.on("close", () => {
-        if (isNative()) StatusBar.show();
+        if (getPlatform() === "capacitor") StatusBar.show();
       });
 
       instance.on("uiRegister", function () {

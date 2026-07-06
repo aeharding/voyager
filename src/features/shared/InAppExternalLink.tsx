@@ -1,7 +1,7 @@
 import { IonItem } from "@ionic/react";
 import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
 
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { OLinkHandlerType } from "#/services/db/types";
 import store from "#/store";
 
@@ -106,5 +106,7 @@ export function shouldOpenWithInAppBrowser(url: string | undefined) {
 
   const linkHandler = store.getState().settings.general.linkHandler;
 
-  return isNative() && linkHandler === OLinkHandlerType.InApp;
+  return (
+    getPlatform() === "capacitor" && linkHandler === OLinkHandlerType.InApp
+  );
 }

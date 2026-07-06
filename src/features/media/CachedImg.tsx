@@ -1,6 +1,6 @@
 import { ComponentProps, useEffect } from "react";
 
-import { isTauri, supportsWebp } from "#/helpers/device";
+import { getPlatform, supportsWebp } from "#/helpers/device";
 import { isUrlPictrsLike } from "#/helpers/url";
 import { parseUrl } from "#/helpers/url";
 
@@ -68,7 +68,7 @@ export function buildImageSrc(url: string, options?: PictrsOptions): string {
   if (!options) {
     // pictrs serves AVIF when no format is requested (it ignores the
     // Accept header), and WebKitGTK cannot decode AVIF
-    if (!isTauri()) return url;
+    if (getPlatform() !== "tauri") return url;
     options = {};
   }
 

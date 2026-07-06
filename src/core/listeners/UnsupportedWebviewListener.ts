@@ -3,7 +3,7 @@ import { use, useEffect } from "react";
 
 import { SharedDialogContext } from "#/features/auth/SharedDialogContext";
 import { setUnsupportedSystemWebviewError } from "#/features/settings/settingsSlice";
-import { isAndroid, isNative, ua } from "#/helpers/device";
+import { getPlatform, isAndroid, ua } from "#/helpers/device";
 import { useAppDispatch } from "#/store";
 
 // At least 140 is required for safe area insets
@@ -15,7 +15,7 @@ export default function UnsupportedWebviewListener() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!isNative() || !isAndroid()) return;
+    if (getPlatform() !== "capacitor" || !isAndroid()) return;
 
     const engine = ua.getEngine();
 

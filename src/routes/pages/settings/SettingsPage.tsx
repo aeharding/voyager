@@ -42,7 +42,6 @@ import { sv } from "#/helpers/css";
 import {
   getPlatform,
   isAppleDeviceInstalledToHomescreen,
-  isNative,
 } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -88,7 +87,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (documentState === "hidden") return;
-    if (!isNative() || !isAppleDeviceInstalledToHomescreen()) return;
+    if (getPlatform() !== "capacitor" || !isAppleDeviceInstalledToHomescreen())
+      return;
 
     dispatch(refreshBiometricType());
   }, [documentState, dispatch]);
@@ -166,7 +166,7 @@ export default function SettingsPage() {
             <IonLabel className="ion-text-nowrap">Appearance</IonLabel>
           </IonItem>
 
-          {isNative() && (
+          {getPlatform() === "capacitor" && (
             <IonItem routerLink="/settings/app-icon" button detail>
               <img
                 alt=""

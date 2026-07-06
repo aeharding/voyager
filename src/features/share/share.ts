@@ -1,14 +1,13 @@
 import { Share } from "@capacitor/share";
 import { ShareSafari } from "capacitor-share-safari";
 
-import { isAndroid } from "#/helpers/device";
-import { isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
 
 export function shareUrl(url: string) {
   // // For iOS, use custom plugin to add "Open in Safari"
   // // https://stackoverflow.com/a/73964790/1319878
-  if (isNative() && !isAndroid()) {
+  if (getPlatform() === "capacitor" && !isAndroid()) {
     ShareSafari.share({ url });
     return;
   }
@@ -17,7 +16,7 @@ export function shareUrl(url: string) {
 }
 
 export function canShare() {
-  return isNative() || "share" in navigator;
+  return getPlatform() === "capacitor" || "share" in navigator;
 }
 
 export function useShare() {
@@ -29,7 +28,7 @@ export function useShare() {
     try {
       await shareUrl(url);
     } catch (error) {
-      if (isNative()) throw error;
+      if (getPlatform() === "capacitor") throw error;
 
       if (error instanceof DOMException) {
         switch (error.name) {

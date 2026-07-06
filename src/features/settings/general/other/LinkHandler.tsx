@@ -1,7 +1,7 @@
 import { openOutline, readerOutline } from "ionicons/icons";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { OLinkHandlerType } from "#/services/db/types";
 import { useAppSelector } from "#/store";
 
@@ -12,7 +12,7 @@ export default function LinkHandler() {
     (state) => state.settings.general.linkHandler,
   );
 
-  if (!isNative()) return;
+  if (getPlatform() !== "capacitor") return;
 
   return (
     <SettingSelector

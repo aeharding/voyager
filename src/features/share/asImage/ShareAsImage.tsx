@@ -6,7 +6,7 @@ import CommentTree from "#/features/comment/inTree/CommentTree";
 import PostHeader from "#/features/post/detail/PostHeader";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { cx } from "#/helpers/css";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";
 
@@ -197,7 +197,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         </IonItem>
       </IonList>
       <IonButton onClick={onShare}>
-        {isNative() || "canShare" in navigator ? "Share" : "Download"}
+        {getPlatform() === "capacitor" || "canShare" in navigator
+          ? "Share"
+          : "Download"}
       </IonButton>
 
       {createPortal(

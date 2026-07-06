@@ -1,6 +1,6 @@
 import { ThreadiverseClient } from "threadiverse";
 
-import { isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 
 import platformFetch from "./platformFetch";
 
@@ -27,7 +27,7 @@ export function buildBaseHeaders({
 
 const BASE_HEADERS = buildBaseHeaders({
   android: isAndroid(),
-  native: isNative(),
+  native: getPlatform() === "capacitor",
 });
 
 export function buildBaseClientUrl(url: string): string {

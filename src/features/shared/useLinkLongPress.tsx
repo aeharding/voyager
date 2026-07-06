@@ -6,9 +6,9 @@ import { useLongPress } from "use-long-press";
 import { shareUrl } from "#/features/share/share";
 import { useOpenNativeBrowserIfPreferred } from "#/features/shared/useNativeBrowser";
 import {
+  getPlatform,
   getShareIcon,
   isAndroid,
-  isNative,
   isTouchDevice,
 } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
@@ -65,7 +65,7 @@ function useLinkLongPressAndroid(url: string | undefined) {
             openNativeBrowser(url);
           },
         },
-        ("share" in navigator || isNative()) && {
+        ("share" in navigator || getPlatform() === "capacitor") && {
           icon: getShareIcon(),
           text: "Share link",
           handler: () => {
@@ -97,6 +97,7 @@ const useLinkLongPressNoop = () => {
 
 // android as PWA or in browser has long press for links
 // however android capacitor webview doesn't. Also desktop doesn't.
-export default (isAndroid() && isNative()) || !isTouchDevice()
+export default (isAndroid() && getPlatform() === "capacitor") ||
+!isTouchDevice()
   ? useLinkLongPressAndroid
   : useLinkLongPressNoop;

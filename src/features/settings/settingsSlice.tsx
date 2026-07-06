@@ -23,7 +23,7 @@ import {
   VgerPostSortTypeByMode,
 } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortTypeByMode } from "#/features/feed/sort/SearchSort";
-import { isNative, isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import { VgerCommunitySortTypeByMode } from "#/routes/pages/search/results/CommunitySort";
@@ -235,7 +235,8 @@ const baseState: SettingsState = {
       profileLabel: OProfileLabelType.Instance,
       showSystemTitlebar: false,
       // Desktop app: wide window, so default to two columns
-      twoColumnLayout: isTauri() ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
+      twoColumnLayout:
+        getPlatform() === "tauri" ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     large: {
@@ -251,7 +252,10 @@ const baseState: SettingsState = {
       showCommunityIcons: true,
       subscribedIcon: OShowSubscribedIcon.Never,
       // Desktop app: information-dense UI fits desktop better
-      type: isTauri() ? OPostAppearanceType.Compact : OPostAppearanceType.Large,
+      type:
+        getPlatform() === "tauri"
+          ? OPostAppearanceType.Compact
+          : OPostAppearanceType.Large,
     },
     theme: "default",
     votesTheme: "lemmy",
@@ -293,9 +297,10 @@ const baseState: SettingsState = {
     defaultFeed: undefined,
     // TODO: Enable by default in late June 2025
     // (devices have been updated to support go.getvoyager.app links)
-    defaultShare: isNative()
-      ? OPostCommentShareType.DeepLink
-      : OPostCommentShareType.Local,
+    defaultShare:
+      getPlatform() === "capacitor"
+        ? OPostCommentShareType.DeepLink
+        : OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     media: {

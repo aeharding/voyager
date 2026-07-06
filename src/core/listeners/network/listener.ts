@@ -1,12 +1,12 @@
 import { Network } from "@capacitor/network";
 
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import store from "#/store";
 
 import { getConnectionType, updateConnectionType } from "./networkSlice";
 
 (async () => {
-  if (!isNative()) return;
+  if (getPlatform() !== "capacitor") return;
 
   await store.dispatch(getConnectionType());
 

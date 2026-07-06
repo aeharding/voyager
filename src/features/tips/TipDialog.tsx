@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { heart } from "ionicons/icons";
 
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import FloatingDialog from "#/helpers/FloatingDialog";
 
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
@@ -15,7 +15,7 @@ interface TipProps {
 
 export default function TipDialog({ onDismiss }: TipProps) {
   function renderTip() {
-    if (import.meta.env.BUILD_FOSS_ONLY || !isNative()) {
+    if (import.meta.env.BUILD_FOSS_ONLY || getPlatform() !== "capacitor") {
       return <ExternalSponsorOptions />;
     }
 
