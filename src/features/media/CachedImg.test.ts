@@ -1,43 +1,25 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { getPlatform } from "#/helpers/device";
-
 import { buildImageSrc } from "./CachedImg";
 
 vi.mock("#/helpers/device", () => ({
-  getPlatform: vi.fn(),
   supportsWebp: () => true,
 }));
 
 const PICTRS_URL = "https://lemmy.world/pictrs/image/abc.jpeg";
-const PROXY_URL =
-  "https://lemmy.zip/api/v3/image_proxy?url=https%3A%2F%2Flemmy.world%2Fpictrs%2Fimage%2Fabc.jpeg";
 
 describe("buildImageSrc", () => {
-  it("returns url unchanged without options on web", () => {
-    vi.mocked(getPlatform).mockReturnValue("web");
-
+  it("returns url unchanged without options", () => {
     expect(buildImageSrc(PICTRS_URL)).toBe(PICTRS_URL);
   });
 
-  it("forces format for pictrs urls without options on tauri (avif undecodable)", () => {
-    vi.mocked(getPlatform).mockReturnValue("tauri");
-
-    expect(buildImageSrc(PICTRS_URL)).toBe(`${PICTRS_URL}?format=webp`);
-    expect(buildImageSrc(PROXY_URL)).toBe(`${PROXY_URL}&format=webp`);
-  });
-
-  it("leaves non-pictrs urls alone on tauri", () => {
-    vi.mocked(getPlatform).mockReturnValue("tauri");
-
-    expect(buildImageSrc("https://i.imgur.com/abc.png")).toBe(
+  it("leaves non-pictrs urls alone", () => {
+    expect(buildImageSrc("https://i.imgur.com/abc.png", { size: 100 })).toBe(
       "https://i.imgur.com/abc.png",
     );
   });
 
-  it("applies explicit options regardless of platform", () => {
-    vi.mocked(getPlatform).mockReturnValue("web");
-
+  it("applies options to pictrs urls", () => {
     expect(buildImageSrc(PICTRS_URL, { size: 100, devicePixelRatio: 2 })).toBe(
       `${PICTRS_URL}?thumbnail=200&format=webp`,
     );

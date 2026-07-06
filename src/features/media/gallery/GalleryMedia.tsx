@@ -4,7 +4,6 @@ import { PostView } from "threadiverse";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
-import { buildImageSrc } from "#/features/media/CachedImg";
 import Video, { VideoProps } from "#/features/media/video/Video";
 import { isUrlPotentialAnimatedImage, isUrlVideo } from "#/helpers/url";
 
@@ -51,14 +50,6 @@ export default function GalleryMedia({
   const { open } = use(GalleryContext);
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  // Under Tauri, force a decodable format for plain images
-  // (no-op elsewhere — see buildImageSrc)
-  const src = (() => {
-    if (!props.src || isVideo || isGif) return props.src;
-
-    return buildImageSrc(props.src);
-  })();
-
   function onClick(e: MouseEvent) {
     if (!props.src) return;
 
@@ -73,7 +64,7 @@ export default function GalleryMedia({
 
     e.preventDefault();
 
-    open(e.currentTarget, src!, post, portalWithMediaId, animationType);
+    open(e.currentTarget, props.src, post, portalWithMediaId, animationType);
 
     // marking read happens after the gallery has finished animating
     // so that the post doesn't rerender before it's fully hidden
@@ -114,7 +105,6 @@ export default function GalleryMedia({
   return (
     <GalleryImg
       {...props}
-      src={src}
       ref={ref as React.RefObject<HTMLImageElement>}
       onClick={onClick}
     />
