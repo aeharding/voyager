@@ -1,11 +1,4 @@
-import { IonIcon } from "@ionic/react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import {
-  closeOutline,
-  copyOutline,
-  removeOutline,
-  squareOutline,
-} from "ionicons/icons";
 import { useEffect, useState } from "react";
 
 import { isTauri } from "#/helpers/device";
@@ -16,9 +9,10 @@ import styles from "./WindowChrome.module.css";
  * Client-side window decorations for the Tauri desktop app.
  *
  * The native titlebar is disabled (`decorations: false` in tauri.conf.json)
- * so the app header doubles as the titlebar. This renders the window
- * controls overlay and (since Linux doesn't natively resize undecorated
- * windows — tauri#8519) invisible resize zones along the window edges.
+ * so the app header doubles as the titlebar. Since Linux doesn't natively
+ * resize undecorated windows (tauri#8519), this renders invisible resize
+ * zones along the window edges. The window management buttons live in the
+ * app header (see WindowButtons, injected by AppHeader).
  */
 export default function WindowChrome() {
   if (!isTauri()) return;
@@ -29,37 +23,9 @@ export default function WindowChrome() {
 function TauriWindowChrome() {
   const maximized = useWindowMaximized();
 
-  return (
-    <>
-      <div className={styles.controls}>
-        <button
-          className={styles.button}
-          aria-label="Minimize"
-          onClick={() => getCurrentWindow().minimize()}
-        >
-          <IonIcon icon={removeOutline} />
-        </button>
-        <button
-          className={styles.button}
-          aria-label={maximized ? "Restore" : "Maximize"}
-          onClick={toggleMaximize}
-        >
-          <IonIcon
-            className={styles.maximizeIcon}
-            icon={maximized ? copyOutline : squareOutline}
-          />
-        </button>
-        <button
-          className={styles.button}
-          aria-label="Close"
-          onClick={() => getCurrentWindow().close()}
-        >
-          <IonIcon icon={closeOutline} />
-        </button>
-      </div>
-      {!maximized && <ResizeEdges />}
-    </>
-  );
+  if (maximized) return;
+
+  return <ResizeEdges />;
 }
 
 /**
@@ -73,7 +39,7 @@ export async function toggleMaximize() {
   else win.maximize();
 }
 
-function useWindowMaximized() {
+export function useWindowMaximized() {
   const [maximized, setMaximized] = useState(false);
 
   useEffect(() => {

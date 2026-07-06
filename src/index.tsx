@@ -7,14 +7,11 @@ import { createRoot } from "react-dom/client";
 
 import App from "./core/App";
 import "./features/icons";
-import { getAndroidNavMode, isNative, isTauri } from "./helpers/device";
+import { getAndroidNavMode, isNative } from "./helpers/device";
 
 // MARK: User agent config
 
 history.scrollRestoration = "manual";
-
-// Style hook for client-side window decorations (see core/tauri/WindowChrome)
-if (isTauri()) document.documentElement.classList.add("tauri");
 
 (async () => {
   // Native apps should silently accept without user prompt

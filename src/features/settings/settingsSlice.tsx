@@ -23,7 +23,7 @@ import {
   VgerPostSortTypeByMode,
 } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortTypeByMode } from "#/features/feed/sort/SearchSort";
-import { isNative } from "#/helpers/device";
+import { isNative, isTauri } from "#/helpers/device";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import { VgerCommunitySortTypeByMode } from "#/routes/pages/search/results/CommunitySort";
@@ -232,7 +232,8 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
-      twoColumnLayout: OTwoColumnLayout.Off,
+      // Desktop app: wide window, so default to two columns
+      twoColumnLayout: isTauri() ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     large: {
@@ -247,7 +248,8 @@ const baseState: SettingsState = {
       rememberType: false,
       showCommunityIcons: true,
       subscribedIcon: OShowSubscribedIcon.Never,
-      type: OPostAppearanceType.Large,
+      // Desktop app: information-dense UI fits desktop better
+      type: isTauri() ? OPostAppearanceType.Compact : OPostAppearanceType.Large,
     },
     theme: "default",
     votesTheme: "lemmy",

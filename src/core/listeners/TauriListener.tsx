@@ -25,8 +25,10 @@ const INTERACTIVE_SELECTOR = [
  * WebKitGTK ignores `target="_blank"` and `window.open`, so external
  * links must be explicitly forwarded to the system browser.
  *
- * Listens on document in the bubble phase so app handlers (like
- * LinkInterceptor routing lemmy links in-app) win via preventDefault.
+ * Listens in the capture phase (app handlers like Link.tsx stopPropagation,
+ * so bubble never fires) but defers acting until app handlers have run —
+ * preventDefault is still observable afterwards, so in-app routing
+ * (LinkInterceptor resolving lemmy links) wins.
  */
 export default function TauriListener() {
   useEffect(() => {
@@ -34,14 +36,26 @@ export default function TauriListener() {
 
     function onClick(event: MouseEvent) {
       if (event.defaultPrevented) return;
-      if (!(event.target instanceof Element)) return;
 
-      const anchor = event.target.closest("a[href]");
-      if (!(anchor instanceof HTMLAnchorElement)) return;
+      // composedPath pierces shadow DOM (e.g. ion-item[href] internal anchor)
+      const anchor = event
+        .composedPath()
+        .find(
+          (el): el is HTMLAnchorElement =>
+            el instanceof HTMLAnchorElement && el.hasAttribute("href"),
+        );
+      if (!anchor) return;
       if (!isExternalUrl(anchor.href)) return;
 
-      event.preventDefault();
-      openUrl(anchor.href);
+      // The webview must never navigate away from the app
+      // (_blank is already a no-op in wry)
+      if (!anchor.target) anchor.target = "_blank";
+
+      queueMicrotask(() => {
+        if (event.defaultPrevented) return;
+
+        openUrl(anchor.href);
+      });
     }
 
     // With native decorations off, empty header space is the titlebar
@@ -74,12 +88,12 @@ export default function TauriListener() {
       return originalOpen(url, target, features);
     }
 
-    document.addEventListener("click", onClick);
+    document.addEventListener("click", onClick, true);
     document.addEventListener("mousedown", onMouseDown);
     window.open = tauriOpen;
 
     return () => {
-      document.removeEventListener("click", onClick);
+      document.removeEventListener("click", onClick, true);
       document.removeEventListener("mousedown", onMouseDown);
       window.open = originalOpen;
     };
