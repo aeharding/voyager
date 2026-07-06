@@ -12,15 +12,19 @@
   }
 }
 
-/* Tauri window management buttons (no header in the empty state) */
-.windowButtons {
+/* Invisible header hosting the Tauri window management buttons */
+.header {
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
+}
 
-  display: flex;
-  align-items: center;
+.header::after {
+  display: none;
+}
 
-  height: 56px;
-  padding-inline-end: 8px;
+.toolbar {
+  --background: transparent;
+  --border-width: 0;
 }
