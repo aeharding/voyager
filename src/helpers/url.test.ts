@@ -1,6 +1,45 @@
 import { describe, expect, it } from "vitest";
 
-import { parseUriList } from "./url";
+import { isExternalUrl, parseUriList } from "./url";
+
+describe("isExternalUrl", () => {
+  const base = "https://vger.app/posts/all";
+
+  it("false for relative urls", () => {
+    expect(isExternalUrl("/settings", base)).toBe(false);
+  });
+
+  it("false for same-origin absolute urls", () => {
+    expect(isExternalUrl("https://vger.app/u/aeharding", base)).toBe(false);
+  });
+
+  it("true for cross-origin http(s) urls", () => {
+    expect(isExternalUrl("https://lemmy.world/post/123", base)).toBe(true);
+    expect(isExternalUrl("http://example.com", base)).toBe(true);
+  });
+
+  it("true for mailto", () => {
+    expect(isExternalUrl("mailto:hello@vger.app", base)).toBe(true);
+  });
+
+  it("false for other protocols", () => {
+    expect(isExternalUrl("vger://community/lemmy.world/c/memes", base)).toBe(
+      false,
+    );
+    expect(isExternalUrl("javascript:void(0)", base)).toBe(false);
+  });
+
+  it("false for unparseable urls", () => {
+    expect(isExternalUrl("https://", base)).toBe(false);
+  });
+
+  it("works from a custom scheme app origin (tauri)", () => {
+    const tauriBase = "tauri://localhost/posts/all";
+
+    expect(isExternalUrl("https://lemmy.world/post/123", tauriBase)).toBe(true);
+    expect(isExternalUrl("/settings", tauriBase)).toBe(false);
+  });
+});
 
 describe("parseUriList", () => {
   it("parses a single URL", () => {

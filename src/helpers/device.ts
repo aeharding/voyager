@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { isPlatform } from "@ionic/core";
+import { isTauri as detectTauri } from "@tauri-apps/api/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "es-toolkit";
 import {
@@ -16,6 +17,10 @@ export const isNative = memoize(() => {
   return Capacitor.isNativePlatform();
 });
 
+export const isTauri = memoize(() => {
+  return detectTauri();
+});
+
 /**
  * Run `VITE_FORCE_NO_CORS=true` in dev to test with following command to disable CORS for easier testing
  *
@@ -25,11 +30,15 @@ export const isNative = memoize(() => {
  */
 export function canBypassCors() {
   if (import.meta.env.VITE_FORCE_NO_CORS) return true;
-  return isNative();
+  return isNative() || isTauri();
 }
 
 export function isInstalled(): boolean {
-  return isNative() || window.matchMedia("(display-mode: standalone)").matches;
+  return (
+    isNative() ||
+    isTauri() ||
+    window.matchMedia("(display-mode: standalone)").matches
+  );
 }
 
 export const ua = new UAParser(navigator.userAgent);

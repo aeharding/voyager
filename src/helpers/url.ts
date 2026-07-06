@@ -18,6 +18,28 @@ export function isValidUrl(
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
+/**
+ * Whether a link points outside the running app
+ * (e.g. should be handed to the system browser when running in Tauri)
+ */
+export function isExternalUrl(
+  href: string,
+  base = document.location.href,
+): boolean {
+  let url;
+
+  try {
+    url = new URL(href, base);
+  } catch {
+    return false;
+  }
+
+  if (url.protocol === "mailto:") return true;
+  if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+
+  return url.origin !== new URL(base).origin;
+}
+
 export function getPathname(url: string): string | undefined {
   try {
     return new URL(url).pathname;

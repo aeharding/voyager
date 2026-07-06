@@ -2,9 +2,7 @@ import { ThreadiverseClient } from "threadiverse";
 
 import { isAndroid, isNative } from "#/helpers/device";
 
-import nativeFetch from "./nativeFetch";
-
-const usingNativeFetch = isNative();
+import platformFetch from "./platformFetch";
 
 const USER_AGENT = "VoyagerApp/1.0";
 
@@ -42,7 +40,7 @@ export function buildBaseClientUrl(url: string): string {
 
 export function getClient(url: string, jwt?: string) {
   return new ThreadiverseClient(buildBaseClientUrl(url), {
-    fetchFunction: usingNativeFetch ? nativeFetch : fetch.bind(globalThis),
+    fetchFunction: platformFetch,
     headers: jwt
       ? {
           ...BASE_HEADERS,

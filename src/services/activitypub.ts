@@ -1,10 +1,10 @@
-import nativeFetch from "./nativeFetch";
+import platformFetch from "./platformFetch";
 
 export default async function resolveFedilink(
   url: string,
   requestInit: Pick<RequestInit, "signal">,
 ): Promise<string> {
-  const response = await nativeFetch(url, {
+  const response = await platformFetch(url, {
     ...requestInit,
     headers: { Accept: "application/activity+json" },
   });
