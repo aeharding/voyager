@@ -4,7 +4,7 @@ import { ListHeader } from "#/features/settings/shared/formatting";
 import { isTauri } from "#/helpers/device";
 import useIsDeviceTwoColumnCapable from "#/routes/twoColumn/useIsDeviceTwoColumnCapable";
 
-import SystemTitlebar from "./SystemTitlebar";
+import ShowSystemTitlebar from "./ShowSystemTitlebar";
 import TwoColumn from "./TwoColumn";
 
 export default function Layout() {
@@ -19,7 +19,7 @@ export default function Layout() {
       </ListHeader>
       <IonList inset>
         <TwoColumn />
-        {isTauri() && <SystemTitlebar />}
+        {isTauri() && <ShowSystemTitlebar />}
       </IonList>
     </>
   );

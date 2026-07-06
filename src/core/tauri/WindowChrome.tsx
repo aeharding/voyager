@@ -16,7 +16,7 @@ import styles from "./WindowChrome.module.css";
  * resize zones along the window edges.
  *
  * There are intentionally no window management buttons. Users who want
- * them can enable the "Use System Titlebar" setting, applied at runtime
+ * them can enable the "Show System Titlebar" setting, applied at runtime
  * via setDecorations.
  */
 export default function WindowChrome() {
@@ -27,15 +27,15 @@ export default function WindowChrome() {
 
 function TauriWindowChrome() {
   const maximized = useWindowMaximized();
-  const systemWindowFrame = useAppSelector(
-    (state) => state.settings.appearance.general.systemWindowFrame,
+  const showSystemTitlebar = useAppSelector(
+    (state) => state.settings.appearance.general.showSystemTitlebar,
   );
 
   useEffect(() => {
-    getCurrentWindow().setDecorations(systemWindowFrame);
-  }, [systemWindowFrame]);
+    getCurrentWindow().setDecorations(showSystemTitlebar);
+  }, [showSystemTitlebar]);
 
-  if (systemWindowFrame || maximized) return;
+  if (showSystemTitlebar || maximized) return;
 
   return <ResizeEdges />;
 }

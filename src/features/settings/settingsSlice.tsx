@@ -102,7 +102,7 @@ export interface SettingsState {
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
       profileLabel: ProfileLabelType;
-      systemWindowFrame: boolean;
+      showSystemTitlebar: boolean;
       twoColumnLayout: TwoColumnLayout;
     };
     posts: {
@@ -233,7 +233,7 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
-      systemWindowFrame: false,
+      showSystemTitlebar: false,
       // Desktop app: wide window, so default to two columns
       twoColumnLayout: isTauri() ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
@@ -621,14 +621,14 @@ export const settingsSlice = createSlice({
       state.general.comments.showJumpButton = action.payload;
       db.setSetting("show_jump_button", action.payload);
     },
+    setShowSystemTitlebar(state, action: PayloadAction<boolean>) {
+      state.appearance.general.showSystemTitlebar = action.payload;
+      db.setSetting("show_system_titlebar", action.payload);
+    },
     setSubscribedIcon(state, action: PayloadAction<ShowSubscribedIcon>) {
       state.appearance.posts.subscribedIcon = action.payload;
 
       db.setSetting("subscribed_icon", action.payload);
-    },
-    setSystemWindowFrame(state, action: PayloadAction<boolean>) {
-      state.appearance.general.systemWindowFrame = action.payload;
-      db.setSetting("system_window_frame", action.payload);
     },
     setTagsEnabled(state, action: PayloadAction<boolean>) {
       state.tags.enabled = action.payload;
@@ -948,8 +948,8 @@ export const {
   setShowHiddenInCommunities,
   setShowHideReadButton,
   setShowJumpButton,
+  setShowSystemTitlebar,
   setSubscribedIcon,
-  setSystemWindowFrame,
   setTagsEnabled,
   setTagsHideInstance,
   setTagsSaveSource,
@@ -998,7 +998,7 @@ function hydrateStateWithGlobalSettings(
       },
       general: {
         profileLabel: settings.profile_label,
-        systemWindowFrame: settings.system_window_frame,
+        showSystemTitlebar: settings.show_system_titlebar,
         twoColumnLayout: settings.two_column_layout,
         userInstanceUrlDisplay: settings.user_instance_url_display,
       },

@@ -63,7 +63,7 @@ export default function TauriListener() {
     // (drag to move, double-click to maximize)
     function onMouseDown(event: MouseEvent) {
       if (event.button !== 0) return;
-      if (store.getState().settings.appearance.general.systemWindowFrame)
+      if (store.getState().settings.appearance.general.showSystemTitlebar)
         return;
       if (!(event.target instanceof Element)) return;
       if (!event.target.closest("ion-header")) return;
