@@ -10,7 +10,7 @@ overrides:
 patchedDependencies:
   '@capacitor/haptics': 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
   '@capacitor/keyboard@8.0.5': b19a3fb904474d28078cd1ad688098b11c23b9cc72e4af004b39d37909e408d9
-  editate@0.6.9: ef9bc172b53205987222ad53ffb0d5f207070182aafa8fea46525c100f15a43f
+  editate@0.6.9: 7b33d51ecc7963e97e922aa237a2780a9de6ab95e6cc587423b12b248e954747
   openapi-fetch: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
 
 importers:
@@ -118,7 +118,7 @@ importers:
         version: 4.4.0(dexie@4.4.4)
       editate:
         specifier: 0.6.9
-        version: 0.6.9(patch_hash=ef9bc172b53205987222ad53ffb0d5f207070182aafa8fea46525c100f15a43f)
+        version: 0.6.9(patch_hash=7b33d51ecc7963e97e922aa237a2780a9de6ab95e6cc587423b12b248e954747)
       es-toolkit:
         specifier: ^1.49.0
         version: 1.49.0
@@ -10141,7 +10141,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  editate@0.6.9(patch_hash=ef9bc172b53205987222ad53ffb0d5f207070182aafa8fea46525c100f15a43f):
+  editate@0.6.9(patch_hash=7b33d51ecc7963e97e922aa237a2780a9de6ab95e6cc587423b12b248e954747):
     dependencies:
       '@standard-schema/spec': 1.1.0
 
