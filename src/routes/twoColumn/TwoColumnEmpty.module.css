@@ -1,6 +1,4 @@
 .container {
-  position: relative;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,21 +8,4 @@
     border-radius: 15%;
     filter: grayscale(80%) opacity(0.2);
   }
-}
-
-/* Invisible header hosting the Tauri window management buttons */
-.header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-.header::after {
-  display: none;
-}
-
-.toolbar {
-  --background: transparent;
-  --border-width: 0;
 }

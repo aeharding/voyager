@@ -10,13 +10,14 @@ import styles from "./WindowChrome.module.css";
  * Client-side window decorations for the Tauri desktop app.
  *
  * The native titlebar is disabled by default (`decorations: false` in
- * tauri.conf.json) so the app header doubles as the titlebar. Since Linux
- * doesn't natively resize undecorated windows (tauri#8519), this renders
- * invisible resize zones along the window edges. The window management
- * buttons live in the app header (see WindowButtons, injected by AppHeader).
+ * tauri.conf.json) so the app header doubles as the titlebar (drag +
+ * double-click to maximize — see TauriListener). Since Linux doesn't
+ * natively resize undecorated windows (tauri#8519), this renders invisible
+ * resize zones along the window edges.
  *
- * Users can opt back into the native titlebar ("Use System Titlebar"
- * setting), applied at runtime via setDecorations.
+ * There are intentionally no window management buttons. Users who want
+ * them can enable the "Use System Titlebar" setting, applied at runtime
+ * via setDecorations.
  */
 export default function WindowChrome() {
   if (!isTauri()) return;
