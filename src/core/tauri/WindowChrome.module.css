@@ -6,38 +6,39 @@
 
   display: flex;
   align-items: center;
-  gap: 8px;
 
   height: var(--window-controls-height);
-  padding: 0 12px;
+  padding: 0 8px;
 
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
 }
 
+/* Match ion-buttons in the app header (see Outlet.module.css) */
 .button {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  width: 34px;
+  height: 100%;
 
   background: none;
-  color: var(--ion-text-color, #fff);
-  font-size: 16px;
+  color: var(--ion-color-primary);
+
+  /* 1.35em of the header's 17px font size, like toolbar ion-icon */
+  font-size: 23px;
 
   pointer-events: auto;
 }
 
 .button:hover {
-  background: rgba(128, 128, 128, 0.3);
+  opacity: 0.65;
 }
 
 .maximizeIcon {
-  font-size: 12px;
+  font-size: 17px;
 }
 
 /* Invisible resize zones (Linux doesn't resize undecorated windows natively) */

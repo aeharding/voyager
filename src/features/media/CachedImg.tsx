@@ -1,6 +1,6 @@
 import { ComponentProps, useEffect } from "react";
 
-import { supportsWebp } from "#/helpers/device";
+import { isTauri, supportsWebp } from "#/helpers/device";
 import { isUrlPictrsLike } from "#/helpers/url";
 import { parseUrl } from "#/helpers/url";
 
@@ -65,7 +65,12 @@ export default function CachedImg({ pictrsOptions, ...props }: CachedImgProps) {
 const defaultFormat = supportsWebp() ? "webp" : "jpg";
 
 export function buildImageSrc(url: string, options?: PictrsOptions): string {
-  if (!options) return url;
+  if (!options) {
+    // pictrs serves AVIF when no format is requested (it ignores the
+    // Accept header), and WebKitGTK cannot decode AVIF
+    if (!isTauri()) return url;
+    options = {};
+  }
 
   const mutableUrl = parseUrl(url);
 
