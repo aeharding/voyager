@@ -1,12 +1,13 @@
 // Feed interactions: cursor pagination via infinite scroll, sort switching,
-// listing type, voting from the feed, the mark-read-on-open side effect,
-// local-only post hiding, and recovery after a failed page load.
+// listing type, the mark-read-on-open side effect, local-only post hiding,
+// and recovery after a failed page load. (Voting from the feed is now
+// provider-agnostic and lives in e2e/matrix/post-feed.spec.ts.)
 //
-// Stays lemmyv1-only: pagination pages and the vote response are wire-level
-// v1 payloads, sort payloads are mode-specific ("new" here vs piefed's
-// "New"), and the hide-post test asserts on a v1 route.
+// Stays lemmyv1-only: pagination pages are wire-level v1 payloads, sort
+// payloads are mode-specific ("new" here vs piefed's "New"), and the
+// hide-post test asserts on a v1 route.
 
-import { build, fixturePosts, me, NOW, V1_HOST } from "../fixtures/builders";
+import { build, me, V1_HOST } from "../fixtures/builders";
 import { readDbRows } from "../fixtures/db";
 import { scrollFeedUntilVisible } from "../fixtures/scroll";
 import { expect, test } from "../fixtures/test";
@@ -70,36 +71,6 @@ test("v1: local listing type requests local posts", async ({ api, page }) => {
 
 test.describe("logged in", () => {
   test.use({ loggedIn: true });
-
-  test("v1: upvote from the feed sends like and updates score", async ({
-    api,
-    page,
-  }) => {
-    api.on.likePost(() => {
-      // The fake has no vote state — the upvoted response is the spec's to
-      // define, so it stays wire-level
-      const liked = build.postView({ ...fixturePosts[0]!, creator: wireMe });
-      Object.assign(liked.post, { score: 2, upvotes: 2 });
-      return {
-        json: {
-          post_view: {
-            ...liked,
-            post_actions: { voted_at: NOW, vote_is_upvote: true },
-          },
-        },
-      };
-    });
-
-    await page.goto(`/posts/${V1_HOST}/all`);
-
-    const item = page.locator("ion-item", { hasText: "First v1 post" }).first();
-    await item.getByRole("button", { name: "Upvote" }).click();
-
-    const payload = await api.waitForPayload("likePost");
-    expect(payload).toEqual({ post_id: 1, is_upvote: true });
-
-    await expect(item.getByText("2", { exact: true })).toBeVisible();
-  });
 
   test("v1: opening a post marks it read on the server", async ({
     api,

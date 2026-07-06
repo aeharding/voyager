@@ -1,8 +1,6 @@
 // v1-only inbox coverage. The provider-agnostic inbox specs (badge, unread
-// list, single mark-as-read, boxes navigation) live in
-// e2e/matrix/inbox.spec.ts. These stay lemmyv1-only because:
-// - mark-all-as-read: the piefed fake has no derived
-//   `POST /api/alpha/user/mark_all_as_read` yet
+// list, single mark-as-read, mark-all-as-read, boxes navigation) live in
+// e2e/matrix/inbox.spec.ts. This stays lemmyv1-only because:
 // - conversations: the send response is a wire-level v1 payload (the fake
 //   has no private-message write state — the response is the spec's to
 //   define)
@@ -41,22 +39,6 @@ function seedNotifications(api: MockApi) {
     creator: otherPerson,
   });
 }
-
-test("v1: mark all as read", async ({ api, page }) => {
-  seedNotifications(api);
-
-  await page.goto("/inbox/unread");
-  await expect(page.getByText("someone replied to you")).toBeVisible();
-
-  await page.getByRole("button", { name: "Mark all as read" }).click();
-  await page.getByRole("button", { name: "Mark All Read" }).click();
-
-  // The fake's mark-all mutates seed state — the refetched derived unread
-  // count is 0, so the tab badge clears
-  await expect(
-    page.getByRole("tab", { name: "Inbox", exact: true }),
-  ).toBeVisible();
-});
 
 test("v1: conversation renders and sends a private message", async ({
   api,

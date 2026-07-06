@@ -1,12 +1,12 @@
 // Swipe gestures, driven via mouse drag (SlidingItem also listens to
 // onMouseDown). Best-effort: gesture simulation is only reliable on desktop
-// chromium, so other projects skip.
+// chromium, so other projects skip. Provider-agnostic: the swipe drives a
+// vote the fake derives, identically on either backend.
 
 import type { Locator, Page } from "@playwright/test";
 
-import { build, fixturePosts, me, NOW, V1_HOST } from "../fixtures/builders";
 import { getSetting } from "../fixtures/db";
-import { expect, test } from "../fixtures/test";
+import { expect, test } from "./fixtures";
 
 test.use({ loggedIn: true });
 
@@ -41,30 +41,8 @@ async function swipeRight(page: Page, item: Locator) {
   await page.mouse.up();
 }
 
-test("v1: swiping a post right upvotes it", async ({ api, page }) => {
-  api.on.likePost(() => {
-    // The fake has no vote state — the upvoted response is the spec's to
-    // define, so it stays wire-level
-    const liked = build.postView({
-      ...fixturePosts[0]!,
-      creator: build.person({
-        id: me.id,
-        name: me.name,
-        display_name: me.displayName,
-      }),
-    });
-    Object.assign(liked.post, { score: 2, upvotes: 2 });
-    return {
-      json: {
-        post_view: {
-          ...liked,
-          post_actions: { voted_at: NOW, vote_is_upvote: true },
-        },
-      },
-    };
-  });
-
-  await page.goto(`/posts/${V1_HOST}/all`);
+test("swiping a post right upvotes it", async ({ api, page }) => {
+  await page.goto(`/posts/${api.host}/all`);
 
   const item = page.locator("ion-item-sliding", {
     hasText: "First v1 post",
@@ -73,12 +51,12 @@ test("v1: swiping a post right upvotes it", async ({ api, page }) => {
 
   const payload = await api.waitForPayload("likePost");
   expect(payload).toEqual({ post_id: 1, is_upvote: true });
+
+  // The fake derives the vote; the feed reflects the new score (base 1 → 2)
+  await expect(item.getByText("2", { exact: true })).toBeVisible();
 });
 
-test("v1: disabling left swipes turns the gesture off", async ({
-  api,
-  page,
-}) => {
+test("disabling left swipes turns the gesture off", async ({ api, page }) => {
   await page.goto("/settings/gestures");
 
   const toggle = page.locator("ion-toggle", {
@@ -88,7 +66,7 @@ test("v1: disabling left swipes turns the gesture off", async ({
   await expect(toggle).toHaveJSProperty("checked", true);
   await expect.poll(() => getSetting(page, "disable_left_swipes")).toBe(true);
 
-  await page.goto(`/posts/${V1_HOST}/all`);
+  await page.goto(`/posts/${api.host}/all`);
   await expect(page.getByText("First v1 post")).toBeVisible();
 
   const item = page.locator("ion-item-sliding", {
