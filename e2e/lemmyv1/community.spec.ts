@@ -1,5 +1,10 @@
-// Community actions: subscribe/unsubscribe (server), favorite (local-only),
-// and blocking.
+// Community actions that can't run on the shared matrix:
+// - unsubscribing needs an "already subscribed" community_actions wire state,
+//   which the seed store can't express (subscription state isn't seedable).
+// - blocking hits a v1-only wire route (POST /account/block/community;
+//   blockCommunity isn't a canonical threadiverse operation).
+// Subscribe (followCommunity) and favorite (local-only) moved to
+// e2e/matrix/community.spec.ts.
 
 import type { Page } from "@playwright/test";
 
@@ -38,20 +43,6 @@ function subscribedCommunityView() {
   };
 }
 
-test("v1: subscribing posts follow and confirms", async ({ api, page }) => {
-  api.on.followCommunity({
-    json: { community_view: subscribedCommunityView() },
-  });
-
-  await openCommunityActions(page, api);
-  await page.getByRole("button", { name: "Subscribe", exact: true }).click();
-
-  const payload = await api.waitForPayload("followCommunity");
-  expect(payload).toEqual({ community_id: 111, follow: true });
-
-  await expect(page.getByText("Subscribed!")).toBeVisible();
-});
-
 test("v1: unsubscribing posts unfollow", async ({ api, page }) => {
   api.on.followCommunity({
     json: { community_view: build.communityResponse().community_view },
@@ -65,20 +56,6 @@ test("v1: unsubscribing posts unfollow", async ({ api, page }) => {
   expect(payload).toEqual({ community_id: 111, follow: false });
 
   await expect(page.getByText("Unsubscribed!")).toBeVisible();
-});
-
-test("v1: favoriting is local-only", async ({ api, page }) => {
-  await openCommunityActions(page, api);
-  await page.getByRole("button", { name: "Favorite", exact: true }).click();
-
-  // Reflected in the action sheet on reopen...
-  await page.locator('ion-buttons[slot="end"] ion-button').last().click();
-  await expect(
-    page.getByRole("button", { name: "Unfavorite", exact: true }),
-  ).toBeVisible();
-
-  // ...without any community API traffic
-  expect(api.callsTo("followCommunity")).toHaveLength(0);
 });
 
 test("v1: blocking a community posts block", async ({ api, page }) => {

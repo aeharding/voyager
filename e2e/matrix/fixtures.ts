@@ -37,6 +37,11 @@ export class PiefedMockApi extends FakePiefedInstance {
 
     ({ me: this.me, posts: this.posts } = seedDefaults(this.seed));
   }
+
+  /** A valid provider wire community response, for follow/community writes */
+  get communityResponse(): unknown {
+    return this.build.communityResponse();
+  }
 }
 
 /** Operations both providers' fakes define */
@@ -68,6 +73,13 @@ export interface MatrixApi extends Pick<
   callsTo<Operation extends SharedDecodableOperation>(
     operation: Operation,
   ): Payload<Operation>[];
+
+  /**
+   * A valid provider wire community response. Follow/community write
+   * responses aren't derived (nor canonical), but a spec can echo this so
+   * the write parses on either provider without hardcoding wire shapes.
+   */
+  communityResponse: unknown;
 
   /** The default logged-in-capable user, seeded into the store */
   me: SeedPerson;
