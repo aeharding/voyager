@@ -1,9 +1,8 @@
-// Content-composition behavior that's backend-independent: the composer's
-// outgoing request payload (reply parent_id, edit/delete targets), the opt-in
-// rich markdown editor, the vger.to link unwrap, and the dirty-composer
-// dismiss guard. These assert on the canonical request payload (or pure UI) —
-// never on a write *response*, which the fakes don't derive — so they run on
-// every provider.
+// Content-composition behavior that's backend-independent: creating/editing/
+// deleting posts and comments (the fakes derive the write response from
+// mutated seed state, so the thread updates on either provider), the
+// composer's outgoing request payload, the opt-in rich markdown editor, the
+// vger.to link unwrap, and the dirty-composer dismiss guard.
 
 import type { Page } from "@playwright/test";
 
@@ -236,4 +235,103 @@ test("dirty composer requires confirmation to dismiss", async ({
   await composerCancel.click();
   await dismissSheet().getByRole("button", { name: "Discard" }).click();
   await expect(textarea).not.toBeVisible();
+});
+
+test("replying to a post submits and renders the comment", async ({
+  api,
+  page,
+}) => {
+  api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
+
+  await page.goto(postUrl(api.host));
+  await expect(page.getByText("my own comment")).toBeVisible();
+
+  await postReplyButton(page).click();
+
+  await page.locator("ion-modal textarea").fill("fresh reply");
+  await composerSubmit(page).click();
+
+  const payload = await api.waitForPayload("createComment");
+  expect(payload).toEqual({ content: "fresh reply", post_id: 1 });
+
+  // The fake derives the write response, so the new comment renders
+  await expect(page.getByText("fresh reply")).toBeVisible();
+});
+
+test("editing own comment sends the edit and updates the thread", async ({
+  api,
+  page,
+}) => {
+  api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
+
+  await page.goto(postUrl(api.host));
+  await expect(page.getByText("my own comment")).toBeVisible();
+
+  await commentEllipsis(page, 20).click();
+  await actionSheetButton(page, "Edit").click();
+
+  await page.locator("ion-modal textarea").fill("edited comment");
+  await composerSubmit(page).click();
+
+  const payload = await api.waitForPayload("editComment");
+  expect(payload).toEqual({ comment_id: 20, content: "edited comment" });
+
+  await expect(page.locator(".comment-20").first()).toContainText(
+    "edited comment",
+  );
+});
+
+test("deleting own comment removes it from the thread", async ({
+  api,
+  page,
+}) => {
+  api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
+
+  await page.goto(postUrl(api.host));
+  await expect(page.getByText("my own comment")).toBeVisible();
+
+  await commentEllipsis(page, 20).click();
+  await actionSheetButton(page, "Delete").click();
+  await page.getByRole("button", { name: "Delete Comment" }).click();
+
+  const payload = await api.waitForPayload("deleteComment");
+  expect(payload.comment_id).toBe(20);
+
+  await expect(page.getByText("my own comment")).not.toBeVisible();
+});
+
+test("creating a text post submits and navigates to it", async ({
+  api,
+  page,
+}) => {
+  await page.goto(`/posts/${api.host}/c/test_comm`);
+  await expect(page.getByText(fixturePosts[0]!.name)).toBeVisible();
+
+  await headerButton(page, "More options").click();
+  await page.getByRole("button", { name: "Submit Post" }).click();
+
+  const editor = page.locator("ion-modal", { hasText: "Post" }).first();
+  await editor.locator("ion-segment-button", { hasText: "Text" }).click();
+  await editor.locator('input[placeholder="Title"]').fill("Fresh new post");
+
+  // Body text is a pushed sub-page within the editor modal
+  await editor.getByText("Text (optional)").click();
+  await editor.locator("textarea").fill("fresh post body");
+  await editor.getByRole("button", { name: "Back" }).click();
+
+  await editor.getByRole("button", { name: "Post", exact: true }).click();
+
+  const payload = await api.waitForPayload("createPost");
+  expect(payload).toMatchObject({
+    body: "fresh post body",
+    community_id: 111,
+    name: "Fresh new post",
+  });
+
+  // "Posted! Tap to view." → tap it to navigate to the newly-created post.
+  // The fake derived it into the seed store, so getPost resolves and the
+  // detail page renders — proving the create round-trips on either provider.
+  await page.getByText("Posted! Tap to view.").click();
+  await expect(page).toHaveURL(/\/comments\/\d+/);
+  await expect(page.getByText("fresh post body")).toBeVisible();
 });
