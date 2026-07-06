@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-import { isNative, isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 type UpdateStatus =
   "not-enabled" | "loading" | "current" | "outdated" | "error";
@@ -29,8 +29,9 @@ export const UpdateContext = createContext<IUpdateContext>({
 });
 
 export function UpdateContextProvider({ children }: React.PropsWithChildren) {
-  // Tauri updates via GitHub releases/package manager, not the service worker
-  if (isNative() || isTauri()) return children;
+  // Native/desktop apps update via app store/package manager,
+  // not the service worker
+  if (getPlatform() !== "web") return children;
 
   return (
     <EnabledUpdateContextProvider>{children}</EnabledUpdateContextProvider>

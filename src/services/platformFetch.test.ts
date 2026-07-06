@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { isNative, isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 const mocks = vi.hoisted(() => ({
   nativeFetch: vi.fn(),
@@ -16,8 +16,7 @@ vi.mock("./nativeFetch", () => ({
 vi.mock("@tauri-apps/plugin-http", () => ({ fetch: mocks.tauriFetch }));
 
 vi.mock("#/helpers/device", () => ({
-  isNative: vi.fn(),
-  isTauri: vi.fn(),
+  getPlatform: vi.fn(),
 }));
 
 async function loadPlatformFetch() {
@@ -27,22 +26,19 @@ async function loadPlatformFetch() {
 
 describe("platformFetch", () => {
   it("uses the capacitor fetch shim on native", async () => {
-    vi.mocked(isNative).mockReturnValue(true);
-    vi.mocked(isTauri).mockReturnValue(false);
+    vi.mocked(getPlatform).mockReturnValue("capacitor");
 
     expect(await loadPlatformFetch()).toBe(mocks.nativeFetch);
   });
 
   it("uses the tauri http plugin fetch on desktop", async () => {
-    vi.mocked(isNative).mockReturnValue(false);
-    vi.mocked(isTauri).mockReturnValue(true);
+    vi.mocked(getPlatform).mockReturnValue("tauri");
 
     expect(await loadPlatformFetch()).toBe(mocks.tauriFetch);
   });
 
   it("uses plain fetch on web", async () => {
-    vi.mocked(isNative).mockReturnValue(false);
-    vi.mocked(isTauri).mockReturnValue(false);
+    vi.mocked(getPlatform).mockReturnValue("web");
 
     const platformFetch = await loadPlatformFetch();
 

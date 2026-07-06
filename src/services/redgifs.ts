@@ -1,7 +1,7 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 
-import { isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 // https://github.com/Redgifs/api/wiki/Temporary-tokens
 
@@ -18,13 +18,16 @@ const HEADERS = {
 } as const;
 
 async function getJson(url: string, headers: Record<string, string>) {
-  if (isTauri()) {
-    const response = await tauriFetch(url, { headers });
-    return response.json();
+  switch (getPlatform()) {
+    case "tauri": {
+      const response = await tauriFetch(url, { headers });
+      return response.json();
+    }
+    default: {
+      const result = await CapacitorHttp.get({ url, headers });
+      return result.data;
+    }
   }
-
-  const result = await CapacitorHttp.get({ url, headers });
-  return result.data;
 }
 
 export async function getTemporaryToken(): Promise<string> {

@@ -13,13 +13,25 @@ import { UAParser } from "ua-parser-js";
 
 import { getDeviceMode } from "#/features/settings/syncStorage";
 
-export const isNative = memoize(() => {
-  return Capacitor.isNativePlatform();
+export type Platform = "capacitor" | "tauri" | "web";
+
+/**
+ * The shell the app is running in: Capacitor (iOS/Android),
+ * Tauri (Linux desktop), or a plain web browser/PWA
+ */
+export const getPlatform = memoize((): Platform => {
+  if (Capacitor.isNativePlatform()) return "capacitor";
+  if (detectTauri()) return "tauri";
+  return "web";
 });
 
-export const isTauri = memoize(() => {
-  return detectTauri();
-});
+export function isNative() {
+  return getPlatform() === "capacitor";
+}
+
+export function isTauri() {
+  return getPlatform() === "tauri";
+}
 
 /**
  * Run `VITE_FORCE_NO_CORS=true` in dev to test with following command to disable CORS for easier testing
@@ -30,13 +42,12 @@ export const isTauri = memoize(() => {
  */
 export function canBypassCors() {
   if (import.meta.env.VITE_FORCE_NO_CORS) return true;
-  return isNative() || isTauri();
+  return getPlatform() !== "web";
 }
 
 export function isInstalled(): boolean {
   return (
-    isNative() ||
-    isTauri() ||
+    getPlatform() !== "web" ||
     window.matchMedia("(display-mode: standalone)").matches
   );
 }

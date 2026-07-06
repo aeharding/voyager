@@ -1,7 +1,7 @@
 import { isEqual } from "es-toolkit";
 import React, { useEffect, useState } from "react";
 
-import { isNative, isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 const DEFAULT_LEMMY_SERVERS = getCustomDefaultServers() ?? ["lemmy.zip"];
 
@@ -21,7 +21,7 @@ export function defaultServersUntouched() {
 
 async function getConfig() {
   // /_config is only served by the self-hosted web deployment
-  if (isNative() || isTauri()) return;
+  if (getPlatform() !== "web") return;
 
   try {
     const response = await fetch("/_config");
@@ -44,7 +44,7 @@ interface ConfigProviderProps {
 }
 
 export default function ConfigProvider({ children }: ConfigProviderProps) {
-  const [configLoaded, setConfigLoaded] = useState(isNative() || isTauri()); // native does not load config
+  const [configLoaded, setConfigLoaded] = useState(getPlatform() !== "web"); // only web loads config
 
   useEffect(() => {
     // Config is not necessary for app to run

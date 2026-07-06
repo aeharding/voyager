@@ -1,6 +1,6 @@
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 
-import { isNative, isTauri } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 
 import nativeFetch from "./nativeFetch";
 
@@ -11,9 +11,14 @@ import nativeFetch from "./nativeFetch";
  * CORS and preserving headers (like User-Agent) that browsers strip.
  */
 const platformFetch = (() => {
-  if (isNative()) return nativeFetch;
-  if (isTauri()) return tauriFetch;
-  return fetch.bind(globalThis);
+  switch (getPlatform()) {
+    case "capacitor":
+      return nativeFetch;
+    case "tauri":
+      return tauriFetch;
+    case "web":
+      return fetch.bind(globalThis);
+  }
 })();
 
 export default platformFetch;

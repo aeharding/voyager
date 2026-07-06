@@ -40,9 +40,9 @@ import TipDialog from "#/features/tips/TipDialog";
 import { AppPage } from "#/helpers/AppPage";
 import { sv } from "#/helpers/css";
 import {
+  getPlatform,
   isAppleDeviceInstalledToHomescreen,
   isNative,
-  isTauri,
 } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -122,7 +122,7 @@ export default function SettingsPage() {
           </IonItem>
         </IonList>
 
-        {!isNative() && !isTauri() && (
+        {getPlatform() === "web" && (
           <IonList inset>
             <IonItem routerLink="/settings/install" button detail>
               <IconBg color="#0e7afe" slot="start">
