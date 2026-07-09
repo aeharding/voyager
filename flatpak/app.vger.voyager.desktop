@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Voyager
+Comment=Browse Lemmy and PieFed
+Exec=voyager
+Icon=app.vger.voyager
+Terminal=false
+Categories=Network;Feed;
+Keywords=lemmy;piefed;fediverse;reddit;

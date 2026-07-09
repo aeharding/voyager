@@ -1,0 +1,28 @@
+name: flatpak
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - flatpak/**
+      - .github/workflows/flatpak.yml
+
+jobs:
+  flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build flatpak from this commit
+        run: |
+          sed -i "s|commit: FLATPAK_GIT_COMMIT|commit: ${{ github.event.pull_request.head.sha || github.sha }}|" flatpak/app.vger.voyager.yml
+
+      - uses: flathub-infra/flatpak-github-actions/flatpak-builder@master
+        with:
+          bundle: voyager.flatpak
+          manifest-path: flatpak/app.vger.voyager.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+          arch: x86_64

@@ -1,0 +1,87 @@
+id: app.vger.voyager
+
+runtime: org.gnome.Platform
+runtime-version: "50"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node22
+
+command: voyager
+
+finish-args:
+  # Show the window
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=ipc
+  # Talk to Lemmy/PieFed instances
+  - --share=network
+  # Audio for videos
+  - --socket=pulseaudio
+
+build-options:
+  append-path: /usr/lib/sdk/node22/bin:/usr/lib/sdk/rust-stable/bin:/run/build/voyager/pnpm-dist
+
+modules:
+  - name: voyager
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/aeharding/voyager.git
+        # Updated to the release tag on version bumps (CI substitutes the
+        # commit under test)
+        commit: FLATPAK_GIT_COMMIT
+
+      # flatpak/generate-pnpm-sources.py pnpm-lock.yaml -o flatpak/node-sources.json
+      - node-sources.json
+
+      # flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
+      - cargo-sources.json
+
+      # Standalone pnpm (not part of the node SDK extension)
+      - type: archive
+        url: https://github.com/pnpm/pnpm/releases/download/v11.9.0/pnpm-linux-x64.tar.gz
+        sha256: 8d987d82585453bcf260ea5d0bae346d298f1a5e71bcde8d99976521408ad895
+        dest: pnpm-dist
+        strip-components: 0
+        only-arches:
+          - x86_64
+      - type: archive
+        url: https://github.com/pnpm/pnpm/releases/download/v11.9.0/pnpm-linux-arm64.tar.gz
+        sha256: 7981d0109fffdf8f15b838243240c8c9f9114dd4b7111d4227c1453522d75b61
+        dest: pnpm-dist
+        strip-components: 0
+        only-arches:
+          - aarch64
+
+    build-options:
+      env:
+        CARGO_HOME: /run/build/voyager/cargo
+        npm_config_offline: "true"
+
+    build-commands:
+      - chmod +x pnpm-dist/pnpm
+
+      # Populate the pnpm store from the downloaded tarballs, then
+      # install fully offline (pnpm patches from patches/ still apply)
+      - pnpm config set store-dir /run/build/voyager/pnpm-store --location project
+      - pnpm store add flatpak-node/tarballs/*.tgz
+      - pnpm install --offline --frozen-lockfile --ignore-scripts
+
+      - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
+
+      # Compiles the frontend (beforeBuildCommand) and the binary
+      - pnpm tauri build --no-bundle
+
+      - install -Dm755 -t /app/bin/ src-tauri/target/release/voyager
+      - install -Dm644 -t /app/share/metainfo/ flatpak/app.vger.voyager.metainfo.xml
+      - install -Dm644 -t /app/share/applications/ flatpak/app.vger.voyager.desktop
+      - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/64x64.png /app/share/icons/hicolor/64x64/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/icon.png /app/share/icons/hicolor/512x512/apps/app.vger.voyager.png
+
+    post-install:
+      - install -Dm644 LICENSE /app/share/licenses/app.vger.voyager/LICENSE
