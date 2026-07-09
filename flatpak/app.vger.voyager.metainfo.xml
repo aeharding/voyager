@@ -45,16 +45,22 @@
     <control>touch</control>
   </supports>
 
-  <!-- TODO: capture desktop screenshots before Flathub submission
-       (portrait mobile screenshots are placeholders) -->
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/android/1.png</image>
-      <caption>Browsing posts</caption>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/1.png</image>
+      <caption>Browsing a community in two column mode</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/android/2.png</image>
-      <caption>Comments</caption>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/2.png</image>
+      <caption>Threaded comments</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/3.png</image>
+      <caption>Composing a comment with markdown</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/4.png</image>
+      <caption>Themes and customization</caption>
     </screenshot>
   </screenshots>
 

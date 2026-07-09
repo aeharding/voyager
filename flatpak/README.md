@@ -41,6 +41,5 @@ placeholder is substituted with the commit under test.
 
 ## TODO before Flathub submission
 
-- Desktop screenshots for the metainfo (current ones are mobile placeholders)
 - Verify AGPL-3.0-only vs -or-later
 - flathub.json (arch allowlist) in the flathub repo
