@@ -1,6 +1,9 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeFile } from "@tauri-apps/plugin-fs";
+import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 import { domToBlob, Options as DomToBlobOptions } from "modern-screenshot";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
@@ -25,9 +28,10 @@ const domToBlobOptions: DomToBlobOptions = {
 
     return node.tagName !== "VIDEO";
   },
-  fetchFn:
-    getPlatform() === "capacitor"
-      ? async (url) => {
+  fetchFn: (() => {
+    switch (getPlatform()) {
+      case "capacitor":
+        return async (url) => {
           // Pass through relative URLs to browser fetching
           // !: running in native environment
           if (url.startsWith(`${getServerUrl!()}/`)) {
@@ -53,8 +57,34 @@ const domToBlobOptions: DomToBlobOptions = {
           return `data:${
             nativeResponse.headers["Content-Type"] || "image/png"
           };base64,${nativeResponse.data}`;
-        }
-      : undefined,
+        };
+      case "tauri":
+        return async (url) => {
+          // Pass through app-internal (tauri://) resources
+          if (!url.startsWith("http")) return false;
+
+          // Attempt upgrade to https (insecure will be blocked)
+          if (url.startsWith("http://")) {
+            url = url.replace(/^http:\/\//, "https://");
+          }
+
+          const response = await tauriFetch(
+            // if pictrs, convert to jpg (bypasses CORS +
+            // AVIF undecodable by some webkitgtk builds)
+            buildImageSrc(url, { format: "jpg" }),
+            {
+              headers: {
+                "User-Agent": "VoyagerApp/1.0",
+              },
+            },
+          );
+
+          return blobToDataURL(await response.blob());
+        };
+      case "web":
+        return undefined;
+    }
+  })(),
 };
 
 const shareAsImageRenderRoot = document.querySelector(
@@ -132,6 +162,17 @@ export default function useShareImage({
       });
       await Share.share({ files: [file.uri] });
       await Filesystem.deleteFile({ path: file.uri });
+    } else if (getPlatform() === "tauri") {
+      // No system share sheet on Linux — native save dialog instead
+      // (the webview can't download files)
+      const path = await save({
+        defaultPath: filename,
+        filters: [{ name: "PNG image", extensions: ["png"] }],
+      });
+
+      if (!path) return;
+
+      await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
     } else if ("canShare" in navigator && navigator.canShare(webSharePayload)) {
       navigator.share(webSharePayload);
     } else {

@@ -11,6 +11,8 @@
     "core:window:allow-maximize",
     "core:window:allow-unmaximize",
     "core:window:allow-is-maximized",
+    "dialog:allow-save",
+    "fs:default",
     {
       "identifier": "http:default",
       "allow": [{ "url": "https://**" }, { "url": "http://**" }]
