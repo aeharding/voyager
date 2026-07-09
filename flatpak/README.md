@@ -34,12 +34,17 @@ placeholder is substituted with the commit under test.
 
 ## Releasing
 
-1. On version bump: update `releases` in `app.vger.voyager.metainfo.xml`,
-   regenerate sources if the lockfiles changed.
-2. Flathub submission/update: PR to the flathub repo with `commit:` pointing
-   at the release tag's commit.
+Flathub does not watch for release tags (unlike F-Droid). Each Voyager
+release needs a small PR to the flathub repo
+(once it exists, post-submission):
 
-## TODO before Flathub submission
+1. Add the release to `releases` in `app.vger.voyager.metainfo.xml` (here).
+2. In the flathub repo: point the manifest `commit:` at the release tag's
+   commit, and copy over regenerated sources JSONs if the lockfiles changed
+   since the last release (usually the case).
 
-- Verify AGPL-3.0-only vs -or-later
-- flathub.json (arch allowlist) in the flathub repo
+## Initial Flathub submission
+
+PR against the `new-pr` branch of
+[flathub/flathub](https://github.com/flathub/flathub) containing the
+manifest (with a real `commit:`), the sources JSONs, and a `flathub.json`.
