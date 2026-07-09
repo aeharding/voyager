@@ -15,6 +15,7 @@ import buildPostsRoutes from "./tabs/posts";
 import profile from "./tabs/profile";
 import search from "./tabs/search";
 import settings from "./tabs/settings";
+import ColumnDivider from "./twoColumn/ColumnDivider";
 import SecondColumnContent from "./twoColumn/SecondColumnContent";
 
 import styles from "./Outlet.module.css";
@@ -51,6 +52,7 @@ function AppRoutes() {
 
   return (
     <div className={styles.routerOutletContents}>
+      {twoColumnLayoutEnabled && <ColumnDivider />}
       {twoColumnLayoutEnabled && <SecondColumnContent />}
 
       {/* This is first (order = -1) in css. Why? See Outlet.module.css */}
