@@ -13,8 +13,13 @@ FLATPAK_BUILDER_TOOLS_COMMIT=737c0085912f9f7dabf9341d4608e2a77a51a73a
 # app.vger.voyager.yml (`pnpm store path` prints it)
 PNPM_STORE_VERSION=v11
 
-# Isolated venv with absolute paths: some environments (e.g. the flathub CI
-# image) ship an outdated flatpak-node-generator that must not shadow ours
+# The flathub CI image preinstalls an outdated flatpak-node-generator in
+# /app and exports PYTHONPATH=/app/lib/python3.13/site-packages, which
+# shadows pip AND venv installs at import time (PYTHONPATH precedes venv
+# site-packages) — verified: without this, the stale provider runs and
+# emits broken pnpm config ("storeDir=" instead of "storeDir: ")
+unset PYTHONPATH
+
 VENV="$(mktemp -d)/venv"
 python3 -m venv "$VENV"
 "$VENV/bin/pip" install --quiet aiohttp tomlkit \
