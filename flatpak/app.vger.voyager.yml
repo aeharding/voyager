@@ -1,0 +1,78 @@
+id: app.vger.voyager
+
+runtime: org.gnome.Platform
+runtime-version: "50"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node22
+
+command: voyager
+
+finish-args:
+  # Show the window
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=ipc
+  # Talk to Lemmy/PieFed instances
+  - --share=network
+  # Audio for videos
+  - --socket=pulseaudio
+
+build-options:
+  append-path: /usr/lib/sdk/node22/bin:/usr/lib/sdk/rust-stable/bin:/run/build/voyager/bin
+
+modules:
+  - name: voyager
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/aeharding/voyager.git
+        # Updated to the release tag on version bumps (CI substitutes the
+        # commit under test)
+        commit: FLATPAK_GIT_COMMIT
+
+      # flatpak-node-generator pnpm pnpm-lock.yaml --pnpm-store-version v11
+      # (store version must match the pnpm pinned below)
+      - node-sources.json
+
+      # flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
+      - cargo-sources.json
+
+      # pnpm (not part of the node SDK extension), version/hash derived
+      # from packageManager in package.json by generate-sources.sh
+      - pnpm-sources.json
+
+    build-options:
+      env:
+        CARGO_HOME: /run/build/voyager/cargo
+        npm_config_offline: "true"
+
+    build-commands:
+      - mkdir -p bin && printf '#!/bin/sh\nexec node /run/build/voyager/pnpm-pkg/bin/pnpm.cjs "$@"\n' > bin/pnpm && chmod +x bin/pnpm
+
+      # node-sources.json appends storeDir at source-extraction time, where
+      # $PWD is not the build dir — rewrite it deterministically
+      - sed -i '/^storeDir/d' pnpm-workspace.yaml && echo "storeDir: $PWD/flatpak-node/pnpm-store" >> pnpm-workspace.yaml
+
+      # Store population + storeDir config come from node-sources.json
+      # (pnpm patches from patches/ still apply)
+      - pnpm install --offline --frozen-lockfile --ignore-scripts
+
+      - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
+
+      # Compiles the frontend (beforeBuildCommand) and the binary
+      - pnpm tauri build --no-bundle
+
+      - install -Dm755 -t /app/bin/ src-tauri/target/release/voyager
+      - install -Dm644 -t /app/share/metainfo/ flatpak/app.vger.voyager.metainfo.xml
+      - install -Dm644 -t /app/share/applications/ flatpak/app.vger.voyager.desktop
+      - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/64x64.png /app/share/icons/hicolor/64x64/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/app.vger.voyager.png
+      - install -Dm644 src-tauri/icons/icon.png /app/share/icons/hicolor/512x512/apps/app.vger.voyager.png
+
+    post-install:
+      - install -Dm644 LICENSE /app/share/licenses/app.vger.voyager/LICENSE

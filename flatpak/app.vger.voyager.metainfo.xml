@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>app.vger.voyager</id>
+
+  <name>Voyager</name>
+  <summary>Browse Lemmy and PieFed</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-only</project_license>
+
+  <developer id="app.vger">
+    <name>Alexander Harding</name>
+  </developer>
+
+  <description>
+    <p>
+      Voyager is a mobile-first client for Lemmy and PieFed — link
+      aggregation and discussion communities on the Fediverse — now on
+      your desktop.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Browse posts, comments and communities on any Lemmy or PieFed instance</li>
+      <li>Multi-account support</li>
+      <li>Two column layout</li>
+      <li>Rich media viewer with galleries and video</li>
+      <li>Extensive customization: themes, gestures, compact or large posts</li>
+      <li>No tracking, no telemetry</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">app.vger.voyager.desktop</launchable>
+
+  <url type="homepage">https://vger.app</url>
+  <url type="bugtracker">https://github.com/aeharding/voyager/issues</url>
+  <url type="vcs-browser">https://github.com/aeharding/voyager</url>
+
+  <content_rating type="oars-1.1">
+    <content_attribute id="social-chat">intense</content_attribute>
+  </content_rating>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/1.png</image>
+      <caption>Browsing a community in two column mode</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/2.png</image>
+      <caption>Threaded comments</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/3.png</image>
+      <caption>Composing a comment with markdown</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/4.png</image>
+      <caption>Themes and customization</caption>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="2.48.0" date="2026-07-09" />
+  </releases>
+</component>

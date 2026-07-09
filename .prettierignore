@@ -3,3 +3,7 @@ ios/
 android/
 vite.config.ts.timestamp-*
 pnpm-lock.yaml
+# Generated flatpak sources
+flatpak/cargo-sources.json
+flatpak/node-sources.json
+flatpak/pnpm-sources.json
