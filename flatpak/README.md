@@ -5,19 +5,26 @@ COSMIC Store, GNOME Software, etc.). Flathub builds are fully offline, so
 all dependencies are pinned as flatpak sources:
 
 - `cargo-sources.json` — generated from `src-tauri/Cargo.lock`
-- `node-sources.json` — generated from `pnpm-lock.yaml` (every registry
-  tarball; `pnpm store add` populates the store at build time so
-  `pnpm install --offline` works, including `patchedDependencies`)
+- `node-sources.json` — generated from `pnpm-lock.yaml` by upstream
+  [flatpak-node-generator](https://github.com/flatpak/flatpak-builder-tools/tree/master/node)
+  (pnpm provider). It bundles a store-population script so
+  `pnpm install --offline` works, including `patchedDependencies`.
 
 ## Regenerating sources (on dependency changes)
 
 ```sh
-docker run --rm -v "$PWD":/w python:3-slim sh -c '
-  pip install -q aiohttp tomlkit pyyaml &&
+docker run --rm -v "$PWD":/w python:3.12-slim sh -c '
+  apt-get update -qq && apt-get install -y -qq git &&
+  pip install -q aiohttp tomlkit \
+    "git+https://github.com/flatpak/flatpak-builder-tools.git#subdirectory=node" &&
   curl -s https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/master/cargo/flatpak-cargo-generator.py -o /tmp/fcg.py &&
   python /tmp/fcg.py /w/src-tauri/Cargo.lock -o /w/flatpak/cargo-sources.json &&
-  python /w/flatpak/generate-pnpm-sources.py /w/pnpm-lock.yaml -o /w/flatpak/node-sources.json'
+  flatpak-node-generator pnpm /w/pnpm-lock.yaml --pnpm-store-version v11 -o /w/flatpak/node-sources.json'
 ```
+
+> [!IMPORTANT]
+> `--pnpm-store-version` must match the store version of the pnpm release
+> pinned in the manifest (`pnpm store path` prints it, e.g. `.../store/v11`).
 
 ## CI
 

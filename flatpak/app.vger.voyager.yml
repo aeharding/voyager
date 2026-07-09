@@ -33,7 +33,8 @@ modules:
         # commit under test)
         commit: FLATPAK_GIT_COMMIT
 
-      # flatpak/generate-pnpm-sources.py pnpm-lock.yaml -o flatpak/node-sources.json
+      # flatpak-node-generator pnpm pnpm-lock.yaml --pnpm-store-version v11
+      # (store version must match the pnpm pinned below)
       - node-sources.json
 
       # flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
@@ -63,10 +64,8 @@ modules:
     build-commands:
       - chmod +x pnpm-dist/pnpm
 
-      # Populate the pnpm store from the downloaded tarballs, then
-      # install fully offline (pnpm patches from patches/ still apply)
-      - pnpm config set store-dir /run/build/voyager/pnpm-store --location project
-      - pnpm store add flatpak-node/tarballs/*.tgz
+      # Store population + storeDir config come from node-sources.json
+      # (pnpm patches from patches/ still apply)
       - pnpm install --offline --frozen-lockfile --ignore-scripts
 
       - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
