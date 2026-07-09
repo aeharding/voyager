@@ -66,7 +66,13 @@ export default function TauriListener() {
       if (store.getState().settings.appearance.general.showSystemTitlebar)
         return;
       if (!(event.target instanceof Element)) return;
-      if (!event.target.closest("ion-header")) return;
+
+      const header = event.target.closest("ion-header");
+      if (!header) return;
+
+      // Headers in overlays belong to the overlay, not the window
+      if (header.closest("ion-modal, ion-popover")) return;
+
       if (event.target.closest(INTERACTIVE_SELECTOR)) return;
 
       if (event.detail === 2) {
