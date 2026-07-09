@@ -95,13 +95,7 @@ Finally, can run the project with `Ctrl+R`.
 To build the Linux desktop app, install:
 
 1. node, recommended via [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
-2. [Rust](https://rustup.rs) (stable)
-3. System dependencies (Debian/Ubuntu shown):
-
-```sh
-sudo apt install libwebkit2gtk-4.1-dev build-essential libssl-dev \
-  libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2
-```
+2. [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) (Rust and system packages)
 
 Then, in Voyager's source code directory:
 
