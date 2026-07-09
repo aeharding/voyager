@@ -52,6 +52,10 @@ modules:
     build-commands:
       - mkdir -p bin && printf '#!/bin/sh\nexec node /run/build/voyager/pnpm-pkg/bin/pnpm.cjs "$@"\n' > bin/pnpm && chmod +x bin/pnpm
 
+      # node-sources.json appends storeDir at source-extraction time, where
+      # $PWD is not the build dir — rewrite it deterministically
+      - sed -i '/^storeDir/d' pnpm-workspace.yaml && echo "storeDir: $PWD/flatpak-node/pnpm-store" >> pnpm-workspace.yaml
+
       # Store population + storeDir config come from node-sources.json
       # (pnpm patches from patches/ still apply)
       - pnpm install --offline --frozen-lockfile --ignore-scripts
