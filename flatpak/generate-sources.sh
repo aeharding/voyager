@@ -13,17 +13,18 @@ FLATPAK_BUILDER_TOOLS_COMMIT=737c0085912f9f7dabf9341d4608e2a77a51a73a
 # app.vger.voyager.yml (`pnpm store path` prints it)
 PNPM_STORE_VERSION=v11
 
-python3 -m pip install --quiet --user aiohttp tomlkit \
+# Isolated venv with absolute paths: some environments (e.g. the flathub CI
+# image) ship an outdated flatpak-node-generator that must not shadow ours
+VENV="$(mktemp -d)/venv"
+python3 -m venv "$VENV"
+"$VENV/bin/pip" install --quiet aiohttp tomlkit \
   "git+https://github.com/flatpak/flatpak-builder-tools.git@$FLATPAK_BUILDER_TOOLS_COMMIT#subdirectory=node"
-
-# pip --user bin dir isn't always on PATH (e.g. containers)
-PATH="$(python3 -m site --user-base)/bin:$PATH"
 
 curl -s "https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/$FLATPAK_BUILDER_TOOLS_COMMIT/cargo/flatpak-cargo-generator.py" \
   -o /tmp/flatpak-cargo-generator.py
-python3 /tmp/flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
+"$VENV/bin/python" /tmp/flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
 
-flatpak-node-generator pnpm pnpm-lock.yaml \
+"$VENV/bin/flatpak-node-generator" pnpm pnpm-lock.yaml \
   --pnpm-store-version "$PNPM_STORE_VERSION" -o flatpak/node-sources.json
 
 # pnpm itself, pinned by packageManager in package.json
