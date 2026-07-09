@@ -197,9 +197,16 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         </IonItem>
       </IonList>
       <IonButton onClick={onShare}>
-        {getPlatform() === "capacitor" || "canShare" in navigator
-          ? "Share"
-          : "Download"}
+        {(() => {
+          switch (getPlatform()) {
+            case "capacitor":
+              return "Share";
+            case "tauri":
+              return "Save";
+            case "web":
+              return "canShare" in navigator ? "Share" : "Download";
+          }
+        })()}
       </IonButton>
 
       {createPortal(

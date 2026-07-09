@@ -11,6 +11,7 @@ import { buildImageSrc } from "#/features/media/CachedImg";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
 import { getPlatform } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
+import { USER_AGENT } from "#/services/client";
 import { getServerUrl } from "#/services/nativeFetch";
 
 import includeStyleProperties from "./includeStyleProperties";
@@ -48,7 +49,7 @@ const domToBlobOptions: DomToBlobOptions = {
             url: buildImageSrc(url, { format: "jpg" }),
             responseType: "blob",
             headers: {
-              "User-Agent": "VoyagerApp/1.0",
+              "User-Agent": USER_AGENT,
             },
           });
 
@@ -60,8 +61,9 @@ const domToBlobOptions: DomToBlobOptions = {
         };
       case "tauri":
         return async (url) => {
-          // Pass through app-internal (tauri://) resources
-          if (!url.startsWith("http")) return false;
+          // App-internal (tauri://) resources can't be fetch()ed
+          // by modern-screenshot, but can be drawn (same origin)
+          if (!url.startsWith("http")) return imgToDataUrl(url);
 
           // Attempt upgrade to https (insecure will be blocked)
           if (url.startsWith("http://")) {
@@ -74,7 +76,7 @@ const domToBlobOptions: DomToBlobOptions = {
             buildImageSrc(url, { format: "jpg" }),
             {
               headers: {
-                "User-Agent": "VoyagerApp/1.0",
+                "User-Agent": USER_AGENT,
               },
             },
           );
@@ -86,6 +88,19 @@ const domToBlobOptions: DomToBlobOptions = {
     }
   })(),
 };
+
+async function imgToDataUrl(url: string): Promise<string> {
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  canvas.getContext("2d")!.drawImage(img, 0, 0);
+
+  return canvas.toDataURL();
+}
 
 const shareAsImageRenderRoot = document.querySelector(
   "#share-as-image-root",

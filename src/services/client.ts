@@ -4,7 +4,8 @@ import { getPlatform, isAndroid } from "#/helpers/device";
 
 import platformFetch from "./platformFetch";
 
-const USER_AGENT = "VoyagerApp/1.0";
+// Also hardcoded in capacitor.config.ts appendUserAgent (can't import there)
+export const USER_AGENT = "VoyagerApp/1.0";
 
 export function buildBaseHeaders({
   android,
