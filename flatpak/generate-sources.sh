@@ -25,3 +25,32 @@ python3 /tmp/flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-so
 
 flatpak-node-generator pnpm pnpm-lock.yaml \
   --pnpm-store-version "$PNPM_STORE_VERSION" -o flatpak/node-sources.json
+
+# pnpm itself, pinned by packageManager in package.json
+# (its +sha512 suffix is the registry tarball's sha512)
+python3 - << 'PY'
+import json
+import re
+
+spec = json.load(open("package.json"))["packageManager"]
+m = re.fullmatch(r"pnpm@([\w.-]+)\+sha512\.([0-9a-f]{128})", spec)
+if not m:
+    raise SystemExit(f"Cannot parse packageManager: {spec!r}")
+version, sha512 = m.groups()
+
+with open("flatpak/pnpm-sources.json", "w") as f:
+    json.dump(
+        [
+            {
+                "type": "archive",
+                "url": f"https://registry.npmjs.org/pnpm/-/pnpm-{version}.tgz",
+                "sha512": sha512,
+                "dest": "pnpm-pkg",
+                "strip-components": 1,
+            }
+        ],
+        f,
+        indent=2,
+    )
+    f.write("\n")
+PY

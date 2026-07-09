@@ -21,7 +21,7 @@ finish-args:
   - --socket=pulseaudio
 
 build-options:
-  append-path: /usr/lib/sdk/node22/bin:/usr/lib/sdk/rust-stable/bin:/run/build/voyager/pnpm-dist
+  append-path: /usr/lib/sdk/node22/bin:/usr/lib/sdk/rust-stable/bin:/run/build/voyager/bin
 
 modules:
   - name: voyager
@@ -40,21 +40,9 @@ modules:
       # flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
       - cargo-sources.json
 
-      # Standalone pnpm (not part of the node SDK extension)
-      - type: archive
-        url: https://github.com/pnpm/pnpm/releases/download/v11.9.0/pnpm-linux-x64.tar.gz
-        sha256: 8d987d82585453bcf260ea5d0bae346d298f1a5e71bcde8d99976521408ad895
-        dest: pnpm-dist
-        strip-components: 0
-        only-arches:
-          - x86_64
-      - type: archive
-        url: https://github.com/pnpm/pnpm/releases/download/v11.9.0/pnpm-linux-arm64.tar.gz
-        sha256: 7981d0109fffdf8f15b838243240c8c9f9114dd4b7111d4227c1453522d75b61
-        dest: pnpm-dist
-        strip-components: 0
-        only-arches:
-          - aarch64
+      # pnpm (not part of the node SDK extension), version/hash derived
+      # from packageManager in package.json by generate-sources.sh
+      - pnpm-sources.json
 
     build-options:
       env:
@@ -62,7 +50,7 @@ modules:
         npm_config_offline: "true"
 
     build-commands:
-      - chmod +x pnpm-dist/pnpm
+      - mkdir -p bin && printf '#!/bin/sh\nexec node /run/build/voyager/pnpm-pkg/bin/pnpm.cjs "$@"\n' > bin/pnpm && chmod +x bin/pnpm
 
       # Store population + storeDir config come from node-sources.json
       # (pnpm patches from patches/ still apply)
