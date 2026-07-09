@@ -194,11 +194,25 @@ jobs:
         with:
           workspaces: src-tauri
 
+      - name: Import GPG Key for Signing
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.LINUX_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+
       - name: 📦 Install dependencies
         run: pnpm i --frozen-lockfile
 
       - name: Build (Tauri)
         run: pnpm tauri build
+        env:
+          SIGN: "1"
+
+          TAURI_SIGNING_RPM_KEY: ${{ secrets.LINUX_GPG_PRIVATE_KEY }}
+          TAURI_SIGNING_RPM_KEY_PASSPHRASE: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+
+          APPIMAGETOOL_SIGN_PASSPHRASE: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+          APPIMAGETOOL_FORCE_SIGN: "1"
 
       - name: Collect artifacts
         run: |
