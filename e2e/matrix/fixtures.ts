@@ -36,38 +36,11 @@ export class PiefedMockApi extends FakePiefedInstance {
     super({ host: PIEFED_HOST });
 
     ({ me: this.me, posts: this.posts } = seedDefaults(this.seed));
+  }
 
-    // threadiverse gap: the piefed fake's derived `GET /api/alpha/site`
-    // never includes `my_user`, so logged-in boot (which reads
-    // `site.my_user` for the active account) needs this wire-level
-    // override, derived from the seed's logged-in state.
-    this.mock("GET /api/alpha/site", () => ({
-      json: {
-        ...this.build.getSiteResponse({ name: this.seed.siteName }),
-        ...(this.seed.loggedInPerson && {
-          my_user: {
-            community_blocks: [],
-            follows: [],
-            instance_blocks: [],
-            local_user_view: {
-              counts: {
-                comment_count: 0,
-                person_id: this.seed.loggedInPerson.id,
-                post_count: 0,
-              },
-              local_user: { show_nsfw: false },
-              person: this.build.person({
-                id: this.seed.loggedInPerson.id,
-                title: this.seed.loggedInPerson.displayName,
-                user_name: this.seed.loggedInPerson.name,
-              }),
-            },
-            moderates: [],
-            person_blocks: [],
-          },
-        }),
-      },
-    }));
+  /** A valid provider wire community response, for follow/community writes */
+  get communityResponse(): unknown {
+    return this.build.communityResponse();
   }
 }
 
@@ -77,7 +50,7 @@ type SharedOperation = Extract<LemmyV1Operation, PiefedOperation>;
 /** Shared operations with a canonical request decoder on both fakes */
 type SharedDecodableOperation = Exclude<
   SharedOperation,
-  "getSite" | "getUnreadCount"
+  "getSite" | "getUnreadCount" | "markAllAsRead"
 >;
 
 type Payload<Operation extends keyof BaseClient> = Partial<
@@ -100,6 +73,13 @@ export interface MatrixApi extends Pick<
   callsTo<Operation extends SharedDecodableOperation>(
     operation: Operation,
   ): Payload<Operation>[];
+
+  /**
+   * A valid provider wire community response. Follow/community write
+   * responses aren't derived (nor canonical), but a spec can echo this so
+   * the write parses on either provider without hardcoding wire shapes.
+   */
+  communityResponse: unknown;
 
   /** The default logged-in-capable user, seeded into the store */
   me: SeedPerson;

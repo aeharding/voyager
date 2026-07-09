@@ -99,3 +99,20 @@ test("boxes page navigates to mentions", async ({ api, page }) => {
   await expect(page).toHaveURL(/\/inbox\/mentions/);
   await expect(page.getByText("someone mentioned you")).toBeVisible();
 });
+
+test("mark all as read clears the unread badge", async ({ api, page }) => {
+  seedNotifications(api);
+
+  await page.goto("/inbox/unread");
+  await expect(page.getByText("someone replied to you")).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Inbox 3" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Mark all as read" }).click();
+  await page.getByRole("button", { name: "Mark All Read" }).click();
+
+  // The fake's mark-all mutates seed state — the refetched derived unread
+  // count is 0, so the tab badge clears
+  await expect(
+    page.getByRole("tab", { name: "Inbox", exact: true }),
+  ).toBeVisible();
+});
