@@ -22,12 +22,7 @@ jobs:
       # Generated fresh from the lockfiles every build so they can never
       # drift. (The flathub repo gets a committed copy at release time.)
       - name: Generate offline dependency sources
-        run: |
-          python3 -m pip install --quiet aiohttp tomlkit \
-            "git+https://github.com/flatpak/flatpak-builder-tools.git@737c0085912f9f7dabf9341d4608e2a77a51a73a#subdirectory=node"
-          curl -s https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/737c0085912f9f7dabf9341d4608e2a77a51a73a/cargo/flatpak-cargo-generator.py -o /tmp/flatpak-cargo-generator.py
-          python3 /tmp/flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
-          flatpak-node-generator pnpm pnpm-lock.yaml --pnpm-store-version v11 -o flatpak/node-sources.json
+        run: bash flatpak/generate-sources.sh
 
       - name: Build flatpak from this commit
         run: |
