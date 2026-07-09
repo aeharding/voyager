@@ -2,6 +2,8 @@ import { isPlatform } from "@ionic/core";
 import { useIonAlert } from "@ionic/react";
 import { createContext, use } from "react";
 
+import { openInBrowser } from "#/helpers/browser";
+
 export function useOnExternalPaymentLinkClickHandler() {
   const [presentAlert] = useIonAlert();
   const iap = use(IAPContext);
@@ -29,7 +31,7 @@ export function useOnExternalPaymentLinkClickHandler() {
         {
           text: "Continue",
           handler: () => {
-            window.open(href, "_blank");
+            openInBrowser(href);
           },
         },
       ],

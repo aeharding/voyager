@@ -7,6 +7,7 @@ import {
   notifyStatusTapThatBrowserWasClosed,
   notifyStatusTapThatBrowserWasOpened,
 } from "#/core/listeners/statusTap";
+import { openInBrowser } from "#/helpers/browser";
 import { isAndroid } from "#/helpers/device";
 import store from "#/store";
 
@@ -71,6 +72,6 @@ export function useOpenNativeBrowserIfPreferred() {
       return;
     }
 
-    window.open(href, "_blank");
+    openInBrowser(href);
   };
 }

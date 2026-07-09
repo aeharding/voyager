@@ -1,7 +1,9 @@
 import { IonItem } from "@ionic/react";
 import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
 
+import { openInBrowser } from "#/helpers/browser";
 import { getPlatform } from "#/helpers/device";
+import { isExternalUrl } from "#/helpers/url";
 import { OLinkHandlerType } from "#/services/db/types";
 import store from "#/store";
 
@@ -80,6 +82,15 @@ export function useInterceptHrefWithInAppBrowserIfNeeded() {
     onClick?.(e);
 
     if (e.defaultPrevented) return;
+
+    // The Tauri webview can't open target="_blank",
+    // so external links must be explicitly handed to the browser
+    if (href && getPlatform() === "tauri" && isExternalUrl(href)) {
+      e.preventDefault();
+      e.stopPropagation();
+      openInBrowser(href);
+      return;
+    }
 
     if (href && shouldOpenWithInAppBrowser(href)) {
       e.preventDefault();
