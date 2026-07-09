@@ -1,4 +1,5 @@
 import { Share } from "@capacitor/share";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { ShareSafari } from "capacitor-share-safari";
 
 import { getPlatform, isAndroid } from "#/helpers/device";
@@ -16,7 +17,8 @@ export function shareUrl(url: string) {
 }
 
 export function canShare() {
-  return getPlatform() === "capacitor" || "share" in navigator;
+  // tauri "shares" by copying to clipboard
+  return getPlatform() !== "web" || "share" in navigator;
 }
 
 export function useShare() {
@@ -25,6 +27,18 @@ export function useShare() {
   return onShare;
 
   async function onShare(url: string) {
+    // No system share sheet on Linux. Copy via IPC — unlike
+    // navigator.clipboard, no user activation required
+    if (getPlatform() === "tauri") {
+      await writeText(url);
+
+      presentToast({
+        message: "Copied link!",
+      });
+
+      return;
+    }
+
     try {
       await shareUrl(url);
     } catch (error) {

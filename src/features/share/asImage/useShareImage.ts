@@ -61,9 +61,9 @@ const domToBlobOptions: DomToBlobOptions = {
         };
       case "tauri":
         return async (url) => {
-          // App-internal (tauri://) resources can't be fetch()ed
-          // by modern-screenshot, but can be drawn (same origin)
-          if (!url.startsWith("http")) return imgToDataUrl(url);
+          // Pass through app-internal (tauri://) resources
+          // (only known case, the watermark logo, is inlined at build time)
+          if (!url.startsWith("http")) return false;
 
           // Attempt upgrade to https (insecure will be blocked)
           if (url.startsWith("http://")) {
@@ -88,19 +88,6 @@ const domToBlobOptions: DomToBlobOptions = {
     }
   })(),
 };
-
-async function imgToDataUrl(url: string): Promise<string> {
-  const img = new Image();
-  img.src = url;
-  await img.decode();
-
-  const canvas = document.createElement("canvas");
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  canvas.getContext("2d")!.drawImage(img, 0, 0);
-
-  return canvas.toDataURL();
-}
 
 const shareAsImageRenderRoot = document.querySelector(
   "#share-as-image-root",
@@ -187,7 +174,21 @@ export default function useShareImage({
 
       if (!path) return;
 
-      await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
+      try {
+        await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
+      } catch (error) {
+        presentToast({
+          message: "Error saving image",
+          fullscreen: true,
+        });
+
+        throw error;
+      }
+
+      presentToast({
+        message: "Image saved!",
+        fullscreen: true,
+      });
     } else if ("canShare" in navigator && navigator.canShare(webSharePayload)) {
       navigator.share(webSharePayload);
     } else {
