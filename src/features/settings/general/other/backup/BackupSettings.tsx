@@ -3,7 +3,7 @@ import { Share } from "@capacitor/share";
 import { IonItem, IonLabel, useIonActionSheet } from "@ionic/react";
 import "dexie-export-import";
 
-import { isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
 
 import { createBackup, isBackup, restoreFromBackup } from "./helpers";
@@ -28,7 +28,7 @@ export default function BackupSettings() {
 
               // MARK - annoying platform specific logic to save the file
 
-              if (isNative()) {
+              if (getPlatform() === "capacitor") {
                 if (isAndroid()) {
                   // IDK a good way to show a file save prompt in Android
                   await Filesystem.writeFile({

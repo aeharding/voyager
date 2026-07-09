@@ -1,12 +1,11 @@
 import { ThreadiverseClient } from "threadiverse";
 
-import { isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 
-import nativeFetch from "./nativeFetch";
+import platformFetch from "./platformFetch";
 
-const usingNativeFetch = isNative();
-
-const USER_AGENT = "VoyagerApp/1.0";
+// Also hardcoded in capacitor.config.ts appendUserAgent (can't import there)
+export const USER_AGENT = "VoyagerApp/1.0";
 
 export function buildBaseHeaders({
   android,
@@ -29,7 +28,7 @@ export function buildBaseHeaders({
 
 const BASE_HEADERS = buildBaseHeaders({
   android: isAndroid(),
-  native: isNative(),
+  native: getPlatform() === "capacitor",
 });
 
 export function buildBaseClientUrl(url: string): string {
@@ -42,7 +41,7 @@ export function buildBaseClientUrl(url: string): string {
 
 export function getClient(url: string, jwt?: string) {
   return new ThreadiverseClient(buildBaseClientUrl(url), {
-    fetchFunction: usingNativeFetch ? nativeFetch : fetch.bind(globalThis),
+    fetchFunction: platformFetch,
     headers: jwt
       ? {
           ...BASE_HEADERS,

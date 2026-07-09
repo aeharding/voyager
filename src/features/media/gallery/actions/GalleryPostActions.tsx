@@ -8,7 +8,7 @@ import { PostView } from "threadiverse";
 import { InFeedContext } from "#/features/feed/Feed";
 import MoreActions from "#/features/post/shared/MoreActions";
 import { useShare } from "#/features/share/share";
-import { getShareIcon, isNative } from "#/helpers/device";
+import { getPlatform, getShareIcon } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
 import { useOpenPostInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
@@ -42,7 +42,7 @@ export default function GalleryPostActions({
   const share = useShare();
 
   async function shareImage() {
-    if (!isNative()) {
+    if (getPlatform() !== "capacitor") {
       share(src);
       return;
     }
@@ -96,7 +96,7 @@ export default function GalleryPostActions({
           >
             <IonIcon icon={getShareIcon()} />
           </button>
-          {isNative() ? (
+          {getPlatform() === "capacitor" ? (
             <GalleryActions post={post} src={src} videoRef={videoRef} />
           ) : (
             <InFeedContext value={true}>

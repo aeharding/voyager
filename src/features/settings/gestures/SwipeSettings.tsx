@@ -22,7 +22,7 @@ import { useState } from "react";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import SettingSelector from "#/features/settings/shared/SettingSelector";
-import { getShareIcon, isNative } from "#/helpers/device";
+import { getPlatform, getShareIcon } from "#/helpers/device";
 import {
   OLongSwipeTriggerPointType,
   OSwipeActionAll,
@@ -73,7 +73,7 @@ export default function SwipeSettings() {
 
     // Web clients rely on navigator.share, which requires initiating
     // share with a gesture. That doesn't work super well, so disable
-    if (!isNative()) delete filteredOptions["Share"];
+    if (getPlatform() !== "capacitor") delete filteredOptions["Share"];
 
     return filteredOptions;
   }

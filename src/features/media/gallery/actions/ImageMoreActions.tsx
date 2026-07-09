@@ -1,4 +1,4 @@
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { useAppSelector } from "#/store";
 
 import AltText from "./AltText";
@@ -28,7 +28,7 @@ export default function MediaMoreActions({
 
   return (
     <>
-      {isNative() && (
+      {getPlatform() === "capacitor" && (
         <div className={styles.topContainer}>
           <GalleryActions src={src} videoRef={videoRef} />
         </div>

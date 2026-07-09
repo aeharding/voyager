@@ -4,6 +4,8 @@ import { albumsOutline, chatboxOutline } from "ionicons/icons";
 import useLemmyUrlHandler, {
   ObjectType,
 } from "#/features/shared/useLemmyUrlHandler";
+import { openInBrowser } from "#/helpers/browser";
+import { getPlatform } from "#/helpers/device";
 
 interface SourceUrlButtonProps extends React.ComponentPropsWithoutRef<
   typeof IonButton
@@ -39,9 +41,15 @@ export default function SourceUrlButton({
 
         if (e.metaKey || e.ctrlKey) return;
 
+        // target="_blank" is a no-op in the Tauri webview
+        if (getPlatform() === "tauri") e.preventDefault();
+
         const result = await redirectToLemmyObjectIfNeeded(sourceUrl, e);
 
-        if (result !== "success") return;
+        if (result !== "success") {
+          if (getPlatform() === "tauri") openInBrowser(sourceUrl);
+          return;
+        }
 
         dismiss();
         return false;

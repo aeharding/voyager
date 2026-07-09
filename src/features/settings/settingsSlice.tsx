@@ -23,7 +23,7 @@ import {
   VgerPostSortTypeByMode,
 } from "#/features/feed/sort/PostSort";
 import { VgerSearchSortTypeByMode } from "#/features/feed/sort/SearchSort";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import { VgerCommunitySortTypeByMode } from "#/routes/pages/search/results/CommunitySort";
@@ -102,6 +102,7 @@ export interface SettingsState {
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
       profileLabel: ProfileLabelType;
+      showSystemTitlebar: boolean;
       twoColumnLayout: TwoColumnLayout;
     };
     posts: {
@@ -232,7 +233,10 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
-      twoColumnLayout: OTwoColumnLayout.Off,
+      showSystemTitlebar: false,
+      // Desktop app: wide window, so default to two columns
+      twoColumnLayout:
+        getPlatform() === "tauri" ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     large: {
@@ -247,7 +251,11 @@ const baseState: SettingsState = {
       rememberType: false,
       showCommunityIcons: true,
       subscribedIcon: OShowSubscribedIcon.Never,
-      type: OPostAppearanceType.Large,
+      // Desktop app: information-dense UI fits desktop better
+      type:
+        getPlatform() === "tauri"
+          ? OPostAppearanceType.Compact
+          : OPostAppearanceType.Large,
     },
     theme: "default",
     votesTheme: "lemmy",
@@ -289,9 +297,10 @@ const baseState: SettingsState = {
     defaultFeed: undefined,
     // TODO: Enable by default in late June 2025
     // (devices have been updated to support go.getvoyager.app links)
-    defaultShare: isNative()
-      ? OPostCommentShareType.DeepLink
-      : OPostCommentShareType.Local,
+    defaultShare:
+      getPlatform() === "capacitor"
+        ? OPostCommentShareType.DeepLink
+        : OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     media: {
@@ -617,6 +626,10 @@ export const settingsSlice = createSlice({
       state.general.comments.showJumpButton = action.payload;
       db.setSetting("show_jump_button", action.payload);
     },
+    setShowSystemTitlebar(state, action: PayloadAction<boolean>) {
+      state.appearance.general.showSystemTitlebar = action.payload;
+      db.setSetting("show_system_titlebar", action.payload);
+    },
     setSubscribedIcon(state, action: PayloadAction<ShowSubscribedIcon>) {
       state.appearance.posts.subscribedIcon = action.payload;
 
@@ -940,6 +953,7 @@ export const {
   setShowHiddenInCommunities,
   setShowHideReadButton,
   setShowJumpButton,
+  setShowSystemTitlebar,
   setSubscribedIcon,
   setTagsEnabled,
   setTagsHideInstance,
@@ -989,6 +1003,7 @@ function hydrateStateWithGlobalSettings(
       },
       general: {
         profileLabel: settings.profile_label,
+        showSystemTitlebar: settings.show_system_titlebar,
         twoColumnLayout: settings.two_column_layout,
         userInstanceUrlDisplay: settings.user_instance_url_display,
       },

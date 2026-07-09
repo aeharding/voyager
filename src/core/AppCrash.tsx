@@ -3,7 +3,7 @@ import { logoGithub } from "ionicons/icons";
 import { FallbackProps } from "react-error-boundary";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
-import { isInstalled, isNative } from "#/helpers/device";
+import { getPlatform, isInstalled } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 import { memoryHistory } from "#/routes/common/Router";
 import store from "#/store";
@@ -27,7 +27,7 @@ export default function AppCrash({ error }: FallbackProps) {
   - window.location.href: \`${window.location.href}\`
   - react-router location.pathname: \`${location.pathname}\`
   - Logged in? \`${loggedIn}\`
-  - Native app? \`${isNative()}\`
+  - Native app? \`${getPlatform() === "capacitor"}\`
   - Installed to home screen? \`${isInstalled()}\`
   - APP_VERSION: \`${import.meta.env.APP_VERSION}\`
   - APP_BUILD: \`${import.meta.env.APP_BUILD}\`
@@ -86,7 +86,9 @@ Error: \`\`${error}\`\`
 
       <div>
         You can also try reloading the app to see if that solves the issue.
-        {isNative() ? " Check the app store for an update, too." : ""}
+        {getPlatform() === "capacitor"
+          ? " Check the app store for an update, too."
+          : ""}
       </div>
       <IonButton onClick={unloadServiceWorkerAndRefresh}>Reload app</IonButton>
 

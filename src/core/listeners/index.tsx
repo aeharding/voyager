@@ -5,6 +5,7 @@ import AppUrlListener from "./AppUrlListener";
 import DatabaseErrorListener from "./DatabaseErrorListener";
 import HapticsListener from "./HapticsListener";
 import ServerConnectivity from "./ServerConnectivity";
+import TauriListener from "./TauriListener";
 import UnsupportedWebviewListener from "./UnsupportedWebviewListener";
 // Listeners
 import "./db";
@@ -22,6 +23,7 @@ export default function Listeners() {
       <AppUrlListener />
       <TextRecoveryStartupPrompt />
       <DatabaseErrorListener />
+      <TauriListener />
       <UnsupportedWebviewListener />
       <ServerConnectivity />
     </>

@@ -1,13 +1,17 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeFile } from "@tauri-apps/plugin-fs";
+import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 import { domToBlob, Options as DomToBlobOptions } from "modern-screenshot";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
 import { buildImageSrc } from "#/features/media/CachedImg";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
+import { USER_AGENT } from "#/services/client";
 import { getServerUrl } from "#/services/nativeFetch";
 
 import includeStyleProperties from "./includeStyleProperties";
@@ -25,35 +29,64 @@ const domToBlobOptions: DomToBlobOptions = {
 
     return node.tagName !== "VIDEO";
   },
-  fetchFn: isNative()
-    ? async (url) => {
-        // Pass through relative URLs to browser fetching
-        // !: running in native environment
-        if (url.startsWith(`${getServerUrl!()}/`)) {
-          return false;
-        }
+  fetchFn: (() => {
+    switch (getPlatform()) {
+      case "capacitor":
+        return async (url) => {
+          // Pass through relative URLs to browser fetching
+          // !: running in native environment
+          if (url.startsWith(`${getServerUrl!()}/`)) {
+            return false;
+          }
 
-        // Attempt upgrade to https (insecure will be blocked)
-        if (url.startsWith("http://")) {
-          url = url.replace(/^http:\/\//, "https://");
-        }
+          // Attempt upgrade to https (insecure will be blocked)
+          if (url.startsWith("http://")) {
+            url = url.replace(/^http:\/\//, "https://");
+          }
 
-        const nativeResponse = await CapacitorHttp.get({
-          // if pictrs, convert large gifs to jpg
-          url: buildImageSrc(url, { format: "jpg" }),
-          responseType: "blob",
-          headers: {
-            "User-Agent": "VoyagerApp/1.0",
-          },
-        });
+          const nativeResponse = await CapacitorHttp.get({
+            // if pictrs, convert large gifs to jpg
+            url: buildImageSrc(url, { format: "jpg" }),
+            responseType: "blob",
+            headers: {
+              "User-Agent": USER_AGENT,
+            },
+          });
 
-        // Workaround that will probably break in a future capacitor upgrade
-        // https://github.com/ionic-team/capacitor/issues/6126
-        return `data:${
-          nativeResponse.headers["Content-Type"] || "image/png"
-        };base64,${nativeResponse.data}`;
-      }
-    : undefined,
+          // Workaround that will probably break in a future capacitor upgrade
+          // https://github.com/ionic-team/capacitor/issues/6126
+          return `data:${
+            nativeResponse.headers["Content-Type"] || "image/png"
+          };base64,${nativeResponse.data}`;
+        };
+      case "tauri":
+        return async (url) => {
+          // Pass through app-internal (tauri://) resources
+          // (only known case, the watermark logo, is inlined at build time)
+          if (!url.startsWith("http")) return false;
+
+          // Attempt upgrade to https (insecure will be blocked)
+          if (url.startsWith("http://")) {
+            url = url.replace(/^http:\/\//, "https://");
+          }
+
+          const response = await tauriFetch(
+            // if pictrs, convert to jpg (bypasses CORS +
+            // AVIF undecodable by some webkitgtk builds)
+            buildImageSrc(url, { format: "jpg" }),
+            {
+              headers: {
+                "User-Agent": USER_AGENT,
+              },
+            },
+          );
+
+          return blobToDataURL(await response.blob());
+        };
+      case "web":
+        return undefined;
+    }
+  })(),
 };
 
 const shareAsImageRenderRoot = document.querySelector(
@@ -122,7 +155,7 @@ export default function useShareImage({
 
     const webSharePayload: ShareData = { files: [file] };
 
-    if (isNative()) {
+    if (getPlatform() === "capacitor") {
       const data = await blobToString(blob);
       const file = await Filesystem.writeFile({
         data,
@@ -131,6 +164,31 @@ export default function useShareImage({
       });
       await Share.share({ files: [file.uri] });
       await Filesystem.deleteFile({ path: file.uri });
+    } else if (getPlatform() === "tauri") {
+      // No system share sheet on Linux — native save dialog instead
+      // (the webview can't download files)
+      const path = await save({
+        defaultPath: filename,
+        filters: [{ name: "PNG image", extensions: ["png"] }],
+      });
+
+      if (!path) return;
+
+      try {
+        await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
+      } catch (error) {
+        presentToast({
+          message: "Error saving image",
+          fullscreen: true,
+        });
+
+        throw error;
+      }
+
+      presentToast({
+        message: "Image saved!",
+        fullscreen: true,
+      });
     } else if ("canShare" in navigator && navigator.canShare(webSharePayload)) {
       navigator.share(webSharePayload);
     } else {

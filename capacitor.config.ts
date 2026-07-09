@@ -4,7 +4,7 @@ import { KeyboardResize } from "@capacitor/keyboard";
 const config: CapacitorConfig = {
   appId: "app.vger.voyager",
   appName: "Voyager",
-  appendUserAgent: "VoyagerApp/1.0",
+  appendUserAgent: "VoyagerApp/1.0", // Keep in sync with USER_AGENT in src/services/client.ts
   webDir: "dist",
   server: {
     androidScheme: "https",

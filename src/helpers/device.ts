@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { isPlatform } from "@ionic/core";
+import { isTauri as detectTauri } from "@tauri-apps/api/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "es-toolkit";
 import {
@@ -12,8 +13,16 @@ import { UAParser } from "ua-parser-js";
 
 import { getDeviceMode } from "#/features/settings/syncStorage";
 
-export const isNative = memoize(() => {
-  return Capacitor.isNativePlatform();
+export type Platform = "capacitor" | "tauri" | "web";
+
+/**
+ * The shell the app is running in: Capacitor (iOS/Android),
+ * Tauri (Linux desktop), or a plain web browser/PWA
+ */
+export const getPlatform = memoize((): Platform => {
+  if (Capacitor.isNativePlatform()) return "capacitor";
+  if (detectTauri()) return "tauri";
+  return "web";
 });
 
 /**
@@ -25,11 +34,14 @@ export const isNative = memoize(() => {
  */
 export function canBypassCors() {
   if (import.meta.env.VITE_FORCE_NO_CORS) return true;
-  return isNative();
+  return getPlatform() !== "web";
 }
 
 export function isInstalled(): boolean {
-  return isNative() || window.matchMedia("(display-mode: standalone)").matches;
+  return (
+    getPlatform() !== "web" ||
+    window.matchMedia("(display-mode: standalone)").matches
+  );
 }
 
 export const ua = new UAParser(navigator.userAgent);
@@ -80,7 +92,7 @@ export let androidNavMode: Promise<NavModes> | undefined;
 
 export function getAndroidNavMode() {
   if (androidNavMode !== undefined) return androidNavMode;
-  if (!isAndroid() || !isNative()) return;
+  if (!isAndroid() || getPlatform() !== "capacitor") return;
 
   const promise = NavMode.getNavigationMode().then(({ mode }) => mode);
   androidNavMode = promise;

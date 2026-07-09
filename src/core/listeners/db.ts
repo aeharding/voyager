@@ -1,14 +1,14 @@
 import { App } from "@capacitor/app";
 import Dexie from "dexie";
 
-import { isAppleDeviceInstallable, isNative } from "#/helpers/device";
+import { getPlatform, isAppleDeviceInstallable } from "#/helpers/device";
 
 const DB_CLOSED_STORAGE_KEY = "db-closed";
 
 /**
  * https://github.com/ionic-team/cordova-plugin-ionic-webview/issues/354#issuecomment-1305878417
  */
-if (isNative() && isAppleDeviceInstallable()) {
+if (getPlatform() === "capacitor" && isAppleDeviceInstallable()) {
   App.addListener("appStateChange", async (state) => {
     const dbLastClosed = +(localStorage.getItem(DB_CLOSED_STORAGE_KEY) || 0);
     const thirtySecondsAgo = Date.now() - 30_000;

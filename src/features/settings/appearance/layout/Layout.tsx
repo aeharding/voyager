@@ -1,8 +1,10 @@
 import { IonLabel, IonList } from "@ionic/react";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
+import { getPlatform } from "#/helpers/device";
 import useIsDeviceTwoColumnCapable from "#/routes/twoColumn/useIsDeviceTwoColumnCapable";
 
+import ShowSystemTitlebar from "./ShowSystemTitlebar";
 import TwoColumn from "./TwoColumn";
 
 export default function Layout() {
@@ -17,6 +19,7 @@ export default function Layout() {
       </ListHeader>
       <IonList inset>
         <TwoColumn />
+        {getPlatform() === "tauri" && <ShowSystemTitlebar />}
       </IonList>
     </>
   );

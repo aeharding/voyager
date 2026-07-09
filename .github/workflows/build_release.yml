@@ -146,6 +146,92 @@ jobs:
           name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
           path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
 
+  build_desktop:
+    runs-on: ${{ matrix.runner }}
+    # aarch64 is best-effort — don't block the release on it
+    continue-on-error: ${{ matrix.arch == 'aarch64' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            arch: x86_64
+          - runner: ubuntu-24.04-arm
+            arch: aarch64
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download bumped version artifacts
+        if: inputs.is_main_build
+        uses: actions/download-artifact@v8
+        with:
+          name: release-data
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .tool-versions
+          cache: pnpm
+
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Import GPG Key for Signing
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.LINUX_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+
+      - name: 📦 Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Build (Tauri)
+        run: pnpm tauri build
+        env:
+          SIGN: "1"
+
+          TAURI_SIGNING_RPM_KEY: ${{ secrets.LINUX_GPG_PRIVATE_KEY }}
+          TAURI_SIGNING_RPM_KEY_PASSPHRASE: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+
+          APPIMAGETOOL_SIGN_PASSPHRASE: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+          APPIMAGETOOL_FORCE_SIGN: "1"
+
+      - name: Collect artifacts
+        run: |
+          mkdir out
+          mv src-tauri/target/release/bundle/deb/*.deb out/Voyager-Linux-${{ matrix.arch }}-$BUILD_LABEL.deb
+          mv src-tauri/target/release/bundle/rpm/*.rpm out/Voyager-Linux-${{ matrix.arch }}-$BUILD_LABEL.rpm
+          mv src-tauri/target/release/bundle/appimage/*.AppImage out/Voyager-Linux-${{ matrix.arch }}-$BUILD_LABEL.AppImage
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: out/*
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Voyager-Desktop-${{ matrix.arch }}-${{ env.BUILD_LABEL }}
+          path: out/*
+
   build_android:
     runs-on: ubuntu-latest
     permissions:
@@ -274,6 +360,7 @@ jobs:
       - build_ios
       - build_android_play
       - build_android
+      - build_desktop
       - build_docker
     if: inputs.is_main_build != true
     runs-on: ubuntu-latest
@@ -299,6 +386,13 @@ jobs:
         with:
           name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
           path: artifacts/android
+
+      - name: Download Desktop Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: Voyager-Desktop-*
+          path: artifacts/desktop
+          merge-multiple: true
 
         # https://github.com/softprops/action-gh-release/pull/372#issuecomment-1642643937
       - name: Changelog
@@ -338,4 +432,5 @@ jobs:
           files: |
             artifacts/ios/*
             artifacts/android/*
+            artifacts/desktop/*
             artifacts/web/*

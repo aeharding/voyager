@@ -1,0 +1,77 @@
+/* Invisible resize zones (Linux doesn't resize undecorated windows natively) */
+
+.n,
+.s,
+.e,
+.w,
+.ne,
+.nw,
+.se,
+.sw {
+  position: fixed;
+  z-index: 999999;
+}
+
+.n {
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  cursor: n-resize;
+}
+
+.s {
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  cursor: s-resize;
+}
+
+.e {
+  top: 12px;
+  bottom: 12px;
+  right: 0;
+  width: 4px;
+  cursor: e-resize;
+}
+
+.w {
+  top: 12px;
+  bottom: 12px;
+  left: 0;
+  width: 4px;
+  cursor: w-resize;
+}
+
+.ne {
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: ne-resize;
+}
+
+.nw {
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nw-resize;
+}
+
+.se {
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: se-resize;
+}
+
+.sw {
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  cursor: sw-resize;
+}

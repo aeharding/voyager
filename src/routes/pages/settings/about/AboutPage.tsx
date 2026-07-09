@@ -26,7 +26,7 @@ import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
 import { AppPage } from "#/helpers/AppPage";
-import { getShareIcon, isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, getShareIcon, isAndroid } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
@@ -60,7 +60,7 @@ export default function AboutPage() {
   }
 
   const rateVoyager = (() => {
-    if (!isNative()) return;
+    if (getPlatform() !== "capacitor") return;
 
     const href = isAndroid()
       ? "https://play.google.com/store/apps/details?id=app.vger.voyager"

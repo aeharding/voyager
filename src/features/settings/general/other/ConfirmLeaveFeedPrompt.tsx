@@ -1,11 +1,12 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { isAndroid, isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setConfirmLeaveFeedPrompt } from "../../settingsSlice";
 
-export const canConfigureConfirmLeaveFeedPrompt = isAndroid() && isNative();
+export const canConfigureConfirmLeaveFeedPrompt =
+  isAndroid() && getPlatform() === "capacitor";
 
 export default function ConfirmLeaveFeedPrompt() {
   const dispatch = useAppDispatch();

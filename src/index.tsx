@@ -7,7 +7,7 @@ import { createRoot } from "react-dom/client";
 
 import App from "./core/App";
 import "./features/icons";
-import { getAndroidNavMode, isNative } from "./helpers/device";
+import { getAndroidNavMode, getPlatform } from "./helpers/device";
 
 // MARK: User agent config
 
@@ -15,7 +15,7 @@ history.scrollRestoration = "manual";
 
 (async () => {
   // Native apps should silently accept without user prompt
-  if (isNative()) await navigator.storage.persist();
+  if (getPlatform() === "capacitor") await navigator.storage.persist();
 })();
 
 // MARK: App initialization

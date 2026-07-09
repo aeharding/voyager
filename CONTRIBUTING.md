@@ -90,6 +90,24 @@ You may need to sync. `File -> Sync Project with Gradle Files`
 
 Finally, can run the project with `Ctrl+R`.
 
+### Linux Desktop App (Tauri)
+
+To build the Linux desktop app, install:
+
+1. node, recommended via [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
+2. [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) (Rust and system packages)
+
+Then, in Voyager's source code directory:
+
+```sh
+corepack enable
+asdf reshim nodejs
+pnpm install
+pnpm tauri dev
+```
+
+To build distributable bundles (`deb`, `rpm`, `AppImage`), run `pnpm tauri build`.
+
 ### Testing
 
 Voyager uses [Vitest](https://vitest.dev) for unit tests. You can run the test suite with:

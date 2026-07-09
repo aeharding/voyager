@@ -3,7 +3,7 @@ import { noop } from "es-toolkit";
 import React, { createContext, useState } from "react";
 import { Prompt, useLocation } from "react-router";
 
-import { isNative } from "#/helpers/device";
+import { getPlatform } from "#/helpers/device";
 import useStateRef from "#/helpers/useStateRef";
 import { clearRecoveredText } from "#/helpers/useTextRecovery";
 import { useAppDispatch } from "#/store";
@@ -126,7 +126,10 @@ export function DynamicDismissableModal({
         })
       : renderModalContents;
 
-  const Modal = isNative() ? IonModal : IonModalAutosizedForOnScreenKeyboard;
+  const Modal =
+    getPlatform() === "capacitor"
+      ? IonModal
+      : IonModalAutosizedForOnScreenKeyboard;
 
   return (
     <>

@@ -7,6 +7,9 @@ import { defineConfig } from "vitest/config";
 
 import manifest from "./manifest.json";
 
+// Set by the tauri CLI for both `tauri dev` and `tauri build`
+const isTauriBuild = !!process.env.TAURI_ENV_PLATFORM;
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -16,6 +19,10 @@ export default defineConfig({
     }),
     svgr(),
     VitePWA({
+      // Tauri serves local assets and updates via app releases,
+      // so a service worker is useless (registration is skipped,
+      // virtual:pwa-register/react resolves to a no-op)
+      disable: isTauriBuild,
       devOptions: {
         enabled: true,
         suppressWarnings: true,
@@ -34,12 +41,17 @@ export default defineConfig({
         ],
       },
     }),
-    legacy({
-      // es.array.at: Voyager code iOS 15.2
-      // es.object.has-own: ReactMarkdown iOS 15.2
-      modernPolyfills: ["es.array.at", "es.object.has-own"],
-      renderLegacyChunks: false,
-    }),
+    // WebKitGTK doesn't need iOS 15 polyfills
+    ...(isTauriBuild
+      ? []
+      : [
+          legacy({
+            // es.array.at: Voyager code iOS 15.2
+            // es.object.has-own: ReactMarkdown iOS 15.2
+            modernPolyfills: ["es.array.at", "es.object.has-own"],
+            renderLegacyChunks: false,
+          }),
+        ]),
   ],
   envPrefix: [
     "VITE_",
@@ -70,6 +82,12 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    // tauri.conf.json devUrl expects a fixed port
+    strictPort: true,
+  },
+  // Don't clear tauri CLI output
+  clearScreen: false,
   test: {
     exclude: ["**/e2e/**", "**/node_modules/**"],
     globals: true,

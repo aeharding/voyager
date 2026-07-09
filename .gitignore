@@ -12,6 +12,8 @@
 /build
 /dist
 /dev-dist
+/src-tauri/target
+/src-tauri/gen
 
 # misc
 .DS_Store

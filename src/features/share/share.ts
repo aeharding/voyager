@@ -1,14 +1,14 @@
 import { Share } from "@capacitor/share";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { ShareSafari } from "capacitor-share-safari";
 
-import { isAndroid } from "#/helpers/device";
-import { isNative } from "#/helpers/device";
+import { getPlatform, isAndroid } from "#/helpers/device";
 import useAppToast from "#/helpers/useAppToast";
 
 export function shareUrl(url: string) {
   // // For iOS, use custom plugin to add "Open in Safari"
   // // https://stackoverflow.com/a/73964790/1319878
-  if (isNative() && !isAndroid()) {
+  if (getPlatform() === "capacitor" && !isAndroid()) {
     ShareSafari.share({ url });
     return;
   }
@@ -17,7 +17,8 @@ export function shareUrl(url: string) {
 }
 
 export function canShare() {
-  return isNative() || "share" in navigator;
+  // tauri "shares" by copying to clipboard
+  return getPlatform() !== "web" || "share" in navigator;
 }
 
 export function useShare() {
@@ -26,10 +27,22 @@ export function useShare() {
   return onShare;
 
   async function onShare(url: string) {
+    // No system share sheet on Linux. Copy via IPC — unlike
+    // navigator.clipboard, no user activation required
+    if (getPlatform() === "tauri") {
+      await writeText(url);
+
+      presentToast({
+        message: "Copied link!",
+      });
+
+      return;
+    }
+
     try {
       await shareUrl(url);
     } catch (error) {
-      if (isNative()) throw error;
+      if (getPlatform() === "capacitor") throw error;
 
       if (error instanceof DOMException) {
         switch (error.name) {

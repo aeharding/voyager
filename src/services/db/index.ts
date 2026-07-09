@@ -79,6 +79,7 @@ export interface GlobalSettingValueTypes {
   show_hidden_in_communities: boolean;
   show_hide_read_button: boolean;
   show_jump_button: boolean;
+  show_system_titlebar: boolean;
   subscribed_icon: types.ShowSubscribedIcon;
   tags_enabled: boolean;
   tags_hide_instance: boolean;
@@ -164,6 +165,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "show_hidden_in_communities",
   "show_hide_read_button",
   "show_jump_button",
+  "show_system_titlebar",
   "subscribed_icon",
   "tags_enabled",
   "tags_hide_instance",

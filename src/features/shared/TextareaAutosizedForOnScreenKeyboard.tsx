@@ -2,7 +2,10 @@ import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
-import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
+import {
+  getPlatform,
+  isAppleDeviceInstalledToHomescreen,
+} from "#/helpers/device";
 import { fixSafariAutoscroll } from "#/helpers/safari";
 
 interface TextareaAutosizedForOnScreenKeyboardProps extends Omit<
@@ -18,7 +21,11 @@ export default function TextareaAutosizedForOnScreenKeyboard(
   return (
     <TextareaAutosize
       onFocus={(e) => {
-        if (!isAppleDeviceInstalledToHomescreen() || isNative()) return;
+        if (
+          !isAppleDeviceInstalledToHomescreen() ||
+          getPlatform() === "capacitor"
+        )
+          return;
 
         // https://stackoverflow.com/a/74902393/1319878
         const target = e.currentTarget;

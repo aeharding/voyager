@@ -92,6 +92,49 @@ jobs:
           name: Voyager-Android-${{ github.sha }}-unsigned
           path: Voyager-Android-${{ github.sha }}-unsigned.apk
 
+  build_desktop:
+    name: desktop
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .tool-versions
+          cache: pnpm
+
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: 📦 Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Build debug deb (Tauri)
+        run: pnpm tauri build --debug --bundles deb
+
+      - run: mv src-tauri/target/debug/bundle/deb/*.deb Voyager-Linux-${{ github.sha }}-debug.deb
+
+      - name: Upload Linux deb
+        uses: actions/upload-artifact@v7
+        with:
+          name: Voyager-Linux-${{ github.sha }}-debug
+          path: Voyager-Linux-${{ github.sha }}-debug.deb
+
   build_ios:
     name: ios
     runs-on: macos-26

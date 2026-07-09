@@ -4,15 +4,17 @@ import { noop } from "es-toolkit";
 import React, { createContext, useState } from "react";
 
 import {
+  getPlatform,
   isAppleDeviceInstalledToHomescreen,
-  isNative,
   isTouchDevice,
 } from "#/helpers/device";
 
 // There is some strange behavior that needs to be sorted before this
 // can be enabled
 export const isSafariFeedHackEnabled =
-  !isNative() && isAppleDeviceInstalledToHomescreen() && isTouchDevice();
+  getPlatform() !== "capacitor" &&
+  isAppleDeviceInstalledToHomescreen() &&
+  isTouchDevice();
 
 // All of this terrible code is to deal with safari being safari >:(
 // https://bugs.webkit.org/show_bug.cgi?id=222654

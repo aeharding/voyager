@@ -5,7 +5,7 @@ import { createContext, MouseEvent, use, useRef } from "react";
 
 import Toast, { ToastHandler } from "#/features/shared/toast/Toast";
 
-import { isNative } from "./device";
+import { getPlatform } from "./device";
 import useHapticFeedback from "./useHapticFeedback";
 
 import styles from "./useAppToast.module.css";
@@ -43,7 +43,7 @@ export function AppToastProvider({ children }: React.PropsWithChildren) {
         fullscreen: true,
       };
 
-    if (isNative())
+    if (getPlatform() === "capacitor")
       vibrate({
         type: (() => {
           switch (options.color) {
