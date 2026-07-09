@@ -3,7 +3,9 @@
 Flathub builds are fully offline: `cargo-sources.json` and
 `node-sources.json` pin every dependency from the lockfiles.
 
-Regenerate when `Cargo.lock` or `pnpm-lock.yaml` change:
+They are NOT committed here — CI regenerates them from the lockfiles on
+every build, so they can't drift. Committed copies are only needed in the
+flathub repo, generated at release time:
 
 ```sh
 docker run --rm -v "$PWD":/w python:3.12-slim sh -c '
