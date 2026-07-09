@@ -28,7 +28,7 @@ jobs:
         run: |
           sed -i "s|commit: FLATPAK_GIT_COMMIT|commit: ${{ github.event.pull_request.head.sha || github.sha }}|" flatpak/app.vger.voyager.yml
 
-      - uses: flathub-infra/flatpak-github-actions/flatpak-builder@master
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@401fe28a8384095fc1531b9d320b292f0ee45adb # v6.7
         with:
           bundle: voyager.flatpak
           manifest-path: flatpak/app.vger.voyager.yml
