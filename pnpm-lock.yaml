@@ -231,8 +231,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: ^0.19.0
-        version: 0.19.0(supports-color@7.2.0)
+        specifier: ^0.21.0
+        version: 0.21.0(supports-color@7.2.0)
       ua-parser-js:
         specifier: ^2.0.10
         version: 2.0.10
@@ -6290,8 +6290,8 @@ packages:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
 
-  threadiverse@0.19.0:
-    resolution: {integrity: sha512-Cm24r1LbE5XtKIzUUXd+pRrylGB+XibxnzNVRg8DkcXvz1oOyvmgF/sRPI/QG0CSFnaXYDcFqGK8DaJZllwj3w==}
+  threadiverse@0.21.0:
+    resolution: {integrity: sha512-pPfS1hbuiosySD2/S1QvU/egDTnQmmwSBx/FZZ5y6rBvulmvB6mW8jNVmEEUDgpDizEWAZkYQh2nZpev5wOAMw==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -13903,7 +13903,7 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.19.0(supports-color@7.2.0):
+  threadiverse@0.21.0(supports-color@7.2.0):
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client-v0: lemmy-js-client@0.20.0-alpha.18
