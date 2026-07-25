@@ -1,53 +1,37 @@
 // Comment thread interactions: nested rendering + collapse/expand, comment
 // sort switching, voting/saving via the comment action sheet, and fetching
 // missing children ("N more replies") for deep threads.
-//
-// Stays lemmyv1-only: sort payloads are mode-specific ("new" here vs
-// piefed's "New"), and the more-replies response is a wire-level v1 payload
-// (the fakes have no max_depth model). Vote/save are now seed-derived.
 
 import type { Page } from "@playwright/test";
 
-import { build, fixturePosts, me, V1_HOST } from "../fixtures/builders";
-import type { MockApi } from "../fixtures/mocks";
-import { expect, test } from "../fixtures/test";
+import { fixturePosts } from "../fixtures/builders";
 import { actionSheetButton } from "../fixtures/ui";
+import {
+  expect,
+  INITIAL_COMMENT_DEPTH,
+  type MatrixApi,
+  seedCommentChain,
+  test,
+} from "./fixtures";
 
 const other = { id: 200, name: "otheruser" };
 
-const POST_URL = `/posts/${V1_HOST}/c/test_comm/comments/${fixturePosts[0]!.id}`;
-
-function seedThread(api: MockApi) {
-  api.seed.comment({
-    id: 10,
-    content: "parent comment",
-    creator: api.seed.person(other),
-    path: "0.10",
-    childCount: 1,
-  });
-  api.seed.comment({
-    id: 11,
-    content: "child comment",
-    creator: api.me,
-    path: "0.10.11",
-  });
+function postUrl(api: MatrixApi) {
+  return `/posts/${api.host}/c/test_comm/comments/${fixturePosts[0]!.id}`;
 }
 
-const wireMe = build.person({
-  id: me.id,
-  name: me.name,
-  display_name: me.displayName,
-});
-
-// Wire view of the seeded parent comment, for custom write-response payloads
-function wireParentComment() {
-  return build.commentView({
-    id: 10,
+function seedThread(api: MatrixApi) {
+  api.seed.comment({
     content: "parent comment",
-    creator: build.person(other),
+    creator: api.seed.person(other),
+    id: 10,
     path: "0.10",
-    child_count: 1,
-    post: build.postView({ ...fixturePosts[0]!, creator: wireMe }),
+  });
+  api.seed.comment({
+    content: "child comment",
+    creator: api.me,
+    id: 11,
+    path: "0.10.11",
   });
 }
 
@@ -58,13 +42,10 @@ function commentEllipsis(page: Page, commentId: number) {
     .getByRole("button", { name: "Open comment options" });
 }
 
-test("v1: nested comments render and collapse on tap", async ({
-  api,
-  page,
-}) => {
+test("nested comments render and collapse on tap", async ({ api, page }) => {
   seedThread(api);
 
-  await page.goto(POST_URL);
+  await page.goto(postUrl(api));
 
   await expect(page.getByText("parent comment")).toBeVisible();
   await expect(page.getByText("child comment")).toBeVisible();
@@ -80,13 +61,10 @@ test("v1: nested comments render and collapse on tap", async ({
   await expect(page.getByText("child comment")).toBeVisible();
 });
 
-test("v1: changing comment sort refetches the thread", async ({
-  api,
-  page,
-}) => {
+test("changing comment sort refetches the thread", async ({ api, page }) => {
   seedThread(api);
 
-  await page.goto(POST_URL);
+  await page.goto(postUrl(api));
   await expect(page.getByText("parent comment")).toBeVisible();
 
   await page.getByRole("button", { name: "Change sort" }).click();
@@ -94,18 +72,18 @@ test("v1: changing comment sort refetches the thread", async ({
 
   const payload = await api.waitForPayload(
     "getComments",
-    (payload) => payload.sort === "new",
+    (payload) => payload.sort === api.sorts.New,
   );
-  expect(payload.sort).toBe("new");
+  expect(payload.sort).toBe(api.sorts.New);
 });
 
 test.describe("logged in", () => {
   test.use({ loggedIn: true });
 
-  test("v1: upvote comment from action sheet", async ({ api, page }) => {
+  test("upvote comment from action sheet", async ({ api, page }) => {
     seedThread(api);
 
-    await page.goto(POST_URL);
+    await page.goto(postUrl(api));
     await expect(page.getByText("parent comment")).toBeVisible();
 
     await commentEllipsis(page, 10).click();
@@ -120,10 +98,10 @@ test.describe("logged in", () => {
     ).toBeVisible();
   });
 
-  test("v1: save comment from action sheet", async ({ api, page }) => {
+  test("save comment from action sheet", async ({ api, page }) => {
     seedThread(api);
 
-    await page.goto(POST_URL);
+    await page.goto(postUrl(api));
     await expect(page.getByText("parent comment")).toBeVisible();
 
     await commentEllipsis(page, 10).click();
@@ -138,38 +116,38 @@ test.describe("logged in", () => {
   });
 });
 
-test("v1: missing children fetch on 'more replies' tap", async ({
+test("missing children fetch on 'more replies' tap", async ({
   api,
   page,
+  provider,
 }) => {
-  // TODO(seed): the derived comment list honors parent_id but not max_depth,
-  // so seeding the deep child would surface it in the *initial* load too —
-  // `missing` would compute to 0 and hide the "more replies" affordance
-  // under test. Response side stays wire-level until seeds model depth.
-  const deepChild = build.commentView({
-    id: 12,
+  // The seeded reply has to sit one level past what the *initial* comment
+  // load reaches, so it stays missing (but counted, via child_count) until
+  // the expander fetches it. That cut is provider-specific — see
+  // INITIAL_COMMENT_DEPTH.
+  const chain = seedCommentChain(api, INITIAL_COMMENT_DEPTH[provider]);
+  const deepest = chain.at(-1)!;
+
+  api.seed.comment({
     content: "deep child comment",
-    creator: wireMe,
-    path: "0.10.12",
-    post: build.postView({ ...fixturePosts[0]!, creator: wireMe }),
+    id: 21,
+    path: `${deepest.path}.21`,
   });
 
-  api.on.getComments((call) =>
-    call.query.get("parent_id") === "10"
-      ? { json: build.pagedResponse([deepChild]) }
-      : { json: build.pagedResponse([wireParentComment()]) },
-  );
+  await page.goto(postUrl(api));
 
-  await page.goto(POST_URL);
+  // The chain loads down to the cut, the reply below it doesn't
+  await expect(page.getByText("comment 1", { exact: true })).toBeVisible();
+  await expect(page.getByText(deepest.content, { exact: true })).toBeVisible();
+  await expect(page.getByText("deep child comment")).toHaveCount(0);
 
-  await expect(page.getByText("parent comment")).toBeVisible();
   await page.getByText("1 more reply").click();
 
   await expect(page.getByText("deep child comment")).toBeVisible();
 
   const payload = await api.waitForPayload(
     "getComments",
-    (payload) => payload.parent_id === 10,
+    (payload) => payload.parent_id === deepest.id,
   );
-  expect(payload.parent_id).toBe(10);
+  expect(payload.parent_id).toBe(deepest.id);
 });
