@@ -6,9 +6,11 @@
 import { fixturePosts } from "../fixtures/builders";
 import { scrollFeedUntilVisible } from "../fixtures/scroll";
 import { expect, test } from "./fixtures";
+import { LIMIT } from "#/services/lemmy";
 
 /** Voyager's page size (LIMIT); a full page is what earns a next cursor */
-const PAGE_SIZE = 50;
+// The page size Voyager asks for
+const PAGE_SIZE = LIMIT;
 
 test("infinite scroll requests the next page with the cursor", async ({
   api,
