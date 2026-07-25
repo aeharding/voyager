@@ -23,6 +23,8 @@ import {
   SeedStore,
 } from "threadiverse/testing";
 
+import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
+
 import { loginAs } from "../fixtures/auth";
 import { MockApi, seedDefaults } from "../fixtures/mocks";
 
@@ -79,10 +81,9 @@ const SORTS = {
  * load won't fetch seed it one level past this.
  */
 export const INITIAL_COMMENT_DEPTH: Record<Provider, number> = {
-  // Voyager's MAX_DEFAULT_COMMENT_DEPTH (the `max_depth` it asks for with
-  // comment threads left uncollapsed, the default)
-  lemmyv1: 6,
-  piefed: 7,
+  lemmyv1: MAX_DEFAULT_COMMENT_DEPTH,
+  // Same request, one level deeper: PieFed counts below top-level
+  piefed: MAX_DEFAULT_COMMENT_DEPTH + 1,
 };
 
 /** Operations both providers' fakes define */
@@ -108,7 +109,7 @@ type Payload<Operation extends keyof BaseClient> = Partial<
  */
 export interface MatrixApi extends Pick<
   FakeInstance,
-  "calls" | "host" | "mock" | "mockOnce" | "waitForCall"
+  "allCalls" | "calls" | "host" | "mock" | "mockOnce" | "waitForCall"
 > {
   /** Canonical payloads of the requests an operation received */
   callsTo<Operation extends SharedDecodableOperation>(
@@ -157,8 +158,9 @@ export interface MatrixApi extends Pick<
 export function seedCommentChain(api: MatrixApi, depth: number): SeedComment[] {
   const chain: SeedComment[] = [];
 
+  // High base so specs can pick their own small ids without colliding
   for (let level = 1; level <= depth; level++) {
-    const id = 10 + level;
+    const id = 1000 + level;
     const parent = chain.at(-1);
 
     chain.push(
