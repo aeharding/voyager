@@ -6,13 +6,18 @@
 // via canonical `api.callsTo()` / `api.waitForPayload()` payloads.
 
 import { test as base } from "@playwright/test";
-import type { BaseClient } from "threadiverse";
+import type {
+  BaseClient,
+  CommentSortTypeByMode,
+  PostSortTypeByMode,
+} from "threadiverse";
 import {
   FakeInstance,
   FakePiefedInstance,
   LemmyV1Operation,
   OperationResponder,
   PiefedOperation,
+  SeedComment,
   SeedPerson,
   SeedPost,
   SeedStore,
@@ -43,6 +48,42 @@ export class PiefedMockApi extends FakePiefedInstance {
     return this.build.communityResponse();
   }
 }
+
+/** Voyager sort options a shared spec can ask for, by their UI label */
+type SortLabel = "New";
+
+/**
+ * Sort values are mode-specific *by design*: canonical `PostSortType` and
+ * `CommentSortType` are keyed by provider mode, so the same "New" option is
+ * `"new"` on lemmyv1 and `"New"` on piefed. Shared specs name the option and
+ * let the fixture supply the selected provider's value (`api.sorts.New`).
+ * Typed against threadiverse's per-mode sorts, so a renamed value breaks the
+ * build instead of the suite.
+ */
+const SORTS = {
+  lemmyv1: { New: "new" },
+  piefed: { New: "New" },
+} as const satisfies {
+  [Mode in Provider]: Record<
+    SortLabel,
+    CommentSortTypeByMode[Mode]["sort"] & PostSortTypeByMode[Mode]["sort"]
+  >;
+};
+
+/**
+ * How deep (in seed path levels, top-level = 1) the post page's *initial*
+ * comment load reaches. Voyager sends the same `max_depth` to both, but the
+ * base differs by provider: Lemmy counts from the post, PieFed counts levels
+ * below top-level (verified against live servers), so the identical request
+ * reaches one level further on PieFed. Specs that need a reply the first
+ * load won't fetch seed it one level past this.
+ */
+export const INITIAL_COMMENT_DEPTH: Record<Provider, number> = {
+  // Voyager's MAX_DEFAULT_COMMENT_DEPTH (the `max_depth` it asks for with
+  // comment threads left uncollapsed, the default)
+  lemmyv1: 6,
+  piefed: 7,
+};
 
 /** Operations both providers' fakes define */
 type SharedOperation = Extract<LemmyV1Operation, PiefedOperation>;
@@ -96,12 +137,40 @@ export interface MatrixApi extends Pick<
   /** Semantic content store the default routes are derived from */
   seed: SeedStore;
 
+  /** The selected provider's canonical value for each Voyager sort option */
+  sorts: (typeof SORTS)[Provider];
+
   /** Wait for an operation's next request; resolves its canonical payload */
   waitForPayload<Operation extends SharedDecodableOperation>(
     operation: Operation,
     predicate?: (payload: Payload<Operation>) => boolean,
     options?: { timeoutMs?: number },
   ): Promise<Payload<Operation>>;
+}
+
+/**
+ * Seed a chain of `depth` nested comments ("comment 1" replied to by
+ * "comment 2", ...) on the fixture's first post, outermost first. Ids are
+ * fixed so specs can assert on the request the UI makes for a given link in
+ * the chain.
+ */
+export function seedCommentChain(api: MatrixApi, depth: number): SeedComment[] {
+  const chain: SeedComment[] = [];
+
+  for (let level = 1; level <= depth; level++) {
+    const id = 10 + level;
+    const parent = chain.at(-1);
+
+    chain.push(
+      api.seed.comment({
+        content: `comment ${level}`,
+        id,
+        path: parent ? `${parent.path}.${id}` : `0.${id}`,
+      }),
+    );
+  }
+
+  return chain;
 }
 
 interface Fixtures {
@@ -130,12 +199,12 @@ export const test = base.extend<Fixtures>({
         Object.assign(window, { __E2E_DISABLE_ANIMATIONS: true });
       });
 
-      const api = provider === "lemmyv1" ? new MockApi() : new PiefedMockApi();
-      await api.install(page);
+      const fake = provider === "lemmyv1" ? new MockApi() : new PiefedMockApi();
+      await fake.install(page);
 
-      if (loggedIn) await loginAs(page, api);
+      if (loggedIn) await loginAs(page, fake);
 
-      await use(api);
+      await use(Object.assign(fake, { sorts: SORTS[provider] }));
     },
     { auto: true },
   ],
