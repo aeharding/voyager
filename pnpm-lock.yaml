@@ -10,7 +10,7 @@ overrides:
 patchedDependencies:
   '@capacitor/haptics': 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
   '@capacitor/keyboard@8.0.5': b19a3fb904474d28078cd1ad688098b11c23b9cc72e4af004b39d37909e408d9
-  editate@0.6.9: 7b33d51ecc7963e97e922aa237a2780a9de6ab95e6cc587423b12b248e954747
+  editate@0.6.26: cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8
   openapi-fetch: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
 
 importers:
@@ -135,8 +135,8 @@ importers:
         specifier: ^4.4.0
         version: 4.4.0(dexie@4.4.4)
       editate:
-        specifier: 0.6.9
-        version: 0.6.9(patch_hash=7b33d51ecc7963e97e922aa237a2780a9de6ab95e6cc587423b12b248e954747)
+        specifier: 0.6.26
+        version: 0.6.26(patch_hash=cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8)
       es-toolkit:
         specifier: ^1.50.0
         version: 1.50.0
@@ -3614,8 +3614,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  editate@0.6.9:
-    resolution: {integrity: sha512-3UnWYA5MVxLDoUpWEGb2Ef2CSEn16doWU4Jrv+wqAti6oEHjPomtFdiKmUftPeZTlfLhSzQR2X2tFN6h27W0Pg==}
+  editate@0.6.26:
+    resolution: {integrity: sha512-NB1W41oPzOoia6OrmoSD3gzd453GLA2KvzhUNcmKLTg8sHuHmEPMHLP6B+1btYBb2UIA6weSRjAU5haBg3ffkg==}
 
   editorconfig@1.0.7:
     resolution: {integrity: sha512-e0GOtq/aTQhVdNyDU9e02+wz9oDDM+SIOQxWME2QRjzRX5yyLAuHDE+0aE8vHb9XRC8XD37eO2u57+F09JqFhw==}
@@ -3826,10 +3826,6 @@ packages:
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
-
-  eta@4.5.1:
-    resolution: {integrity: sha512-EaNCGm+8XEIU7YNcc+THptWAO5NfKBHHARxt+wxZljj9bTr/+arRoOm9/MpGt4n6xn9fLnPFRSoLD0WFYGFUxQ==}
-    engines: {node: '>=20'}
 
   eta@4.6.0:
     resolution: {integrity: sha512-lW6is4T1NFOYnmqGZIfvixqj7A7sSvScF+DN8EK6K58xI5MZ5UvYe0GjopxOXQtZvUn4eDdVuZ8XSoYWTMEKwA==}
@@ -10622,7 +10618,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  editate@0.6.9(patch_hash=7b33d51ecc7963e97e922aa237a2780a9de6ab95e6cc587423b12b248e954747):
+  editate@0.6.26(patch_hash=cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8):
     dependencies:
       '@standard-schema/spec': 1.1.0
 
@@ -10938,8 +10934,6 @@ snapshots:
       '@types/estree': 1.0.9
 
   esutils@2.0.3: {}
-
-  eta@4.5.1: {}
 
   eta@4.6.0: {}
 
@@ -14652,7 +14646,7 @@ snapshots:
       '@trickfilm400/rollup-plugin-off-main-thread': 3.0.0-pre1
       ajv: 8.20.0
       common-tags: 1.8.2
-      eta: 4.5.1
+      eta: 4.6.0
       fast-json-stable-stringify: 2.1.0
       fs-extra: 9.1.0
       glob: 11.1.0
