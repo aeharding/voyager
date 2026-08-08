@@ -18,6 +18,8 @@ updateConfig:
     - react-router-dom
     - "@types/react-router"
     - "@types/react-router-dom"
+    # TS 7 until typescript-eslint supports it (typescript-eslint#10940)
+    - typescript
 
 minimumReleaseAge: 0
 
