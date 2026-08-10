@@ -16,7 +16,14 @@
 
   /* If empty state or page is shown (not hidden), router outlet (first column) should have max width */
   > div:not(:global(.ion-hide)) ~ ion-router-outlet {
-    max-width: 520px;
+    flex: 0 0 var(--first-column-width);
+    max-width: calc(100% - 300px);
+  }
+
+  /* Column divider */
+  > .columnDivider {
+    order: 0;
+    flex: 0 0 auto;
   }
 
   /* First column (main content) */
@@ -41,4 +48,33 @@
       }
     }
   }
+}
+
+/* Resizable divider styles */
+.columnDivider {
+  width: 4px;
+  background: var(
+    --ion-toolbar-background,
+    var(--ion-color-step-50, var(--ion-background-color-step-50, #f7f7f7))
+  );
+  cursor: col-resize;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.columnDivider:hover,
+.columnDivider:active {
+  background: var(--ion-color-light);
+}
+
+.columnDivider::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 20px;
+  background: var(--ion-color-light);
+  border-radius: 1px;
 }
