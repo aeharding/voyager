@@ -1,0 +1,1531 @@
+diff --git a/lib/index.cjs b/lib/index.cjs
+index d61af3d520f6e1a1d602204d36368ad4dda30f6e..961968fb3119cab7e90aac8ddccca23e73ccb8db 100644
+--- a/lib/index.cjs
++++ b/lib/index.cjs
+@@ -130,7 +130,7 @@ function* T(t, e) {
+     yield t; else yield [ t, 0 ];
+ }
+ 
+-var E = (n, r = 0, o = 1 / 0, c) => {
++var w = (n, r = 0, o = 1 / 0, c) => {
+     let s = "", l = r;
+     for (const [a, u] of T(n, [ r, o ])) {
+         for (let t = u - l; t > 0; t--) s += "\n";
+@@ -143,7 +143,7 @@ var E = (n, r = 0, o = 1 / 0, c) => {
+     }
+     for (let e = t(o, p(n)) - l; e > 0; e--) s += "\n";
+     return s;
+-}, w = (t, e, n) => e >= n ? [] : k(k(t, n)[0], e)[1].children, M = (t, e, n) => t.split("\n").map(t => ({
++}, E = (t, e, n) => e >= n ? [] : k(k(t, n)[0], e)[1].children, M = (t, e, n) => t.split("\n").map(t => ({
+     ...n,
+     children: [ {
+         ...e,
+@@ -230,16 +230,16 @@ var E = (n, r = 0, o = 1 / 0, c) => {
+         }
+     }
+     return t;
+-}, C = ([t, e], n) => [ N(t, n), N(e, n) ], W = ([t, e]) => t > e ? [ e, t ] : [ t, e ], F = ([t, e]) => t === e, U = ([t, e], [n, r]) => t < r && n < e;
++}, C = ([t, e], n) => [ N(t, n), N(e, n) ], W = (t, [e, n]) => P(t, e) && P(t, n), F = ([t, e]) => t > e ? [ e, t ] : [ t, e ], U = ([t, e]) => t === e, V = ([t, e], [n, r]) => t < r && n < e;
+ 
+-function* V(t, e = W(t.selection)) {
+-    if (F(e)) {
++function* q(t, e = F(t.selection)) {
++    if (U(e)) {
+         const n = y(t.doc, e[0])?.[0];
+         n && (yield n);
+-    } else for (const [n, r] of T(t.doc, e)) U(e, [ r, r + p(n) ]) && (yield n);
++    } else for (const [n, r] of T(t.doc, e)) V(e, [ r, r + p(n) ]) && (yield n);
+ }
+ 
+-function q(t, e) {
++function z(t, e) {
+     t.apply({
+         type: "patch_node",
+         path: [],
+@@ -248,23 +248,23 @@ function q(t, e) {
+     });
+ }
+ 
+-var z = t => 1 === t.nodeType, G = t => 8 === t.nodeType, J = new Map([ [ "BR", 1 ], [ "WBR", 1 ], [ "AREA", 2 ], [ "BASE", 2 ], [ "DATALIST", 2 ], [ "HEAD", 2 ], [ "LINK", 2 ], [ "META", 2 ], [ "RP", 2 ], [ "SCRIPT", 2 ], [ "STYLE", 2 ], [ "TEMPLATE", 2 ], [ "TITLE", 2 ], [ "COLGROUP", 2 ], [ "HR", 3 ], [ "AUDIO", 3 ], [ "CANVAS", 3 ], [ "EMBED", 3 ], [ "IFRAME", 3 ], [ "IMG", 3 ], [ "OBJECT", 3 ], [ "PICTURE", 3 ], [ "VIDEO", 3 ], [ "SVG", 3 ], [ "MATH", 3 ], [ "BUTTON", 3 ], [ "INPUT", 3 ], [ "METER", 3 ], [ "PROGRESS", 3 ], [ "SELECT", 3 ], [ "TEXTAREA", 3 ] ]), X = new Set([ "DIV", "H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "LI", "DT", "DD", "TH", "TD" ]), Y = t => X.has(t.tagName), j = (t, e) => t.compareDocumentPosition(e), Z = t => t.ownerDocument, K = t => Z(t).getSelection(), Q = (t, e) => {
++var G = t => 1 === t.nodeType, J = t => 8 === t.nodeType, X = new Map([ [ "BR", 1 ], [ "WBR", 1 ], [ "AREA", 2 ], [ "BASE", 2 ], [ "DATALIST", 2 ], [ "HEAD", 2 ], [ "LINK", 2 ], [ "META", 2 ], [ "RP", 2 ], [ "SCRIPT", 2 ], [ "STYLE", 2 ], [ "TEMPLATE", 2 ], [ "TITLE", 2 ], [ "COLGROUP", 2 ], [ "HR", 3 ], [ "AUDIO", 3 ], [ "CANVAS", 3 ], [ "EMBED", 3 ], [ "IFRAME", 3 ], [ "IMG", 3 ], [ "OBJECT", 3 ], [ "PICTURE", 3 ], [ "VIDEO", 3 ], [ "SVG", 3 ], [ "MATH", 3 ], [ "BUTTON", 3 ], [ "INPUT", 3 ], [ "METER", 3 ], [ "PROGRESS", 3 ], [ "SELECT", 3 ], [ "TEXTAREA", 3 ] ]), Y = new Set([ "DIV", "H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "LI", "DT", "DD", "TH", "TD" ]), j = t => Y.has(t.tagName), Z = (t, e) => t.compareDocumentPosition(e), K = t => t.ownerDocument, Q = t => K(t).getSelection(), $ = (t, e) => {
+     if (t.rangeCount) {
+         const n = t.getRangeAt(0);
+         if (e.contains(n.commonAncestorContainer)) return n;
+     }
+-}, $ = (t, e, n, r) => {
+-    const [o, c] = ((t, [e, n]) => [ g(t, e), g(t, n) ])(n, r), s = Z(t), i = F(r), l = r[0] - r[1] > 0, a = l ? o : c, u = et(t, e, l ? c : o), f = i ? u : et(t, e, a), p = s.createRange(), [d, h] = u, [y, x] = f;
+-    return z(d) && t !== d ? h < 1 ? p.setStartBefore(d) : p.setStartAfter(d) : p.setStart(d, h), 
+-    z(y) && t !== y ? x < 1 ? p.setEndBefore(y) : p.setEndAfter(y) : p.setEnd(y, x), 
++}, tt = (t, e, n, r) => {
++    const [o, c] = ((t, [e, n]) => [ g(t, e), g(t, n) ])(n, r), s = K(t), i = U(r), l = r[0] - r[1] > 0, a = l ? o : c, u = nt(t, e, l ? c : o), f = i ? u : nt(t, e, a), p = s.createRange(), [d, h] = u, [y, x] = f;
++    return G(d) && t !== d ? h < 1 ? p.setStartBefore(d) : p.setStartAfter(d) : p.setStart(d, h), 
++    G(y) && t !== y ? x < 1 ? p.setEndBefore(y) : p.setEndAfter(y) : p.setEnd(y, x), 
+     p;
+-}, tt = (t, e, n, r, o) => {
+-    const c = K(t);
+-    if (o || Q(c, t)) {
+-        const o = $(t, e, n, r), s = r[0] - r[1] > 0;
++}, et = (t, e, n, r, o) => {
++    const c = Q(t);
++    if (o || $(c, t)) {
++        const o = tt(t, e, n, r), s = r[0] - r[1] > 0;
+         c.removeAllRanges(), c.addRange(o), s && (c.collapseToEnd(), c.extend(o.startContainer, o.startOffset));
+     }
+-}, et = (t, e, [n, r]) => e(({t: e, o, i: c, l: s}) => {
++}, nt = (t, e, [n, r]) => e(({t: e, o, i: c, l: s}) => {
+     let i, l = 0;
+     for (;i = e(); ) if (4 === i) {
+         if (l < n.length) for (let t = n[l++]; t > 0; t--) o();
+@@ -274,10 +274,10 @@ var z = t => 1 === t.nodeType, G = t => 8 === t.nodeType, J = new Map([ [ "BR",
+         r -= t;
+     }
+     return [ t, 0 ];
+-}, t), nt = (e, n, r, o) => {
++}, t), rt = (e, n, r, o) => {
+     let c = !0;
+     if (e === r && !r.hasChildNodes()) return [ [], 0 ];
+-    if (z(r) && r.hasChildNodes()) {
++    if (G(r) && r.hasChildNodes()) {
+         const e = t(o, r.childNodes.length - 1);
+         r = r.childNodes[e], c = e === o, o = 0;
+     }
+@@ -294,7 +294,7 @@ var z = t => 1 === t.nodeType, G = t => 8 === t.nodeType, J = new Map([ [ "BR",
+         });
+         let d = 0;
+         for (;t(); ) {
+-            const t = j(r, a());
++            const t = Z(r, a());
+             if (0 === t || 16 & t) {
+                 if (c) break;
+             } else if (4 & t) break;
+@@ -302,10 +302,15 @@ var z = t => 1 === t.nodeType, G = t => 8 === t.nodeType, J = new Map([ [ "BR",
+         }
+         return [ p, d + o ];
+     }, e);
+-}, rt = (t, e, {startOffset: n, startContainer: r, endOffset: o, endContainer: c}) => {
+-    const s = nt(t, e, r, n);
+-    return [ s, r === c && n === o ? s : nt(t, e, c, o) ];
+-}, ot = "undefined" != typeof navigator && /Mac|iP(hone|od|ad)/.test(navigator.platform), ct = (t, e) => {
++}, ot = (t, e, {startOffset: n, startContainer: r, endOffset: o, endContainer: c}) => {
++    const s = rt(t, e, r, n);
++    return [ s, r === c && n === o ? s : rt(t, e, c, o) ];
++}, ct = (t, e) => {
++    const n = Q(t), r = $(n, t);
++    if (!r) return [ [ [ 0 ], 0 ], [ [ 0 ], 0 ] ];
++    const o = ot(t, e, r), c = Z(n.anchorNode, n.focusNode);
++    return (0 === c ? n.anchorOffset > n.focusOffset : 2 & c) ? [ o[1], o[0] ] : o;
++}, st = "undefined" != typeof navigator && /Mac|iP(hone|od|ad)/.test(navigator.platform), it = (t, e) => {
+     const n = t.endsWith("+"), r = (n ? t.slice(0, -2) : t).split("+"), o = n ? "+" : r.pop(), c = "Space" === o ? " " : o.toLowerCase();
+     let s = !1, i = !1, l = !1, a = !1;
+     return r.forEach(t => {
+@@ -319,7 +324,7 @@ var z = t => 1 === t.nodeType, G = t => 8 === t.nodeType, J = new Map([ [ "BR",
+             break;
+ 
+           case "Mod":
+-            ot ? l = !0 : i = !0;
++            st ? l = !0 : i = !0;
+             break;
+ 
+           case "Alt":
+@@ -334,10 +339,10 @@ var z = t => 1 === t.nodeType, G = t => 8 === t.nodeType, J = new Map([ [ "BR",
+     };
+ };
+ 
+-function st(t) {
++function lt(t) {
+     let e = 0, r = 0, o = !1;
+     const c = Date.now, s = [ [ t.doc, t.selection, [] ] ], i = () => s[e], l = () => e > 0, a = () => e < s.length - 1, u = e => {
+-        t.exec(q, e.children);
++        t.exec(z, e.children);
+         const r = e, o = t.doc;
+         for (const c of n(r)) "children" !== c && o[c] !== r[c] && t.apply({
+             type: "patch_node",
+@@ -380,8 +385,8 @@ function st(t) {
+             r = t, s[e][0] = u, s[e][2].push(n), s.length > e + 1 && (s.length = e + 1), e > 500 && (e--, 
+             s.shift());
+         }
+-    }), t.hook("keyboard", ct("Mod+Z", f)), t.hook("keyboard", ct("Shift+Mod+Z", p)), 
+-    t.set(st, {
++    }), t.hook("keyboard", it("Mod+Z", f)), t.hook("keyboard", it("Shift+Mod+Z", p)), 
++    t.set(lt, {
+         undo: f,
+         redo: p,
+         undoable: l,
+@@ -392,9 +397,9 @@ function st(t) {
+     });
+ }
+ 
+-var it = [], lt = () => {}, at = t => {
++var at = [], ut = () => {}, ft = t => {
+     throw Error(t);
+-}, ut = ({doc: t, readonly: e = !1, schema: n, isBlock: r = Y, onWarn: a = console.warn, onError: u = at}) => {
++}, pt = ({doc: t, readonly: e = !1, schema: n, isBlock: r = j, onWarn: a = console.warn, onError: u = ft}) => {
+     let f = [ 0, 0 ];
+     const p = t => {
+         if (!n) return a("An unsafe operation was detected. We recommend using schema option."), 
+@@ -407,7 +412,7 @@ var it = [], lt = () => {}, at = t => {
+         return !1;
+     };
+     n && !p(t) && u("Invalid document");
+-    const y = new Map, x = new WeakMap, k = t => y.get(t) || it, g = new Map, b = new Set, v = t => {
++    const y = new Map, x = new WeakMap, k = t => y.get(t) || at, g = new Map, b = new Set, v = t => {
+         const e = g.get(t);
+         e && (b.size || s(() => {
+             b.forEach(t => {
+@@ -417,9 +422,9 @@ var it = [], lt = () => {}, at = t => {
+             b.add(t);
+         }));
+     }, T = t => {
+-        if (!e) if (Array.isArray(t)) for (const e of t) E(e); else E(t);
++        if (!e) if (Array.isArray(t)) for (const e of t) w(e); else w(t);
+         return D;
+-    }, E = e => {
++    }, w = e => {
+         const n = t, r = k("apply"), o = r.length;
+         let c = 0;
+         const s = () => {
+@@ -480,7 +485,7 @@ var it = [], lt = () => {}, at = t => {
+                                         ...t,
+                                         [o]: c
+                                     } : t;
+-                                    t = L(t, e, r, w(t, e, r).map(n));
++                                    t = L(t, e, r, E(t, e, r).map(n));
+                                 }
+                                 break;
+                             }
+@@ -510,8 +515,7 @@ var it = [], lt = () => {}, at = t => {
+         };
+         s(), n !== t && v("change");
+     }, R = e => {
+-        !((t, [e, n]) => P(t, e) && P(t, n))(t, e) || f[0] === e[0] && f[1] === e[1] || (f = e, 
+-        v("selectionchange"));
++        !W(t, e) || f[0] === e[0] && f[1] === e[1] || (f = e, v("selectionchange"));
+     }, D = {
+         get doc() {
+             return t;
+@@ -550,21 +554,21 @@ var it = [], lt = () => {}, at = t => {
+         set: (t, e) => (x.set(t, e), D),
+         input: n => {
+             if (!window.InputEvent || !c(InputEvent.prototype.getTargetRanges)) return a("beforeinput event is not supported."), 
+-            lt;
++            ut;
+             const {contentEditable: s, role: i, ariaMultiLine: l, ariaReadOnly: u} = n, p = n.style.whiteSpace;
+             n.role = "textbox", n.style.whiteSpace = "pre-wrap", n.ariaMultiLine = "true";
+-            let d = !1, h = null, y = !1, x = !1, g = !1, b = f, v = null;
+-            const E = Z(n), w = ((t, e) => {
++            let d = !1, h = null, y = !1, x = !1, g = !1, b = f, v = null, w = !1, E = !1;
++            const M = K(n), S = ((t, e) => {
+                 let n = null, r = null, o = null;
+                 const c = () => {
+                     if (null != o) return o;
+                     if (r) if ((t => 3 === t.nodeType)(r)) {
+                         const t = r.data;
+                         if (t) return o = "\n" === t ? i() ? 3 : 5 : 1;
+-                    } else if (z(r)) {
++                    } else if (G(r)) {
+                         if ("false" === r.contentEditable) return o = 2;
+                         {
+-                            const t = J.get(r.tagName);
++                            const t = X.get(r.tagName);
+                             if (null != t) return o = 1 === t ? i() ? 3 : 5 : 3 === t ? 2 : 6;
+                             if (e(r)) return o = 4;
+                         }
+@@ -628,23 +632,23 @@ var it = [], lt = () => {}, at = t => {
+                     }
+                 };
+                 return f;
+-            })(E, r), M = () => {
++            })(M, r), A = () => {
+                 n.contentEditable = e ? "false" : "true", n.ariaReadOnly = e ? "true" : null;
+             };
+-            M();
+-            const S = () => {
++            A();
++            const O = () => {
+                 x || n.focus({
+                     preventScroll: !0
+                 });
+-            }, A = () => {
+-                v = null, f[0] === b[0] && f[1] === b[1] || (tt(n, w, t, f), b = f);
+-            }, O = () => {
++            }, B = () => {
++                v = null, f[0] === b[0] && f[1] === b[1] || (et(n, S, t, f), b = f);
++            }, I = () => {
+                 null != v && clearTimeout(v);
+-            }, B = D.on("change", () => {
+-                x || requestAnimationFrame(S);
+-            }), I = D.on("selectionchange", () => {
+-                f[0] === b[0] && f[1] === b[1] || (O(), v = setTimeout(A, 50));
+-            }), L = D.on("readonly", M), P = t => {
++            }, L = D.on("change", () => {
++                x || requestAnimationFrame(O);
++            }), P = D.on("selectionchange", () => {
++                f[0] === b[0] && f[1] === b[1] || (I(), v = setTimeout(B, 50));
++            }), N = D.on("readonly", A), C = t => {
+                 for (const e of k("paste")) {
+                     const n = e(t);
+                     if (n) {
+@@ -653,7 +657,7 @@ var it = [], lt = () => {}, at = t => {
+                     }
+                 }
+                 a("failed to serialize pasted data");
+-            }, N = ((t, e) => {
++            }, V = ((t, e) => {
+                 let n = !1, r = [];
+                 const o = t => {
+                     n && r.push(...t);
+@@ -690,28 +694,29 @@ var it = [], lt = () => {}, at = t => {
+                     }
+                 };
+             })(n, () => {
+-                O(), tt(n, w, t, f);
+-            }), C = () => {
+-                R(b = _(t, ((t, e) => {
+-                    const n = K(t), r = Q(n, t);
+-                    if (!r) return [ [ [ 0 ], 0 ], [ [ 0 ], 0 ] ];
+-                    const o = rt(t, e, r), c = j(n.anchorNode, n.focusNode);
+-                    return (0 === c ? n.anchorOffset > n.focusOffset : 2 & c) ? [ o[1], o[0] ] : o;
+-                })(n, w)));
+-            }, U = () => {
+-                const e = N.v();
+-                N._(!1), e.length && (N.m(e), E.removeEventListener("selectionchange", ot), tt(n, w, t, f, !0), 
+-                E.addEventListener("selectionchange", ot)), h && (R(h[1]), T(h[0]), h = null), y = !1;
+-            }, V = t => {
+-                if (!y) for (const e of k("keyboard")) if (e(t)) return t.preventDefault(), void N._(!1);
+-            }, q = () => {
+-                y || U();
+-            }, G = e => {
++                I(), et(n, S, t, f);
++            }), q = () => {
++                R(b = _(t, ct(n, S)));
++            }, z = () => {
++                w = !0;
++                const e = V.v();
++                V._(!1);
++                const r = E ? _(t, ct(n, S)) : null;
++                E = !1, e.length && (V.m(e), M.removeEventListener("selectionchange", it), et(n, S, t, f, !0), 
++                M.addEventListener("selectionchange", it)), h && (R(h[1]), T(h[0]), h = null), r && W(t, r) && (f = b = r), 
++                y = !1, w = !1;
++            }, J = D.hook("apply", (t, e) => {
++                y && !w && z(), e(t);
++            }), Y = t => {
++                if (!y) for (const e of k("keyboard")) if (e(t)) return t.preventDefault(), void V._(!1);
++            }, j = () => {
++                y || z();
++            }, Z = e => {
+                 e.preventDefault();
+                 const r = e.inputType;
+                 if (r.startsWith("format")) return;
+                 if ("historyUndo" === r || "historyRedo" === r) return;
+-                y ? N._(!0) : C();
++                y ? V._(!0) : q();
+                 const o = e.getTargetRanges()[0];
+                 if (o) {
+                     let c = "insertParagraph" === r || "insertLineBreak" === r ? "\n" : e.data;
+@@ -720,8 +725,8 @@ var it = [], lt = () => {}, at = t => {
+                         t && (c = t.getData("text/plain"));
+                     }
+                     h || (h = [ [], f ]);
+-                    const s = h[0], i = _(t, rt(n, w, o));
+-                    F(i) || s.push({
++                    const s = h[0], i = _(t, ot(n, S, o));
++                    U(i) || s.push({
+                         type: "delete",
+                         range: i
+                     }), c && s.push({
+@@ -730,31 +735,33 @@ var it = [], lt = () => {}, at = t => {
+                         text: c
+                     });
+                 }
+-                y || U();
+-            }, X = () => {
+-                y || C(), y = !0;
+-            }, Y = () => {
+-                U();
++                y || z();
++            }, Q = () => {
++                y || q(), y = !0;
+             }, $ = () => {
+-                x = !0, C();
+-            }, et = () => {
++                z();
++            }, tt = () => {
++                x = !0, q();
++            }, nt = () => {
+                 x = !1;
+-            }, ot = () => {
+-                !x || y || g || C();
+-            }, ct = t => {
+-                if (C(), !F(f)) for (const e of k("copy")) e(t);
+-            }, st = t => {
+-                t.preventDefault(), ct(t.clipboardData);
+-            }, it = t => {
+-                t.preventDefault(), e || (ct(t.clipboardData), T({
++            }, st = () => {
++                y && (E = !0);
++            }, it = () => {
++                !x || y || g || q();
++            }, lt = t => {
++                if (q(), !U(f)) for (const e of k("copy")) e(t);
++            }, at = t => {
++                t.preventDefault(), lt(t.clipboardData);
++            }, ft = t => {
++                t.preventDefault(), e || (lt(t.clipboardData), T({
+                     type: "delete",
+-                    range: W(f)
++                    range: F(f)
+                 }));
+-            }, at = t => {
++            }, pt = t => {
+                 t.preventDefault();
+-                const e = P(t.clipboardData);
++                const e = C(t.clipboardData);
+                 if (e) {
+-                    const t = W(f), n = t[0], r = [ {
++                    const t = F(f), n = t[0], r = [ {
+                         type: "delete",
+                         range: t
+                     } ];
+@@ -768,26 +775,26 @@ var it = [], lt = () => {}, at = t => {
+                         fragment: e
+                     }), T(r);
+                 }
+-            }, ut = e => {
++            }, dt = e => {
+                 e.preventDefault();
+                 const r = e.dataTransfer, c = ((t, e, {clientX: n, clientY: r}) => {
+-                    const o = Z(t);
++                    const o = K(t);
+                     if (o.caretPositionFromPoint) {
+                         const c = o.caretPositionFromPoint(n, r);
+-                        if (c) return nt(t, e, c.offsetNode, c.offset);
++                        if (c) return rt(t, e, c.offsetNode, c.offset);
+                     } else if (o.caretRangeFromPoint) {
+                         const c = o.caretRangeFromPoint(n, r);
+-                        if (c) return nt(t, e, c.startContainer, c.startOffset);
++                        if (c) return rt(t, e, c.startContainer, c.startOffset);
+                     }
+-                })(n, w, e);
++                })(n, S, e);
+                 if (r && c) {
+                     let e;
+                     const n = [];
+                     g && n.push({
+                         type: "delete",
+-                        range: W(f)
++                        range: F(f)
+                     });
+-                    const s = P(r);
++                    const s = C(r);
+                     if (s) {
+                         const r = m(t, c), i = H(r, n);
+                         n.push(o(s) ? {
+@@ -803,44 +810,46 @@ var it = [], lt = () => {}, at = t => {
+                     T(n), e && R(e);
+                 }
+                 g = !1;
+-            }, ft = t => {
+-                g = !0, ct(t.dataTransfer);
+-            }, pt = () => {
++            }, ht = t => {
++                g = !0, lt(t.dataTransfer);
++            }, yt = () => {
+                 g = !1;
+             };
+-            E.addEventListener("selectionchange", ot), n.addEventListener("keydown", V), n.addEventListener("input", q), 
+-            n.addEventListener("beforeinput", G), n.addEventListener("compositionstart", X), 
+-            n.addEventListener("compositionend", Y), n.addEventListener("focus", $), n.addEventListener("blur", et), 
+-            n.addEventListener("copy", st), n.addEventListener("cut", it), n.addEventListener("paste", at), 
+-            n.addEventListener("drop", ut), n.addEventListener("dragstart", ft), n.addEventListener("dragend", pt);
+-            const dt = [];
++            M.addEventListener("selectionchange", it), n.addEventListener("keydown", Y), n.addEventListener("input", j), 
++            n.addEventListener("beforeinput", Z), n.addEventListener("compositionstart", Q), 
++            n.addEventListener("compositionend", $), n.addEventListener("pointerdown", st), 
++            n.addEventListener("focus", tt), n.addEventListener("blur", nt), n.addEventListener("copy", at), 
++            n.addEventListener("cut", ft), n.addEventListener("paste", pt), n.addEventListener("drop", dt), 
++            n.addEventListener("dragstart", ht), n.addEventListener("dragend", yt);
++            const xt = [];
+             return k("mount").forEach(t => {
+-                const e = t(n, w);
+-                e && dt.push(e);
++                const e = t(n, S);
++                e && xt.push(e);
+             }), () => {
+-                d || (d = !0, B(), I(), L(), n.contentEditable = s, n.role = i, n.ariaMultiLine = l, 
+-                n.ariaReadOnly = u, n.style.whiteSpace = p, N.T(), E.removeEventListener("selectionchange", ot), 
+-                n.removeEventListener("keydown", V), n.removeEventListener("input", q), n.removeEventListener("beforeinput", G), 
+-                n.removeEventListener("compositionstart", X), n.removeEventListener("compositionend", Y), 
+-                n.removeEventListener("focus", $), n.removeEventListener("blur", et), n.removeEventListener("copy", st), 
+-                n.removeEventListener("cut", it), n.removeEventListener("paste", at), n.removeEventListener("drop", ut), 
+-                n.removeEventListener("dragstart", ft), n.removeEventListener("dragend", pt), dt.forEach(t => {
++                d || (d = !0, L(), P(), N(), n.contentEditable = s, n.role = i, n.ariaMultiLine = l, 
++                n.ariaReadOnly = u, n.style.whiteSpace = p, V.T(), J(), M.removeEventListener("selectionchange", it), 
++                n.removeEventListener("keydown", Y), n.removeEventListener("input", j), n.removeEventListener("beforeinput", Z), 
++                n.removeEventListener("compositionstart", Q), n.removeEventListener("compositionend", $), 
++                n.removeEventListener("pointerdown", st), n.removeEventListener("focus", tt), n.removeEventListener("blur", nt), 
++                n.removeEventListener("copy", at), n.removeEventListener("cut", ft), n.removeEventListener("paste", pt), 
++                n.removeEventListener("drop", dt), n.removeEventListener("dragstart", ht), n.removeEventListener("dragend", yt), 
++                xt.forEach(t => {
+                     t();
+                 }));
+             };
+         }
+     };
+-    return D.exec(st), D;
++    return D.exec(lt), D;
+ };
+ 
+-function ft(t, e) {
++function dt(t, e) {
+     const n = e && e.voidToString;
+     t.hook("copy", e => {
+-        e.setData("text/plain", E(t.doc, ...W(t.selection), n));
++        e.setData("text/plain", w(t.doc, ...F(t.selection), n));
+     }), t.hook("paste", t => t.getData("text/plain"));
+ }
+ 
+-function pt(t, e) {
++function ht(t, e) {
+     const n = e.isLocked, r = e => n(h(t.doc, e)[0]), o = (e, r) => {
+         const [o, c] = e;
+         for (const [s, i] of v(t.doc, e)) {
+@@ -854,7 +863,7 @@ function pt(t, e) {
+         const a = c;
+         switch (c = !1, e.type) {
+           case "delete":
+-            if (o(W(e.range), !0)) return c = !0, s(() => {
++            if (o(F(e.range), !0)) return c = !0, s(() => {
+                 c = !1;
+             }), i(null);
+             break;
+@@ -866,8 +875,8 @@ function pt(t, e) {
+ 
+           case "format":
+             {
+-                const t = W(e.range);
+-                if (F(t) ? r(t[0]) : o(t, !1)) return i(null);
++                const t = F(e.range);
++                if (U(t) ? r(t[0]) : o(t, !1)) return i(null);
+                 break;
+             }
+ 
+@@ -888,18 +897,18 @@ function pt(t, e) {
+             }
+         }
+         i(e);
+-    }), t.set(pt, {
+-        locked: t => F(t) ? r(t[0]) : o(t, !0)
++    }), t.set(ht, {
++        locked: t => U(t) ? r(t[0]) : o(t, !0)
+     });
+ }
+ 
+-var dt = (t, e) => {
++var yt = (t, e) => {
+     const n = parseFloat(t);
+     return n ? t.endsWith("%") ? n / 100 * e : n : 0;
+-}, ht = (t, e, n, r) => [ t + dt(n, e), t + e - dt(r, e) ], yt = t => "auto" === t || "scroll" === t || "overlay" === t, xt = (t, e, [n, r]) => t < n ? t - n : e > r ? e - r : 0, kt = (t, e, n, r) => {
++}, xt = (t, e, n, r) => [ t + yt(n, e), t + e - yt(r, e) ], kt = t => "auto" === t || "scroll" === t || "overlay" === t, mt = (t, e, [n, r]) => t < n ? t - n : e > r ? e - r : 0, gt = (t, e, n, r) => {
+     const o = r ? -n : 0;
+     return Math.max(o - e, Math.min(t, o + n - e));
+-}, mt = (t, [e, n], r) => {
++}, _t = (t, [e, n], r) => {
+     (n || e) && t.scrollBy({
+         top: n,
+         left: e,
+@@ -907,7 +916,7 @@ var dt = (t, e) => {
+     });
+ };
+ 
+-function gt(t) {
++function bt(t) {
+     t.hook("mount", t => {
+         t.ariaMultiLine = null;
+     }), t.hook("apply", (t, e) => {
+@@ -926,13 +935,13 @@ function gt(t) {
+ }
+ 
+ exports.ClearHistory = function(t) {
+-    t.get(st).clear();
+-}, exports.Delete = function(t, e = W(t.selection)) {
++    t.get(lt).clear();
++}, exports.Delete = function(t, e = F(t.selection)) {
+     t.apply({
+         type: "delete",
+         range: e
+     });
+-}, exports.Format = function(t, e, n, r = W(t.selection)) {
++}, exports.Format = function(t, e, n, r = F(t.selection)) {
+     t.apply({
+         type: "format",
+         range: r,
+@@ -953,13 +962,13 @@ exports.ClearHistory = function(t) {
+         at: n,
+         text: e
+     });
+-}, exports.LeavesInRange = V, exports.LockedInRange = function(t, e = W(t.selection)) {
+-    return t.get(pt).locked(e);
++}, exports.LeavesInRange = q, exports.LockedInRange = function(t, e = F(t.selection)) {
++    return t.get(ht).locked(e);
+ }, exports.Redo = function(t) {
+-    t.get(st).redo();
++    t.get(lt).redo();
+ }, exports.Redoable = function(t) {
+-    return t.get(st).redoable();
+-}, exports.ReplaceDoc = q, exports.ReplaceText = function(t, e, n = W(t.selection)) {
++    return t.get(lt).redoable();
++}, exports.ReplaceDoc = z, exports.ReplaceText = function(t, e, n = F(t.selection)) {
+     t.apply({
+         type: "delete",
+         range: n
+@@ -992,9 +1001,9 @@ exports.ClearHistory = function(t) {
+         key: e,
+         value: c[e] === n ? r : n
+     });
+-}, exports.ToggleFormat = function(t, e, n = W(t.selection)) {
++}, exports.ToggleFormat = function(t, e, n = F(t.selection)) {
+     let r = !1, o = !1;
+-    for (const c of t.exec(V, n)) if (i(c) && (o = !0, !c[e])) {
++    for (const c of t.exec(q, n)) if (i(c) && (o = !0, !c[e])) {
+         r = !0;
+         break;
+     }
+@@ -1005,18 +1014,18 @@ exports.ClearHistory = function(t) {
+         value: r
+     });
+ }, exports.Undo = function(t) {
+-    t.get(st).undo();
++    t.get(lt).undo();
+ }, exports.Undoable = function(t) {
+-    return t.get(st).undoable();
+-}, exports.blockLockPlugin = pt, exports.createEditor = ut, exports.createPlainEditor = ({text: t, singleline: e, onChange: n, ...r}) => {
+-    const o = ut({
++    return t.get(lt).undoable();
++}, exports.blockLockPlugin = ht, exports.createEditor = pt, exports.createPlainEditor = ({text: t, singleline: e, onChange: n, ...r}) => {
++    const o = pt({
+         ...r,
+         doc: {
+             children: M(t)
+         }
+-    }).exec(ft);
+-    return e && o.exec(gt), o.on("change", () => {
+-        n(E(o.doc));
++    }).exec(dt);
++    return e && o.exec(bt), o.on("change", () => {
++        n(w(o.doc));
+     }), o;
+ }, exports.debugPlugin = function(t) {
+     t.hook("apply", t => {
+@@ -1044,7 +1053,7 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+     t.hook("mount", (n, r) => {
+         const o = t.hook("copy", t => {
+             const e = document.createElement("div");
+-            e.appendChild(Q(K(n), n).cloneContents()), t.setData("text/html", e.innerHTML);
++            e.appendChild($(Q(n), n).cloneContents()), t.setData("text/html", e.innerHTML);
+         }), c = t.hook("paste", t => {
+             const n = t.getData("text/html");
+             return n ? ((t, e, n) => {
+@@ -1056,7 +1065,7 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+                     }
+                 };
+                 let c = (new DOMParser).parseFromString(t, "text/html").body, s = !1;
+-                for (const i of [ ...c.childNodes ]) G(i) ? "StartFragment" === i.data ? (s = !0, 
++                for (const i of [ ...c.childNodes ]) J(i) ? "StartFragment" === i.data ? (s = !0, 
+                 c = new DocumentFragment) : "EndFragment" === i.data && (s = !1) : s && c.appendChild(i);
+                 return e(({t, i: e}) => {
+                     let n, c = null, s = "", i = !1;
+@@ -1085,7 +1094,7 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+ }, exports.internalTransferPlugin = function(t, e) {
+     const n = e && e.mime || "application/x-editate-editor";
+     t.hook("copy", e => {
+-        e.setData(n, JSON.stringify(w(t.doc, ...W(t.selection))));
++        e.setData(n, JSON.stringify(E(t.doc, ...F(t.selection))));
+     }), t.hook("paste", t => {
+         try {
+             return JSON.parse(t.getData(n));
+@@ -1096,17 +1105,17 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+ }, exports.iterLeafBlocks = v, exports.iterLeaves = T, exports.keymapPlugin = function(t, e) {
+     n(e).forEach(n => {
+         const r = e[n];
+-        t.hook("keyboard", ct(n, r));
++        t.hook("keyboard", it(n, r));
+     });
+-}, exports.mapPosition = N, exports.plainTransferPlugin = ft, exports.scrollToSelectionPlugin = t => {
++}, exports.mapPosition = N, exports.plainTransferPlugin = dt, exports.scrollToSelectionPlugin = t => {
+     const e = "auto";
+     t.hook("mount", (n, r) => {
+-        const o = Z(n), c = o.defaultView, {documentElement: s} = o, i = ((t, e, n) => {
++        const o = K(n), c = o.defaultView, {documentElement: s} = o, i = ((t, e, n) => {
+             const {body: r, documentElement: o} = e;
+             let c = t;
+             for (;c && c !== r && c !== o; ) {
+                 const {overflowX: t, overflowY: e} = n.getComputedStyle(c);
+-                if (yt(t) || yt(e)) return c;
++                if (kt(t) || kt(e)) return c;
+                 c = c.parentElement;
+             }
+             return null;
+@@ -1115,10 +1124,10 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+         const f = t.on("change", () => {
+             null == u && (u = setTimeout(() => {
+                 u = null;
+-                const o = $(n, r, t.doc, t.selection);
++                const o = tt(n, r, t.doc, t.selection);
+                 let f = o.getBoundingClientRect();
+                 if (!f.width && !f.height) {
+-                    const t = o.startContainer, e = z(t) ? t : t.parentElement;
++                    const t = o.startContainer, e = G(t) ? t : t.parentElement;
+                     e && (f = e.getBoundingClientRect());
+                 }
+                 const p = i && l ? ((t, e, n) => {
+@@ -1138,13 +1147,13 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+                           default:
+                             return [ e, !1 ];
+                         }
+-                    })(e), h = kt(xt(n.top, n.bottom, ht(f.top + l, u, e.scrollPaddingTop, e.scrollPaddingBottom)), o, s - u, d);
+-                    return [ kt(xt(n.left, n.right, ht(f.left + i, a, e.scrollPaddingLeft, e.scrollPaddingRight)), r, c - a, p), h ];
++                    })(e), h = gt(mt(n.top, n.bottom, xt(f.top + l, u, e.scrollPaddingTop, e.scrollPaddingBottom)), o, s - u, d);
++                    return [ gt(mt(n.left, n.right, xt(f.left + i, a, e.scrollPaddingLeft, e.scrollPaddingRight)), r, c - a, p), h ];
+                 })(i, l, f) : [ 0, 0 ], d = ((t, e, n, [r, o]) => {
+-                    const {clientWidth: c, clientHeight: s} = t, i = xt(n.top - o, n.bottom - o, ht(0, s, e.scrollPaddingTop, e.scrollPaddingBottom));
+-                    return [ xt(n.left - r, n.right - r, ht(0, c, e.scrollPaddingLeft, e.scrollPaddingRight)), i ];
++                    const {clientWidth: c, clientHeight: s} = t, i = mt(n.top - o, n.bottom - o, xt(0, s, e.scrollPaddingTop, e.scrollPaddingBottom));
++                    return [ mt(n.left - r, n.right - r, xt(0, c, e.scrollPaddingLeft, e.scrollPaddingRight)), i ];
+                 })(s, a, f, p);
+-                i && mt(i, p, e), mt(c, d, e);
++                i && _t(i, p, e), _t(c, d, e);
+             }, 50));
+         });
+         return () => {
+@@ -1158,7 +1167,7 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+             c || (c = !0, requestAnimationFrame(() => {
+                 c = !1, o && e(() => {
+                     const e = t.selection;
+-                    return $(n, r, t.doc, e).getBoundingClientRect();
++                    return tt(n, r, t.doc, e).getBoundingClientRect();
+                 });
+             }));
+         });
+@@ -1166,5 +1175,5 @@ exports.getNodeSize = p, exports.htmlTransferPlugin = function(t, e) {
+             o = !1, s();
+         };
+     });
+-}, exports.singlelinePlugin = gt, exports.sliceText = E;
++}, exports.singlelinePlugin = bt, exports.sliceText = w;
+ //# sourceMappingURL=index.cjs.map
+\ No newline at end of file
+diff --git a/lib/index.js b/lib/index.js
+index 2dca9c6465f44e69c25ab244229676efeac22252..2ebf6164c893e6747717a7733cde49beea32cf99 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -126,7 +126,7 @@ function* T(t, e) {
+     yield t; else yield [ t, 0 ];
+ }
+ 
+-var E = (n, r = 0, o = 1 / 0, c) => {
++var w = (n, r = 0, o = 1 / 0, c) => {
+     let s = "", l = r;
+     for (const [a, u] of T(n, [ r, o ])) {
+         for (let t = u - l; t > 0; t--) s += "\n";
+@@ -139,7 +139,7 @@ var E = (n, r = 0, o = 1 / 0, c) => {
+     }
+     for (let e = t(o, d(n)) - l; e > 0; e--) s += "\n";
+     return s;
+-}, w = (t, e, n) => e >= n ? [] : m(m(t, n)[0], e)[1].children, M = (t, e, n) => t.split("\n").map(t => ({
++}, E = (t, e, n) => e >= n ? [] : m(m(t, n)[0], e)[1].children, M = (t, e, n) => t.split("\n").map(t => ({
+     ...n,
+     children: [ {
+         ...e,
+@@ -226,23 +226,23 @@ var E = (n, r = 0, o = 1 / 0, c) => {
+         }
+     }
+     return t;
+-}, C = ([t, e], n) => [ N(t, n), N(e, n) ], W = ([t, e]) => t > e ? [ e, t ] : [ t, e ], F = ([t, e]) => t === e, U = ([t, e], [n, r]) => t < r && n < e;
++}, C = ([t, e], n) => [ N(t, n), N(e, n) ], W = (t, [e, n]) => P(t, e) && P(t, n), F = ([t, e]) => t > e ? [ e, t ] : [ t, e ], U = ([t, e]) => t === e, V = ([t, e], [n, r]) => t < r && n < e;
+ 
+-function* V(t, e = W(t.selection)) {
+-    if (F(e)) {
++function* q(t, e = F(t.selection)) {
++    if (U(e)) {
+         const n = y(t.doc, e[0])?.[0];
+         n && (yield n);
+-    } else for (const [n, r] of T(t.doc, e)) U(e, [ r, r + d(n) ]) && (yield n);
++    } else for (const [n, r] of T(t.doc, e)) V(e, [ r, r + d(n) ]) && (yield n);
+ }
+ 
+-function q(t, e = W(t.selection)) {
++function z(t, e = F(t.selection)) {
+     t.apply({
+         type: "delete",
+         range: e
+     });
+ }
+ 
+-function z(t, e, n = t.selection[0]) {
++function G(t, e, n = t.selection[0]) {
+     t.apply({
+         type: "insert_text",
+         at: n,
+@@ -250,7 +250,7 @@ function z(t, e, n = t.selection[0]) {
+     });
+ }
+ 
+-function G(t, e, n = t.selection[0]) {
++function J(t, e, n = t.selection[0]) {
+     t.apply({
+         type: "insert_node",
+         at: n,
+@@ -260,7 +260,7 @@ function G(t, e, n = t.selection[0]) {
+     });
+ }
+ 
+-function J(t, e, n = W(t.selection)) {
++function X(t, e, n = F(t.selection)) {
+     t.apply({
+         type: "delete",
+         range: n
+@@ -271,7 +271,7 @@ function J(t, e, n = W(t.selection)) {
+     });
+ }
+ 
+-function X(t, e) {
++function Y(t, e) {
+     t.apply({
+         type: "patch_node",
+         path: [],
+@@ -280,7 +280,7 @@ function X(t, e) {
+     });
+ }
+ 
+-function Y(t, e, n, r = W(t.selection)) {
++function Z(t, e, n, r = F(t.selection)) {
+     t.apply({
+         type: "format",
+         range: r,
+@@ -289,9 +289,9 @@ function Y(t, e, n, r = W(t.selection)) {
+     });
+ }
+ 
+-function Z(t, e, n = W(t.selection)) {
++function j(t, e, n = F(t.selection)) {
+     let r = !1, o = !1;
+-    for (const c of t.exec(V, n)) if (i(c) && (o = !0, !c[e])) {
++    for (const c of t.exec(q, n)) if (i(c) && (o = !0, !c[e])) {
+         r = !0;
+         break;
+     }
+@@ -303,7 +303,7 @@ function Z(t, e, n = W(t.selection)) {
+     });
+ }
+ 
+-function j(t, e, n, r = t.selection[0]) {
++function K(t, e, n, r = t.selection[0]) {
+     const o = h(t.doc, r)[2];
+     t.apply({
+         type: "patch_node",
+@@ -313,7 +313,7 @@ function j(t, e, n, r = t.selection[0]) {
+     });
+ }
+ 
+-function K(t, e, n, r, o = t.selection[0]) {
++function Q(t, e, n, r, o = t.selection[0]) {
+     const [c, , s] = h(t.doc, o);
+     t.apply({
+         type: "patch_node",
+@@ -323,7 +323,7 @@ function K(t, e, n, r, o = t.selection[0]) {
+     });
+ }
+ 
+-function Q(t, e, n, r = t.selection[0]) {
++function $(t, e, n, r = t.selection[0]) {
+     const o = y(t.doc, r, !0);
+     o && !i(o[0]) && t.apply({
+         type: "patch_node",
+@@ -333,23 +333,23 @@ function Q(t, e, n, r = t.selection[0]) {
+     });
+ }
+ 
+-var $ = t => 1 === t.nodeType, tt = t => 8 === t.nodeType, et = new Map([ [ "BR", 1 ], [ "WBR", 1 ], [ "AREA", 2 ], [ "BASE", 2 ], [ "DATALIST", 2 ], [ "HEAD", 2 ], [ "LINK", 2 ], [ "META", 2 ], [ "RP", 2 ], [ "SCRIPT", 2 ], [ "STYLE", 2 ], [ "TEMPLATE", 2 ], [ "TITLE", 2 ], [ "COLGROUP", 2 ], [ "HR", 3 ], [ "AUDIO", 3 ], [ "CANVAS", 3 ], [ "EMBED", 3 ], [ "IFRAME", 3 ], [ "IMG", 3 ], [ "OBJECT", 3 ], [ "PICTURE", 3 ], [ "VIDEO", 3 ], [ "SVG", 3 ], [ "MATH", 3 ], [ "BUTTON", 3 ], [ "INPUT", 3 ], [ "METER", 3 ], [ "PROGRESS", 3 ], [ "SELECT", 3 ], [ "TEXTAREA", 3 ] ]), nt = new Set([ "DIV", "H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "LI", "DT", "DD", "TH", "TD" ]), rt = t => nt.has(t.tagName), ot = (t, e) => t.compareDocumentPosition(e), ct = t => t.ownerDocument, st = t => ct(t).getSelection(), it = (t, e) => {
++var tt = t => 1 === t.nodeType, et = t => 8 === t.nodeType, nt = new Map([ [ "BR", 1 ], [ "WBR", 1 ], [ "AREA", 2 ], [ "BASE", 2 ], [ "DATALIST", 2 ], [ "HEAD", 2 ], [ "LINK", 2 ], [ "META", 2 ], [ "RP", 2 ], [ "SCRIPT", 2 ], [ "STYLE", 2 ], [ "TEMPLATE", 2 ], [ "TITLE", 2 ], [ "COLGROUP", 2 ], [ "HR", 3 ], [ "AUDIO", 3 ], [ "CANVAS", 3 ], [ "EMBED", 3 ], [ "IFRAME", 3 ], [ "IMG", 3 ], [ "OBJECT", 3 ], [ "PICTURE", 3 ], [ "VIDEO", 3 ], [ "SVG", 3 ], [ "MATH", 3 ], [ "BUTTON", 3 ], [ "INPUT", 3 ], [ "METER", 3 ], [ "PROGRESS", 3 ], [ "SELECT", 3 ], [ "TEXTAREA", 3 ] ]), rt = new Set([ "DIV", "H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "LI", "DT", "DD", "TH", "TD" ]), ot = t => rt.has(t.tagName), ct = (t, e) => t.compareDocumentPosition(e), st = t => t.ownerDocument, it = t => st(t).getSelection(), lt = (t, e) => {
+     if (t.rangeCount) {
+         const n = t.getRangeAt(0);
+         if (e.contains(n.commonAncestorContainer)) return n;
+     }
+-}, lt = (t, e, n, r) => {
+-    const [o, c] = ((t, [e, n]) => [ _(t, e), _(t, n) ])(n, r), s = ct(t), i = F(r), l = r[0] - r[1] > 0, a = l ? o : c, u = ut(t, e, l ? c : o), f = i ? u : ut(t, e, a), d = s.createRange(), [p, h] = u, [y, k] = f;
+-    return $(p) && t !== p ? h < 1 ? d.setStartBefore(p) : d.setStartAfter(p) : d.setStart(p, h), 
+-    $(y) && t !== y ? k < 1 ? d.setEndBefore(y) : d.setEndAfter(y) : d.setEnd(y, k), 
++}, at = (t, e, n, r) => {
++    const [o, c] = ((t, [e, n]) => [ _(t, e), _(t, n) ])(n, r), s = st(t), i = U(r), l = r[0] - r[1] > 0, a = l ? o : c, u = ft(t, e, l ? c : o), f = i ? u : ft(t, e, a), d = s.createRange(), [p, h] = u, [y, k] = f;
++    return tt(p) && t !== p ? h < 1 ? d.setStartBefore(p) : d.setStartAfter(p) : d.setStart(p, h), 
++    tt(y) && t !== y ? k < 1 ? d.setEndBefore(y) : d.setEndAfter(y) : d.setEnd(y, k), 
+     d;
+-}, at = (t, e, n, r, o) => {
+-    const c = st(t);
+-    if (o || it(c, t)) {
+-        const o = lt(t, e, n, r), s = r[0] - r[1] > 0;
++}, ut = (t, e, n, r, o) => {
++    const c = it(t);
++    if (o || lt(c, t)) {
++        const o = at(t, e, n, r), s = r[0] - r[1] > 0;
+         c.removeAllRanges(), c.addRange(o), s && (c.collapseToEnd(), c.extend(o.startContainer, o.startOffset));
+     }
+-}, ut = (t, e, [n, r]) => e(({t: e, o, i: c, l: s}) => {
++}, ft = (t, e, [n, r]) => e(({t: e, o, i: c, l: s}) => {
+     let i, l = 0;
+     for (;i = e(); ) if (4 === i) {
+         if (l < n.length) for (let t = n[l++]; t > 0; t--) o();
+@@ -359,10 +359,10 @@ var $ = t => 1 === t.nodeType, tt = t => 8 === t.nodeType, et = new Map([ [ "BR"
+         r -= t;
+     }
+     return [ t, 0 ];
+-}, t), ft = (e, n, r, o) => {
++}, t), dt = (e, n, r, o) => {
+     let c = !0;
+     if (e === r && !r.hasChildNodes()) return [ [], 0 ];
+-    if ($(r) && r.hasChildNodes()) {
++    if (tt(r) && r.hasChildNodes()) {
+         const e = t(o, r.childNodes.length - 1);
+         r = r.childNodes[e], c = e === o, o = 0;
+     }
+@@ -379,7 +379,7 @@ var $ = t => 1 === t.nodeType, tt = t => 8 === t.nodeType, et = new Map([ [ "BR"
+         });
+         let p = 0;
+         for (;t(); ) {
+-            const t = ot(r, a());
++            const t = ct(r, a());
+             if (0 === t || 16 & t) {
+                 if (c) break;
+             } else if (4 & t) break;
+@@ -387,10 +387,15 @@ var $ = t => 1 === t.nodeType, tt = t => 8 === t.nodeType, et = new Map([ [ "BR"
+         }
+         return [ d, p + o ];
+     }, e);
+-}, dt = (t, e, {startOffset: n, startContainer: r, endOffset: o, endContainer: c}) => {
+-    const s = ft(t, e, r, n);
+-    return [ s, r === c && n === o ? s : ft(t, e, c, o) ];
+-}, pt = "undefined" != typeof navigator && /Mac|iP(hone|od|ad)/.test(navigator.platform), ht = (t, e) => {
++}, pt = (t, e, {startOffset: n, startContainer: r, endOffset: o, endContainer: c}) => {
++    const s = dt(t, e, r, n);
++    return [ s, r === c && n === o ? s : dt(t, e, c, o) ];
++}, ht = (t, e) => {
++    const n = it(t), r = lt(n, t);
++    if (!r) return [ [ [ 0 ], 0 ], [ [ 0 ], 0 ] ];
++    const o = pt(t, e, r), c = ct(n.anchorNode, n.focusNode);
++    return (0 === c ? n.anchorOffset > n.focusOffset : 2 & c) ? [ o[1], o[0] ] : o;
++}, yt = "undefined" != typeof navigator && /Mac|iP(hone|od|ad)/.test(navigator.platform), kt = (t, e) => {
+     const n = t.endsWith("+"), r = (n ? t.slice(0, -2) : t).split("+"), o = n ? "+" : r.pop(), c = "Space" === o ? " " : o.toLowerCase();
+     let s = !1, i = !1, l = !1, a = !1;
+     return r.forEach(t => {
+@@ -404,7 +409,7 @@ var $ = t => 1 === t.nodeType, tt = t => 8 === t.nodeType, et = new Map([ [ "BR"
+             break;
+ 
+           case "Mod":
+-            pt ? l = !0 : i = !0;
++            yt ? l = !0 : i = !0;
+             break;
+ 
+           case "Alt":
+@@ -419,10 +424,10 @@ var $ = t => 1 === t.nodeType, tt = t => 8 === t.nodeType, et = new Map([ [ "BR"
+     };
+ };
+ 
+-function yt(t) {
++function mt(t) {
+     let e = 0, r = 0, o = !1;
+     const c = Date.now, s = [ [ t.doc, t.selection, [] ] ], i = () => s[e], l = () => e > 0, a = () => e < s.length - 1, u = e => {
+-        t.exec(X, e.children);
++        t.exec(Y, e.children);
+         const r = e, o = t.doc;
+         for (const c of n(r)) "children" !== c && o[c] !== r[c] && t.apply({
+             type: "patch_node",
+@@ -465,8 +470,8 @@ function yt(t) {
+             r = t, s[e][0] = u, s[e][2].push(n), s.length > e + 1 && (s.length = e + 1), e > 500 && (e--, 
+             s.shift());
+         }
+-    }), t.hook("keyboard", ht("Mod+Z", f)), t.hook("keyboard", ht("Shift+Mod+Z", d)), 
+-    t.set(yt, {
++    }), t.hook("keyboard", kt("Mod+Z", f)), t.hook("keyboard", kt("Shift+Mod+Z", d)), 
++    t.set(mt, {
+         undo: f,
+         redo: d,
+         undoable: l,
+@@ -477,29 +482,29 @@ function yt(t) {
+     });
+ }
+ 
+-function kt(t) {
+-    t.get(yt).undo();
++function gt(t) {
++    t.get(mt).undo();
+ }
+ 
+-function mt(t) {
+-    t.get(yt).redo();
++function _t(t) {
++    t.get(mt).redo();
+ }
+ 
+-function gt(t) {
+-    return t.get(yt).undoable();
++function xt(t) {
++    return t.get(mt).undoable();
+ }
+ 
+-function _t(t) {
+-    return t.get(yt).redoable();
++function bt(t) {
++    return t.get(mt).redoable();
+ }
+ 
+-function xt(t) {
+-    t.get(yt).clear();
++function vt(t) {
++    t.get(mt).clear();
+ }
+ 
+-var bt = [], vt = () => {}, Tt = t => {
++var Tt = [], wt = () => {}, Et = t => {
+     throw Error(t);
+-}, Et = ({doc: t, readonly: e = !1, schema: n, isBlock: r = rt, onWarn: a = console.warn, onError: u = Tt}) => {
++}, Mt = ({doc: t, readonly: e = !1, schema: n, isBlock: r = ot, onWarn: a = console.warn, onError: u = Et}) => {
+     let f = [ 0, 0 ];
+     const d = t => {
+         if (!n) return a("An unsafe operation was detected. We recommend using schema option."), 
+@@ -512,7 +517,7 @@ var bt = [], vt = () => {}, Tt = t => {
+         return !1;
+     };
+     n && !d(t) && u("Invalid document");
+-    const y = /* @__PURE__ */ new Map, k = /* @__PURE__ */ new WeakMap, m = t => y.get(t) || bt, _ = /* @__PURE__ */ new Map, b = /* @__PURE__ */ new Set, v = t => {
++    const y = /* @__PURE__ */ new Map, k = /* @__PURE__ */ new WeakMap, m = t => y.get(t) || Tt, _ = /* @__PURE__ */ new Map, b = /* @__PURE__ */ new Set, v = t => {
+         const e = _.get(t);
+         e && (b.size || s(() => {
+             b.forEach(t => {
+@@ -522,9 +527,9 @@ var bt = [], vt = () => {}, Tt = t => {
+             b.add(t);
+         }));
+     }, T = t => {
+-        if (!e) if (Array.isArray(t)) for (const e of t) E(e); else E(t);
++        if (!e) if (Array.isArray(t)) for (const e of t) w(e); else w(t);
+         return D;
+-    }, E = e => {
++    }, w = e => {
+         const n = t, r = m("apply"), o = r.length;
+         let c = 0;
+         const s = () => {
+@@ -585,7 +590,7 @@ var bt = [], vt = () => {}, Tt = t => {
+                                         ...t,
+                                         [o]: c
+                                     } : t;
+-                                    t = L(t, e, r, w(t, e, r).map(n));
++                                    t = L(t, e, r, E(t, e, r).map(n));
+                                 }
+                                 break;
+                             }
+@@ -615,8 +620,7 @@ var bt = [], vt = () => {}, Tt = t => {
+         };
+         s(), n !== t && v("change");
+     }, R = e => {
+-        !((t, [e, n]) => P(t, e) && P(t, n))(t, e) || f[0] === e[0] && f[1] === e[1] || (f = e, 
+-        v("selectionchange"));
++        !W(t, e) || f[0] === e[0] && f[1] === e[1] || (f = e, v("selectionchange"));
+     }, D = {
+         get doc() {
+             return t;
+@@ -655,21 +659,21 @@ var bt = [], vt = () => {}, Tt = t => {
+         set: (t, e) => (k.set(t, e), D),
+         input: n => {
+             if (!window.InputEvent || !c(InputEvent.prototype.getTargetRanges)) return a("beforeinput event is not supported."), 
+-            vt;
++            wt;
+             const {contentEditable: s, role: i, ariaMultiLine: l, ariaReadOnly: u} = n, d = n.style.whiteSpace;
+             n.role = "textbox", n.style.whiteSpace = "pre-wrap", n.ariaMultiLine = "true";
+-            let p = !1, h = null, y = !1, k = !1, _ = !1, b = f, v = null;
+-            const E = ct(n), w = ((t, e) => {
++            let p = !1, h = null, y = !1, k = !1, _ = !1, b = f, v = null, w = !1, E = !1;
++            const M = st(n), S = ((t, e) => {
+                 let n = null, r = null, o = null;
+                 const c = () => {
+                     if (null != o) return o;
+                     if (r) if ((t => 3 === t.nodeType)(r)) {
+                         const t = r.data;
+                         if (t) return o = "\n" === t ? i() ? 3 : 5 : 1;
+-                    } else if ($(r)) {
++                    } else if (tt(r)) {
+                         if ("false" === r.contentEditable) return o = 2;
+                         {
+-                            const t = et.get(r.tagName);
++                            const t = nt.get(r.tagName);
+                             if (null != t) return o = 1 === t ? i() ? 3 : 5 : 3 === t ? 2 : 6;
+                             if (e(r)) return o = 4;
+                         }
+@@ -733,23 +737,23 @@ var bt = [], vt = () => {}, Tt = t => {
+                     }
+                 };
+                 return f;
+-            })(E, r), M = () => {
++            })(M, r), A = () => {
+                 n.contentEditable = e ? "false" : "true", n.ariaReadOnly = e ? "true" : null;
+             };
+-            M();
+-            const S = () => {
++            A();
++            const O = () => {
+                 k || n.focus({
+                     preventScroll: !0
+                 });
+-            }, A = () => {
+-                v = null, f[0] === b[0] && f[1] === b[1] || (at(n, w, t, f), b = f);
+-            }, O = () => {
++            }, B = () => {
++                v = null, f[0] === b[0] && f[1] === b[1] || (ut(n, S, t, f), b = f);
++            }, I = () => {
+                 null != v && clearTimeout(v);
+-            }, B = D.on("change", () => {
+-                k || requestAnimationFrame(S);
+-            }), I = D.on("selectionchange", () => {
+-                f[0] === b[0] && f[1] === b[1] || (O(), v = setTimeout(A, 50));
+-            }), L = D.on("readonly", M), P = t => {
++            }, L = D.on("change", () => {
++                k || requestAnimationFrame(O);
++            }), P = D.on("selectionchange", () => {
++                f[0] === b[0] && f[1] === b[1] || (I(), v = setTimeout(B, 50));
++            }), N = D.on("readonly", A), C = t => {
+                 for (const e of m("paste")) {
+                     const n = e(t);
+                     if (n) {
+@@ -758,7 +762,7 @@ var bt = [], vt = () => {}, Tt = t => {
+                     }
+                 }
+                 a("failed to serialize pasted data");
+-            }, N = ((t, e) => {
++            }, V = ((t, e) => {
+                 let n = !1, r = [];
+                 const o = t => {
+                     n && r.push(...t);
+@@ -795,28 +799,29 @@ var bt = [], vt = () => {}, Tt = t => {
+                     }
+                 };
+             })(n, () => {
+-                O(), at(n, w, t, f);
+-            }), C = () => {
+-                R(b = x(t, ((t, e) => {
+-                    const n = st(t), r = it(n, t);
+-                    if (!r) return [ [ [ 0 ], 0 ], [ [ 0 ], 0 ] ];
+-                    const o = dt(t, e, r), c = ot(n.anchorNode, n.focusNode);
+-                    return (0 === c ? n.anchorOffset > n.focusOffset : 2 & c) ? [ o[1], o[0] ] : o;
+-                })(n, w)));
+-            }, U = () => {
+-                const e = N.v();
+-                N._(!1), e.length && (N.m(e), E.removeEventListener("selectionchange", Z), at(n, w, t, f, !0), 
+-                E.addEventListener("selectionchange", Z)), h && (R(h[1]), T(h[0]), h = null), y = !1;
+-            }, V = t => {
+-                if (!y) for (const e of m("keyboard")) if (e(t)) return t.preventDefault(), void N._(!1);
+-            }, q = () => {
+-                y || U();
+-            }, z = e => {
++                I(), ut(n, S, t, f);
++            }), q = () => {
++                R(b = x(t, ht(n, S)));
++            }, z = () => {
++                w = !0;
++                const e = V.v();
++                V._(!1);
++                const r = E ? x(t, ht(n, S)) : null;
++                E = !1, e.length && (V.m(e), M.removeEventListener("selectionchange", et), ut(n, S, t, f, !0), 
++                M.addEventListener("selectionchange", et)), h && (R(h[1]), T(h[0]), h = null), r && W(t, r) && (f = b = r), 
++                y = !1, w = !1;
++            }, G = D.hook("apply", (t, e) => {
++                y && !w && z(), e(t);
++            }), J = t => {
++                if (!y) for (const e of m("keyboard")) if (e(t)) return t.preventDefault(), void V._(!1);
++            }, X = () => {
++                y || z();
++            }, Y = e => {
+                 e.preventDefault();
+                 const r = e.inputType;
+                 if (r.startsWith("format")) return;
+                 if ("historyUndo" === r || "historyRedo" === r) return;
+-                y ? N._(!0) : C();
++                y ? V._(!0) : q();
+                 const o = e.getTargetRanges()[0];
+                 if (o) {
+                     let c = "insertParagraph" === r || "insertLineBreak" === r ? "\n" : e.data;
+@@ -825,8 +830,8 @@ var bt = [], vt = () => {}, Tt = t => {
+                         t && (c = t.getData("text/plain"));
+                     }
+                     h || (h = [ [], f ]);
+-                    const s = h[0], i = x(t, dt(n, w, o));
+-                    F(i) || s.push({
++                    const s = h[0], i = x(t, pt(n, S, o));
++                    U(i) || s.push({
+                         type: "delete",
+                         range: i
+                     }), c && s.push({
+@@ -835,31 +840,33 @@ var bt = [], vt = () => {}, Tt = t => {
+                         text: c
+                     });
+                 }
+-                y || U();
+-            }, G = () => {
+-                y || C(), y = !0;
+-            }, J = () => {
+-                U();
+-            }, X = () => {
+-                k = !0, C();
+-            }, Y = () => {
+-                k = !1;
++                y || z();
+             }, Z = () => {
+-                !k || y || _ || C();
+-            }, j = t => {
+-                if (C(), !F(f)) for (const e of m("copy")) e(t);
+-            }, K = t => {
+-                t.preventDefault(), j(t.clipboardData);
+-            }, Q = t => {
+-                t.preventDefault(), e || (j(t.clipboardData), T({
++                y || q(), y = !0;
++            }, j = () => {
++                z();
++            }, K = () => {
++                k = !0, q();
++            }, Q = () => {
++                k = !1;
++            }, $ = () => {
++                y && (E = !0);
++            }, et = () => {
++                !k || y || _ || q();
++            }, rt = t => {
++                if (q(), !U(f)) for (const e of m("copy")) e(t);
++            }, ot = t => {
++                t.preventDefault(), rt(t.clipboardData);
++            }, ct = t => {
++                t.preventDefault(), e || (rt(t.clipboardData), T({
+                     type: "delete",
+-                    range: W(f)
++                    range: F(f)
+                 }));
+-            }, tt = t => {
++            }, it = t => {
+                 t.preventDefault();
+-                const e = P(t.clipboardData);
++                const e = C(t.clipboardData);
+                 if (e) {
+-                    const t = W(f), n = t[0], r = [ {
++                    const t = F(f), n = t[0], r = [ {
+                         type: "delete",
+                         range: t
+                     } ];
+@@ -873,26 +880,26 @@ var bt = [], vt = () => {}, Tt = t => {
+                         fragment: e
+                     }), T(r);
+                 }
+-            }, nt = e => {
++            }, lt = e => {
+                 e.preventDefault();
+                 const r = e.dataTransfer, c = ((t, e, {clientX: n, clientY: r}) => {
+-                    const o = ct(t);
++                    const o = st(t);
+                     if (o.caretPositionFromPoint) {
+                         const c = o.caretPositionFromPoint(n, r);
+-                        if (c) return ft(t, e, c.offsetNode, c.offset);
++                        if (c) return dt(t, e, c.offsetNode, c.offset);
+                     } else if (o.caretRangeFromPoint) {
+                         const c = o.caretRangeFromPoint(n, r);
+-                        if (c) return ft(t, e, c.startContainer, c.startOffset);
++                        if (c) return dt(t, e, c.startContainer, c.startOffset);
+                     }
+-                })(n, w, e);
++                })(n, S, e);
+                 if (r && c) {
+                     let e;
+                     const n = [];
+                     _ && n.push({
+                         type: "delete",
+-                        range: W(f)
++                        range: F(f)
+                     });
+-                    const s = P(r);
++                    const s = C(r);
+                     if (s) {
+                         const r = g(t, c), i = H(r, n);
+                         n.push(o(s) ? {
+@@ -908,35 +915,37 @@ var bt = [], vt = () => {}, Tt = t => {
+                     T(n), e && R(e);
+                 }
+                 _ = !1;
+-            }, rt = t => {
+-                _ = !0, j(t.dataTransfer);
+-            }, lt = () => {
++            }, at = t => {
++                _ = !0, rt(t.dataTransfer);
++            }, ft = () => {
+                 _ = !1;
+             };
+-            E.addEventListener("selectionchange", Z), n.addEventListener("keydown", V), n.addEventListener("input", q), 
+-            n.addEventListener("beforeinput", z), n.addEventListener("compositionstart", G), 
+-            n.addEventListener("compositionend", J), n.addEventListener("focus", X), n.addEventListener("blur", Y), 
+-            n.addEventListener("copy", K), n.addEventListener("cut", Q), n.addEventListener("paste", tt), 
+-            n.addEventListener("drop", nt), n.addEventListener("dragstart", rt), n.addEventListener("dragend", lt);
+-            const ut = [];
++            M.addEventListener("selectionchange", et), n.addEventListener("keydown", J), n.addEventListener("input", X), 
++            n.addEventListener("beforeinput", Y), n.addEventListener("compositionstart", Z), 
++            n.addEventListener("compositionend", j), n.addEventListener("pointerdown", $), n.addEventListener("focus", K), 
++            n.addEventListener("blur", Q), n.addEventListener("copy", ot), n.addEventListener("cut", ct), 
++            n.addEventListener("paste", it), n.addEventListener("drop", lt), n.addEventListener("dragstart", at), 
++            n.addEventListener("dragend", ft);
++            const yt = [];
+             return m("mount").forEach(t => {
+-                const e = t(n, w);
+-                e && ut.push(e);
++                const e = t(n, S);
++                e && yt.push(e);
+             }), () => {
+-                p || (p = !0, B(), I(), L(), n.contentEditable = s, n.role = i, n.ariaMultiLine = l, 
+-                n.ariaReadOnly = u, n.style.whiteSpace = d, N.T(), E.removeEventListener("selectionchange", Z), 
+-                n.removeEventListener("keydown", V), n.removeEventListener("input", q), n.removeEventListener("beforeinput", z), 
+-                n.removeEventListener("compositionstart", G), n.removeEventListener("compositionend", J), 
+-                n.removeEventListener("focus", X), n.removeEventListener("blur", Y), n.removeEventListener("copy", K), 
+-                n.removeEventListener("cut", Q), n.removeEventListener("paste", tt), n.removeEventListener("drop", nt), 
+-                n.removeEventListener("dragstart", rt), n.removeEventListener("dragend", lt), ut.forEach(t => {
++                p || (p = !0, L(), P(), N(), n.contentEditable = s, n.role = i, n.ariaMultiLine = l, 
++                n.ariaReadOnly = u, n.style.whiteSpace = d, V.T(), G(), M.removeEventListener("selectionchange", et), 
++                n.removeEventListener("keydown", J), n.removeEventListener("input", X), n.removeEventListener("beforeinput", Y), 
++                n.removeEventListener("compositionstart", Z), n.removeEventListener("compositionend", j), 
++                n.removeEventListener("pointerdown", $), n.removeEventListener("focus", K), n.removeEventListener("blur", Q), 
++                n.removeEventListener("copy", ot), n.removeEventListener("cut", ct), n.removeEventListener("paste", it), 
++                n.removeEventListener("drop", lt), n.removeEventListener("dragstart", at), n.removeEventListener("dragend", ft), 
++                yt.forEach(t => {
+                     t();
+                 }));
+             };
+         }
+     };
+-    return D.exec(yt), D;
+-}, wt = (t, e) => {
++    return D.exec(mt), D;
++}, St = (t, e) => {
+     t.hook("paste", t => {
+         for (const n of t.items) if ("file" === n.kind) {
+             const t = e[n.type];
+@@ -951,18 +960,18 @@ var bt = [], vt = () => {}, Tt = t => {
+     });
+ };
+ 
+-function Mt(t, e) {
++function At(t, e) {
+     const n = e && e.voidToString;
+     t.hook("copy", e => {
+-        e.setData("text/plain", E(t.doc, ...W(t.selection), n));
++        e.setData("text/plain", w(t.doc, ...F(t.selection), n));
+     }), t.hook("paste", t => t.getData("text/plain"));
+ }
+ 
+-function St(t, e) {
++function Ot(t, e) {
+     t.hook("mount", (n, r) => {
+         const o = t.hook("copy", t => {
+             const e = document.createElement("div");
+-            e.appendChild(it(st(n), n).cloneContents()), t.setData("text/html", e.innerHTML);
++            e.appendChild(lt(it(n), n).cloneContents()), t.setData("text/html", e.innerHTML);
+         }), c = t.hook("paste", t => {
+             const n = t.getData("text/html");
+             return n ? ((t, e, n) => {
+@@ -974,7 +983,7 @@ function St(t, e) {
+                     }
+                 };
+                 let c = (new DOMParser).parseFromString(t, "text/html").body, s = !1;
+-                for (const i of [ ...c.childNodes ]) tt(i) ? "StartFragment" === i.data ? (s = !0, 
++                for (const i of [ ...c.childNodes ]) et(i) ? "StartFragment" === i.data ? (s = !0, 
+                 c = new DocumentFragment) : "EndFragment" === i.data && (s = !1) : s && c.appendChild(i);
+                 return e(({t, i: e}) => {
+                     let n, c = null, s = "", i = !1;
+@@ -1002,10 +1011,10 @@ function St(t, e) {
+     });
+ }
+ 
+-function At(t, e) {
++function Rt(t, e) {
+     const n = e && e.mime || "application/x-editate-editor";
+     t.hook("copy", e => {
+-        e.setData(n, JSON.stringify(w(t.doc, ...W(t.selection))));
++        e.setData(n, JSON.stringify(E(t.doc, ...F(t.selection))));
+     }), t.hook("paste", t => {
+         try {
+             return JSON.parse(t.getData(n));
+@@ -1015,7 +1024,7 @@ function At(t, e) {
+     });
+ }
+ 
+-function Ot(t, e) {
++function Dt(t, e) {
+     const n = e.isLocked, r = e => n(h(t.doc, e)[0]), o = (e, r) => {
+         const [o, c] = e;
+         for (const [s, i] of v(t.doc, e)) {
+@@ -1029,7 +1038,7 @@ function Ot(t, e) {
+         const a = c;
+         switch (c = !1, e.type) {
+           case "delete":
+-            if (o(W(e.range), !0)) return c = !0, s(() => {
++            if (o(F(e.range), !0)) return c = !0, s(() => {
+                 c = !1;
+             }), i(null);
+             break;
+@@ -1041,8 +1050,8 @@ function Ot(t, e) {
+ 
+           case "format":
+             {
+-                const t = W(e.range);
+-                if (F(t) ? r(t[0]) : o(t, !1)) return i(null);
++                const t = F(e.range);
++                if (U(t) ? r(t[0]) : o(t, !1)) return i(null);
+                 break;
+             }
+ 
+@@ -1063,16 +1072,16 @@ function Ot(t, e) {
+             }
+         }
+         i(e);
+-    }), t.set(Ot, {
+-        locked: t => F(t) ? r(t[0]) : o(t, !0)
++    }), t.set(Dt, {
++        locked: t => U(t) ? r(t[0]) : o(t, !0)
+     });
+ }
+ 
+-function Rt(t, e = W(t.selection)) {
+-    return t.get(Ot).locked(e);
++function Bt(t, e = F(t.selection)) {
++    return t.get(Dt).locked(e);
+ }
+ 
+-function Dt(t) {
++function It(t) {
+     t.hook("apply", t => {
+         console.log("apply", t);
+     }), t.on("change", () => {
+@@ -1082,34 +1091,34 @@ function Dt(t) {
+     });
+ }
+ 
+-function Bt(t, e) {
++function Lt(t, e) {
+     n(e).forEach(n => {
+         const r = e[n];
+-        t.hook("keyboard", ht(n, r));
++        t.hook("keyboard", kt(n, r));
+     });
+ }
+ 
+-var It = (t, e) => {
++var Pt = (t, e) => {
+     const n = parseFloat(t);
+     return n ? t.endsWith("%") ? n / 100 * e : n : 0;
+-}, Lt = (t, e, n, r) => [ t + It(n, e), t + e - It(r, e) ], Pt = t => "auto" === t || "scroll" === t || "overlay" === t, Ht = (t, e, [n, r]) => t < n ? t - n : e > r ? e - r : 0, Nt = (t, e, n, r) => {
++}, Ht = (t, e, n, r) => [ t + Pt(n, e), t + e - Pt(r, e) ], Nt = t => "auto" === t || "scroll" === t || "overlay" === t, Ct = (t, e, [n, r]) => t < n ? t - n : e > r ? e - r : 0, Wt = (t, e, n, r) => {
+     const o = r ? -n : 0;
+     return Math.max(o - e, Math.min(t, o + n - e));
+-}, Ct = (t, [e, n], r) => {
++}, Ft = (t, [e, n], r) => {
+     (n || e) && t.scrollBy({
+         top: n,
+         left: e,
+         behavior: r
+     });
+-}, Wt = t => {
++}, Ut = t => {
+     const e = "auto";
+     t.hook("mount", (n, r) => {
+-        const o = ct(n), c = o.defaultView, {documentElement: s} = o, i = ((t, e, n) => {
++        const o = st(n), c = o.defaultView, {documentElement: s} = o, i = ((t, e, n) => {
+             const {body: r, documentElement: o} = e;
+             let c = t;
+             for (;c && c !== r && c !== o; ) {
+                 const {overflowX: t, overflowY: e} = n.getComputedStyle(c);
+-                if (Pt(t) || Pt(e)) return c;
++                if (Nt(t) || Nt(e)) return c;
+                 c = c.parentElement;
+             }
+             return null;
+@@ -1118,10 +1127,10 @@ var It = (t, e) => {
+         const f = t.on("change", () => {
+             null == u && (u = setTimeout(() => {
+                 u = null;
+-                const o = lt(n, r, t.doc, t.selection);
++                const o = at(n, r, t.doc, t.selection);
+                 let f = o.getBoundingClientRect();
+                 if (!f.width && !f.height) {
+-                    const t = o.startContainer, e = $(t) ? t : t.parentElement;
++                    const t = o.startContainer, e = tt(t) ? t : t.parentElement;
+                     e && (f = e.getBoundingClientRect());
+                 }
+                 const d = i && l ? ((t, e, n) => {
+@@ -1141,13 +1150,13 @@ var It = (t, e) => {
+                           default:
+                             return [ e, !1 ];
+                         }
+-                    })(e), h = Nt(Ht(n.top, n.bottom, Lt(f.top + l, u, e.scrollPaddingTop, e.scrollPaddingBottom)), o, s - u, p);
+-                    return [ Nt(Ht(n.left, n.right, Lt(f.left + i, a, e.scrollPaddingLeft, e.scrollPaddingRight)), r, c - a, d), h ];
++                    })(e), h = Wt(Ct(n.top, n.bottom, Ht(f.top + l, u, e.scrollPaddingTop, e.scrollPaddingBottom)), o, s - u, p);
++                    return [ Wt(Ct(n.left, n.right, Ht(f.left + i, a, e.scrollPaddingLeft, e.scrollPaddingRight)), r, c - a, d), h ];
+                 })(i, l, f) : [ 0, 0 ], p = ((t, e, n, [r, o]) => {
+-                    const {clientWidth: c, clientHeight: s} = t, i = Ht(n.top - o, n.bottom - o, Lt(0, s, e.scrollPaddingTop, e.scrollPaddingBottom));
+-                    return [ Ht(n.left - r, n.right - r, Lt(0, c, e.scrollPaddingLeft, e.scrollPaddingRight)), i ];
++                    const {clientWidth: c, clientHeight: s} = t, i = Ct(n.top - o, n.bottom - o, Ht(0, s, e.scrollPaddingTop, e.scrollPaddingBottom));
++                    return [ Ct(n.left - r, n.right - r, Ht(0, c, e.scrollPaddingLeft, e.scrollPaddingRight)), i ];
+                 })(s, a, f, d);
+-                i && Ct(i, d, e), Ct(c, p, e);
++                i && Ft(i, d, e), Ft(c, p, e);
+             }, 50));
+         });
+         return () => {
+@@ -1156,14 +1165,14 @@ var It = (t, e) => {
+     });
+ };
+ 
+-function Ft(t, e) {
++function Vt(t, e) {
+     t.hook("mount", (n, r) => {
+         let o = !0, c = !1;
+         const s = t.on("selectionchange", () => {
+             c || (c = !0, requestAnimationFrame(() => {
+                 c = !1, o && e(() => {
+                     const e = t.selection;
+-                    return lt(n, r, t.doc, e).getBoundingClientRect();
++                    return at(n, r, t.doc, e).getBoundingClientRect();
+                 });
+             }));
+         });
+@@ -1173,7 +1182,7 @@ function Ft(t, e) {
+     });
+ }
+ 
+-function Ut(t) {
++function qt(t) {
+     t.hook("mount", t => {
+         t.ariaMultiLine = null;
+     }), t.hook("apply", (t, e) => {
+@@ -1191,17 +1200,17 @@ function Ut(t) {
+     });
+ }
+ 
+-var Vt = ({text: t, singleline: e, onChange: n, ...r}) => {
+-    const o = Et({
++var zt = ({text: t, singleline: e, onChange: n, ...r}) => {
++    const o = Mt({
+         ...r,
+         doc: {
+             children: M(t)
+         }
+-    }).exec(Mt);
+-    return e && o.exec(Ut), o.on("change", () => {
+-        n(E(o.doc));
++    }).exec(At);
++    return e && o.exec(qt), o.on("change", () => {
++        n(w(o.doc));
+     }), o;
+ };
+ 
+-export { xt as ClearHistory, q as Delete, Y as Format, G as InsertNode, z as InsertText, V as LeavesInRange, Rt as LockedInRange, mt as Redo, _t as Redoable, X as ReplaceDoc, J as ReplaceText, j as SetBlockAttr, Q as SetVoidAttr, K as ToggleBlockAttr, Z as ToggleFormat, kt as Undo, gt as Undoable, Ot as blockLockPlugin, Et as createEditor, Vt as createPlainEditor, Dt as debugPlugin, wt as fileTransferPlugin, p as getChildAt, y as getLeafAt, h as getLeafBlockAt, k as getNodeOffset, d as getNodeSize, St as htmlTransferPlugin, At as internalTransferPlugin, v as iterLeafBlocks, T as iterLeaves, Bt as keymapPlugin, N as mapPosition, Mt as plainTransferPlugin, Wt as scrollToSelectionPlugin, Ft as selectionRectPlugin, Ut as singlelinePlugin, E as sliceText };
++export { vt as ClearHistory, z as Delete, Z as Format, J as InsertNode, G as InsertText, q as LeavesInRange, Bt as LockedInRange, _t as Redo, bt as Redoable, Y as ReplaceDoc, X as ReplaceText, K as SetBlockAttr, $ as SetVoidAttr, Q as ToggleBlockAttr, j as ToggleFormat, gt as Undo, xt as Undoable, Dt as blockLockPlugin, Mt as createEditor, zt as createPlainEditor, It as debugPlugin, St as fileTransferPlugin, p as getChildAt, y as getLeafAt, h as getLeafBlockAt, k as getNodeOffset, d as getNodeSize, Ot as htmlTransferPlugin, Rt as internalTransferPlugin, v as iterLeafBlocks, T as iterLeaves, Lt as keymapPlugin, N as mapPosition, At as plainTransferPlugin, Ut as scrollToSelectionPlugin, Vt as selectionRectPlugin, qt as singlelinePlugin, w as sliceText };
+ //# sourceMappingURL=index.js.map

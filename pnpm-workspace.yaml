@@ -1,10 +1,10 @@
 overrides:
-  "@ionic/core": npm:voyager-ionic-core@8.8.12
+  "@ionic/core": npm:voyager-ionic-core@8.8.17
 
 patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
   "@capacitor/keyboard@8.0.5": patches/@capacitor__keyboard@8.0.5.patch
-  editate@0.6.9: patches/editate@0.6.9.patch
+  editate@0.6.26: patches/editate@0.6.26.patch
   openapi-fetch: patches/openapi-fetch.patch
 
 publicHoistPattern:
@@ -18,6 +18,8 @@ updateConfig:
     - react-router-dom
     - "@types/react-router"
     - "@types/react-router-dom"
+    # TS 7 until typescript-eslint supports it (typescript-eslint#10940)
+    - typescript
 
 minimumReleaseAge: 0
 

@@ -125,6 +125,7 @@ export default function useCommunityActions(
   };
 
   const block = async () => {
+    if (presentLoginIfNeeded()) return;
     if (typeof communityId !== "number") return;
 
     async function _block() {
