@@ -92,6 +92,12 @@ jobs:
           echo "wrote .env:"
           cat .env
 
+      # Committed into the release tag (like .env) so the flathub repo can
+      # copy exact per-release offline sources. PR CI regenerates these on
+      # the fly instead (see flatpak.yml)
+      - name: Generate flatpak offline sources
+        run: bash flatpak/generate-sources.sh
+
       - name: Determine changed files
         id: determine_changes
         run: |
