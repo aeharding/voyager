@@ -32,6 +32,7 @@ export default defineConfig({
       manifest: manifest as ManifestOptions, // https://github.com/microsoft/TypeScript/issues/32063
       workbox: {
         maximumFileSizeToCacheInBytes: 2097152 * 2,
+        navigateFallbackDenylist: [/^\/\.well-known\//],
         runtimeCaching: [
           {
             handler: "StaleWhileRevalidate",
