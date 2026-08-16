@@ -36,7 +36,7 @@
     <color type="primary" scheme_preference="dark">#0a122b</color>
   </branding>
 
-  <url type="homepage">https://vger.app</url>
+  <url type="homepage">https://getvoyager.app</url>
   <url type="bugtracker">https://github.com/aeharding/voyager/issues</url>
   <url type="vcs-browser">https://github.com/aeharding/voyager</url>
 
