@@ -10,7 +10,6 @@ sdk-extensions:
 command: voyager
 
 finish-args:
-  # Show the window
   - --socket=wayland
   - --socket=fallback-x11
   - --device=dri
@@ -29,19 +28,18 @@ modules:
     sources:
       - type: git
         url: https://github.com/aeharding/voyager.git
-        # Updated to the release tag on version bumps (CI substitutes the
-        # commit under test)
-        commit: FLATPAK_GIT_COMMIT
+        tag: 2.48.1
+        commit: eab7551d9bb4745485535b2c6d6e8fc579e25cd8
 
       # flatpak-node-generator pnpm pnpm-lock.yaml --pnpm-store-version v11
-      # (store version must match the pnpm pinned below)
+      # (store version must match the pnpm version below)
       - node-sources.json
 
-      # flatpak-cargo-generator.py src-tauri/Cargo.lock -o flatpak/cargo-sources.json
+      # flatpak-cargo-generator.py src-tauri/Cargo.lock -o cargo-sources.json
       - cargo-sources.json
 
-      # pnpm (not part of the node SDK extension), version/hash derived
-      # from packageManager in package.json by generate-sources.sh
+      # pnpm. Not in the node SDK extension. Version/hash from
+      # packageManager in package.json
       - pnpm-sources.json
 
       - type: script
@@ -56,13 +54,11 @@ modules:
         npm_config_offline: "true"
 
     build-commands:
-      # Store population + storeDir config come from node-sources.json
-      # (pnpm patches from patches/ still apply)
       - pnpm install --offline --frozen-lockfile --ignore-scripts
 
       - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
 
-      # Compiles the frontend (beforeBuildCommand) and the binary
+      # also builds the web frontend (beforeBuildCommand)
       - pnpm tauri build --no-bundle
 
       - install -Dm755 -t /app/bin/ src-tauri/target/release/voyager
