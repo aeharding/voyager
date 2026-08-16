@@ -17,7 +17,7 @@ A mobile-first Lemmy web client
 <p align="center">
 &nbsp;<a href="https://vger.app"><img src="public/badges/pwa.svg" height="45"></a>&nbsp;&#8203;&nbsp;
 <a href="https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp;
-<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;&nbsp;<a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="public/badges/fdroid.png" height="45"></a>
+<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;&nbsp;<a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="public/badges/fdroid.png" height="45"></a>&nbsp;&nbsp;<a href="https://flathub.org/apps/app.vger.voyager"><img src="public/badges/flathub.svg" height="45"></a>
 </p>
 <p align="center">
   <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
@@ -77,7 +77,7 @@ Native apps can be great, but we believe in the strengths of the web. Why use a 
 **For most users,** we recommend the native app available in the stores:
 
 <a href="https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp;
-<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;&nbsp;<a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="public/badges/fdroid.png" height="45"></a>
+<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;&nbsp;<a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="public/badges/fdroid.png" height="45"></a>&nbsp;&nbsp;<a href="https://flathub.org/apps/app.vger.voyager"><img src="public/badges/flathub.svg" height="45"></a>
 
 However, if you prefer using the Progressive Web App, there are a number of folks that host it:
 
