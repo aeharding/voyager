@@ -233,7 +233,7 @@ const baseState: SettingsState = {
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
-      showSystemTitlebar: false,
+      showSystemTitlebar: true,
       // Desktop app: wide window, so default to two columns
       twoColumnLayout:
         getPlatform() === "tauri" ? OTwoColumnLayout.On : OTwoColumnLayout.Off,
