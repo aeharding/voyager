@@ -33,7 +33,7 @@
 
   <branding>
     <color type="primary" scheme_preference="light">#a5c6ff</color>
-    <color type="primary" scheme_preference="dark">#0f1b40</color>
+    <color type="primary" scheme_preference="dark">#0a122b</color>
   </branding>
 
   <url type="homepage">https://vger.app</url>
