@@ -31,6 +31,11 @@
 
   <launchable type="desktop-id">app.vger.voyager.desktop</launchable>
 
+  <branding>
+    <color type="primary" scheme_preference="light">#a5c6ff</color>
+    <color type="primary" scheme_preference="dark">#0f1b40</color>
+  </branding>
+
   <url type="homepage">https://vger.app</url>
   <url type="bugtracker">https://github.com/aeharding/voyager/issues</url>
   <url type="vcs-browser">https://github.com/aeharding/voyager</url>
@@ -38,6 +43,10 @@
   <content_rating type="oars-1.1">
     <content_attribute id="social-chat">intense</content_attribute>
   </content_rating>
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
 
   <supports>
     <control>pointing</control>
@@ -65,6 +74,7 @@
   </screenshots>
 
   <releases>
+    <release version="2.48.1" date="2026-08-16" />
     <release version="2.48.0" date="2026-07-09" />
   </releases>
 </component>
