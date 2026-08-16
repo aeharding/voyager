@@ -74,7 +74,14 @@
   </screenshots>
 
   <releases>
-    <release version="2.48.1" date="2026-08-16" />
-    <release version="2.48.0" date="2026-07-09" />
+    <release version="2.48.1" date="2026-08-16">
+      <description>
+        <ul>
+          <li>Show the system titlebar by default</li>
+          <li>Support delta updates for the AppImage</li>
+          <li>Fix domain verification files being intercepted by the service worker</li>
+        </ul>
+      </description>
+    </release>
   </releases>
 </component>
