@@ -61,14 +61,18 @@
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/2.png</image>
-      <caption>Threaded comments</caption>
+      <caption>Two column browsing in light mode</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/3.png</image>
-      <caption>Composing a comment with markdown</caption>
+      <caption>Threaded comments with swipe gestures</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/4.png</image>
+      <caption>Composing a reply with rich markdown</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aeharding/voyager/main/public/screenshots/desktop/5.png</image>
       <caption>Themes and customization</caption>
     </screenshot>
   </screenshots>
