@@ -31,8 +31,8 @@
   <launchable type="desktop-id">app.vger.voyager.desktop</launchable>
 
   <branding>
-    <color type="primary" scheme_preference="light">#a5c6ff</color>
-    <color type="primary" scheme_preference="dark">#0a122b</color>
+    <color type="primary" scheme_preference="light">#c7d0d4</color>
+    <color type="primary" scheme_preference="dark">#151821</color>
   </branding>
 
   <url type="homepage">https://getvoyager.app</url>
