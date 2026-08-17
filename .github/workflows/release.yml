@@ -141,11 +141,15 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false # Don't clobber the PAT below
+          fetch-depth: 0 # tags + history for metainfo release notes
 
       - name: Download bumped version artifacts
         uses: actions/download-artifact@v8
         with:
           name: release-data
+
+      - name: Generate metainfo release entry
+        run: scripts/generate_metainfo_release.sh "${{ needs.app_version.outputs.app_version }}"
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
