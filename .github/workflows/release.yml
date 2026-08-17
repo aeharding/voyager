@@ -211,5 +211,5 @@ jobs:
           git commit -m "Update to ${VERSION}"
           git push --force origin "update-to-${VERSION}"
           if [ "$(gh pr list --repo flathub/app.vger.voyager --head "update-to-${VERSION}" --json number --jq length)" = "0" ]; then
-            gh pr create --repo flathub/app.vger.voyager --title "Update to ${VERSION}" --body ""
+            gh pr create --repo flathub/app.vger.voyager --head "update-to-${VERSION}" --base master --title "Update to ${VERSION}" --body ""
           fi
