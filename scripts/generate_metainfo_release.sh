@@ -16,7 +16,11 @@ if grep -q '<releases>' "$METAINFO"; then
   exit 1
 fi
 
-PREV_TAG=$(git tag --sort=-creatordate | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+PREV_TAG=$(git tag --sort=-creatordate | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 || true)
+if [ -z "$PREV_TAG" ]; then
+  echo "Error: no previous release tag found (shallow clone?)" >&2
+  exit 1
+fi
 
 NOTES=$(git log --format=%s "$PREV_TAG"..HEAD |
   grep -E '^(feat|fix)(\([^)]*\))?!?: ' |
@@ -40,5 +44,12 @@ $ENTRY
   </releases>
 "
 
-awk -v block="$BLOCK" '/^<\/component>$/ { printf "%s", block } { print }' "$METAINFO" > "$METAINFO.tmp"
+# ENVIRON, not -v: -v reprocesses backslash escapes in the value
+BLOCK="$BLOCK" awk '/^<\/component>$/ { printf "%s", ENVIRON["BLOCK"] } { print }' "$METAINFO" > "$METAINFO.tmp"
 mv "$METAINFO.tmp" "$METAINFO"
+
+if ! grep -q '<releases>' "$METAINFO"; then
+  echo "Error: failed to inject <releases> into $METAINFO" >&2
+  exit 1
+fi
+python3 -c 'import sys, xml.dom.minidom; xml.dom.minidom.parse(sys.argv[1])' "$METAINFO"
