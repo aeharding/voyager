@@ -20,9 +20,9 @@
     <p>Features:</p>
     <ul>
       <li>Browse posts, comments and communities on any Lemmy or PieFed instance</li>
+      <li>Upvote, downvote and reply to threads and comments</li>
       <li>Multi-account support</li>
       <li>Two column layout</li>
-      <li>Built-in image and video viewer</li>
       <li>Themes, gestures and compact or large posts</li>
       <li>No ads, no tracking</li>
     </ul>
