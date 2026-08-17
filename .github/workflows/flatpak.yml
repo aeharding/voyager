@@ -24,8 +24,8 @@ jobs:
       - name: Generate offline dependency sources
         run: bash flatpak/generate-sources.sh
 
-      # The manifest is kept byte-identical to the flathub repo, so it pins
-      # the latest release. Repoint it at the commit under test.
+      # The manifest holds placeholder pins (see flatpak/README.md).
+      # Point it at the commit under test.
       - name: Build flatpak from this commit
         run: |
           sed -i \

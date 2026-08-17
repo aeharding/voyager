@@ -174,3 +174,42 @@ jobs:
           echo "Creating tag: $TAG_NAME"
           git tag -s "$TAG_NAME" -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
           git push origin "$TAG_NAME"
+
+  flathub_update:
+    needs: [push_release, app_version]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.app_version.outputs.app_version }}
+
+      # PAT_TOKEN must have write access to flathub/app.vger.voyager
+      - name: Open flathub update PR
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          VERSION: ${{ needs.app_version.outputs.app_version }}
+        run: |
+          COMMIT=$(git rev-parse HEAD)
+          git clone --depth 1 "https://${GH_TOKEN}@github.com/flathub/app.vger.voyager.git" flathub
+          cp flatpak/app.vger.voyager.yml flatpak/node-sources.json flatpak/cargo-sources.json flatpak/pnpm-sources.json flathub/
+          sed -i \
+            -e "s|^        tag: .*|        tag: ${VERSION}|" \
+            -e "s|^        commit: .*|        commit: ${COMMIT}|" \
+            flathub/app.vger.voyager.yml
+          grep -q "^        tag: ${VERSION}$" flathub/app.vger.voyager.yml
+          grep -q "^        commit: ${COMMIT}$" flathub/app.vger.voyager.yml
+          cd flathub
+          git config user.email "voyager.ci.noreply@harding.dev"
+          git config user.name "Voyager CI"
+          git checkout -b "update-to-${VERSION}"
+          git add .
+          if git diff --cached --quiet; then
+            echo "flathub already up to date"
+            exit 0
+          fi
+          git commit -m "Update to ${VERSION}"
+          git push --force origin "update-to-${VERSION}"
+          if [ "$(gh pr list --repo flathub/app.vger.voyager --head "update-to-${VERSION}" --json number --jq length)" = "0" ]; then
+            gh pr create --repo flathub/app.vger.voyager --title "Update to ${VERSION}" --body ""
+          fi
