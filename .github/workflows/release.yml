@@ -184,10 +184,10 @@ jobs:
         with:
           ref: ${{ needs.app_version.outputs.app_version }}
 
-      # PAT_TOKEN must have write access to flathub/app.vger.voyager
+      # FLATHUB_TOKEN: classic PAT, repo scope (write on flathub/app.vger.voyager)
       - name: Open flathub update PR
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
           VERSION: ${{ needs.app_version.outputs.app_version }}
         run: |
           COMMIT=$(git rev-parse HEAD)
