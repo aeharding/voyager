@@ -77,4 +77,14 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="2.48.3" date="2026-08-17">
+      <description>
+        <ul>
+          <li>Round desktop icon corners</li>
+          <li>Pass head branch to flathub pr create</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
