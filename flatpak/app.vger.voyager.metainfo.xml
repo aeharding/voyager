@@ -76,4 +76,15 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="2.48.4" date="2026-08-17">
+      <description>
+        <ul>
+          <li>Improve flathub branding color contrast</li>
+          <li>Simplify flatpak app description</li>
+          <li>Restore original icon crop</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
