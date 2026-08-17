@@ -77,4 +77,14 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="2.48.2" date="2026-08-17">
+      <description>
+        <ul>
+          <li>Retake flatpak screenshots with window decorations</li>
+          <li>Declare brand colors and mobile support in flatpak metainfo</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
