@@ -14,16 +14,15 @@
 
   <description>
     <p>
-      Voyager is an easy way to browse Lemmy and PieFed — community-run
-      sites where people share links, stories, and discussions.
+      Voyager is a beautiful, simple app for browsing Lemmy and PieFed.
     </p>
     <p>Features:</p>
     <ul>
       <li>Works with any Lemmy or PieFed server</li>
       <li>Multiple accounts</li>
-      <li>Two-column layout that makes the most of big screens</li>
+      <li>Two-column layout</li>
       <li>Built-in image, gallery, and video viewer</li>
-      <li>Make it yours with themes, gestures, and compact or spacious posts</li>
+      <li>Themes, gestures, and compact or large posts</li>
       <li>No ads, no tracking</li>
     </ul>
   </description>
