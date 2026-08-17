@@ -30,9 +30,6 @@ modules:
         url: https://github.com/aeharding/voyager.git
         tag: FLATPAK_GIT_TAG
         commit: FLATPAK_GIT_COMMIT
-        x-checker-data:
-          type: git
-          tag-pattern: ^([\d.]+)$
 
       # flatpak-node-generator pnpm pnpm-lock.yaml --pnpm-store-version v11
       # (store version must match the pnpm version below)

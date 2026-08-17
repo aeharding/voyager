@@ -193,12 +193,19 @@ jobs:
             -e "s|^        tag: .*|        tag: ${VERSION}|" \
             -e "s|^        commit: .*|        commit: ${COMMIT}|" \
             flathub/app.vger.voyager.yml
-          grep -A1 "^        tag: ${VERSION}$" flathub/app.vger.voyager.yml
+          grep -q "^        tag: ${VERSION}$" flathub/app.vger.voyager.yml
+          grep -q "^        commit: ${COMMIT}$" flathub/app.vger.voyager.yml
           cd flathub
           git config user.email "voyager.ci.noreply@harding.dev"
           git config user.name "Voyager CI"
           git checkout -b "update-to-${VERSION}"
           git add .
+          if git diff --cached --quiet; then
+            echo "flathub already up to date"
+            exit 0
+          fi
           git commit -m "Update to ${VERSION}"
-          git push origin "update-to-${VERSION}"
-          gh pr create --repo flathub/app.vger.voyager --title "Update to ${VERSION}" --body ""
+          git push --force origin "update-to-${VERSION}"
+          if [ "$(gh pr list --repo flathub/app.vger.voyager --head "update-to-${VERSION}" --json number --jq length)" = "0" ]; then
+            gh pr create --repo flathub/app.vger.voyager --title "Update to ${VERSION}" --body ""
+          fi
