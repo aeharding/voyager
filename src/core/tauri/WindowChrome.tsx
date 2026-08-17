@@ -2,7 +2,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
 
 import { getPlatform } from "#/helpers/device";
-import { useAppSelector } from "#/store";
+import store, { useAppSelector } from "#/store";
 
 import styles from "./WindowChrome.module.css";
 
@@ -25,17 +25,39 @@ export default function WindowChrome() {
 
 function TauriWindowChrome() {
   const maximized = useWindowMaximized();
+  const ready = useAppSelector((state) => state.settings.ready);
   const showSystemTitlebar = useAppSelector(
     (state) => state.settings.appearance.general.showSystemTitlebar,
   );
 
   useEffect(() => {
+    if (!ready) return;
+
     getCurrentWindow().setDecorations(showSystemTitlebar);
-  }, [showSystemTitlebar]);
+  }, [ready, showSystemTitlebar]);
 
   if (showSystemTitlebar || maximized) return;
 
   return <ResizeEdges />;
+}
+
+/**
+ * Tauri equivalent of Capacitor's SplashScreen.hide(): the window starts
+ * hidden (visible: false in tauri.conf.json) and is revealed once the app
+ * has actually mounted. No-op on other platforms, so call it wherever the
+ * splash screen is hidden.
+ */
+export async function showAppWindow() {
+  if (getPlatform() !== "tauri") return;
+
+  const win = getCurrentWindow();
+
+  // Apply the stored titlebar preference before first paint of the window
+  await win.setDecorations(
+    store.getState().settings.appearance.general.showSystemTitlebar,
+  );
+
+  await win.show();
 }
 
 /**
