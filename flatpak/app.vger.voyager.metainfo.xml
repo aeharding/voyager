@@ -76,4 +76,14 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="2.48.5" date="2026-08-17">
+      <description>
+        <ul>
+          <li>Hide desktop window until app is loaded to prevent flicker</li>
+          <li>Address flathub quality guideline failures</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
