@@ -3,6 +3,7 @@ import { IonTabs } from "@ionic/react";
 import { use, useEffect } from "react";
 
 import { TabContext } from "#/core/TabContext";
+import { showAppWindow } from "#/core/tauri/WindowChrome";
 import { instanceSelector } from "#/features/auth/authSelectors";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
@@ -25,6 +26,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
     if (!ready) return;
 
     SplashScreen.hide();
+    showAppWindow();
   }, [ready]);
 
   if (!ready) return;
