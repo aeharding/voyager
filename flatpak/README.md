@@ -1,10 +1,11 @@
 # Flatpak packaging
 
-`app.vger.voyager.yml` is kept byte-identical to the copy in the
-[flathub repo](https://github.com/flathub/app.vger.voyager), so its git
-source pins the latest release. PR CI repoints it at the commit under
-test (see `.github/workflows/flatpak.yml`). When updating flathub for a
-new release, bump `tag:`/`commit:` there and mirror the pin back here.
+`app.vger.voyager.yml` matches the copy in the
+[flathub repo](https://github.com/flathub/app.vger.voyager) except for
+the git source pin, which holds placeholders here. Release CI copies the
+manifest to flathub with the release tag/commit substituted (see
+`flathub_update` in `.github/workflows/release.yml`); PR CI substitutes
+the commit under test (see `.github/workflows/flatpak.yml`).
 
 Flathub builds are fully offline: `cargo-sources.json` and
 `node-sources.json` pin every dependency from the lockfiles.

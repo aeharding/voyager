@@ -28,8 +28,9 @@ modules:
     sources:
       - type: git
         url: https://github.com/aeharding/voyager.git
-        tag: 2.48.1
-        commit: eab7551d9bb4745485535b2c6d6e8fc579e25cd8
+        # Substituted: release CI pins the flathub copy, PR CI builds head
+        tag: FLATPAK_GIT_TAG
+        commit: FLATPAK_GIT_COMMIT
         x-checker-data:
           type: git
           tag-pattern: ^([\d.]+)$
