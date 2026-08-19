@@ -1,6 +1,5 @@
 import { IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { memo } from "react";
-import { useParams } from "react-router";
 
 import CommunitiesList from "#/features/community/list/CommunitiesList";
 import CommunitiesListRedirectBootstrapper from "#/features/community/list/CommunitiesListRedirectBootstrapper";
@@ -8,6 +7,7 @@ import { ConfirmLeaveFeedPrompt } from "#/features/community/list/ConfirmLeaveFe
 import CommunitiesMoreActions from "#/features/community/list/InstanceMoreActions";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 
 interface CommunitiesPageParams {
@@ -15,7 +15,7 @@ interface CommunitiesPageParams {
 }
 
 export default function CommunitiesPage() {
-  const { actor } = useParams<CommunitiesPageParams>();
+  const { actor } = useRequiredParams<CommunitiesPageParams>();
 
   return <CommunitiesPageContent actor={actor} />;
 }

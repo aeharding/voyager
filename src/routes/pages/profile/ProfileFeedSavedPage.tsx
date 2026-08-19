@@ -1,16 +1,15 @@
-import { useParams } from "react-router-dom";
-
 import { FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
 import { getUserIfNeeded } from "#/features/user/userSlice";
 import useClient from "#/helpers/useClient";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 
 import BaseProfileFeedItemsPage from "./BaseProfileFeedItemsPage";
 
 export default function ProfileFeedSavedPage() {
-  const { handle } = useParams<{ handle: string }>();
+  const { handle } = useRequiredParams<{ handle: string }>();
   const client = useClient();
   const dispatch = useAppDispatch();
 

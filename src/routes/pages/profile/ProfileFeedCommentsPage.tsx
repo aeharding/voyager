@@ -1,5 +1,3 @@
-import { useParams } from "react-router-dom";
-
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
 import { SearchSort } from "#/features/feed/sort/SearchSort";
@@ -8,6 +6,7 @@ import useFeedSort, {
 } from "#/features/feed/sort/useFeedSort";
 import { getUserIfNeeded } from "#/features/user/userSlice";
 import useClient from "#/helpers/useClient";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 
@@ -15,7 +14,7 @@ import BaseProfileFeedItemsPage from "./BaseProfileFeedItemsPage";
 
 export default function ProfileFeedCommentsPage() {
   const client = useClient();
-  const { handle } = useParams<{ handle: string }>();
+  const { handle } = useRequiredParams<{ handle: string }>();
   const dispatch = useAppDispatch();
 
   const [sort, setSort] = useFeedSort(

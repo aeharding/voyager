@@ -30,7 +30,7 @@ import { setAccounts } from "./authSlice";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
-  onSelectAccount: ((account: string) => Promise<void>) | void;
+  onSelectAccount: ((account: string) => Promise<void> | void) | void;
   showGuest?: boolean;
   activeHandle?: string;
 } & (

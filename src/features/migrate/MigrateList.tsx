@@ -113,7 +113,9 @@ export default function MigrateList() {
             <IonItem
               routerLink={`/settings/reddit-migrate/${encodeURIComponent(link)}`}
             >
-              <IonLabel class="ion-text-nowrap">{getPathname(link)}</IonLabel>
+              <IonLabel className="ion-text-nowrap">
+                {getPathname(link)}
+              </IonLabel>
             </IonItem>
           </IonItemSliding>
         ))}

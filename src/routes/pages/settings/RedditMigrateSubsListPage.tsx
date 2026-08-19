@@ -1,13 +1,13 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { useParams } from "react-router";
 
 import MigrateSubsList from "#/features/migrate/MigrateSubsList";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
+import useRequiredParams from "#/helpers/useRequiredParams";
 
 export default function RedditMigrateSubsListPage() {
-  const { link } = useParams<{ link: string }>();
+  const { link } = useRequiredParams<{ link: string }>();
 
   return (
     <AppPage>

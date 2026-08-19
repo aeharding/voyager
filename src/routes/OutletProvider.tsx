@@ -1,7 +1,7 @@
 import { noop } from "es-toolkit";
-import { Location } from "history";
 import { createContext } from "react";
 import { useState } from "react";
+import { Location } from "react-router";
 
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
@@ -38,6 +38,7 @@ export default function OutletProvider({
             search: "",
             state: undefined,
             hash: "",
+            key: "",
           }
         : undefined,
     });

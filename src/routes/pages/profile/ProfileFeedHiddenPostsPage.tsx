@@ -7,7 +7,6 @@ import {
 } from "@ionic/react";
 import { compact } from "es-toolkit";
 import { useRef } from "react";
-import { useParams } from "react-router";
 import { NotFoundError } from "threadiverse";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
@@ -21,6 +20,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { db } from "#/services/db";
 import { IPostMetadata } from "#/services/db/types";
@@ -33,7 +33,9 @@ const LIMIT = 10;
 export default function ProfileFeedHiddenPostsPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useAppSelector(userHandleSelector);
-  const { handle: handleWithoutServer } = useParams<{ handle: string }>();
+  const { handle: handleWithoutServer } = useRequiredParams<{
+    handle: string;
+  }>();
   const client = useClient();
 
   // This is just used to trigger a re-render when the list changes

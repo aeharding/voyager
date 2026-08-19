@@ -1,5 +1,4 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
-import { useParams } from "react-router";
 
 import {
   userHandleSelector,
@@ -11,6 +10,7 @@ import AsyncProfile from "#/features/user/AsyncProfile";
 import ProfilePageActions from "#/features/user/ProfilePageActions";
 import UserPageActions from "#/features/user/UserPageActions";
 import { AppPage } from "#/helpers/AppPage";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { useAppSelector } from "#/store";
 
 interface UserPageProps {
@@ -18,7 +18,7 @@ interface UserPageProps {
 }
 
 export default function UserPage() {
-  const { handle } = useParams<{ handle: string }>();
+  const { handle } = useRequiredParams<{ handle: string }>();
 
   return <UserPageContent handle={handle} />;
 }

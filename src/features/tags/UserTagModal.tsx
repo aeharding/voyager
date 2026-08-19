@@ -107,7 +107,7 @@ function UserTagModalContents({
               value={tag.text}
               inputMode="text"
               autocapitalize="on"
-              autocorrect="on"
+              autocorrect
               spellCheck
               enterKeyHint="done"
               onKeyDown={blurOnEnter}

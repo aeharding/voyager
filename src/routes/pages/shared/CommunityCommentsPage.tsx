@@ -1,9 +1,9 @@
-import { useParams } from "react-router";
+import useRequiredParams from "#/helpers/useRequiredParams";
 
 import CommentsPage from "./CommentsPage";
 
 export default function CommunityCommentsPage() {
-  const { community } = useParams<{
+  const { community } = useRequiredParams<{
     community: string;
   }>();
 

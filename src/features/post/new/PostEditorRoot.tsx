@@ -435,7 +435,7 @@ export default function PostEditorRoot({
                 counter
                 inputMode="text"
                 autocapitalize="on"
-                autocorrect="on"
+                autocorrect
                 spellCheck
                 maxlength={MAX_TITLE_LENGTH}
                 counterFormatter={(inputLength, maxLength) =>

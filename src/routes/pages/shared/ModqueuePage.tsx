@@ -1,7 +1,6 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { uniqBy } from "es-toolkit";
 import { createContext, use } from "react";
-import { useParams } from "react-router";
 import {
   CommentReportView,
   CommentView,
@@ -28,13 +27,14 @@ import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { LIMIT } from "#/services/lemmy";
 import store, { useAppDispatch } from "#/store";
 
 import FeedContent from "./FeedContent";
 
 export default function ModqueuePage() {
-  const { community } = useParams<{ community?: string }>();
+  const { community } = useRequiredParams<{ community?: string }>();
 
   if (!community) return <GlobalModqueue />;
 

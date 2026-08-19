@@ -1,5 +1,5 @@
 overrides:
-  "@ionic/core": npm:voyager-ionic-core@8.8.17
+  "@ionic/core": file:../ionic-framework-v9/core
 
 patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
@@ -12,12 +12,8 @@ publicHoistPattern:
 
 updateConfig:
   ignoreDependencies:
-    - history
-    - "@types/history"
     - react-router
     - react-router-dom
-    - "@types/react-router"
-    - "@types/react-router-dom"
     # TS 7 until typescript-eslint supports it (typescript-eslint#10940)
     - typescript
 

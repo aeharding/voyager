@@ -1,28 +1,41 @@
 import { createContext } from "react";
-import { RouteProps } from "react-router-dom";
-import { Route as ReactRoute } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import { useTabName } from "#/core/TabContext";
 
 import ActorRedirect from "./ActorRedirect";
 
-type AppRouteProps = Omit<RouteProps, "children"> & React.PropsWithChildren;
+export const TabNameContext = createContext("");
 
-export default function Route({ children, ...props }: AppRouteProps) {
+/**
+ * Builds a react-router `<Route>` element.
+ *
+ * Must return a real `Route` element (not wrap one in a component):
+ * Ionic's router outlet only recognizes direct `Route` children,
+ * silently dropping anything else.
+ */
+export default function route(path: string, children: React.ReactNode) {
+  return (
+    <Route
+      key={path}
+      path={path}
+      element={<RouteContents path={path}>{children}</RouteContents>}
+    />
+  );
+}
+
+function RouteContents({
+  path,
+  children,
+}: React.PropsWithChildren<{ path: string }>) {
   const tabName = useTabName();
 
   const content = (() => {
-    if (props.path?.includes("/:actor"))
+    if (path.includes("/:actor"))
       return <ActorRedirect>{children}</ActorRedirect>;
 
     return children;
   })();
 
-  return (
-    <TabNameContext value={tabName}>
-      <ReactRoute {...props}>{content}</ReactRoute>
-    </TabNameContext>
-  );
+  return <TabNameContext value={tabName}>{content}</TabNameContext>;
 }
-
-export const TabNameContext = createContext("");

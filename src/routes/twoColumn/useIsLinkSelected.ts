@@ -15,9 +15,8 @@ export default function useIsLinkSelected(routerLink: string) {
 
   if (!currentSecondColumnLocation) return false;
 
-  return matchPath(currentSecondColumnLocation.pathname, {
-    path: routerLink,
-    exact: true,
-    strict: true,
-  });
+  return matchPath(
+    { path: routerLink, end: true },
+    currentSecondColumnLocation.pathname,
+  );
 }

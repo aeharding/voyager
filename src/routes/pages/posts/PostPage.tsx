@@ -8,7 +8,6 @@ import {
   RefresherCustomEvent,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
 
 import { CommentSort } from "#/features/comment/CommentSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
@@ -24,6 +23,7 @@ import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -39,7 +39,7 @@ interface PostPageParams {
 
 export default function PostPage() {
   const { id, commentPath, community, threadCommentId } =
-    useParams<PostPageParams>();
+    useRequiredParams<PostPageParams>();
 
   return (
     <PostPageContent
