@@ -30,6 +30,11 @@ function LocationBridge({ children }: React.PropsWithChildren) {
   return children;
 }
 
+const FUTURE_FLAGS = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true,
+};
+
 export default function Router({ children }: React.PropsWithChildren) {
   /**
    * This is a total hack to prevent native page swipe gesture
@@ -38,14 +43,14 @@ export default function Router({ children }: React.PropsWithChildren) {
    */
   if (usingMemoryRouter) {
     return (
-      <IonReactMemoryRouter>
+      <IonReactMemoryRouter future={FUTURE_FLAGS}>
         <LocationBridge>{children}</LocationBridge>
       </IonReactMemoryRouter>
     );
   }
 
   return (
-    <IonReactRouter>
+    <IonReactRouter future={FUTURE_FLAGS}>
       <LocationBridge>{children}</LocationBridge>
     </IonReactRouter>
   );
