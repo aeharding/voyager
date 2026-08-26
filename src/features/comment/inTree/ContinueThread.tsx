@@ -1,12 +1,12 @@
 import { IonIcon, IonItem } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
-import { useParams } from "react-router";
 
 import CommentContainer from "#/features/comment/elements/CommentContainer";
 import { PositionedContainer } from "#/features/comment/elements/PositionedContainer";
 import { CommentNodeI } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useRequiredParams from "#/helpers/useRequiredParams";
 
 import CommentHr from "./CommentHr";
 
@@ -26,7 +26,7 @@ export default function ContinueThread({
   collapsed,
   comment,
 }: CommentExpanderProps) {
-  const { community, id: postId } = useParams<{
+  const { community, id: postId } = useRequiredParams<{
     community: string;
     id: string;
   }>();

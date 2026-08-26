@@ -1,4 +1,4 @@
-import Route from "#/routes/common/Route";
+import route from "#/routes/common/Route";
 import ConversationPage from "#/routes/pages/inbox/ConversationPage";
 import PostDetail from "#/routes/pages/posts/PostPage";
 import ProfileFeedCommentsPage from "#/routes/pages/profile/ProfileFeedCommentsPage";
@@ -20,89 +20,47 @@ import SpecialFeedPage from "#/routes/pages/shared/SpecialFeedPage";
 import anyPaneGeneral from "./anyPaneGeneral";
 
 export default [
-  <Route exact path="/:tab/:actor/c/:community">
-    <CommunityPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/search/posts/:search">
-    <SearchFeedResultsPage type="posts" />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/search/comments/:search">
-    <SearchFeedResultsPage type="comments" />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/sidebar">
-    <CommunitySidebarPage />
-  </Route>,
+  route("/:tab/:actor/c/:community", <CommunityPage />),
+  route(
+    "/:tab/:actor/c/:community/search/posts/:search",
+    <SearchFeedResultsPage type="posts" />,
+  ),
+  route(
+    "/:tab/:actor/c/:community/search/comments/:search",
+    <SearchFeedResultsPage type="comments" />,
+  ),
+  route("/:tab/:actor/c/:community/sidebar", <CommunitySidebarPage />),
   ...anyPaneGeneral,
-  <Route exact path="/:tab/:actor/c/:community/comments/:id">
-    <PostDetail />
-  </Route>,
-  <Route
-    exact
-    path="/:tab/:actor/c/:community/comments/:id/thread/:threadCommentId"
-  >
-    <PostDetail />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/comments/:id/:commentPath">
-    <PostDetail />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/comments">
-    <CommunityCommentsPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/log">
-    <ModlogPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/c/:community/modqueue">
-    <ModqueuePage />
-  </Route>,
-  <Route exact path="/:tab/:actor/home">
-    <SpecialFeedPage type="subscribed" />
-  </Route>,
-  <Route exact path="/:tab/:actor/all">
-    <SpecialFeedPage type="all" />
-  </Route>,
-  <Route exact path="/:tab/:actor/local">
-    <SpecialFeedPage type="local" />
-  </Route>,
-  <Route exact path="/:tab/:actor/mod">
-    <SpecialFeedPage type="moderator_view" />
-  </Route>,
-  <Route exact path="/:tab/:actor/mod/comments">
-    <CommentsPage type="moderator_view" />
-  </Route>,
-  <Route exact path="/:tab/:actor/mod/log">
-    <ModlogPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/mod/modqueue">
-    <ModqueuePage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle">
-    <UserPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/posts">
-    <ProfileFeedPostsPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/comments">
-    <ProfileFeedCommentsPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/saved">
-    <ProfileFeedSavedPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/hidden">
-    <ProfileFeedHiddenPostsPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/upvoted">
-    <ProfileFeedVotedPage likeType="liked_only" />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/downvoted">
-    <ProfileFeedVotedPage likeType="disliked_only" />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/message">
-    <ConversationPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/u/:handle/log">
-    <ModlogPage />
-  </Route>,
-  <Route exact path="/:tab/:actor/sidebar">
-    <InstanceSidebarPage />
-  </Route>,
+  route("/:tab/:actor/c/:community/comments/:id", <PostDetail />),
+  route(
+    "/:tab/:actor/c/:community/comments/:id/thread/:threadCommentId",
+    <PostDetail />,
+  ),
+  route("/:tab/:actor/c/:community/comments/:id/:commentPath", <PostDetail />),
+  route("/:tab/:actor/c/:community/comments", <CommunityCommentsPage />),
+  route("/:tab/:actor/c/:community/log", <ModlogPage />),
+  route("/:tab/:actor/c/:community/modqueue", <ModqueuePage />),
+  route("/:tab/:actor/home", <SpecialFeedPage type="subscribed" />),
+  route("/:tab/:actor/all", <SpecialFeedPage type="all" />),
+  route("/:tab/:actor/local", <SpecialFeedPage type="local" />),
+  route("/:tab/:actor/mod", <SpecialFeedPage type="moderator_view" />),
+  route("/:tab/:actor/mod/comments", <CommentsPage type="moderator_view" />),
+  route("/:tab/:actor/mod/log", <ModlogPage />),
+  route("/:tab/:actor/mod/modqueue", <ModqueuePage />),
+  route("/:tab/:actor/u/:handle", <UserPage />),
+  route("/:tab/:actor/u/:handle/posts", <ProfileFeedPostsPage />),
+  route("/:tab/:actor/u/:handle/comments", <ProfileFeedCommentsPage />),
+  route("/:tab/:actor/u/:handle/saved", <ProfileFeedSavedPage />),
+  route("/:tab/:actor/u/:handle/hidden", <ProfileFeedHiddenPostsPage />),
+  route(
+    "/:tab/:actor/u/:handle/upvoted",
+    <ProfileFeedVotedPage likeType="liked_only" />,
+  ),
+  route(
+    "/:tab/:actor/u/:handle/downvoted",
+    <ProfileFeedVotedPage likeType="disliked_only" />,
+  ),
+  route("/:tab/:actor/u/:handle/message", <ConversationPage />),
+  route("/:tab/:actor/u/:handle/log", <ModlogPage />),
+  route("/:tab/:actor/sidebar", <InstanceSidebarPage />),
 ];

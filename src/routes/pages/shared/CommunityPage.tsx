@@ -6,7 +6,7 @@ import {
 } from "@ionic/react";
 import { noop } from "es-toolkit";
 import { createContext, useEffect, useRef, useState } from "react";
-import { Redirect, useParams } from "react-router";
+import { Navigate } from "react-router";
 
 import ModActions from "#/features/community/mod/ModActions";
 import MoreActions from "#/features/community/MoreActions";
@@ -42,6 +42,7 @@ import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
@@ -55,7 +56,7 @@ interface CommunityPageParams {
 }
 
 export default function CommunityPage() {
-  const { community, actor } = useParams<CommunityPageParams>();
+  const { community, actor } = useRequiredParams<CommunityPageParams>();
 
   return <CommunityPageContent community={community} actor={actor} />;
 }
@@ -148,9 +149,9 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
-      <Redirect
+      <Navigate
         to={buildGeneralBrowseLink(`/c/${community.split("@")[0]}`)}
-        push={false}
+        replace
       />
     );
 

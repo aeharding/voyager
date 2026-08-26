@@ -6,7 +6,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { memo, useEffect } from "react";
-import { useParams } from "react-router";
 
 import { getCommunity } from "#/features/community/communitySlice";
 import AppHeader from "#/features/shared/AppHeader";
@@ -14,6 +13,7 @@ import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import Sidebar from "#/features/sidebar/Sidebar";
 import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 interface CommunitySidebarPageProps {
@@ -21,7 +21,7 @@ interface CommunitySidebarPageProps {
 }
 
 export default function CommunitySidebarPage() {
-  const { community } = useParams<CommunitySidebarPageProps>();
+  const { community } = useRequiredParams<CommunitySidebarPageProps>();
 
   return <CommunitySidebarPageContent community={community} />;
 }

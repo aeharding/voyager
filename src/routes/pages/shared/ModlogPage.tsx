@@ -1,6 +1,5 @@
 import { IonBackButton, IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { useEffect } from "react";
-import { useParams } from "react-router";
 import { Community, ModlogItem as ModlogItemType, Person } from "threadiverse";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
@@ -16,13 +15,14 @@ import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import FeedContent from "./FeedContent";
 
 export default function ModlogPage() {
-  const { community, handle } = useParams<{
+  const { community, handle } = useRequiredParams<{
     community?: string;
     handle?: string;
   }>();

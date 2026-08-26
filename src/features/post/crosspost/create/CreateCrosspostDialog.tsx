@@ -13,7 +13,6 @@ import { CommunityView, PostView } from "threadiverse";
 
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
-import { useAppPageRef } from "#/helpers/AppPage";
 import { getPlatform } from "#/helpers/device";
 import FloatingDialog from "#/helpers/FloatingDialog";
 import { buildCrosspostBody, getHandle } from "#/helpers/lemmy";
@@ -40,7 +39,6 @@ export default function CreateCrosspostDialog({
 }: CreateCrosspostDialogProps) {
   const [title, setTitle] = useState("");
   const [community, setCommunity] = useState<CommunityView | undefined>();
-  const pageRef = useAppPageRef();
   const client = useClient();
   const dispatch = useAppDispatch();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -54,7 +52,6 @@ export default function CreateCrosspostDialog({
         if (data) setCommunity(data);
         onDismissCommunitySelector();
       },
-      pageRef,
     });
 
   useEffect(() => {
@@ -119,7 +116,7 @@ export default function CreateCrosspostDialog({
         onIonInput={(e) => setTitle(e.detail.value || "")}
         inputMode="text"
         autocapitalize="on"
-        autocorrect="on"
+        autocorrect
         spellCheck
         // clearInput // TODO add once below bug fixed
       >

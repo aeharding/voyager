@@ -1,9 +1,10 @@
 import { IonIcon } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import { useCallback, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { useOpenInSecondColumnIfNeededProps } from "#/routes/twoColumn/useOpenInSecondColumnIfNeededProps";
 
 import styles from "./ViewAllComments.module.css";
@@ -12,7 +13,10 @@ interface ViewAllCommentsProps {
 }
 
 export default function ViewAllComments({ onHeight }: ViewAllCommentsProps) {
-  const { community, id } = useParams<{ community: string; id: string }>();
+  const { community, id } = useRequiredParams<{
+    community: string;
+    id: string;
+  }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const ref = useRef<HTMLAnchorElement>(null);
 

@@ -1,4 +1,4 @@
-import Route from "#/routes/common/Route";
+import route from "#/routes/common/Route";
 import CommunitiesExplorePage from "#/routes/pages/search/CommunitiesExplorePage";
 import RandomCommunityPage from "#/routes/pages/search/RandomCommunityPage";
 import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
@@ -6,22 +6,10 @@ import SearchPostsResultsPage from "#/routes/pages/search/results/SearchFeedResu
 import SearchPage from "#/routes/pages/search/SearchPage";
 
 export default [
-  <Route exact path="/search">
-    <SearchPage />
-  </Route>,
-  <Route exact path="/search/random">
-    <RandomCommunityPage />
-  </Route>,
-  <Route exact path="/search/posts/:search">
-    <SearchPostsResultsPage type="posts" />
-  </Route>,
-  <Route exact path="/search/comments/:search">
-    <SearchPostsResultsPage type="comments" />
-  </Route>,
-  <Route exact path="/search/communities/:search">
-    <SearchCommunitiesPage />
-  </Route>,
-  <Route exact path="/search/explore">
-    <CommunitiesExplorePage />
-  </Route>,
+  route("/search", <SearchPage />),
+  route("/search/random", <RandomCommunityPage />),
+  route("/search/posts/:search", <SearchPostsResultsPage type="posts" />),
+  route("/search/comments/:search", <SearchPostsResultsPage type="comments" />),
+  route("/search/communities/:search", <SearchCommunitiesPage />),
+  route("/search/explore", <CommunitiesExplorePage />),
 ];

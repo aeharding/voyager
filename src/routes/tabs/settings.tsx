@@ -1,4 +1,4 @@
-import Route from "#/routes/common/Route";
+import route from "#/routes/common/Route";
 import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
 import AboutPage from "#/routes/pages/settings/about/AboutPage";
 import AboutThanksPage from "#/routes/pages/settings/about/AboutThanksPage";
@@ -20,61 +20,23 @@ import TagsSettingsPage from "#/routes/pages/settings/TagsSettingsPage";
 import UpdateAppPage from "#/routes/pages/settings/UpdateAppPage";
 
 export default [
-  <Route exact path="/settings">
-    <SettingsPage />
-  </Route>,
-  <Route exact path="/settings/install">
-    <InstallAppPage />
-  </Route>,
-  <Route exact path="/settings/update">
-    <UpdateAppPage />
-  </Route>,
-  <Route exact path="/settings/general">
-    <GeneralPage />
-  </Route>,
-  <Route exact path="/settings/general/hiding">
-    <HidingSettingsPage />
-  </Route>,
-  <Route exact path="/settings/appearance">
-    <AppearancePage />
-  </Route>,
-  <Route exact path="/settings/appearance/theme">
-    <AppearanceThemePage />
-  </Route>,
-  <Route exact path="/settings/appearance/theme/mode">
-    <DeviceModeSettingsPage />
-  </Route>,
-  <Route exact path="/settings/app-icon">
-    <AppIconPage />
-  </Route>,
-  <Route exact path="/settings/biometric">
-    <BiometricPage />
-  </Route>,
-  <Route exact path="/settings/gestures">
-    <GesturesPage />
-  </Route>,
-  <Route exact path="/settings/blocks">
-    <BlocksSettingsPage />
-  </Route>,
-  <Route exact path="/settings/tags">
-    <TagsSettingsPage />
-  </Route>,
-  <Route exact path="/settings/tags/browse">
-    <BrowseTagsPage />
-  </Route>,
-  <Route exact path="/settings/reddit-migrate">
-    <RedditMigratePage />
-  </Route>,
-  <Route exact path="/settings/reddit-migrate/:link">
-    <RedditMigrateSubsListPage />
-  </Route>,
-  <Route exact path="/settings/reddit-migrate/:link/:search">
-    <SearchCommunitiesPage />
-  </Route>,
-  <Route exact path="/settings/about">
-    <AboutPage />
-  </Route>,
-  <Route exact path="/settings/about/thanks">
-    <AboutThanksPage />
-  </Route>,
+  route("/settings", <SettingsPage />),
+  route("/settings/install", <InstallAppPage />),
+  route("/settings/update", <UpdateAppPage />),
+  route("/settings/general", <GeneralPage />),
+  route("/settings/general/hiding", <HidingSettingsPage />),
+  route("/settings/appearance", <AppearancePage />),
+  route("/settings/appearance/theme", <AppearanceThemePage />),
+  route("/settings/appearance/theme/mode", <DeviceModeSettingsPage />),
+  route("/settings/app-icon", <AppIconPage />),
+  route("/settings/biometric", <BiometricPage />),
+  route("/settings/gestures", <GesturesPage />),
+  route("/settings/blocks", <BlocksSettingsPage />),
+  route("/settings/tags", <TagsSettingsPage />),
+  route("/settings/tags/browse", <BrowseTagsPage />),
+  route("/settings/reddit-migrate", <RedditMigratePage />),
+  route("/settings/reddit-migrate/:link", <RedditMigrateSubsListPage />),
+  route("/settings/reddit-migrate/:link/:search", <SearchCommunitiesPage />),
+  route("/settings/about", <AboutPage />),
+  route("/settings/about/thanks", <AboutThanksPage />),
 ];

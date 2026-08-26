@@ -1,6 +1,6 @@
 import { IonRouterOutlet } from "@ionic/react";
 import { use } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
 import { isInstalled } from "#/helpers/device";
@@ -55,18 +55,21 @@ function AppRoutes() {
 
       {/* This is first (order = -1) in css. Why? See Outlet.module.css */}
       <IonRouterOutlet>
-        <Route exact path="/">
-          {defaultFeed ? (
-            <Redirect
-              to={`/posts/${
-                selectedInstance ?? getDefaultServer()
-              }${redirectRoute}`}
-              push={false}
-            />
-          ) : (
-            ""
-          )}
-        </Route>
+        <Route
+          path="/"
+          element={
+            defaultFeed ? (
+              <Navigate
+                to={`/posts/${
+                  selectedInstance ?? getDefaultServer()
+                }${redirectRoute}`}
+                replace
+              />
+            ) : (
+              ""
+            )
+          }
+        />
 
         {...buildPostsRoutes({
           defaultFeed,

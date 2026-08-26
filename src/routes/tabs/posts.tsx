@@ -1,6 +1,6 @@
-import { Redirect } from "react-router";
+import { Navigate } from "react-router";
 
-import Route from "#/routes/common/Route";
+import route from "#/routes/common/Route";
 import CommunitiesPage from "#/routes/pages/posts/CommunitiesPage";
 import { getDefaultServer } from "#/services/app";
 import { DefaultFeedType } from "#/services/db/types";
@@ -17,18 +17,17 @@ export default function buildPostsRoutes({
   selectedInstance,
 }: Props) {
   return [
-    <Route exact path="/posts">
-      {defaultFeed ? (
-        <Redirect
+    route(
+      "/posts",
+      defaultFeed ? (
+        <Navigate
           to={`/posts/${selectedInstance ?? getDefaultServer()}${redirectRoute}`}
-          push={false}
+          replace
         />
       ) : (
         ""
-      )}
-    </Route>,
-    <Route exact path="/posts/:actor">
-      <CommunitiesPage />
-    </Route>,
+      ),
+    ),
+    route("/posts/:actor", <CommunitiesPage />),
   ];
 }

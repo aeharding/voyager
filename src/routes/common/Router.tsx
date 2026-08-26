@@ -1,37 +1,57 @@
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
-import { createMemoryHistory } from "history";
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
+import { Location, useLocation } from "react-router";
 
 import { isAppleDeviceInstalledToHomescreen } from "#/helpers/device";
 
-export const memoryHistory = isAppleDeviceInstalledToHomescreen()
-  ? createMemoryHistory()
-  : undefined;
+const usingMemoryRouter = isAppleDeviceInstalledToHomescreen();
+
+let currentLocation: Location | undefined;
+
+/**
+ * Current react-router location for code that can't use `useLocation`
+ * (crash screen, non-React helpers). With the memory router,
+ * `window.location` never updates, so this is the only source of truth.
+ */
+export function getRouterLocation() {
+  return currentLocation;
+}
+
+function LocationBridge({ children }: React.PropsWithChildren) {
+  const location = useLocation();
+
+  useLayoutEffect(() => {
+    currentLocation = location;
+
+    // window never navigates with the memory router, so reset scroll manually
+    if (usingMemoryRouter) window.scrollTo(0, 0);
+  }, [location]);
+
+  return children;
+}
+
+const FUTURE_FLAGS = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true,
+};
 
 export default function Router({ children }: React.PropsWithChildren) {
-  useEffect(() => {
-    if (!memoryHistory) return;
-
-    const unListen = memoryHistory.listen(() => {
-      window.scrollTo(0, 0);
-    });
-    return () => {
-      unListen();
-    };
-  }, []);
-
   /**
    * This is a total hack to prevent native page swipe gesture
    * on iOS. If there's no page history to swipe,
    * what are you going to do, Apple... 😈
    */
-  if (memoryHistory) {
+  if (usingMemoryRouter) {
     return (
-      <IonReactMemoryRouter history={memoryHistory}>
-        {children}
+      <IonReactMemoryRouter future={FUTURE_FLAGS}>
+        <LocationBridge>{children}</LocationBridge>
       </IonReactMemoryRouter>
     );
   }
 
-  return <IonReactRouter>{children}</IonReactRouter>;
+  return (
+    <IonReactRouter future={FUTURE_FLAGS}>
+      <LocationBridge>{children}</LocationBridge>
+    </IonReactRouter>
+  );
 }

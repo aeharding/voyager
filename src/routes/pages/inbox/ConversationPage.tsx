@@ -6,7 +6,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { VListHandle } from "virtua";
 
@@ -26,6 +25,7 @@ import { AppPage } from "#/helpers/AppPage";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import { AppVirtualizer } from "#/helpers/virtua";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { AppBackButton } from "#/routes/twoColumn/AppBackButton";
@@ -66,7 +66,7 @@ export default function ConversationPage() {
     (state) => state.site.response?.my_user?.local_user_view?.person.id,
   );
   const tabContext = use(TabContext);
-  const { handle } = useParams<{ handle: string }>();
+  const { handle } = useRequiredParams<{ handle: string }>();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const [error, setError] = useState(false);
   const [loadingUser, setLoadingUser] = useState(false);

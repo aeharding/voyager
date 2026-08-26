@@ -5,7 +5,7 @@ import { FallbackProps } from "react-error-boundary";
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { getPlatform, isInstalled } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
-import { memoryHistory } from "#/routes/common/Router";
+import { getRouterLocation } from "#/routes/common/Router";
 import store from "#/store";
 
 import styles from "./AppCrash.module.css";
@@ -13,7 +13,7 @@ import styles from "./AppCrash.module.css";
 export default function AppCrash({ error }: FallbackProps) {
   // Don't use useLocation/useAppSelector, because they are not available
   // (`<AppCrash />` is at the root of the document tree)
-  const location = memoryHistory ? memoryHistory.location : window.location;
+  const location = getRouterLocation() ?? window.location;
   const loggedIn = loggedInSelector(store.getState());
 
   let crashData = `

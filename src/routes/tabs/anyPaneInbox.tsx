@@ -1,12 +1,12 @@
-import { Route } from "react-router";
-
+import route from "#/routes/common/Route";
 import ConversationPage from "#/routes/pages/inbox/ConversationPage";
 import InboxAuthRequired from "#/routes/pages/inbox/InboxAuthRequired";
 
 export default [
-  <Route exact path="/inbox/messages/:handle">
+  route(
+    "/inbox/messages/:handle",
     <InboxAuthRequired>
       <ConversationPage />
-    </InboxAuthRequired>
-  </Route>,
+    </InboxAuthRequired>,
+  ),
 ];

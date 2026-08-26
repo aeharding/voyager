@@ -31,7 +31,8 @@ export default defineConfig({
       manifestFilename: "manifest.json",
       manifest: manifest as ManifestOptions, // https://github.com/microsoft/TypeScript/issues/32063
       workbox: {
-        maximumFileSizeToCacheInBytes: 2097152 * 2,
+        // Ionic 9 pushed the main bundle past 4 MiB
+        maximumFileSizeToCacheInBytes: 2097152 * 3,
         navigateFallbackDenylist: [/^\/\.well-known\//],
         runtimeCaching: [
           {

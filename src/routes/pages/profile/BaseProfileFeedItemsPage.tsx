@@ -1,6 +1,5 @@
 import { IonButtons, IonTitle, IonToolbar } from "@ionic/react";
 import { IonBackButton } from "@ionic/react";
-import { useParams } from "react-router-dom";
 
 import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
@@ -9,6 +8,7 @@ import PostCommentFeed, {
 import AppHeader from "#/features/shared/AppHeader";
 import { AppPage } from "#/helpers/AppPage";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useRequiredParams from "#/helpers/useRequiredParams";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 
 interface BaseProfileFeedItemsPageProps {
@@ -23,7 +23,7 @@ export default function BaseProfileFeedItemsPage({
   label,
 }: BaseProfileFeedItemsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { handle } = useParams<{ handle: string }>();
+  const { handle } = useRequiredParams<{ handle: string }>();
 
   return (
     <AppPage>
