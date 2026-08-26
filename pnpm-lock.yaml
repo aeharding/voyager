@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': file:../ionic-framework-v9/core
+  '@ionic/core': npm:voyager-ionic-core@9.0.1
 
 patchedDependencies:
   '@capacitor/haptics': 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
@@ -60,14 +60,14 @@ importers:
         specifier: ^8.0.3
         version: 8.0.3(@capacitor/core@8.5.0)
       '@ionic/core':
-        specifier: file:../ionic-framework-v9/core
-        version: voyager-ionic-core@file:../ionic-framework-v9/core
+        specifier: npm:voyager-ionic-core@9.0.1
+        version: voyager-ionic-core@9.0.1
       '@ionic/react':
-        specifier: 9.0.0
-        version: 9.0.0(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 9.0.1
+        version: 9.0.1(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@ionic/react-router':
-        specifier: 9.0.0
-        version: 9.0.0(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-router-dom@6.30.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@6.30.6(react@19.2.8))(react@19.2.8)
+        specifier: 9.0.1
+        version: 9.0.1(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-router-dom@6.30.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@6.30.6(react@19.2.8))(react@19.2.8)
       '@mantine/hooks':
         specifier: ^9.5.1
         version: 9.5.1(react@19.2.8)
@@ -1467,16 +1467,16 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@ionic/react-router@9.0.0':
-    resolution: {integrity: sha512-nKop1Nfjkg5LTxCTAG3CObOPQLdFyFrMCvgBF1Pwa2N+LLcsofEmzVBo9aLiXCSvKu/wmUMUblawoIgsGh2LmA==}
+  '@ionic/react-router@9.0.1':
+    resolution: {integrity: sha512-+JIil95Z6jkJ5eYfTqfb0ssI2zUcONigoqvtZECUwCN56jfQLUoEvk9ZkaR0JBsjetQxltPBxdKcHbyhXPPAww==}
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19
       react-router: '>=6.4.0 <7'
       react-router-dom: '>=6.4.0 <7'
 
-  '@ionic/react@9.0.0':
-    resolution: {integrity: sha512-aVOXzCVJTKp9bJYhoKm6ksu7+gEzsl6179JvZNLsanIeCN4SHsmIa7CfjV9K+TwERXQ8Kgpglj4QquU9/QPRgQ==}
+  '@ionic/react@9.0.1':
+    resolution: {integrity: sha512-dO257Wl1RSz5g2X0uHkHZOKZYGafFPXcU0EYPgROHxKBUVZpM5VimUZVNcAjkyWRDwDyN0Bjz+7TVfCN3DDPUQ==}
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19
@@ -2039,6 +2039,11 @@ packages:
 
   '@stencil/core@4.43.5':
     resolution: {integrity: sha512-cgWD+GeuvJpTe1WQn40p02+BJ2j0j1YJ17GdkF2qKIQ23s2e3Zivq5yISXS3dcuV6oUJFN93jprdk+nk/sq99Q==}
+    engines: {node: '>=16.0.0', npm: '>=7.10.0'}
+    hasBin: true
+
+  '@stencil/core@4.44.2':
+    resolution: {integrity: sha512-TNaYdlyHfy8UF7glvZwaY6pM0AhgCOXuW5Kx3+AO+ITeaipCHWXi5tkZ6P/3HCL+hUySc60lPKSnZ4xdYIFb4g==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
 
@@ -6767,8 +6772,8 @@ packages:
       jsdom:
         optional: true
 
-  voyager-ionic-core@file:../ionic-framework-v9/core:
-    resolution: {directory: ../ionic-framework-v9/core, type: directory}
+  voyager-ionic-core@9.0.1:
+    resolution: {integrity: sha512-qIjZE0VxAYAXKLrBRh6b1+xzaUB8B/s4sCEcrZSpbdLUqDtuvjmKtjKRemWesEsKmNc2OXEyRZRk/EICv+5y+A==}
     engines: {node: '>= 16'}
 
   w3c-xmlserializer@5.0.0:
@@ -8344,9 +8349,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/react-router@9.0.0(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-router-dom@6.30.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@6.30.6(react@19.2.8))(react@19.2.8)':
+  '@ionic/react-router@9.0.1(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-router-dom@6.30.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-router@6.30.6(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@ionic/react': 9.0.0(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@ionic/react': 9.0.1(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       react-router: 6.30.6(react@19.2.8)
@@ -8356,10 +8361,10 @@ snapshots:
       - '@stencil/core'
       - '@types/react'
 
-  '@ionic/react@9.0.0(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@ionic/react@9.0.1(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@ionic/core': voyager-ionic-core@file:../ionic-framework-v9/core
-      '@stencil/react-output-target': 1.6.2(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@ionic/core': voyager-ionic-core@9.0.1
+      '@stencil/react-output-target': 1.6.2(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ionicons: 8.1.0
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
@@ -8881,10 +8886,21 @@ snapshots:
       '@rollup/rollup-win32-arm64-msvc': 4.44.0
       '@rollup/rollup-win32-x64-msvc': 4.44.0
 
-  '@stencil/react-output-target@1.6.2(@stencil/core@4.43.5)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@stencil/core@4.44.2':
+    optionalDependencies:
+      '@rollup/rollup-darwin-arm64': 4.44.0
+      '@rollup/rollup-darwin-x64': 4.44.0
+      '@rollup/rollup-linux-arm64-gnu': 4.44.0
+      '@rollup/rollup-linux-arm64-musl': 4.44.0
+      '@rollup/rollup-linux-x64-gnu': 4.44.0
+      '@rollup/rollup-linux-x64-musl': 4.44.0
+      '@rollup/rollup-win32-arm64-msvc': 4.44.0
+      '@rollup/rollup-win32-x64-msvc': 4.44.0
+
+  '@stencil/react-output-target@1.6.2(@stencil/core@4.44.2)(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@lit/react': 1.0.8(@types/react@19.2.18)
-      '@stencil/core': 4.43.5
+      '@stencil/core': 4.44.2
       html-react-parser: 5.2.17(@types/react@19.2.18)(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
@@ -14308,9 +14324,9 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  voyager-ionic-core@file:../ionic-framework-v9/core:
+  voyager-ionic-core@9.0.1:
     dependencies:
-      '@stencil/core': 4.43.5
+      '@stencil/core': 4.44.2
       ionicons: 8.1.0
       tslib: 2.8.1
 

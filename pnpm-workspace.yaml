@@ -1,5 +1,5 @@
 overrides:
-  "@ionic/core": file:../ionic-framework-v9/core
+  "@ionic/core": npm:voyager-ionic-core@9.0.1
 
 patchedDependencies:
   "@capacitor/haptics": patches/@capacitor__haptics.patch
