@@ -12,18 +12,23 @@ interface Fixtures {
 
   /** Set `test.use({ loggedIn: true })` to boot logged into the fake host. */
   loggedIn: boolean;
+
+  /** Opt into Ionic's real transition timing for navigation regressions. */
+  ionicAnimations: boolean;
 }
 
 export const test = base.extend<Fixtures>({
   loggedIn: [false, { option: true }],
+  ionicAnimations: [false, { option: true }],
 
   api: [
-    async ({ page, loggedIn }, use) => {
+    async ({ ionicAnimations, page, loggedIn }, use) => {
       // Picked up by setupIonicReact (src/core/App.tsx) to make transitions
       // instant — Ionic's JS-driven animations are a major flake source.
-      await page.addInitScript(() => {
-        Object.assign(window, { __E2E_DISABLE_ANIMATIONS: true });
-      });
+      if (!ionicAnimations)
+        await page.addInitScript(() => {
+          Object.assign(window, { __E2E_DISABLE_ANIMATIONS: true });
+        });
 
       const api = new MockApi();
       await api.install(page);
