@@ -73,18 +73,11 @@ const SORTS = {
 };
 
 /**
- * How deep (in seed path levels, top-level = 1) the post page's *initial*
- * comment load reaches. Voyager sends the same `max_depth` to both, but the
- * base differs by provider: Lemmy counts from the post, PieFed counts levels
- * below top-level (verified against live servers), so the identical request
- * reaches one level further on PieFed. Specs that need a reply the first
- * load won't fetch seed it one level past this.
+ * How deep (in seed path levels, top-level = 1) the post page's initial
+ * comment load reaches. Threadiverse normalizes the providers' different
+ * wire-level `max_depth` bases into this shared canonical depth.
  */
-export const INITIAL_COMMENT_DEPTH: Record<Provider, number> = {
-  lemmyv1: MAX_DEFAULT_COMMENT_DEPTH,
-  // Same request, one level deeper: PieFed counts below top-level
-  piefed: MAX_DEFAULT_COMMENT_DEPTH + 1,
-};
+export const INITIAL_COMMENT_DEPTH = MAX_DEFAULT_COMMENT_DEPTH;
 
 /** Operations both providers' fakes define */
 type SharedOperation = Extract<LemmyV1Operation, PiefedOperation>;
@@ -151,25 +144,19 @@ export interface MatrixApi extends Pick<
 
 /**
  * Seed a chain of `depth` nested comments ("comment 1" replied to by
- * "comment 2", ...) on the fixture's first post, outermost first. Ids are
- * fixed so specs can assert on the request the UI makes for a given link in
- * the chain.
+ * "comment 2", ...) on the fixture's first post, outermost first. The
+ * returned seeds expose the generated ids for request assertions.
  */
 export function seedCommentChain(api: MatrixApi, depth: number): SeedComment[] {
   const chain: SeedComment[] = [];
 
-  // High base so specs can pick their own small ids without colliding
   for (let level = 1; level <= depth; level++) {
-    const id = 1000 + level;
     const parent = chain.at(-1);
+    const comment = api.seed.comment({ content: `comment ${level}` });
 
-    chain.push(
-      api.seed.comment({
-        content: `comment ${level}`,
-        id,
-        path: parent ? `${parent.path}.${id}` : `0.${id}`,
-      }),
-    );
+    if (parent) comment.path = `${parent.path}.${comment.id}`;
+
+    chain.push(comment);
   }
 
   return chain;

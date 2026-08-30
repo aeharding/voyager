@@ -33,13 +33,18 @@ test("searching communities renders results", async ({ api, page }) => {
   await expect(page.getByText("1 Subscriber")).toBeVisible();
 
   const payload = await api.waitForPayload("search");
+  expect(payload.search_term).toBe("test");
   expect(payload.type_).toBe("communities");
 });
 
-test("empty search results show the empty state", async ({ page }) => {
+test("empty search results show the empty state", async ({ api, page }) => {
   await page.goto("/search");
   await page.getByRole("searchbox").fill("zilch");
   await page.getByText("Posts with “zilch”").click();
 
   await expect(page.getByText(/Nothing to see here/)).toBeVisible();
+
+  const payload = await api.waitForPayload("search");
+  expect(payload.search_term).toBe("zilch");
+  expect(payload.type_).toBe("posts");
 });

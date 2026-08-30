@@ -116,16 +116,11 @@ test.describe("logged in", () => {
   });
 });
 
-test("missing children fetch on 'more replies' tap", async ({
-  api,
-  page,
-  provider,
-}) => {
+test("missing children fetch on 'more replies' tap", async ({ api, page }) => {
   // The seeded reply has to sit one level past what the *initial* comment
   // load reaches, so it stays missing (but counted, via child_count) until
-  // the expander fetches it. That cut is provider-specific — see
-  // INITIAL_COMMENT_DEPTH.
-  const chain = seedCommentChain(api, INITIAL_COMMENT_DEPTH[provider]);
+  // the expander fetches it.
+  const chain = seedCommentChain(api, INITIAL_COMMENT_DEPTH);
   const deepest = chain.at(-1)!;
 
   api.seed.comment({

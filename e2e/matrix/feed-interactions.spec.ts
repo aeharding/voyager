@@ -1,7 +1,7 @@
 // Feed interactions: cursor pagination via infinite scroll, sort switching,
 // listing type, the mark-read-on-open side effect, and recovery after a
 // failed page load. (Rendering and voting live in post-feed.spec.ts; local
-// post hiding stays provider-specific — see e2e/lemmyv1/feed-interactions.)
+// post hiding lives in post-hiding.spec.ts.)
 
 import { fixturePosts } from "../fixtures/builders";
 import { scrollFeedUntilVisible } from "../fixtures/scroll";
@@ -9,7 +9,6 @@ import { expect, test } from "./fixtures";
 import { LIMIT } from "#/services/lemmy";
 
 /** Voyager's page size (LIMIT); a full page is what earns a next cursor */
-// The page size Voyager asks for
 const PAGE_SIZE = LIMIT;
 
 test("infinite scroll requests the next page with the cursor", async ({
