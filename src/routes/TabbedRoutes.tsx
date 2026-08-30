@@ -1,5 +1,5 @@
 import { SplashScreen } from "@capacitor/splash-screen";
-import { IonTabs, useIonRouter } from "@ionic/react";
+import { IonRouterOutlet, IonTabs, useIonRouter } from "@ionic/react";
 import { use, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 
@@ -20,9 +20,7 @@ import TabBar from "./TabBar";
 
 export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const ready = useAppSelector((state) => state.settings.ready);
-  const selectedInstance = useAppSelector(
-    instanceSelector ?? ((state) => state.auth.connectedInstance),
-  );
+  const selectedInstance = useAppSelector(instanceSelector);
   const routingInstance = useAppSelector(urlSelector) ?? getDefaultServer();
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
@@ -53,24 +51,28 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
 
   if (!ready) return;
 
-  let routes: React.ReactNode;
-
-  if (switchingPostsInstance) {
-    if (resetPath) routes = <InstanceRouteReset path={resetPath} />;
-  } else {
-    routes = (
-      <InnerTabbedRoutes
-        // Rebuild routing on instance change
-        key={selectedInstance ?? getDefaultServer()}
-      />
-    );
-  }
+  const routes = (
+    <InnerTabbedRoutes
+      // Rebuild routing on instance change
+      key={
+        switchingPostsInstance
+          ? routedInstance
+          : (selectedInstance ?? getDefaultServer())
+      }
+      resetting={switchingPostsInstance}
+    />
+  );
 
   return (
     <>
       {children}
       <VideoPortalProvider>
-        <GalleryProvider>{routes}</GalleryProvider>
+        <GalleryProvider>
+          {routes}
+          {switchingPostsInstance && resetPath && (
+            <InstanceRouteReset path={resetPath} />
+          )}
+        </GalleryProvider>
       </VideoPortalProvider>
     </>
   );
@@ -96,7 +98,7 @@ function isPostsRouteForActor(pathname: string, actor: string) {
   return tab === "posts" && routeActor === actor;
 }
 
-function InnerTabbedRoutes() {
+function InnerTabbedRoutes({ resetting = false }: { resetting?: boolean }) {
   const router = useOptimizedIonRouter();
   const { canGoBack, routeInfo } = useIonRouter();
   const location = useLocation();
@@ -106,6 +108,7 @@ function InnerTabbedRoutes() {
   // Reset route on initialize, if needed
   // (reset when it doesn't make sense breaks ionic react router)
   useEffect(() => {
+    if (resetting) return;
     if (initializationHandledRef.current) return;
 
     // React Router updates before Ionic routeInfo. Acting on the stale route
@@ -144,11 +147,11 @@ function InnerTabbedRoutes() {
     }
 
     push();
-  }, [canGoBack, location.pathname, routeInfo, router, tabRef]);
+  }, [canGoBack, location.pathname, resetting, routeInfo, router, tabRef]);
 
   return (
     <IonTabs>
-      <Outlet />
+      {resetting ? <IonRouterOutlet /> : <Outlet />}
 
       <TabBar slot="bottom" />
     </IonTabs>

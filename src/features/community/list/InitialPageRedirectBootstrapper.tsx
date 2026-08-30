@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useRef } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useLocation } from "react-router";
 
 import { useAppPageRef } from "#/helpers/AppPage";
@@ -8,6 +8,8 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
 
 import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
+
+import styles from "./InitialPageRedirectBootstrapper.module.css";
 
 function isVisiblePage(element: Element): element is HTMLElement {
   return (
@@ -30,6 +32,7 @@ export default function InitialPageRedirectBootstrapper({
   const router = useOptimizedIonRouter();
   const location = useLocation();
   const pageRef = useAppPageRef();
+  const [bootstrapped, setBootstrapped] = useState(false);
   const runtimeRef = useRef({
     sourcePathname: location.pathname,
     frame: undefined as number | undefined,
@@ -38,6 +41,8 @@ export default function InitialPageRedirectBootstrapper({
     bootstrapPath: undefined as string | undefined,
     queuedTab: undefined as HTMLElement | undefined,
     replay: undefined as { handler: () => void; outlet: Element } | undefined,
+    tabCapture: undefined as
+      { handler: (event: Event) => void; tabs: Element } | undefined,
   });
 
   function pageIsActive() {
@@ -52,11 +57,23 @@ export default function InitialPageRedirectBootstrapper({
     return visiblePages.length === 1 && visiblePages[0] === page;
   }
 
-  const finishEvent = useEffectEvent((bootstrapped = false) => {
-    if (bootstrapped) {
-      runtimeRef.current.navigation = "bootstrapped";
-      runtimeRef.current.observer?.disconnect();
-      runtimeRef.current.observer = undefined;
+  const finishEvent = useEffectEvent((completeBootstrap = false) => {
+    const runtime = runtimeRef.current;
+    const tabCapture = runtime.tabCapture;
+    if (tabCapture) {
+      tabCapture.tabs.removeEventListener(
+        "ionTabButtonClick",
+        tabCapture.handler,
+        true,
+      );
+      runtime.tabCapture = undefined;
+    }
+
+    if (completeBootstrap) {
+      runtime.navigation = "bootstrapped";
+      runtime.observer?.disconnect();
+      runtime.observer = undefined;
+      setBootstrapped(true);
     }
 
     dispatch(appIsReadyToAcceptDeepLinks());
@@ -71,8 +88,24 @@ export default function InitialPageRedirectBootstrapper({
     if (to === "" || to === location.pathname + location.search)
       return finishEvent(true);
 
+    const outlet = pageRef?.current?.closest("ion-router-outlet");
+    if (!outlet) return;
+
     runtime.navigation = "bootstrap";
     runtime.bootstrapPath = to;
+    const handler = () => {
+      if (router.getRouteInfo()?.pathname !== runtime.bootstrapPath) return;
+
+      outlet.removeEventListener("ionNavDidChange", handler);
+      runtime.replay = undefined;
+      const queuedTab = runtime.queuedTab;
+      runtime.queuedTab = undefined;
+      finishEvent(true);
+      if (queuedTab?.isConnected) queuedTab.click();
+    };
+
+    runtime.replay = { handler, outlet };
+    outlet.addEventListener("ionNavDidChange", handler);
     router.push(
       to,
       "forward",
@@ -97,14 +130,13 @@ export default function InitialPageRedirectBootstrapper({
 
     const runtime = runtimeRef.current;
     if (runtime.navigation === "bootstrapped") return;
+    if (runtime.navigation === "bootstrap") return;
     if (runtime.navigation === "tab") {
       if (location.pathname === runtime.sourcePathname) return;
 
       runtime.navigation = undefined;
       return finishEvent();
     }
-    if (to != null && to === location.pathname + location.search)
-      return finishEvent(true);
     if (location.pathname !== runtime.sourcePathname) {
       runtime.navigation = undefined;
       return finishEvent();
@@ -122,23 +154,6 @@ export default function InitialPageRedirectBootstrapper({
         event.stopImmediatePropagation();
         if (event.target instanceof HTMLElement)
           runtime.queuedTab = event.target;
-
-        if (!runtime.replay) {
-          const handler = () => {
-            if (router.getRouteInfo()?.pathname !== runtime.bootstrapPath)
-              return;
-
-            outlet.removeEventListener("ionNavDidChange", handler);
-            runtime.replay = undefined;
-            const queuedTab = runtime.queuedTab;
-            runtime.queuedTab = undefined;
-            finishEvent(true);
-            if (queuedTab?.isConnected) queuedTab.click();
-          };
-
-          runtime.replay = { handler, outlet };
-          outlet.addEventListener("ionNavDidChange", handler);
-        }
         return;
       }
 
@@ -155,7 +170,10 @@ export default function InitialPageRedirectBootstrapper({
     };
     const observer = new MutationObserver(() => scheduleRedirectEvent());
     runtime.observer = observer;
-    tabs?.addEventListener("ionTabButtonClick", yieldToTabChange, true);
+    if (tabs) {
+      runtime.tabCapture = { handler: yieldToTabChange, tabs };
+      tabs.addEventListener("ionTabButtonClick", yieldToTabChange, true);
+    }
     observer.observe(outlet, {
       attributeFilter: ["class", "style"],
       attributes: true,
@@ -165,7 +183,13 @@ export default function InitialPageRedirectBootstrapper({
     scheduleRedirectEvent();
 
     return () => {
-      tabs?.removeEventListener("ionTabButtonClick", yieldToTabChange, true);
+      if (
+        runtime.navigation !== "bootstrap" &&
+        runtime.tabCapture?.handler === yieldToTabChange
+      ) {
+        tabs?.removeEventListener("ionTabButtonClick", yieldToTabChange, true);
+        runtime.tabCapture = undefined;
+      }
       observer.disconnect();
       if (runtime.observer === observer) runtime.observer = undefined;
       if (runtime.frame !== undefined) cancelAnimationFrame(runtime.frame);
@@ -175,12 +199,22 @@ export default function InitialPageRedirectBootstrapper({
 
   useEffect(
     () => () => {
-      const replay = runtimeRef.current.replay;
+      const runtime = runtimeRef.current;
+      const replay = runtime.replay;
       if (replay)
         replay.outlet.removeEventListener("ionNavDidChange", replay.handler);
+      const tabCapture = runtime.tabCapture;
+      if (tabCapture)
+        tabCapture.tabs.removeEventListener(
+          "ionTabButtonClick",
+          tabCapture.handler,
+          true,
+        );
     },
     [],
   );
 
-  return null;
+  if (!isInstalled() || bootstrapped) return null;
+
+  return <div className={styles.loadingOverlay} />;
 }
