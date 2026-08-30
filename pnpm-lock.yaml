@@ -12,6 +12,7 @@ patchedDependencies:
   '@capacitor/keyboard@8.0.5': b19a3fb904474d28078cd1ad688098b11c23b9cc72e4af004b39d37909e408d9
   editate@0.6.27: cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8
   openapi-fetch: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
+  virtua@0.50.6: 4b462cd630d27e658507cd36994620e57df2c48a29a6e23706b1678a5836c310
 
 importers:
 
@@ -247,7 +248,7 @@ importers:
         version: 3.3.0(react@19.2.8)
       virtua:
         specifier: ^0.50.6
-        version: 0.50.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.50.6(patch_hash=4b462cd630d27e658507cd36994620e57df2c48a29a6e23706b1678a5836c310)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       '@capacitor/cli':
         specifier: ^8.5.0
@@ -13261,7 +13262,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  virtua@0.50.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  virtua@0.50.6(patch_hash=4b462cd630d27e658507cd36994620e57df2c48a29a6e23706b1678a5836c310)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     optionalDependencies:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
