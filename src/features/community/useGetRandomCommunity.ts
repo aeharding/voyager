@@ -18,7 +18,7 @@ export default function useGetRandomCommunity() {
   const presentToast = useAppToast();
   const mode = useMode();
 
-  return async () => {
+  return async (navigationReady?: Promise<void>) => {
     let chosenRandomCommunity;
     const client = clientSelector(store.getState());
 
@@ -71,6 +71,8 @@ export default function useGetRandomCommunity() {
       presentToast(randomCommunityFailed);
       return;
     }
+
+    await navigationReady;
 
     router.push(
       buildGeneralBrowseLink(`/c/${getHandle(chosenRandomCommunity)}?random=1`),
