@@ -69,7 +69,7 @@
     "date-fns": "^4.4.0",
     "dexie": "^4.4.5",
     "dexie-export-import": "^4.4.0",
-    "editate": "0.6.26",
+    "editate": "0.6.27",
     "es-toolkit": "^1.52.0",
     "immer": "^11.1.18",
     "ionicons": "^8.1.0",

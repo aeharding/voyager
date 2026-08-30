@@ -10,7 +10,7 @@ overrides:
 patchedDependencies:
   '@capacitor/haptics': 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
   '@capacitor/keyboard@8.0.5': b19a3fb904474d28078cd1ad688098b11c23b9cc72e4af004b39d37909e408d9
-  editate@0.6.26: cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8
+  editate@0.6.27: cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8
   openapi-fetch: b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4
 
 importers:
@@ -135,8 +135,8 @@ importers:
         specifier: ^4.4.0
         version: 4.4.0(dexie@4.4.5)
       editate:
-        specifier: 0.6.26
-        version: 0.6.26(patch_hash=cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8)
+        specifier: 0.6.27
+        version: 0.6.27(patch_hash=cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8)
       es-toolkit:
         specifier: ^1.52.0
         version: 1.52.0
@@ -3372,8 +3372,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  editate@0.6.26:
-    resolution: {integrity: sha512-NB1W41oPzOoia6OrmoSD3gzd453GLA2KvzhUNcmKLTg8sHuHmEPMHLP6B+1btYBb2UIA6weSRjAU5haBg3ffkg==}
+  editate@0.6.27:
+    resolution: {integrity: sha512-2Ww1dFDUCa4giHtmgYOsn/LvOWvM/sBhxAqgvdU15LFazVLSrlF2A/SFVhXpSWSpFtnHX+92lcv+G++KH8wTFA==}
 
   editorconfig@1.0.7:
     resolution: {integrity: sha512-e0GOtq/aTQhVdNyDU9e02+wz9oDDM+SIOQxWME2QRjzRX5yyLAuHDE+0aE8vHb9XRC8XD37eO2u57+F09JqFhw==}
@@ -9790,7 +9790,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  editate@0.6.26(patch_hash=cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8):
+  editate@0.6.27(patch_hash=cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8):
     dependencies:
       '@standard-schema/spec': 1.1.0
 
