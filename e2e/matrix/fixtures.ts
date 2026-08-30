@@ -6,17 +6,24 @@
 // via canonical `api.callsTo()` / `api.waitForPayload()` payloads.
 
 import { test as base } from "@playwright/test";
-import type { BaseClient } from "threadiverse";
+import type {
+  BaseClient,
+  CommentSortTypeByMode,
+  PostSortTypeByMode,
+} from "threadiverse";
 import {
   FakeInstance,
   FakePiefedInstance,
   LemmyV1Operation,
   OperationResponder,
   PiefedOperation,
+  SeedComment,
   SeedPerson,
   SeedPost,
   SeedStore,
 } from "threadiverse/testing";
+
+import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 
 import { loginAs } from "../fixtures/auth";
 import { MockApi, seedDefaults } from "../fixtures/mocks";
@@ -44,6 +51,34 @@ export class PiefedMockApi extends FakePiefedInstance {
   }
 }
 
+/** Voyager sort options a shared spec can ask for, by their UI label */
+type SortLabel = "New";
+
+/**
+ * Sort values are mode-specific *by design*: canonical `PostSortType` and
+ * `CommentSortType` are keyed by provider mode, so the same "New" option is
+ * `"new"` on lemmyv1 and `"New"` on piefed. Shared specs name the option and
+ * let the fixture supply the selected provider's value (`api.sorts.New`).
+ * Typed against threadiverse's per-mode sorts, so a renamed value breaks the
+ * build instead of the suite.
+ */
+const SORTS = {
+  lemmyv1: { New: "new" },
+  piefed: { New: "New" },
+} as const satisfies {
+  [Mode in Provider]: Record<
+    SortLabel,
+    CommentSortTypeByMode[Mode]["sort"] & PostSortTypeByMode[Mode]["sort"]
+  >;
+};
+
+/**
+ * How deep (in seed path levels, top-level = 1) the post page's initial
+ * comment load reaches. Threadiverse normalizes the providers' different
+ * wire-level `max_depth` bases into this shared canonical depth.
+ */
+export const INITIAL_COMMENT_DEPTH = MAX_DEFAULT_COMMENT_DEPTH;
+
 /** Operations both providers' fakes define */
 type SharedOperation = Extract<LemmyV1Operation, PiefedOperation>;
 
@@ -67,7 +102,7 @@ type Payload<Operation extends keyof BaseClient> = Partial<
  */
 export interface MatrixApi extends Pick<
   FakeInstance,
-  "calls" | "host" | "mock" | "mockOnce" | "waitForCall"
+  "allCalls" | "calls" | "host" | "mock" | "mockOnce" | "waitForCall"
 > {
   /** Canonical payloads of the requests an operation received */
   callsTo<Operation extends SharedDecodableOperation>(
@@ -96,12 +131,35 @@ export interface MatrixApi extends Pick<
   /** Semantic content store the default routes are derived from */
   seed: SeedStore;
 
+  /** The selected provider's canonical value for each Voyager sort option */
+  sorts: (typeof SORTS)[Provider];
+
   /** Wait for an operation's next request; resolves its canonical payload */
   waitForPayload<Operation extends SharedDecodableOperation>(
     operation: Operation,
     predicate?: (payload: Payload<Operation>) => boolean,
     options?: { timeoutMs?: number },
   ): Promise<Payload<Operation>>;
+}
+
+/**
+ * Seed a chain of `depth` nested comments ("comment 1" replied to by
+ * "comment 2", ...) on the fixture's first post, outermost first. The
+ * returned seeds expose the generated ids for request assertions.
+ */
+export function seedCommentChain(api: MatrixApi, depth: number): SeedComment[] {
+  const chain: SeedComment[] = [];
+
+  for (let level = 1; level <= depth; level++) {
+    const parent = chain.at(-1);
+    const comment = api.seed.comment({ content: `comment ${level}` });
+
+    if (parent) comment.path = `${parent.path}.${comment.id}`;
+
+    chain.push(comment);
+  }
+
+  return chain;
 }
 
 interface Fixtures {
@@ -130,12 +188,12 @@ export const test = base.extend<Fixtures>({
         Object.assign(window, { __E2E_DISABLE_ANIMATIONS: true });
       });
 
-      const api = provider === "lemmyv1" ? new MockApi() : new PiefedMockApi();
-      await api.install(page);
+      const fake = provider === "lemmyv1" ? new MockApi() : new PiefedMockApi();
+      await fake.install(page);
 
-      if (loggedIn) await loginAs(page, api);
+      if (loggedIn) await loginAs(page, fake);
 
-      await use(api);
+      await use(Object.assign(fake, { sorts: SORTS[provider] }));
     },
     { auto: true },
   ],
