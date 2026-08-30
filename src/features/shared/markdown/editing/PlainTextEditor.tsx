@@ -13,10 +13,10 @@ import styles from "./Editor.module.css";
 export interface PlainTextEditorProps extends EditorProps {}
 
 /**
- * Plain `<textarea>` markdown editor — the default backend. All textarea-only
- * concerns (the controller, focus/caret handling, DOM specifics) live here so
- * the parent {@link Editor} stays a backend-agnostic router. Mirrors
- * `RichTextEditor`; shared chrome lives in {@link EditorFrame}.
+ * Plain `<textarea>` markdown editor — the alternative backend. All
+ * textarea-only concerns (the controller, focus/caret handling, DOM specifics)
+ * live here so the parent {@link Editor} stays a backend-agnostic router.
+ * Mirrors `RichTextEditor`; shared chrome lives in {@link EditorFrame}.
  */
 export default function PlainTextEditor({
   text,
