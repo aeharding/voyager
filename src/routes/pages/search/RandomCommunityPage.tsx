@@ -6,6 +6,7 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -19,18 +20,28 @@ import sharedStyles from "#/features/shared/shared.module.css";
 export default function RandomCommunityPage() {
   const pushed = useRef(false);
   const getRandomCommunity = useGetRandomCommunity();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [viewEntered] = useState(() => {
+    let resolve!: () => void;
+    const promise = new Promise<void>((done) => {
+      resolve = done;
+    });
+
+    return { promise, resolve };
+  });
+
+  useIonViewDidEnter(viewEntered.resolve);
 
   const load = useCallback(async () => {
     setLoading(true);
 
     try {
-      await getRandomCommunity();
+      await getRandomCommunity(viewEntered.promise);
     } catch (error) {
       setLoading(false);
       throw error;
     }
-  }, [getRandomCommunity]);
+  }, [getRandomCommunity, viewEntered]);
 
   useEffect(() => {
     if (pushed.current) return;
