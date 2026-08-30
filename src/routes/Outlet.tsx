@@ -2,7 +2,7 @@ import { IonRouterOutlet } from "@ionic/react";
 import { use } from "react";
 import { Navigate, Route } from "react-router-dom";
 
-import { instanceSelector } from "#/features/auth/authSelectors";
+import { urlSelector } from "#/features/auth/authSelectors";
 import { isInstalled } from "#/helpers/device";
 import { getDefaultServer } from "#/services/app";
 import { useAppSelector } from "#/store";
@@ -37,7 +37,7 @@ function AppRoutes() {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
-  const selectedInstance = useAppSelector(instanceSelector);
+  const selectedInstance = useAppSelector(urlSelector);
 
   const redirectRoute = (() => {
     if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />

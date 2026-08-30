@@ -40,8 +40,8 @@ export default function BoxesPage() {
 
   return (
     <>
-      <BoxesRedirectBootstrapper />
       <AppPage>
+        <BoxesRedirectBootstrapper />
         <AppHeader>
           <IonToolbar>
             <IonTitle>Boxes</IonTitle>

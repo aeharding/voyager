@@ -2,7 +2,13 @@ import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 import React, { useLayoutEffect } from "react";
 import { Location, useLocation } from "react-router";
 
-import { isAppleDeviceInstalledToHomescreen } from "#/helpers/device";
+import { urlSelector } from "#/features/auth/authSelectors";
+import {
+  isAppleDeviceInstalledToHomescreen,
+  isInstalled,
+} from "#/helpers/device";
+import { getDefaultServer } from "#/services/app";
+import { useAppSelector } from "#/store";
 
 const usingMemoryRouter = isAppleDeviceInstalledToHomescreen();
 
@@ -36,6 +42,8 @@ const FUTURE_FLAGS = {
 };
 
 export default function Router({ children }: React.PropsWithChildren) {
+  const selectedInstance = useAppSelector(urlSelector) || getDefaultServer();
+
   /**
    * This is a total hack to prevent native page swipe gesture
    * on iOS. If there's no page history to swipe,
@@ -43,11 +51,21 @@ export default function Router({ children }: React.PropsWithChildren) {
    */
   if (usingMemoryRouter) {
     return (
-      <IonReactMemoryRouter future={FUTURE_FLAGS}>
+      <IonReactMemoryRouter
+        future={FUTURE_FLAGS}
+        initialEntries={[`/posts/${selectedInstance}`]}
+      >
         <LocationBridge>{children}</LocationBridge>
       </IonReactMemoryRouter>
     );
   }
+
+  if (isInstalled() && window.location.pathname === "/")
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `/posts/${selectedInstance}`,
+    );
 
   return (
     <IonReactRouter future={FUTURE_FLAGS}>

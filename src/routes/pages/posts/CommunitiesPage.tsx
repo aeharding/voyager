@@ -26,8 +26,8 @@ const CommunitiesPageContent = memo(function CommunitiesPageContent({
   return (
     <>
       <ConfirmLeaveFeedPrompt />
-      <CommunitiesListRedirectBootstrapper />
       <AppPage>
+        <CommunitiesListRedirectBootstrapper />
         <AppHeader>
           <IonToolbar>
             <IonTitle>Communities</IonTitle>
