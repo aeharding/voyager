@@ -61,10 +61,123 @@ async function useInstalledRouter(page: Page) {
   });
 }
 
+async function holdOutletCommit(page: Page, pathname: string) {
+  await page.addInitScript((pathname) => {
+    type CommitWindow = typeof window & {
+      __releaseBootstrapCommit?: () => void;
+    };
+
+    const observer = new MutationObserver(() => {
+      const outlet =
+        document.querySelector<HTMLIonRouterOutletElement>("ion-router-outlet");
+      if (!outlet || outlet.dataset.commitHeldForTest) return;
+
+      outlet.dataset.commitHeldForTest = "true";
+      observer.disconnect();
+      const commit = outlet.commit.bind(outlet);
+      outlet.commit = async (...args) => {
+        if (
+          location.pathname === pathname &&
+          !document.documentElement.dataset.bootstrapCommitHeld
+        ) {
+          document.documentElement.dataset.bootstrapCommitHeld = "true";
+          await new Promise<void>((resolve) => {
+            (window as CommitWindow).__releaseBootstrapCommit = resolve;
+          });
+        }
+
+        return commit(...args);
+      };
+    });
+
+    observer.observe(document, { childList: true, subtree: true });
+  }, pathname);
+}
+
 function visibleOutletPages(page: Page) {
   return page.locator(
     "ion-router-outlet > .ion-page:not(.ion-page-hidden):not(.ion-page-invisible):visible",
   );
+}
+
+async function startTitleExposureProbe(
+  page: Page,
+  titles: string[],
+  requireTabShell = false,
+) {
+  await page.evaluate(
+    ({ requireTabShell, titles }) => {
+      type ProbeWindow = typeof window & {
+        __titleExposureProbe?: { stop: () => string[] };
+      };
+
+      const probeWindow = window as ProbeWindow;
+      probeWindow.__titleExposureProbe?.stop();
+
+      const exposed = new Set<string>();
+      let frame: number;
+
+      const sample = () => {
+        if (requireTabShell && !document.querySelector("ion-tabs ion-tab-bar"))
+          exposed.add(`Tab shell missing at ${location.pathname}`);
+
+        const candidates = document.querySelectorAll<HTMLElement>("ion-title");
+
+        for (const candidate of candidates) {
+          const title = candidate.textContent?.trim();
+          if (!title || !titles.includes(title)) continue;
+
+          const style = getComputedStyle(candidate);
+          const rect = candidate.getBoundingClientRect();
+          if (
+            style.display === "none" ||
+            style.visibility === "hidden" ||
+            Number(style.opacity) === 0 ||
+            rect.width === 0 ||
+            rect.height === 0
+          )
+            continue;
+
+          const hit = document.elementFromPoint(
+            rect.left + rect.width / 2,
+            rect.top + rect.height / 2,
+          );
+          if (hit === candidate || (hit && candidate.contains(hit))) {
+            const routePathname =
+              candidate.closest<HTMLElement>(".ion-page")?.dataset
+                .routePathname ?? "unknown";
+            exposed.add(`${title} [${routePathname} at ${location.pathname}]`);
+          }
+        }
+      };
+
+      const tick = () => {
+        sample();
+        frame = requestAnimationFrame(tick);
+      };
+
+      frame = requestAnimationFrame(tick);
+      probeWindow.__titleExposureProbe = {
+        stop() {
+          cancelAnimationFrame(frame);
+          sample();
+          delete probeWindow.__titleExposureProbe;
+          return [...exposed];
+        },
+      };
+    },
+    { requireTabShell, titles },
+  );
+}
+
+async function stopTitleExposureProbe(page: Page) {
+  return page.evaluate(() => {
+    const probeWindow = window as typeof window & {
+      __titleExposureProbe?: { stop: () => string[] };
+    };
+
+    return probeWindow.__titleExposureProbe?.stop() ?? [];
+  });
 }
 
 async function expectTabContent(page: Page, tab: string, title?: string) {
@@ -455,6 +568,60 @@ nativeNavigationTest(
 );
 
 nativeNavigationTest(
+  "v1: fresh installed app keeps a tab click after bootstrap URL commit",
+  async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== "mobile-chrome",
+      "The deterministic history boundary uses Chromium's browser router",
+    );
+    await useInstalledRouter(page);
+
+    const defaultApi = new FakeLemmyV1Instance({ host: "lemmy.zip" });
+    seedDefaults(defaultApi.seed);
+    await defaultApi.install(page);
+    await holdOutletCommit(page, "/posts/lemmy.zip/all");
+
+    await page.goto("/");
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => document.documentElement.dataset.bootstrapCommitHeld,
+        ),
+      )
+      .toBe("true");
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+    );
+    await page
+      .locator('ion-tab-button[tab="settings"]')
+      .evaluate((element: HTMLIonTabButtonElement) => element.click());
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+    );
+    await expect(page).toHaveURL("/posts/lemmy.zip/all");
+    await page.evaluate(() => {
+      const commitWindow = window as typeof window & {
+        __releaseBootstrapCommit?: () => void;
+      };
+      commitWindow.__releaseBootstrapCommit?.();
+    });
+
+    await expectTabContent(page, "settings", "Settings");
+    await page.getByRole("tab", { name: "Posts" }).click();
+    await expectTabContent(page, "posts", "All");
+    await expect(
+      visibleOutletPages(page).last().locator('[class*="loadingOverlay"]'),
+    ).toHaveCount(0);
+  },
+);
+
+nativeNavigationTest(
   "v1: installed app keeps tabs usable after opening Inbox",
   async ({ api, page }, testInfo) => {
     test.skip(
@@ -478,11 +645,13 @@ nativeNavigationTest(
     ).toBeVisible({ timeout: 15_000 });
     await expect(visiblePages).toHaveCount(1);
 
+    await startTitleExposureProbe(page, ["Boxes"]);
     await page.getByRole("tab", { name: "Inbox", exact: true }).click();
     await expect(
       visiblePages.last().locator("ion-title", { hasText: "Inbox" }).first(),
     ).toBeVisible();
     await expect(visiblePages).toHaveCount(1);
+    expect(await stopTitleExposureProbe(page)).toEqual([]);
 
     await page.getByRole("tab", { name: "Settings" }).click();
     await expect(
@@ -671,8 +840,10 @@ nativeNavigationTest(
     await page.goto(`/posts/${V1_HOST}/home`);
     await expectTabContent(page, "posts", "Home");
 
+    await startTitleExposureProbe(page, [], true);
     await switchFromCurrentTab(secondHandle);
     await expectTabContent(page, "posts", "Home");
+    expect(await stopTitleExposureProbe(page)).toEqual([]);
     await expect(page.locator('ion-tab-button[tab="posts"]')).toHaveAttribute(
       "href",
       `/posts/${secondHost}/home`,
@@ -793,10 +964,15 @@ nativeNavigationTest(
     await page.getByText(secondPost.name).last().click();
     await expectTabContent(page, "posts", "Comments");
 
+    await page.getByRole("tab", { name: "Settings" }).click();
+    await expectTabContent(page, "settings", "Settings");
     await switchFromCurrentTab(firstHandle);
+    await startTitleExposureProbe(page, ["Communities", "Comments"]);
+    await page.getByRole("tab", { name: "Posts" }).click();
     if (testInfo.project.name === "mobile-chrome")
       await expect(page).toHaveURL(`/posts/${V1_HOST}/home`);
     await expectTabContent(page, "posts", "Home");
+    expect(await stopTitleExposureProbe(page)).toEqual([]);
     await expect(page.locator('ion-tab-button[tab="posts"]')).toHaveAttribute(
       "href",
       `/posts/${V1_HOST}/home`,
