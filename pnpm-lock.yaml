@@ -231,8 +231,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       threadiverse:
-        specifier: ^0.21.1
-        version: 0.21.1(supports-color@7.2.0)
+        specifier: ^0.21.2
+        version: 0.21.2(supports-color@7.2.0)
       ua-parser-js:
         specifier: ^2.0.10
         version: 2.0.10
@@ -4630,8 +4630,8 @@ packages:
   lemmy-js-client@0.20.0-alpha.18:
     resolution: {integrity: sha512-oZy8DboTWfUar4mPWpi7SYrOEjTBJxkvd1e6QaVwoA5UhqQV1WhxEYbzrpi/gXnEokaVQ0i5sjtL/Y2PHMO3MQ==}
 
-  lemmy-js-client@1.0.0-image-uploads-request.0:
-    resolution: {integrity: sha512-SLngw08pE84vRB2xoY2Gjm0zyY8OPhK9n1RaZFqPuGGgp9EsO44Av5n/PUSzH2o1hkpFETi9EkGp0FQmC4Ibaw==}
+  lemmy-js-client@1.0.0-invite.1:
+    resolution: {integrity: sha512-PehLEYXnKjNmnPiuKCTmJfz3zbSvxOvixOVmIDQFEw+FwQ/Vp991b6KnUuI0MVFg9bYoT8xFbC1WqjUbPeEfGA==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -6290,8 +6290,8 @@ packages:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}
     engines: {node: '>=0.10'}
 
-  threadiverse@0.21.1:
-    resolution: {integrity: sha512-nk8zsSlh50bYL4wSxe2bW0upDXyBwLJ247BTA38GOHf0aW/pPYcm22/UjOHR7isvYM5UQmsOXc3ix+D/2ecYKQ==}
+  threadiverse@0.21.2:
+    resolution: {integrity: sha512-Zgm57F1yE/FCpZecuWPQwGrK9CDHjC1F/ZS72qRhk3IGXnVXxcnX0tVBNP0A6KxggmRvmHHTjCHvC9bCjSsH2A==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -11847,7 +11847,7 @@ snapshots:
 
   lemmy-js-client@0.20.0-alpha.18: {}
 
-  lemmy-js-client@1.0.0-image-uploads-request.0(supports-color@7.2.0):
+  lemmy-js-client@1.0.0-invite.1(supports-color@7.2.0):
     dependencies:
       '@tsoa/runtime': 6.6.0(supports-color@7.2.0)
     transitivePeerDependencies:
@@ -13903,11 +13903,11 @@ snapshots:
 
   text-extensions@1.9.0: {}
 
-  threadiverse@0.21.1(supports-color@7.2.0):
+  threadiverse@0.21.2(supports-color@7.2.0):
     dependencies:
       compare-versions: 6.1.1
       lemmy-js-client-v0: lemmy-js-client@0.20.0-alpha.18
-      lemmy-js-client-v1: lemmy-js-client@1.0.0-image-uploads-request.0(supports-color@7.2.0)
+      lemmy-js-client-v1: lemmy-js-client@1.0.0-invite.1(supports-color@7.2.0)
       openapi-fetch: 0.17.0(patch_hash=b2dd08f2548515141d901ea998195956de5ceb21b7013e5e6bd2058553841cd4)
       zod: 4.4.3
     transitivePeerDependencies:
