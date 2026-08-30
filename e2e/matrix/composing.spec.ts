@@ -1,7 +1,7 @@
 // Content-composition behavior that's backend-independent: creating/editing/
 // deleting posts and comments (the fakes derive the write response from
 // mutated seed state, so the thread updates on either provider), the
-// composer's outgoing request payload, the opt-in rich markdown editor, the
+// composer's outgoing request payload, the rich markdown editor, the
 // vger.to link unwrap, and the dirty-composer dismiss guard.
 
 import type { Page } from "@playwright/test";
@@ -12,6 +12,8 @@ import { actionSheetButton, headerButton } from "../fixtures/ui";
 import { expect, test } from "./fixtures";
 
 test.use({ loggedIn: true });
+
+const EDITOR_BODY = 'textarea, [contenteditable="true"]';
 
 function postUrl(host: string) {
   return `/posts/${host}/c/test_comm/comments/${fixturePosts[0]!.id}`;
@@ -41,15 +43,30 @@ function composerSubmit(page: Page) {
     .locator('ion-buttons[slot="end"] ion-button');
 }
 
-// Flip on the opt-in rich editor through the real settings UI.
-async function enableRichEditor(page: Page) {
+function composerBody(page: Page) {
+  return page.locator("ion-modal").locator(EDITOR_BODY);
+}
+
+async function expectEditorValue(page: Page, value: string) {
+  await expect
+    .poll(() =>
+      composerBody(page).evaluate((element) =>
+        element instanceof HTMLTextAreaElement
+          ? element.value
+          : (element.textContent ?? ""),
+      ),
+    )
+    .toBe(value);
+}
+
+async function disableRichEditor(page: Page) {
   await page.goto("/settings/general");
   const toggle = page.locator("ion-toggle", {
     hasText: "Rich Markdown Editor",
   });
   await toggle.click();
-  await expect(toggle).toHaveJSProperty("checked", true);
-  await expect.poll(() => getSetting(page, "rich_markdown_editor")).toBe(true);
+  await expect(toggle).toHaveJSProperty("checked", false);
+  await expect.poll(() => getSetting(page, "rich_markdown_editor")).toBe(false);
 }
 
 async function copyUrlToClipboard(page: Page, url: string) {
@@ -81,7 +98,7 @@ test("replying to a comment sets parent_id", async ({ api, page }) => {
   await commentEllipsis(page, 20).click();
   await actionSheetButton(page, "Reply").click();
 
-  await page.locator("ion-modal textarea").fill("nested reply");
+  await composerBody(page).fill("nested reply");
   await composerSubmit(page).click();
 
   const payload = await api.waitForPayload("createComment");
@@ -120,13 +137,21 @@ test("deleting own post sends the delete payload", async ({ api, page }) => {
   expect(payload.post_id).toBe(1);
 });
 
-test("rich editor (opt-in) still submits plain markdown", async ({
-  api,
-  page,
-}) => {
-  api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
+test("rich editor defaults on", async ({ page }) => {
+  await page.goto("/settings/general");
 
-  await enableRichEditor(page);
+  const toggle = page.locator("ion-toggle", {
+    hasText: "Rich Markdown Editor",
+  });
+
+  await expect(toggle).toHaveJSProperty("checked", true);
+  await expect
+    .poll(() => getSetting(page, "rich_markdown_editor"))
+    .toBeUndefined();
+});
+
+test("rich editor still submits plain markdown", async ({ api, page }) => {
+  api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
 
   await page.goto(postUrl(api.host));
   await expect(page.getByText("my own comment")).toBeVisible();
@@ -141,15 +166,16 @@ test("rich editor (opt-in) still submits plain markdown", async ({
   expect(payload).toEqual({ content: "rich editor reply", post_id: 1 });
 });
 
-test("editor unwraps a pasted vger.to link", async ({ api, page }) => {
+test("plain editor unwraps a pasted vger.to link", async ({ api, page }) => {
   api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
 
+  await disableRichEditor(page);
   await page.goto(postUrl(api.host));
   await expect(page.getByText("my own comment")).toBeVisible();
 
   await postReplyButton(page).click();
 
-  const textarea = page.locator("ion-modal textarea");
+  const textarea = composerBody(page);
   await expect(textarea).toBeVisible();
 
   await copyUrlToClipboard(page, "https://vger.to/lemmy.world/post/123");
@@ -169,8 +195,6 @@ test("editor unwraps a pasted vger.to link", async ({ api, page }) => {
 
 test("rich editor unwraps a pasted vger.to link", async ({ api, page }) => {
   api.seed.comment({ id: 20, content: "my own comment", creator: api.me });
-
-  await enableRichEditor(page);
 
   await page.goto(postUrl(api.host));
   await expect(page.getByText("my own comment")).toBeVisible();
@@ -212,8 +236,8 @@ test("dirty composer requires confirmation to dismiss", async ({
     'ion-buttons[slot="start"] ion-button',
   );
 
-  const textarea = page.locator("ion-modal textarea");
-  await textarea.fill("not done typing");
+  const editorBody = composerBody(page);
+  await editorBody.fill("not done typing");
 
   // The presented sheet must be singled out by content: hidden declarative
   // ion-action-sheet elements (e.g. Report's) also exist in the DOM, and a
@@ -229,12 +253,12 @@ test("dirty composer requires confirmation to dismiss", async ({
 
   // Cancel keeps the draft
   await dismissSheet().getByRole("button", { name: "Cancel" }).click();
-  await expect(textarea).toHaveValue("not done typing");
+  await expectEditorValue(page, "not done typing");
 
   // Discarding actually closes the composer
   await composerCancel.click();
   await dismissSheet().getByRole("button", { name: "Discard" }).click();
-  await expect(textarea).not.toBeVisible();
+  await expect(editorBody).not.toBeVisible();
 });
 
 test("replying to a post submits and renders the comment", async ({
@@ -248,7 +272,7 @@ test("replying to a post submits and renders the comment", async ({
 
   await postReplyButton(page).click();
 
-  await page.locator("ion-modal textarea").fill("fresh reply");
+  await composerBody(page).fill("fresh reply");
   await composerSubmit(page).click();
 
   const payload = await api.waitForPayload("createComment");
@@ -270,7 +294,7 @@ test("editing own comment sends the edit and updates the thread", async ({
   await commentEllipsis(page, 20).click();
   await actionSheetButton(page, "Edit").click();
 
-  await page.locator("ion-modal textarea").fill("edited comment");
+  await composerBody(page).fill("edited comment");
   await composerSubmit(page).click();
 
   const payload = await api.waitForPayload("editComment");
@@ -316,7 +340,7 @@ test("creating a text post submits and navigates to it", async ({
 
   // Body text is a pushed sub-page within the editor modal
   await editor.getByText("Text (optional)").click();
-  await editor.locator("textarea").fill("fresh post body");
+  await editor.locator(EDITOR_BODY).fill("fresh post body");
   await editor.getByRole("button", { name: "Back" }).click();
 
   await editor.getByRole("button", { name: "Post", exact: true }).click();

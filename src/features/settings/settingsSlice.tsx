@@ -327,7 +327,7 @@ const baseState: SettingsState = {
       upvoteOnSave: false,
     },
     preferNativeApps: true,
-    richMarkdownEditor: false,
+    richMarkdownEditor: true,
     safari: {
       alwaysUseReaderMode: false,
     },

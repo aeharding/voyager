@@ -19,10 +19,11 @@ import styles from "./RichTextEditor.module.css";
 export interface RichTextEditorProps extends EditorProps {}
 
 /**
- * Experimental "rich" markdown editor (opt-in via the `rich_markdown_editor`
- * setting). Built on editate's plain editor + a remark decorator so markdown
- * renders styled while typing. The contents stay plain markdown text. The whole
- * toolbar — including bold/italic/quote — is wired through the EditorController.
+ * Experimental "rich" markdown editor. It is enabled by default and can be
+ * toggled via the `rich_markdown_editor` setting. Built on editate's plain
+ * editor + a remark decorator so markdown renders styled while typing. The
+ * contents stay plain markdown text. The whole toolbar — including
+ * bold/italic/quote — is wired through the EditorController.
  *
  * editate is uncontrolled (its model is initialized once), so this wrapper
  * re-initializes it whenever `text` changes from *outside* — text recovery, a
