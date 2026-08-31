@@ -156,13 +156,14 @@ export default function usePostModActions(post: PostView) {
                 (async () => {
                   if (banned) {
                     try {
-                      await dispatch(
+                      const executed = await dispatch(
                         banUser({
                           person_id: post.creator.id,
                           community_id: post.community.id,
                           ban: false,
                         }),
                       );
+                      if (!executed) return;
                     } catch (error) {
                       presentToast(buildBanFailed(false));
                       throw error;

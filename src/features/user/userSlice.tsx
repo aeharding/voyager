@@ -112,18 +112,27 @@ export const banUser =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const client = clientSelector(getState());
 
-    if (!client) return;
+    if (!client) return false;
 
     const isCurrentClient = () => clientSelector(getState()) === client;
-    const executed = await banFromCommunityWithCapabilities(
-      client,
-      payload,
-      isCurrentClient,
-    );
+    let executed: boolean;
+
+    try {
+      executed = await banFromCommunityWithCapabilities(
+        client,
+        payload,
+        isCurrentClient,
+      );
+    } catch (error) {
+      // A failure from an account that is no longer selected must not leak
+      // into the new account's UI. Active-client failures still propagate.
+      if (!isCurrentClient()) return false;
+      throw error;
+    }
 
     // The request may have completed after an account switch. Its remote
     // result belongs to the old account and must not update the new store.
-    if (!executed || !isCurrentClient()) return;
+    if (!executed || !isCurrentClient()) return false;
 
     dispatch(
       updateBanned({
@@ -132,4 +141,6 @@ export const banUser =
         banned: payload.ban ?? true,
       }),
     );
+
+    return true;
   };

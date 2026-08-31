@@ -77,9 +77,10 @@ export default function BanUser({
 
   async function ban() {
     setLoading(true);
+    let executed: boolean;
 
     try {
-      await dispatch(
+      executed = await dispatch(
         banUser({
           person_id: user.id,
           community_id: community.id,
@@ -97,6 +98,10 @@ export default function BanUser({
     } finally {
       setLoading(false);
     }
+
+    // Account/instance changes cancel stale mutations. Keep this dialog open
+    // and do not report success for a request that never ran for this account.
+    if (!executed) return;
 
     presentToast(buildBanned(true));
 

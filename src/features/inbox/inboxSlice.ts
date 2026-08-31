@@ -321,14 +321,19 @@ export const markNotificationRead =
       notification_id: args.notificationId,
       read,
     };
-
-    const supported = await client.supports("markNotificationAsRead", payload);
-
     const isCurrentClient = () => clientSelector(getState()) === client;
+
+    let supported: boolean;
+    try {
+      supported = await client.supports("markNotificationAsRead", payload);
+    } catch (error) {
+      if (!isCurrentClient()) return false;
+      throw error;
+    }
 
     // Capability discovery is asynchronous. If the user switched accounts or
     // instances while it was in flight, this action belongs to the old inbox.
-    if (!isCurrentClient()) return;
+    if (!isCurrentClient()) return false;
 
     if (!supported) {
       throw new UnsupportedError(
@@ -346,11 +351,16 @@ export const markNotificationRead =
     } catch (error) {
       if (isCurrentClient()) {
         dispatch(setNotificationReadStatus({ ...args, read: initialRead }));
+        throw error;
       }
-      throw error;
+
+      return false;
     }
 
-    if (isCurrentClient()) dispatch(getInboxCounts(true));
+    if (!isCurrentClient()) return false;
+
+    dispatch(getInboxCounts(true));
+    return true;
   };
 
 export const markMessageRead =

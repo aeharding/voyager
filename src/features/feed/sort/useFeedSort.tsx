@@ -22,10 +22,6 @@ import {
   VgerCommunitySortType,
   VgerCommunitySortTypeByMode,
 } from "#/routes/pages/search/results/CommunitySort";
-import {
-  AnyVgerSort,
-  findSortOptionUnhydrated,
-} from "#/routes/pages/shared/Sort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
@@ -68,6 +64,32 @@ interface Sorts {
   comments: CommentSortType;
   search: SearchSortType;
   communities: CommunitySortType;
+}
+
+type AnyVgerSort =
+  | VgerPostSortType
+  | VgerCommentSortType
+  | VgerSearchSortType
+  | VgerCommunitySortType;
+
+type UnhydratedSortOptions<S> = readonly (S | { children: readonly S[] })[];
+
+function findSortOptionUnhydrated<S>(
+  sort: unknown,
+  sortOptions: UnhydratedSortOptions<S>,
+): S | undefined {
+  for (const option of sortOptions) {
+    if (typeof option === "string") {
+      if (option === sort) return option;
+    } else if (
+      typeof option === "object" &&
+      option !== null &&
+      "children" in option
+    ) {
+      const matchingChild = option.children.find((child) => child === sort);
+      if (matchingChild) return matchingChild;
+    }
+  }
 }
 
 export type FeedSortContext = "posts" | "comments" | "search" | "communities";

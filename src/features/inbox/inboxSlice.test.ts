@@ -100,7 +100,7 @@ describe("markNotificationRead", () => {
       state = createState({ activeHandle: "second@example.com" });
       selectedClient.current = second.client;
       supportResult.resolve(supported);
-      await result;
+      await expect(result).resolves.toBe(false);
 
       expect(dispatch).not.toHaveBeenCalled();
       expect(first.markNotificationAsRead).not.toHaveBeenCalled();
@@ -138,8 +138,67 @@ describe("markNotificationRead", () => {
     const endpointError = new Error("request failed");
     endpointResult.reject(endpointError);
 
-    await expect(result).rejects.toBe(endpointError);
+    await expect(result).resolves.toBe(false);
     expect(dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it("suppresses a failed old preflight after an account switch", async () => {
+    const supportResult = deferred<boolean>();
+    const first = createClient();
+    const second = createClient();
+    first.supports.mockReturnValue(supportResult.promise);
+    selectedClient.current = first.client;
+
+    let state = createState({ activeHandle: "first@example.com" });
+    const dispatch = vi.fn() as unknown as AppDispatch;
+    const result = markNotificationRead(
+      { kind: "reply", notificationId: 42 },
+      true,
+    )(dispatch, () => state);
+
+    await vi.waitFor(() => expect(first.supports).toHaveBeenCalledOnce());
+
+    state = createState({ activeHandle: "second@example.com" });
+    selectedClient.current = second.client;
+    supportResult.reject(new Error("old discovery failed"));
+
+    await expect(result).resolves.toBe(false);
+    expect(dispatch).not.toHaveBeenCalled();
+    expect(first.markNotificationAsRead).not.toHaveBeenCalled();
+  });
+
+  it("rolls back and propagates a failed request for the active account", async () => {
+    const endpointError = new Error("active request failed");
+    const first = createClient();
+    first.markNotificationAsRead.mockRejectedValue(endpointError);
+    selectedClient.current = first.client;
+
+    const state = createState({ activeHandle: "first@example.com" });
+    const dispatch = vi.fn() as unknown as AppDispatch;
+
+    await expect(
+      markNotificationRead({ kind: "reply", notificationId: 42 }, true)(
+        dispatch,
+        () => state,
+      ),
+    ).rejects.toBe(endpointError);
+
+    expect(dispatch).toHaveBeenNthCalledWith(
+      1,
+      setNotificationReadStatus({
+        kind: "reply",
+        notificationId: 42,
+        read: true,
+      }),
+    );
+    expect(dispatch).toHaveBeenNthCalledWith(
+      2,
+      setNotificationReadStatus({
+        kind: "reply",
+        notificationId: 42,
+        read: false,
+      }),
+    );
   });
 
   it("does not refresh counts for an old request after an account switch", async () => {
@@ -165,7 +224,7 @@ describe("markNotificationRead", () => {
     selectedClient.current = second.client;
     endpointResult.resolve();
 
-    await result;
+    await expect(result).resolves.toBe(false);
     expect(dispatch).toHaveBeenCalledTimes(1);
   });
 });
