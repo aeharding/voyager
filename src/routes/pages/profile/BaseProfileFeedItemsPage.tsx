@@ -14,13 +14,11 @@ import FeedContent from "#/routes/pages/shared/FeedContent";
 interface BaseProfileFeedItemsPageProps {
   label: string;
   fetchFn: FetchFn<PostCommentItem>;
-  renderCustomEmptyContent?: () => React.ReactNode;
   sortComponent?: React.ReactNode;
 }
 
 export default function BaseProfileFeedItemsPage({
   fetchFn,
-  renderCustomEmptyContent,
   sortComponent,
   label,
 }: BaseProfileFeedItemsPageProps) {
@@ -48,7 +46,6 @@ export default function BaseProfileFeedItemsPage({
           fetchFn={fetchFn}
           filterHiddenPosts={false}
           filterKeywordsAndWebsites={false}
-          renderCustomEmptyContent={renderCustomEmptyContent}
         />
       </FeedContent>
     </AppPage>
