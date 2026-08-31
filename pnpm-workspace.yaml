@@ -6,7 +6,6 @@ patchedDependencies:
   "@capacitor/keyboard@8.0.5": patches/@capacitor__keyboard@8.0.5.patch
   editate@0.6.27: patches/editate@0.6.27.patch
   openapi-fetch: patches/openapi-fetch.patch
-  virtua@0.50.6: patches/virtua@0.50.6.patch
 
 publicHoistPattern:
   - workbox-window
