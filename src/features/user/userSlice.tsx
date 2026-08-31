@@ -4,6 +4,7 @@ import { BanFromCommunity, Person } from "threadiverse";
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";
 import { resetMessages, syncMessages } from "#/features/inbox/inboxSlice";
+import { banFromCommunityWithCapabilities } from "#/features/moderation/ban/communityBanCapabilities";
 import { getHandle } from "#/helpers/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
@@ -109,16 +110,26 @@ export const banUser =
       Partial<Pick<BanFromCommunity, "ban">>,
   ) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    await clientSelector(getState())?.banFromCommunity({
-      ban: true,
-      ...payload,
-    });
+    const client = clientSelector(getState());
+
+    if (!client) return;
+
+    const isCurrentClient = () => clientSelector(getState()) === client;
+    const executed = await banFromCommunityWithCapabilities(
+      client,
+      payload,
+      isCurrentClient,
+    );
+
+    // The request may have completed after an account switch. Its remote
+    // result belongs to the old account and must not update the new store.
+    if (!executed || !isCurrentClient()) return;
 
     dispatch(
       updateBanned({
         communityId: payload.community_id,
         userId: payload.person_id,
-        banned: true,
+        banned: payload.ban ?? true,
       }),
     );
   };

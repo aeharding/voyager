@@ -203,7 +203,7 @@ function findSortOption<S>(sort: S, sortOptions: HydratedSortOptions<S>) {
 }
 
 export function findSortOptionUnhydrated<S>(
-  sort: S,
+  sort: unknown,
   sortOptions: SortOptions<S>,
 ) {
   for (const option of sortOptions) {

@@ -5,6 +5,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonNote,
   IonSpinner,
   IonTextarea,
   IonTitle,
@@ -21,9 +22,12 @@ import AddRemoveButtons from "#/features/share/asImage/AddRemoveButtons";
 import AppHeader from "#/features/shared/AppHeader";
 import { banUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
+import { useMode } from "#/helpers/threadiverse";
 import { buildBanFailed, buildBanned } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
+
+import { supportsCommunityBanContentAction } from "./communityBanCapabilities";
 
 import styles from "./BanUser.module.css";
 
@@ -47,6 +51,8 @@ export default function BanUser({
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [presentActionSheet] = useIonActionSheet();
+  const mode = useMode();
+  const removeContentSupported = supportsCommunityBanContentAction(mode);
 
   const text = `Banning ${getHandle(user)} ${
     permanent ? "permanently" : `for ${days} days`
@@ -81,8 +87,8 @@ export default function BanUser({
           expires_at: !permanent
             ? Math.trunc(addDays(new Date(), days).getTime() / 1_000)
             : undefined,
-          remove_or_restore_data: removeContent,
-          ["remove_data" as never]: removeContent, // TODO lemmy 0.19.0 and less support
+          remove_or_restore_data: removeContentSupported && removeContent,
+          ["remove_data" as never]: removeContentSupported && removeContent, // TODO lemmy 0.19.0 and less support
         }),
       );
     } catch (error) {
@@ -156,12 +162,26 @@ export default function BanUser({
           )}
           <IonItem>
             <IonToggle
-              checked={removeContent}
-              onIonChange={(e) => setRemoveContent(e.detail.checked)}
+              disabled={!removeContentSupported}
+              checked={removeContentSupported && removeContent}
+              onIonChange={(e) => {
+                if (removeContentSupported) {
+                  setRemoveContent(e.detail.checked);
+                }
+              }}
             >
               Remove Content
             </IonToggle>
           </IonItem>
+          {!removeContentSupported && (
+            <div className="ion-padding-horizontal ion-padding-bottom">
+              <IonNote>
+                {mode === undefined
+                  ? "Checking server support…"
+                  : "Not supported on this server"}
+              </IonNote>
+            </div>
+          )}
         </IonList>
 
         <div className={styles.banTextContainer}>

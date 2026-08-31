@@ -10,6 +10,8 @@ import Legal from "#/features/auth/login/join/Legal";
 import useAppToast from "#/helpers/useAppToast";
 import store, { useAppDispatch } from "#/store";
 
+import { preflightRegistrationSupport } from "./registrationSupport";
+
 export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
   const presentToast = useAppToast();
   const [presentAlert] = useIonAlert();
@@ -31,12 +33,29 @@ export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
       throw error;
     }
 
-    if (
-      site &&
-      (await joinClientSelector(store.getState())?.connect())?.mode === "piefed"
-    ) {
+    const selectedState = store.getState();
+    const client = joinClientSelector(selectedState);
+    const isCurrentClient = () => {
+      const currentState = store.getState();
+
+      return (
+        currentState.join.url === url &&
+        joinClientSelector(currentState) === client
+      );
+    };
+
+    if (!site || !client || !isCurrentClient()) return;
+
+    const registrationSupport = await preflightRegistrationSupport(
+      client,
+      isCurrentClient,
+    );
+
+    if (registrationSupport === "stale") return;
+
+    if (registrationSupport === "unsupported") {
       presentAlert(
-        `Voyager doesn't support signups via Piefed right now, apologies!`,
+        `Voyager doesn't support signups through this server right now, apologies!`,
       );
 
       return;

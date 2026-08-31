@@ -30,6 +30,7 @@ import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import { supportsProfileVotedFeed } from "./profileCapabilities";
 import Scores from "./Scores";
 
 interface ProfileProps extends Pick<
@@ -50,6 +51,9 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const dispatch = useAppDispatch();
 
   const isSelf = getRemoteHandle(person.person) === myHandle;
+  const supportsUpvoted = supportsProfileVotedFeed(mode, "liked_only") === true;
+  const supportsDownvoted =
+    supportsProfileVotedFeed(mode, "disliked_only") === true;
 
   const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     const response = await client.listPersonContent(
@@ -106,27 +110,27 @@ export default function Profile({ person, onPull }: ProfileProps) {
               <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
               <IonLabel className="ion-text-nowrap">Saved</IonLabel>
             </IonItem>
-            {mode !== "piefed" && (
-              <>
-                <IonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person)}/upvoted`,
-                  )}
-                  detail
-                >
-                  <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
-                  <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
-                </IonItem>
-                <IonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person)}/downvoted`,
-                  )}
-                  detail
-                >
-                  <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
-                  <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
-                </IonItem>
-              </>
+            {supportsUpvoted && (
+              <IonItem
+                routerLink={buildGeneralBrowseLink(
+                  `/u/${getHandle(person.person)}/upvoted`,
+                )}
+                detail
+              >
+                <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
+                <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
+              </IonItem>
+            )}
+            {supportsDownvoted && (
+              <IonItem
+                routerLink={buildGeneralBrowseLink(
+                  `/u/${getHandle(person.person)}/downvoted`,
+                )}
+                detail
+              >
+                <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
+                <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
+              </IonItem>
             )}
             <IonItem
               routerLink={buildGeneralBrowseLink(
