@@ -9,6 +9,8 @@ import useClient from "#/helpers/useClient";
 import BaseProfileFeedItemsPage from "./BaseProfileFeedItemsPage";
 import { fetchProfileVotedPage } from "./profileVoted";
 
+import endPostStyles from "#/features/feed/endItems/EndPost.module.css";
+
 const LABELS: Record<LikeType, string> = {
   disliked_only: "Downvoted",
   liked_only: "Upvoted",
@@ -36,7 +38,7 @@ export default function ProfileFeedVotedPage({
       renderCustomEmptyContent={
         supported === false
           ? () => (
-              <div className="ion-padding ion-text-center">
+              <div className={endPostStyles.container}>
                 {LABELS[likeType]} history is not available on this server.
               </div>
             )

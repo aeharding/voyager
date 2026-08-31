@@ -46,17 +46,30 @@ export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
 
     if (!site || !client || !isCurrentClient()) return;
 
-    const registrationSupport = await preflightRegistrationSupport(
-      client,
-      isCurrentClient,
-    );
+    let registrationSupport: Awaited<
+      ReturnType<typeof preflightRegistrationSupport>
+    >;
+    try {
+      registrationSupport = await preflightRegistrationSupport(
+        client,
+        isCurrentClient,
+      );
+    } catch (error) {
+      if (!isCurrentClient()) return;
+
+      presentToast({
+        message: `Problem connecting to ${url}. Please try again later.`,
+        position: "top",
+        color: "danger",
+        fullscreen: true,
+      });
+      throw error;
+    }
 
     if (registrationSupport === "stale") return;
 
     if (registrationSupport === "unsupported") {
-      presentAlert(
-        `Voyager doesn't support signups through this server right now, apologies!`,
-      );
+      presentAlert(`Voyager can't create accounts on ${url}.`);
 
       return;
     }

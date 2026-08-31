@@ -5,7 +5,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonNote,
   IonSpinner,
   IonTextarea,
   IonTitle,
@@ -165,27 +164,15 @@ export default function BanUser({
               </div>
             </IonItem>
           )}
-          <IonItem>
-            <IonToggle
-              disabled={!removeContentSupported}
-              checked={removeContentSupported && removeContent}
-              onIonChange={(e) => {
-                if (removeContentSupported) {
-                  setRemoveContent(e.detail.checked);
-                }
-              }}
-            >
-              Remove Content
-            </IonToggle>
-          </IonItem>
-          {!removeContentSupported && (
-            <div className="ion-padding-horizontal ion-padding-bottom">
-              <IonNote>
-                {mode === undefined
-                  ? "Checking server support…"
-                  : "Not supported on this server"}
-              </IonNote>
-            </div>
+          {removeContentSupported && (
+            <IonItem>
+              <IonToggle
+                checked={removeContent}
+                onIonChange={(e) => setRemoveContent(e.detail.checked)}
+              >
+                Remove Content
+              </IonToggle>
+            </IonItem>
           )}
         </IonList>
 
