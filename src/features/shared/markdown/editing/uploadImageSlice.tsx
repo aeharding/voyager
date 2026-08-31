@@ -94,9 +94,6 @@ export const deletePendingImageUploads =
     try {
       await Promise.all(
         toRemove.map(async (img) => {
-          const delete_token = img.delete_token;
-          if (!delete_token) return;
-
           const account = getState().auth.accountData?.accounts.find(
             ({ handle }) => handle === img._handle,
           );
@@ -108,7 +105,24 @@ export const deletePendingImageUploads =
             account.jwt,
           );
 
-          await client.deleteImage({ url: img.url, delete_token });
+          // Lemmy v0 requires its per-image deletion token; PieFed and Lemmy
+          // v1 own uploads through the authenticated account and may not
+          // return one. Preflight the exact payload so the provider decides.
+          const payload = {
+            url: img.url,
+            delete_token: img.delete_token ?? "",
+          };
+          if (!(await client.supports("deleteImage", payload))) return;
+
+          // Capability discovery is asynchronous. The credential that owns
+          // this image may have been removed or replaced while it was in
+          // flight; never delete through a stale account client.
+          const currentAccount = getState().auth.accountData?.accounts.find(
+            ({ handle }) => handle === img._handle,
+          );
+          if (!currentAccount || currentAccount.jwt !== account.jwt) return;
+
+          await client.deleteImage(payload);
         }),
       );
     } finally {
