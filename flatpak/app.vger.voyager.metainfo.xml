@@ -76,4 +76,17 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="2.49.0" date="2026-09-06">
+      <description>
+        <ul>
+          <li>Prevent random community transition flicker</li>
+          <li>Enable rich editor by default</li>
+          <li>Preserve tab state during route transitions</li>
+          <li>Stabilize navigation after ionic v9 upgrade</li>
+          <li>Show two column setting in desktop app</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
