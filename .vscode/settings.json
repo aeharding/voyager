@@ -8,5 +8,8 @@
   },
   "eslint.codeActionsOnSave.rules": ["perfectionist/*"],
   "css.lint.validProperties": ["composes"],
-  "css.lint.vendorPrefix": "ignore"
+  "css.lint.vendorPrefix": "ignore",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

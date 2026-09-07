@@ -1,11 +1,10 @@
-import babel from "@rolldown/plugin-babel";
 import legacy from "@vitejs/plugin-legacy";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
 
-import manifest from "./manifest.json";
+import manifest from "./manifest.json" with { type: "json" };
 
 // Set by the tauri CLI for both `tauri dev` and `tauri build`
 const isTauriBuild = !!process.env.TAURI_ENV_PLATFORM;
@@ -13,10 +12,7 @@ const isTauriBuild = !!process.env.TAURI_ENV_PLATFORM;
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
-    babel({
-      presets: [reactCompilerPreset()],
-    }),
+    react({ compiler: true }),
     svgr(),
     VitePWA({
       // Tauri serves local assets and updates via app releases,
