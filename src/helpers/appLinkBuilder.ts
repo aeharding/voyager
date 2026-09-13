@@ -27,20 +27,14 @@ export function buildUserLinkFromHandle(handle: string): string {
   return `/u/${handle}`;
 }
 
-// React router will unwrap encoding once, but we need it to stay encoded
-// Search examples: "%" "?,=,/,&,:" "%20"
-function escapeSearchQuery(search: string): string {
-  return encodeURIComponent(encodeURIComponent(search));
-}
-
 export function buildSearchPostsLink(search: string): string {
-  return `/search/posts/${escapeSearchQuery(search)}`;
+  return `/search/posts/${encodeURIComponent(search)}`;
 }
 
 export function buildSearchCommentsLink(search: string): string {
-  return `/search/comments/${escapeSearchQuery(search)}`;
+  return `/search/comments/${encodeURIComponent(search)}`;
 }
 
 export function buildSearchCommunitiesLink(search: string): string {
-  return `/search/communities/${escapeSearchQuery(search)}`;
+  return `/search/communities/${encodeURIComponent(search)}`;
 }
