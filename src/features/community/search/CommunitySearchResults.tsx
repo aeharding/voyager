@@ -1,6 +1,10 @@
 import { IonItem, IonLabel, IonList } from "@ionic/react";
 
 import { MaxWidthContainer } from "#/features/shared/AppContent";
+import {
+  buildSearchCommentsLink,
+  buildSearchPostsLink,
+} from "#/helpers/appLinkBuilder";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 interface CommunitySearchResultsProps {
@@ -19,7 +23,7 @@ export default function CommunitySearchResults({
       <IonList inset>
         <IonItem
           routerLink={buildGeneralBrowseLink(
-            `/c/${community}/search/posts/${query}`,
+            `/c/${community}${buildSearchPostsLink(query)}`,
           )}
         >
           <IonLabel>
@@ -28,7 +32,7 @@ export default function CommunitySearchResults({
         </IonItem>
         <IonItem
           routerLink={buildGeneralBrowseLink(
-            `/c/${community}/search/comments/${query}`,
+            `/c/${community}${buildSearchCommentsLink(query)}`,
           )}
         >
           <IonLabel>

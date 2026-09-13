@@ -36,6 +36,7 @@ import PostAppearanceProvider, {
 import AppHeader from "#/features/shared/AppHeader";
 import { AppTitleHandle } from "#/features/shared/AppTitle";
 import DocumentTitle from "#/features/shared/DocumentTitle";
+import { buildSearchPostsLink } from "#/helpers/appLinkBuilder";
 import { AppPage } from "#/helpers/AppPage";
 import { cx } from "#/helpers/css";
 import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
@@ -243,7 +244,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
                       router.push(
                         buildGeneralBrowseLink(
-                          `/c/${community}/search/posts/${searchQuery}`,
+                          `/c/${community}${buildSearchPostsLink(searchQuery)}`,
                         ),
                       );
                     }}
