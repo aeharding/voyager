@@ -76,4 +76,13 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="2.49.1" date="2026-09-13">
+      <description>
+        <ul>
+          <li>Preserve special characters in search</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
