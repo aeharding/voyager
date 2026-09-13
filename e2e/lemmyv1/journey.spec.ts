@@ -1,5 +1,6 @@
-// Modlog walk-through against the v1 wire fixtures. Modlog has no seed
-// support and PieFed derives no modlog, so this stays provider-specific.
+// Modlog walk-through against the v1 wire fixtures. The PieFed fake now
+// supports modlog too, but this stays provider-specific because it asserts
+// v1-specific seeded action kinds and rendered copy.
 // The rest of the journey (feed list, post detail body/author/comment, user
 // profile) is provider-agnostic and covered by e2e/matrix/{post-feed,smoke}.
 

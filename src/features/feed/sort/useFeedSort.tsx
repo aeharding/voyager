@@ -4,6 +4,7 @@ import {
   CommentSortTypeByMode,
   CommunitySortType,
   CommunitySortTypeByMode,
+  ListPersonContentByMode,
   PostSortType,
   PostSortTypeByMode,
   SearchSortType,
@@ -12,6 +13,7 @@ import {
 } from "threadiverse";
 
 import {
+  COMMENT_SORT_BY_MODE,
   VgerCommentSortType,
   VgerCommentSortTypeByMode,
 } from "#/features/comment/CommentSort";
@@ -20,7 +22,6 @@ import {
   VgerCommunitySortType,
   VgerCommunitySortTypeByMode,
 } from "#/routes/pages/search/results/CommunitySort";
-import { AnyVgerSort } from "#/routes/pages/shared/Sort";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
@@ -36,7 +37,11 @@ import {
   setFeedSort,
   SetSortActionPayload,
 } from "./feedSortSlice";
-import { VgerPostSortType, VgerPostSortTypeByMode } from "./PostSort";
+import {
+  POST_SORT_BY_MODE,
+  VgerPostSortType,
+  VgerPostSortTypeByMode,
+} from "./PostSort";
 import { VgerSearchSortType, VgerSearchSortTypeByMode } from "./SearchSort";
 import { isTopSort, topSortToDuration, VgerTopSort } from "./topSorts";
 
@@ -59,6 +64,32 @@ interface Sorts {
   comments: CommentSortType;
   search: SearchSortType;
   communities: CommunitySortType;
+}
+
+type AnyVgerSort =
+  | VgerPostSortType
+  | VgerCommentSortType
+  | VgerSearchSortType
+  | VgerCommunitySortType;
+
+type UnhydratedSortOptions<S> = readonly (S | { children: readonly S[] })[];
+
+function findSortOptionUnhydrated<S>(
+  sort: unknown,
+  sortOptions: UnhydratedSortOptions<S>,
+): S | undefined {
+  for (const option of sortOptions) {
+    if (typeof option === "string") {
+      if (option === sort) return option;
+    } else if (
+      typeof option === "object" &&
+      option !== null &&
+      "children" in option
+    ) {
+      const matchingChild = option.children.find((child) => child === sort);
+      if (matchingChild) return matchingChild;
+    }
+  }
 }
 
 export type FeedSortContext = "posts" | "comments" | "search" | "communities";
@@ -196,6 +227,93 @@ export function useFeedSortParams<Context extends FeedSortContext>(
   if (!sort) return sort;
 
   return convertSortToLemmyParams(context, sort, mode) ?? null;
+}
+
+type ProfileFeedSortParams<ContentType extends "comments" | "posts"> =
+  | Pick<ListPersonContentByMode["lemmyv0"], "mode" | "sort">
+  | Pick<ListPersonContentByMode["lemmyv1"], "mode">
+  | Pick<
+      Extract<ListPersonContentByMode["piefed"], { type: ContentType }>,
+      "mode" | "sort"
+    >;
+
+/** Resolve a remembered profile-post sort for the active provider. */
+export function getProfilePostSort(
+  mode: ThreadiverseMode | null | undefined,
+  sort: VgerPostSortType | null | undefined,
+): VgerPostSortType | null | undefined {
+  if (!mode) return mode;
+  if (!sort) return sort;
+
+  if (mode === "lemmyv1") return "New";
+
+  return findSortOptionUnhydrated(sort, POST_SORT_BY_MODE[mode]) ?? "New";
+}
+
+/** Convert Voyager's post sort to the provider-specific profile-feed route. */
+export function getProfilePostSortParams(
+  mode: ThreadiverseMode | null | undefined,
+  sort: VgerPostSortType | null | undefined,
+): ProfileFeedSortParams<"posts"> | null | undefined {
+  if (!mode) return mode;
+
+  const validSort = getProfilePostSort(mode, sort);
+  if (!validSort) return validSort;
+
+  switch (mode) {
+    case "lemmyv0": {
+      const providerSort =
+        findSortOptionUnhydrated(validSort, POST_SORT_BY_MODE.lemmyv0) ?? "New";
+      return convertPostSortToLemmyV0Params(providerSort);
+    }
+    case "lemmyv1":
+      // Lemmy v1's person-content route has no sort parameter.
+      return { mode };
+    case "piefed": {
+      const providerSort =
+        findSortOptionUnhydrated(validSort, POST_SORT_BY_MODE.piefed) ?? "New";
+      return convertPostSortToPiefedParams(providerSort);
+    }
+  }
+}
+
+/** Resolve a remembered profile-comment sort for the active provider. */
+export function getProfileCommentSort(
+  mode: ThreadiverseMode | null | undefined,
+  sort: VgerCommentSortType | null | undefined,
+): VgerCommentSortType | null | undefined {
+  if (!mode) return mode;
+  if (!sort) return sort;
+
+  if (mode === "lemmyv1") return "New";
+
+  return findSortOptionUnhydrated(sort, COMMENT_SORT_BY_MODE[mode]) ?? "New";
+}
+
+/** Convert Voyager's comment sort to the provider-specific profile-feed route. */
+export function getProfileCommentSortParams(
+  mode: ThreadiverseMode | null | undefined,
+  sort: VgerCommentSortType | null | undefined,
+): ProfileFeedSortParams<"comments"> | null | undefined {
+  if (!mode) return mode;
+
+  const validSort = getProfileCommentSort(mode, sort);
+  if (!validSort) return validSort;
+
+  switch (mode) {
+    case "lemmyv0": {
+      // Lemmy v0's getPersonDetails route uses its post-sort vocabulary.
+      return {
+        mode,
+        sort: validSort === "Top" ? "TopAll" : validSort,
+      };
+    }
+    case "lemmyv1":
+      // Lemmy v1's person-content route has no sort parameter.
+      return { mode };
+    case "piefed":
+      return { mode, sort: validSort };
+  }
 }
 
 function convertSortToLemmyParams<Context extends FeedSortContext>(

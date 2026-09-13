@@ -10,6 +10,8 @@ import Legal from "#/features/auth/login/join/Legal";
 import useAppToast from "#/helpers/useAppToast";
 import store, { useAppDispatch } from "#/store";
 
+import { preflightRegistrationSupport } from "./registrationSupport";
+
 export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
   const presentToast = useAppToast();
   const [presentAlert] = useIonAlert();
@@ -31,13 +33,43 @@ export default function useStartJoinFlow(ref: RefObject<HTMLElement | null>) {
       throw error;
     }
 
-    if (
-      site &&
-      (await joinClientSelector(store.getState())?.connect())?.mode === "piefed"
-    ) {
-      presentAlert(
-        `Voyager doesn't support signups via Piefed right now, apologies!`,
+    const selectedState = store.getState();
+    const client = joinClientSelector(selectedState);
+    const isCurrentClient = () => {
+      const currentState = store.getState();
+
+      return (
+        currentState.join.url === url &&
+        joinClientSelector(currentState) === client
       );
+    };
+
+    if (!site || !client || !isCurrentClient()) return;
+
+    let registrationSupport: Awaited<
+      ReturnType<typeof preflightRegistrationSupport>
+    >;
+    try {
+      registrationSupport = await preflightRegistrationSupport(
+        client,
+        isCurrentClient,
+      );
+    } catch (error) {
+      if (!isCurrentClient()) return;
+
+      presentToast({
+        message: `Problem connecting to ${url}. Please try again later.`,
+        position: "top",
+        color: "danger",
+        fullscreen: true,
+      });
+      throw error;
+    }
+
+    if (registrationSupport === "stale") return;
+
+    if (registrationSupport === "unsupported") {
+      presentAlert(`Voyager can't create accounts on ${url}.`);
 
       return;
     }
