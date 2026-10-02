@@ -1,0 +1,33 @@
+diff --git a/capacitor/src/main/java/com/getcapacitor/plugin/SystemBars.java b/capacitor/src/main/java/com/getcapacitor/plugin/SystemBars.java
+index b3c95916a74f19bc50bcd81f7529e444c9f109ca..ee5cd5c0ea1a82762b166aa4f1de8b337e552dfd 100644
+--- a/capacitor/src/main/java/com/getcapacitor/plugin/SystemBars.java
++++ b/capacitor/src/main/java/com/getcapacitor/plugin/SystemBars.java
+@@ -280,20 +280,23 @@ public class SystemBars extends Plugin {
+     }
+ 
+     private void setStyle(String style, String bar) {
+-        if (style.equals(STYLE_DEFAULT)) {
+-            style = getStyleForTheme();
+-        }
++        // Preserve DEFAULT so configuration changes resolve the current system theme.
++        // https://github.com/ionic-team/capacitor/issues/8435
++        String resolvedStyle = style.equals(STYLE_DEFAULT) ? getStyleForTheme() : style;
+ 
+         Window window = getActivity().getWindow();
+         WindowInsetsControllerCompat windowInsetsControllerCompat = WindowCompat.getInsetsController(window, window.getDecorView());
+         if (bar.isEmpty() || bar.equals(BAR_STATUS_BAR)) {
+             currentStatusBarStyle = style;
+-            windowInsetsControllerCompat.setAppearanceLightStatusBars(!style.equals(STYLE_DARK));
++            // Let the legacy StatusBar plugin own the default status bar appearance.
++            if (!style.equals(STYLE_DEFAULT) || getBridge().getPlugin("StatusBar") == null) {
++                windowInsetsControllerCompat.setAppearanceLightStatusBars(!resolvedStyle.equals(STYLE_DARK));
++            }
+         }
+ 
+         if (bar.isEmpty() || bar.equals(BAR_GESTURE_BAR)) {
+             currentGestureBarStyle = style;
+-            windowInsetsControllerCompat.setAppearanceLightNavigationBars(!style.equals(STYLE_DARK));
++            windowInsetsControllerCompat.setAppearanceLightNavigationBars(!resolvedStyle.equals(STYLE_DARK));
+         }
+ 
+         getActivity().getWindow().getDecorView().setBackgroundColor(getThemeColor(getContext(), android.R.attr.windowBackground));
