@@ -8,6 +8,7 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@9.0.3
 
 patchedDependencies:
+  '@capacitor/android@8.5.1': 0de123bcea6c25eaeac766a3b2aec58373ef71a036e1ae074f5ec98dccbfb64a
   '@capacitor/haptics': 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
   '@capacitor/keyboard@8.0.5': b19a3fb904474d28078cd1ad688098b11c23b9cc72e4af004b39d37909e408d9
   editate@0.6.27: cc0ea24de2507c67a9b3cf25b5af73a328288c06f0edf13cdb5ee3c2838562f8
@@ -28,7 +29,7 @@ importers:
         version: 7.0.0(@capacitor/core@8.5.1)
       '@capacitor/android':
         specifier: ^8.5.1
-        version: 8.5.1(@capacitor/core@8.5.1)
+        version: 8.5.1(patch_hash=0de123bcea6c25eaeac766a3b2aec58373ef71a036e1ae074f5ec98dccbfb64a)(@capacitor/core@8.5.1)
       '@capacitor/app':
         specifier: ^8.1.1
         version: 8.1.1(@capacitor/core@8.5.1)
@@ -7160,7 +7161,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.5.1
 
-  '@capacitor/android@8.5.1(@capacitor/core@8.5.1)':
+  '@capacitor/android@8.5.1(patch_hash=0de123bcea6c25eaeac766a3b2aec58373ef71a036e1ae074f5ec98dccbfb64a)(@capacitor/core@8.5.1)':
     dependencies:
       '@capacitor/core': 8.5.1
 
