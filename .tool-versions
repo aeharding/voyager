@@ -3,7 +3,7 @@ nodejs 26.8.2
 
 # https://www.ruby-lang.org/en/news
 # https://github.com/ruby/setup-ruby/blob/master/ruby-builder-versions.json
-ruby 3.4.10
+ruby 3.4.11
 
 # https://adoptium.net/temurin/releases?version=21
 # java v21 for gradle v8
