@@ -1,6 +1,7 @@
 import { ReactElement, use, useCallback, useEffect, useRef } from "react";
 import { CommentView, PostView } from "threadiverse";
 
+import { useTabName } from "#/core/TabContext";
 import { receivedComments } from "#/features/comment/commentSlice";
 import FeedComment from "#/features/comment/inFeed/FeedComment";
 import { usePostAppearance } from "#/features/post/appearance/PostAppearanceProvider";
@@ -10,12 +11,17 @@ import {
   receivedPosts,
   setPostRead,
 } from "#/features/post/postSlice";
+import { buildCommentLink, buildPostLink } from "#/helpers/appLinkBuilder";
 import {
   isComment,
   isPost,
   postHasFilteredKeywords,
   postHasFilteredWebsite,
 } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppNavigation from "#/helpers/useAppNavigation";
+import { OutletContext } from "#/routes/OutletProvider";
+import { useIsSecondColumn } from "#/routes/twoColumn/useIsSecondColumn";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import Feed, { FeedProps, FetchFn } from "./Feed";
@@ -47,6 +53,12 @@ export default function PostCommentFeed({
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
+  const tabName = useTabName();
+  const isSecondColumn = useIsSecondColumn();
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const { navigateToComment, navigateToPost } = useAppNavigation();
+  const { isTwoColumnLayout, secondColumnLocationDictionary } =
+    use(OutletContext);
   const postAppearance = usePostAppearance();
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
@@ -219,6 +231,29 @@ export default function PostCommentFeed({
     autohidePostIfNeeded(item, "scroll");
   }
 
+  const selectedItemPath = secondColumnLocationDictionary?.[tabName]?.pathname;
+
+  const keyboardNavigation =
+    isTwoColumnLayout && !isSecondColumn
+      ? {
+          isItemActive: (item: PostCommentItem) => {
+            const itemPath = isPost(item)
+              ? buildPostLink(item.community, item.post)
+              : buildCommentLink(item.community, item.comment);
+
+            return buildGeneralBrowseLink(itemPath) === selectedItemPath;
+          },
+          onSelect: (item: PostCommentItem) => {
+            if (isPost(item)) {
+              navigateToPost(item);
+              autohidePostIfNeeded(item);
+            } else {
+              navigateToComment(item);
+            }
+          },
+        }
+      : undefined;
+
   return (
     <Feed
       fetchFn={fetchFn}
@@ -233,6 +268,7 @@ export default function PostCommentFeed({
           ? onRemovedFromTopOfViewport
           : undefined
       }
+      keyboardNavigation={keyboardNavigation}
     />
   );
 }

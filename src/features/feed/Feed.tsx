@@ -19,6 +19,7 @@ import { PageCursor } from "threadiverse";
 import { VListHandle } from "virtua";
 
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { useAppPageRef } from "#/helpers/AppPage";
 import { AppVList } from "#/helpers/virtua";
 import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
@@ -28,6 +29,9 @@ import { useAppSelector } from "#/store";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import FetchMore from "./endItems/FetchMore";
+import useFeedKeyboardNavigation, {
+  FeedKeyboardNavigationOptions,
+} from "./useFeedKeyboardNavigation";
 import { useRangeChange } from "./useRangeChange";
 
 const ABORT_REASON_UNMOUNT = "unmount";
@@ -82,6 +86,8 @@ export interface FeedProps<I> extends Partial<
    * @returns false to skip default feed refresh behavior
    */
   onPull?: () => Promise<boolean | void>;
+
+  keyboardNavigation?: FeedKeyboardNavigationOptions<I>;
 }
 
 /**
@@ -103,6 +109,7 @@ export default function Feed<I>({
   renderCustomEmptyContent,
   onRemovedFromTop,
   onPull,
+  keyboardNavigation,
 }: FeedProps<I>) {
   const [cursor, setCursor] = useState<PageCursor | undefined>();
   const [numberedPage, setNumberedPage] = useState(0);
@@ -270,6 +277,15 @@ export default function Feed<I>({
   }, [filteredItems, items, cursor, loading, limit, loadFailed, fetchMore]);
 
   const virtuaHandle = useRef<VListHandle>(null);
+  const pageRef = useAppPageRef();
+
+  useFeedKeyboardNavigation(
+    keyboardNavigation,
+    filteredItems,
+    header ? 1 : 0,
+    virtuaHandle,
+    pageRef,
+  );
 
   function updateReadPosts(start: number, end: number) {
     if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
@@ -365,6 +381,9 @@ export default function Feed<I>({
 
       <InFeedContext value={true}>
         <AppVList
+          aria-keyshortcuts={
+            keyboardNavigation ? "ArrowDown ArrowUp J K" : undefined
+          }
           className={
             isSafariFeedHackEnabled
               ? "virtual-scroller"
