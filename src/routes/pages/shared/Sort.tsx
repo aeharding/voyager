@@ -202,24 +202,6 @@ function findSortOption<S>(sort: S, sortOptions: HydratedSortOptions<S>) {
   }
 }
 
-export function findSortOptionUnhydrated<S>(
-  sort: S,
-  sortOptions: SortOptions<S>,
-) {
-  for (const option of sortOptions) {
-    if (typeof option === "string") {
-      if (option === sort) return option;
-    } else if (
-      typeof option === "object" &&
-      option !== null &&
-      "children" in option
-    ) {
-      const matchingChild = option.children.find((child) => child === sort);
-      if (matchingChild) return matchingChild;
-    }
-  }
-}
-
 export type AnyVgerSort =
   | VgerPostSortType
   | VgerCommentSortType
