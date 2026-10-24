@@ -55,18 +55,25 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  container_inventory:
+    name: Inventory exact container images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.images.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: images
+        run: python3 .github/scripts/runtime-images.py >> "$GITHUB_OUTPUT"
+
   containers:
     name: Container audit (${{ matrix.name }})
+    needs: container_inventory
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: published-runtime
-            image: ghcr.io/aeharding/voyager:latest
-          - name: build-runtime
-            image: docker.io/library/node:lts-alpine
+      matrix: ${{ fromJSON(needs.container_inventory.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v7
       - name: Scan container operating system and libraries

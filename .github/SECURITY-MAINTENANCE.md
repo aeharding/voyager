@@ -8,8 +8,9 @@ Each run:
 - Checks the Node.js pin against the official release index and support schedule.
 - Scans supported dependency lockfiles, including development dependencies, for
   published vulnerabilities.
-- Scans the published Voyager container and the Docker build runtime for library
-  and operating-system vulnerabilities.
+- Scans the published Voyager container and every external Dockerfile base image
+  for library and operating-system vulnerabilities, using the exact source tags
+  and digest pins rather than substituting newer images.
 - Runs Renovate to open security-fix PRs and keep runtime patch releases and image
   digests current. Node minor updates are allowed within the existing major because
   Node security releases can change the minor version.
