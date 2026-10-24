@@ -19,9 +19,19 @@
         "gradle-wrapper",
         "rust-toolchain"
       ],
-      "matchUpdateTypes": ["patch", "pin", "digest", "pinDigest"],
       "enabled": true,
       "groupName": "runtime security maintenance"
+    },
+    {
+      "description": "Keep feature and major runtime upgrades for manual planning",
+      "matchManagers": [
+        "asdf",
+        "dockerfile",
+        "gradle-wrapper",
+        "rust-toolchain"
+      ],
+      "matchUpdateTypes": ["major", "minor", "rollback", "replacement"],
+      "enabled": false
     },
     {
       "description": "Node security releases also increment the minor version within a release line",
