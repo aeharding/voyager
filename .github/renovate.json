@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["security:only-security-updates"],
+  "automerge": false,
+  "ignoreScripts": true,
+  "dependencyDashboardTitle": "Voyager security maintenance",
+  "prConcurrentLimit": 3,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "prConcurrentLimit": 3,
+    "vulnerabilityFixStrategy": "lowest"
+  },
+  "packageRules": [
+    {
+      "description": "Keep runtime and container security patches current without changing release lines",
+      "matchManagers": [
+        "asdf",
+        "dockerfile",
+        "gradle-wrapper",
+        "rust-toolchain"
+      ],
+      "enabled": true,
+      "groupName": "runtime security maintenance"
+    },
+    {
+      "description": "Keep feature and major runtime upgrades for manual planning",
+      "matchManagers": [
+        "asdf",
+        "dockerfile",
+        "gradle-wrapper",
+        "rust-toolchain"
+      ],
+      "matchUpdateTypes": ["major", "minor", "rollback", "replacement"],
+      "enabled": false
+    },
+    {
+      "description": "Node security releases also increment the minor version within a release line",
+      "matchManagers": ["asdf"],
+      "matchDatasources": ["node-version"],
+      "matchUpdateTypes": ["minor"],
+      "enabled": true,
+      "groupName": "runtime security maintenance"
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "pinDigests": true
+    }
+  ]
+}
