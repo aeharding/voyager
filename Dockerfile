@@ -1,5 +1,5 @@
 # stage 0: set base image w/common customizations
-FROM docker.io/library/node:lts-alpine AS base
+FROM docker.io/library/node:lts-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS base
 
 # Prepare work directory
 WORKDIR /voyager
@@ -38,7 +38,7 @@ RUN pnpm build
 
 
 # stage 2: runtime
-FROM docker.io/library/nginx AS runner
+FROM docker.io/library/nginx@sha256:4c41e2d0a3a55b325ed572cd0200bdb72af1433c3daa2bca6ef8eea68ce504a2 AS runner
 
 ARG UID=911 GID=911
 
