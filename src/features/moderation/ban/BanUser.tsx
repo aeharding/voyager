@@ -21,9 +21,12 @@ import AddRemoveButtons from "#/features/share/asImage/AddRemoveButtons";
 import AppHeader from "#/features/shared/AppHeader";
 import { banUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
+import { useMode } from "#/helpers/threadiverse";
 import { buildBanFailed, buildBanned } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
+
+import { supportsCommunityBanContentAction } from "./communityBanCapabilities";
 
 import styles from "./BanUser.module.css";
 
@@ -47,6 +50,8 @@ export default function BanUser({
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [presentActionSheet] = useIonActionSheet();
+  const mode = useMode();
+  const removeContentSupported = supportsCommunityBanContentAction(mode);
 
   const text = `Banning ${getHandle(user)} ${
     permanent ? "permanently" : `for ${days} days`
@@ -71,9 +76,10 @@ export default function BanUser({
 
   async function ban() {
     setLoading(true);
+    let executed: boolean;
 
     try {
-      await dispatch(
+      executed = await dispatch(
         banUser({
           person_id: user.id,
           community_id: community.id,
@@ -81,8 +87,8 @@ export default function BanUser({
           expires_at: !permanent
             ? Math.trunc(addDays(new Date(), days).getTime() / 1_000)
             : undefined,
-          remove_or_restore_data: removeContent,
-          ["remove_data" as never]: removeContent, // TODO lemmy 0.19.0 and less support
+          remove_or_restore_data: removeContentSupported && removeContent,
+          ["remove_data" as never]: removeContentSupported && removeContent, // TODO lemmy 0.19.0 and less support
         }),
       );
     } catch (error) {
@@ -91,6 +97,10 @@ export default function BanUser({
     } finally {
       setLoading(false);
     }
+
+    // Account/instance changes cancel stale mutations. Keep this dialog open
+    // and do not report success for a request that never ran for this account.
+    if (!executed) return;
 
     presentToast(buildBanned(true));
 
@@ -154,14 +164,16 @@ export default function BanUser({
               </div>
             </IonItem>
           )}
-          <IonItem>
-            <IonToggle
-              checked={removeContent}
-              onIonChange={(e) => setRemoveContent(e.detail.checked)}
-            >
-              Remove Content
-            </IonToggle>
-          </IonItem>
+          {removeContentSupported && (
+            <IonItem>
+              <IonToggle
+                checked={removeContent}
+                onIonChange={(e) => setRemoveContent(e.detail.checked)}
+              >
+                Remove Content
+              </IonToggle>
+            </IonItem>
+          )}
         </IonList>
 
         <div className={styles.banTextContainer}>

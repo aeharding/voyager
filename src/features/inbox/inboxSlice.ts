@@ -7,6 +7,7 @@ import {
   NotificationView,
   PageCursor,
   PrivateMessageView,
+  UnsupportedError,
 } from "threadiverse";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
@@ -313,7 +314,32 @@ export const markNotificationRead =
     read: boolean,
   ) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const client = clientSelector(getState());
+    const initialState = getState();
+    const client = clientSelector(initialState);
+    const payload = {
+      kind: args.kind,
+      notification_id: args.notificationId,
+      read,
+    };
+    const isCurrentClient = () => clientSelector(getState()) === client;
+
+    let supported: boolean;
+    try {
+      supported = await client.supports("markNotificationAsRead", payload);
+    } catch (error) {
+      if (!isCurrentClient()) return false;
+      throw error;
+    }
+
+    // Capability discovery is asynchronous. If the user switched accounts or
+    // instances while it was in flight, this action belongs to the old inbox.
+    if (!isCurrentClient()) return false;
+
+    if (!supported) {
+      throw new UnsupportedError(
+        `Marking ${args.kind} notifications as ${read ? "read" : "unread"} is not supported by this instance`,
+      );
+    }
 
     const key = `${args.kind}_${args.notificationId}`;
     const initialRead = !!getState().inbox.readByInboxItemId[key];
@@ -321,17 +347,20 @@ export const markNotificationRead =
     dispatch(setNotificationReadStatus({ ...args, read }));
 
     try {
-      await client.markNotificationAsRead({
-        kind: args.kind,
-        notification_id: args.notificationId,
-        read,
-      });
+      await client.markNotificationAsRead(payload);
     } catch (error) {
-      dispatch(setNotificationReadStatus({ ...args, read: initialRead }));
-      throw error;
+      if (isCurrentClient()) {
+        dispatch(setNotificationReadStatus({ ...args, read: initialRead }));
+        throw error;
+      }
+
+      return false;
     }
 
+    if (!isCurrentClient()) return false;
+
     dispatch(getInboxCounts(true));
+    return true;
   };
 
 export const markMessageRead =

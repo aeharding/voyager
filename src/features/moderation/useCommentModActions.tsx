@@ -190,13 +190,14 @@ export default function useCommentModActions(commentView: CommentView) {
                 (async () => {
                   if (banned) {
                     try {
-                      await dispatch(
+                      const executed = await dispatch(
                         banUser({
                           person_id: commentView.creator.id,
                           community_id: commentView.community.id,
                           ban: false,
                         }),
                       );
+                      if (!executed) return;
                     } catch (error) {
                       presentToast(buildBanFailed(false));
                       throw error;

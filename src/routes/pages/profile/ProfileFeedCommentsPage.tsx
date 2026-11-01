@@ -1,10 +1,12 @@
+import { CommentSort } from "#/features/comment/CommentSort";
 import { AbortLoadError, FetchFn } from "#/features/feed/Feed";
 import { PostCommentItem } from "#/features/feed/PostCommentFeed";
-import { SearchSort } from "#/features/feed/sort/SearchSort";
 import useFeedSort, {
-  useFeedSortParams,
+  getProfileCommentSort,
+  getProfileCommentSortParams,
 } from "#/features/feed/sort/useFeedSort";
 import { getUserIfNeeded } from "#/features/user/userSlice";
+import { useMode } from "#/helpers/threadiverse";
 import useClient from "#/helpers/useClient";
 import useRequiredParams from "#/helpers/useRequiredParams";
 import { LIMIT } from "#/services/lemmy";
@@ -16,15 +18,17 @@ export default function ProfileFeedCommentsPage() {
   const client = useClient();
   const { handle } = useRequiredParams<{ handle: string }>();
   const dispatch = useAppDispatch();
+  const mode = useMode();
 
   const [sort, setSort] = useFeedSort(
-    "search",
+    "comments",
     {
       internal: `ProfileComments`,
     },
     "New",
   );
-  const sortParams = useFeedSortParams("search", sort);
+  const effectiveSort = getProfileCommentSort(mode, sort);
+  const sortParams = getProfileCommentSortParams(mode, effectiveSort);
 
   const fetchFn: FetchFn<PostCommentItem> = async (page_cursor, ...rest) => {
     if (sortParams === undefined) throw new AbortLoadError();
@@ -47,7 +51,11 @@ export default function ProfileFeedCommentsPage() {
     <BaseProfileFeedItemsPage
       label="Comments"
       fetchFn={fetchFn}
-      sortComponent={<SearchSort sort={sort} setSort={setSort} />}
+      sortComponent={
+        mode !== "lemmyv1" && (
+          <CommentSort sort={effectiveSort} setSort={setSort} />
+        )
+      }
     />
   );
 }
