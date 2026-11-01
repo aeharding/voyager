@@ -1,4 +1,5 @@
 import { fixturePosts } from "../fixtures/builders";
+import { getSetting } from "../fixtures/db";
 import { expect, test } from "./fixtures";
 
 test("post feed loads", async ({ api, page }) => {
@@ -19,6 +20,45 @@ test("clicking a post navigates to detail", async ({ api, page }) => {
       `/posts/${api.host}/c/test_comm/comments/${fixturePosts[0]!.id}`,
     ),
   );
+});
+
+test("keyboard navigation moves the selected post in two-column mode", async ({
+  api,
+  page,
+}) => {
+  test.skip(
+    (page.viewportSize()?.width ?? 0) < 768,
+    "Two-column mode is unavailable on narrow viewports",
+  );
+
+  await page.goto("/settings/appearance");
+  await page.getByText("Two Column Mode").click();
+  await page.getByRole("button", { name: "On", exact: true }).click();
+  await expect.poll(() => getSetting(page, "two_column_layout")).toBe("on");
+
+  await page.goto(`/posts/${api.host}/all`);
+
+  const firstPost = page
+    .locator("ion-router-outlet ion-item", { hasText: fixturePosts[0]!.name })
+    .first();
+  const secondPost = page
+    .locator("ion-router-outlet ion-item", { hasText: fixturePosts[1]!.name })
+    .first();
+
+  await expect(firstPost).toBeVisible();
+
+  await page.keyboard.press("j");
+  await expect(firstPost).toHaveClass(/app-activated/);
+
+  await page.keyboard.press("ArrowDown");
+  await expect(secondPost).toHaveClass(/app-activated/);
+  await expect(firstPost).not.toHaveClass(/app-activated/);
+
+  await page.keyboard.press("k");
+  await expect(firstPost).toHaveClass(/app-activated/);
+
+  await page.keyboard.press("ArrowUp");
+  await expect(firstPost).toHaveClass(/app-activated/);
 });
 
 test.describe("logged in", () => {
