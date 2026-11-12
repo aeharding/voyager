@@ -30,6 +30,7 @@ import useClient from "#/helpers/useClient";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import ProfileTag from "./ProfileTag";
 import Scores from "./Scores";
 
 interface ProfileProps extends Pick<
@@ -72,6 +73,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
 
   const header = (
     <MaxWidthContainer>
+      <ProfileTag person={person.person} />
       <Scores
         aggregates={person.person}
         accountCreated={person.person.published_at}
@@ -163,6 +165,7 @@ export default function Profile({ person, onPull }: ProfileProps) {
       header={header}
       filterHiddenPosts={false}
       filterKeywordsAndWebsites={false}
+      showCommentTags={false}
       onPull={onPull}
     />
   );

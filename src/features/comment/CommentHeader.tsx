@@ -32,6 +32,7 @@ interface CommentHeaderProps {
   collapsed: boolean | undefined;
   rootIndex: number | undefined;
   commentEllipsisHandleRef: RefObject<CommentEllipsisHandle | undefined>;
+  showTag?: boolean;
 }
 
 export default function CommentHeader({
@@ -42,6 +43,7 @@ export default function CommentHeader({
   collapsed,
   rootIndex,
   commentEllipsisHandleRef,
+  showTag = true,
 }: CommentHeaderProps) {
   const { capturing } = use(ShareImageContext);
   const showCollapsedComment = useAppSelector(
@@ -148,7 +150,7 @@ export default function CommentHeader({
             )}
             <Vote className={styles.commentVote} item={commentView} />
             <Edited item={commentView} />
-            {tagsEnabled ? (
+            {tagsEnabled && showTag ? (
               <UserTag person={commentView.creator}>
                 {(props) =>
                   props ? (

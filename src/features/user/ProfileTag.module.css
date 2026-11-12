@@ -1,0 +1,10 @@
+.tag {
+  display: flex;
+  justify-content: center;
+  margin: 16px 24px;
+}
+
+.tag > span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

@@ -8,9 +8,14 @@ import Comment from "../Comment";
 interface FeedCommentProps {
   comment: CommentView;
   className?: string;
+  showTag?: boolean;
 }
 
-export default function FeedComment({ comment, className }: FeedCommentProps) {
+export default function FeedComment({
+  comment,
+  className,
+  showTag,
+}: FeedCommentProps) {
   const linkProps = useOpenCommentInSecondColumnIfNeededProps(
     comment.comment,
     comment.community,
@@ -25,6 +30,7 @@ export default function FeedComment({ comment, className }: FeedCommentProps) {
       {...linkProps}
       itemClassName={linkProps.className}
       className={className}
+      showTag={showTag}
     />
   );
 }
