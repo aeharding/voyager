@@ -34,6 +34,7 @@ interface PostCommentFeed extends Omit<
   communityName?: string;
   filterHiddenPosts?: boolean;
   filterKeywordsAndWebsites?: boolean;
+  showCommentTags?: boolean;
 
   header?: ReactElement;
 }
@@ -42,6 +43,7 @@ export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts: filterHiddenPostsProp = true,
   filterKeywordsAndWebsites = true,
+  showCommentTags = true,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
   ...rest
@@ -97,9 +99,15 @@ export default function PostCommentFeed({
     (item: PostCommentItem) => {
       if (isPost(item)) return <Post post={item} className={borderCss} />;
 
-      return <FeedComment comment={item} className={borderCss} />;
+      return (
+        <FeedComment
+          comment={item}
+          className={borderCss}
+          showTag={showCommentTags}
+        />
+      );
     },
-    [borderCss],
+    [borderCss, showCommentTags],
   );
 
   const renderItemContent = useCallback(

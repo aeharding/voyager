@@ -54,6 +54,7 @@ interface CommentProps {
   itemClassName?: string;
 
   rootIndex?: number;
+  showTag?: boolean;
 }
 
 export default function Comment({
@@ -68,6 +69,7 @@ export default function Comment({
   className,
   itemClassName,
   rootIndex,
+  showTag,
 }: CommentProps) {
   const showCollapsedComment = useAppSelector(
     (state) => state.settings.general.comments.showCollapsed,
@@ -153,6 +155,7 @@ export default function Comment({
                   collapsed={collapsed}
                   rootIndex={rootIndex}
                   commentEllipsisHandleRef={commentEllipsisHandleRef}
+                  showTag={showTag}
                 />
 
                 <AnimateHeight
